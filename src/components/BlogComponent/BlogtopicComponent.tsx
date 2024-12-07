@@ -16,17 +16,17 @@ import {
 import { useRouter } from "next/navigation";
 import { useGetAllTopicQuery } from "@/redux/service/topic";
 
-type BlogTopicComponentProps = {
+type BlogTopicComponentProps = Readonly<{
   topic: string;
-};
+}>;
 
 export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
   console.log("Topic:", topic);
   const router = useRouter();
 
-  const [currentPage, setCurrentPage] = useState(1); // Track current page state
-  const [totalPages, setTotalPages] = useState(1); // Track total pages based on API response
-  const [likedBlogs, setLikedBlogs] = useState<string[]>([]); // Track liked blogs UUIDs
+  const [currentPage, setCurrentPage] = useState(1); 
+  const [totalPages, setTotalPages] = useState(1);
+  const [likedBlogs, setLikedBlogs] = useState<string[]>([]); 
 
   // Fetch blog data for the specific topic and pagination
   const { data: blogData } = useGetAllTopicQuery({
@@ -71,7 +71,7 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
           <div>No data</div>
         ) : (
           blogList?.map((blog: Blog) => (
-            <div
+            <button
               key={blog?.uuid}
               onClick={() => router.push(`/blog/${blog?.uuid}`)}
               className="flex my-2 flex-wrap lg:flex-nowrap justify-center lg:justify-between items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5 lg:pb-0"
@@ -143,7 +143,7 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
                   alt="thumbnail"
                 />
               </div>
-            </div>
+            </button>
           ))
         )}
       </section>

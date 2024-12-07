@@ -44,13 +44,13 @@ export default function BlogPageComponent() {
             </p>
             <div className="py-2 flex flex-wrap gap-3">
               {commonTopicData.map((common: CommonTopic) => (
-                <div
+                <button
                   key={common.topic}
                   className="bg-text_color_dark dark:bg-card_color_dark px-4 py-2 rounded-[17px] cursor-pointer"
                   onClick={() => handleTopicClick(common.topic)}
                 >
                   {common.topic}
-                </div>
+                </button>
               ))}
 
               {/* Recent Posts */}

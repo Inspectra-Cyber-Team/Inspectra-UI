@@ -22,6 +22,8 @@ import { FaHandsClapping } from "react-icons/fa6";
 import BlogUserCardComponent from "@/components/BlogComponent/BlogUserCardComponent";
 import CommentSection from "@/components/CommentComponent/CommentComponent";
 import { Blog } from "@/types/Blog";
+import { useGetUserLikeBlogQuery } from "@/redux/service/userlikeblog";
+import HoverModal from "./ModalHoverComponent";
 
 type BlogDetailsProps = Readonly<{
   uuid: string;
@@ -39,7 +41,8 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     setUserUUID(localStorage.getItem("userUUID") ?? "");
   });
 
-  console.log("userUUID", userUUID);
+  //calling user like blog
+  const { data: userLike, isLoading } = useGetUserLikeBlogQuery({ uuid });
 
   const [report, setReport] = useState("");
   const [showSidebar, setShowSidebar] = useState(false);
@@ -122,6 +125,29 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     }
   };
 
+  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const handleMouseEnter = (event: React.MouseEvent) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const position = { top: rect.top - 10, left: rect.left + rect.width / 2 };
+
+    // Add a small delay before showing the modal
+    const timeout = setTimeout(() => {
+      setModalPosition(position);
+      setShowModal(true);
+    }, 300);
+    setHoverTimeout(timeout);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeout) clearTimeout(hoverTimeout);
+
+    // Add a slight delay before hiding
+    setTimeout(() => setShowModal(false), 200);
+  };
+
   return (
     <section className="w-[88%] mx-auto">
       {/* Action Buttons */}
@@ -190,7 +216,11 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
             <p>{blogData?.viewsCount}</p>
           </div>
           {/* Likes */}
-          <div className="flex gap-2 items-center">
+          <div
+            className="flex gap-2 items-center "
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
             <FaHandsClapping
               className={`text-[24px] cursor-pointer ${
                 likeColor ? "text-orange-400" : "text-text_color_desc_light"
@@ -238,6 +268,11 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
           </button>
           <CommentSection uuid={uuid} />
         </div>
+      )}
+
+      {/* Hover Modal */}
+      {showModal && userLike && (
+        <HoverModal likes={userLike?.data} position={modalPosition} isloading={isLoading} />
       )}
     </section>
   );
