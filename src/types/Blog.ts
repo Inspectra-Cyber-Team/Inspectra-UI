@@ -21,5 +21,21 @@ export  type Blog = {
     createdAt: string; // ISO date string
     lastModifiedAt: string; // ISO date string
   };
-  
-  
+
+export type Reply = {
+    uuid: string;
+    content: string;
+    createdAt: string; // ISO date string
+    countLikes: number;
+    user: User;
+}
+
+// Main Content Interface
+export type Content = {
+    uuid: string;
+    content: string;
+    countLikes: number;
+    createdAt: string;
+    user: User;
+    replies: Reply[];
+}

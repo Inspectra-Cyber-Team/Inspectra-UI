@@ -22,5 +22,4 @@ export const feedbackApi = cyberApi.injectEndpoints({
   }),
 });
 
-export const { useCreateUserFeedbackMutation, useGetAllUserFeedbackQuery } =
-  feedbackApi;
+export const { useCreateUserFeedbackMutation, useGetAllUserFeedbackQuery } = feedbackApi;

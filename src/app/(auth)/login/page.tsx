@@ -1,18 +1,65 @@
+'use client';
 import Image from "next/image";
 import React from "react";
 import { RxCross2 } from "react-icons/rx";
-import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
-import { Metadata } from "next";
 import FormLoginComponent from "@/components/FromLoginComponent/FormLoginComponent";
 import Link from "next/link";
+import {LoginAuth} from "@/components/FormLoginWithAuthComponent/login-auth";
 
-export const metadata: Metadata = {
-  title: "Login - Inspectra",
-  description:
-    "Learn more about Inspectra, a white-box testing platform designed to review source code and identify security weaknesses. Discover our mission, values, and commitment to secure development.",
-};
+// export const metadata: Metadata = {
+//   title: "Login - Inspectra",
+//   description:
+//     "Learn more about Inspectra, a white-box testing platform designed to review source code and identify security weaknesses. Discover our mission, values, and commitment to secure development.",
+// };
+
 export default function page() {
+
+  //handle session from next-auth
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+    //
+    // console.log('this is session',session)
+    //
+    // if (session) {
+    //     return (
+    //         <div className="w-full h-screen flex flex-col justify-center items-center">
+    //         <div className="w-44 h-44 relative mb-4">
+    //             <Image
+    //             src={session.user?.image as string || ""}
+    //             fill
+    //             alt=""
+    //             className="object-cover rounded-full"
+    //             />
+    //         </div>
+    //         <p className="text-2xl mb-2">
+    //             Welcome <span className="font-bold">{session.user?.name}</span>. Signed
+    //             In As
+    //         </p>
+    //         <p className="font-bold mb-4">{session.user?.email}</p>
+    //         <button
+    //             className="bg-red-600 py-2 px-6 rounded-md"
+    //             onClick={() => signOut()}
+    //         >
+    //             Sign out
+    //         </button>
+    //         </div>
+    //     );
+    // } else {
+    //     return (
+    //         <div className="w-full h-screen flex flex-col justify-center items-center">
+    //         <p className="text-2xl mb-4">You are not signed in</p>
+    //         <button
+    //             className="bg-blue-600 py-2 px-6 rounded-md"
+    //             onClick={() => signIn()}
+    //         >
+    //             Sign in
+    //         </button>
+    //         <FormLoginComponent />
+    //         </div>
+    //     );
+    // }
+
+
   return (
     <main className="h-screen  w-full mx-auto flex ">
       {/* secontion welcome */}
@@ -100,21 +147,22 @@ export default function page() {
                 </p>
               </div>
 
-              {/* Google Button */}
-              <button className="w-full py-3 flex items-center font-normal bg-text_color_light justify-center rounded-[10px]">
-                <FcGoogle className="text-text_title_24" />
-                <span className="text-text_color_dark ml-3">
-                  Or Sign in with Google
-                </span>
-              </button>
+              {/*/!* Google Button *!/*/}
+              {/*<button className="w-full py-3 flex items-center font-normal bg-text_color_light justify-center rounded-[10px]">*/}
+              {/*  <FcGoogle className="text-text_title_24" />*/}
+              {/*  <span className="text-text_color_dark ml-3">*/}
+              {/*    Or Sign in with Google*/}
+              {/*  </span>*/}
+              {/*</button>*/}
 
-              {/* GitHub Button */}
-              <button className="w-full py-3 flex items-center font-normal bg-background_light_mode justify-center rounded-[10px]">
-                <FaGithub className="text-text_title_24" />
-                <span className="text-text_color_light ml-3">
-                  Or Sign in with GitHub
-                </span>
-              </button>
+              {/*/!* GitHub Button *!/*/}
+              {/*<button className="w-full py-3 flex items-center font-normal bg-background_light_mode justify-center rounded-[10px]">*/}
+              {/*  <FaGithub className="text-text_title_24" />*/}
+              {/*  <span className="text-text_color_light ml-3">*/}
+              {/*    Or Sign in with GitHub*/}
+              {/*  </span>*/}
+              {/*</button>*/}
+              <LoginAuth/>
             </div>
 
             {/* Register */}

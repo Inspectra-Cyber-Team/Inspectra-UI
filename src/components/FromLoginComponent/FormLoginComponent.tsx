@@ -29,10 +29,12 @@ export default function FormLoginComponent() {
   };
 
   const handleSubmit = async (values: FormValues) => {
+
+    console.log(values);
     setIsLoading(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL_LOCALHOST}/login`,
+        `${process.env.NEXT_PUBLIC_BASE_URL_LOCALHOST}login`,
         {
           method: "POST",
           headers: {
