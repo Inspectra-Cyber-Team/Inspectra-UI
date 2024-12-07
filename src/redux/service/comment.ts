@@ -22,8 +22,15 @@ export const commentApi = cyberApi.injectEndpoints({
                 method: "GET",
             }),
         }),
+
+        createLikeComment: builder.mutation<any,  { commentUuid:string }>({
+            query: ({ commentUuid }) => ({
+                url: `/comments/${commentUuid}/like`,
+                method: "POST",
+            }),
+        }),
     }),
 });
 
 
-export const { useCreateCommentMutation, useGetCommentByBlogUuidQuery } = commentApi;
+export const { useCreateCommentMutation, useGetCommentByBlogUuidQuery, useCreateLikeCommentMutation } = commentApi;
