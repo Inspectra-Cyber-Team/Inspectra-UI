@@ -36,7 +36,16 @@ export const blogApi = cyberApi.injectEndpoints({
      }),
 
 
+    createBlog: builder.mutation<any, { title: string, description: string, topic: string, thumbnail: string }>({
+        query: ({ title, description, topic, thumbnail }) => ({
+            url: `blogs`,
+            method: "POST",
+            body: { title, description, topic, thumbnail },
+        }),
+    })
+
+
   }),
 });
 
-export const {  useGetAllBlogQuery, useLikeBlogMutation, useGetBlogDetailsQuery, useGetBlogByUserUuidQuery } = blogApi;
+export const {  useGetAllBlogQuery, useLikeBlogMutation, useGetBlogDetailsQuery, useGetBlogByUserUuidQuery, useCreateBlogMutation } = blogApi;
