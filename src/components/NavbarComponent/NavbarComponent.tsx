@@ -22,7 +22,9 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
+
 export default function NavbarComponent() {
+
   const router = useRouter();
 
   const [userUUID, setUserUUID] = useState("");
