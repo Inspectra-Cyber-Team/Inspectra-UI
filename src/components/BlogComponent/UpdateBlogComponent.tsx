@@ -1,32 +1,22 @@
 "use client";
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { Button } from "../ui/button";
 import { MdClear } from "react-icons/md";
 import { useUploadFileMutation } from "@/redux/service/fileupload";
-import { useCreateBlogMutation } from "@/redux/service/blog";
 import { useToast } from "@/components/hooks/use-toast";
-import { MdCheckCircle } from "react-icons/md";
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
-import { useRouter } from "next/navigation";
+import { useUpdateBlogMutation, useGetBlogByUuidQuery } from "@/redux/service/blog";
 
+
+
+type UpdateBlogComponentProps = {
+  uuid: string;
+};
 
 const FILE_SIZE = 1024 * 1024 * 5; // 5MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
@@ -34,7 +24,6 @@ const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
 const validationSchema = Yup.object().shape({
   title: Yup.string().required("Required"),
   description: Yup.string().required("Description is Required"),
-  topic: Yup.string().required("Required"),
   thumbnail: Yup.array()
     .of(
       Yup.mixed()
@@ -50,20 +39,18 @@ const validationSchema = Yup.object().shape({
     .min(1, "Please select at least one image."),
 });
 
-const CreateBlogComponent = () => {
-  const router = useRouter();
+export const UpdateBlogComponent = ({uuid}:UpdateBlogComponentProps) => {
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const {data:blogUpdateData} = useGetBlogByUuidQuery({uuid:uuid});
 
-  const handleClose = () => {
-    setModalOpen(false); // Close the modal
-    router.push("/blog"); // Redirect to the blog page
-  };
+  console.log(blogUpdateData);
 
   const { toast } = useToast();
 
   const [uploadFile] = useUploadFileMutation();
-  const [createBlog] = useCreateBlogMutation();
+
+  const [updateBlog ] = useUpdateBlogMutation();
+
 
   const handleFileUpload = async (files: File[]) => {
     const formData = new FormData();
@@ -94,41 +81,44 @@ const CreateBlogComponent = () => {
     setPreviewImages(previews);
   };
 
-  const [selectedTopic, setSelectedTopic] = useState<string | null>("");
+  const handleUpdateBlog = async (values: any) => {
 
-  const handleCreateBlog = async (value: any) => {
     try {
-      const response = await createBlog({
-        title: value.title,
-        description: value.description,
-        topic: value.topic,
-        thumbnail: value.thumbnail,
-      });
+     
 
-      if (response.data) {
-        toast({
-          description: "Blog Created Successfully",
-          variant: "success",
-        });
-        setModalOpen(true);
-      }
+        const response = await updateBlog({ uuid: uuid, ...values }).unwrap();
+
+        console.log("Update Blog Response:", response);
+
+        if (response.status === 200) {
+          toast({
+            title: "Blog Updated",
+            description: "Your blog has been updated successfully",
+            variant: "success",
+          });
+        }
+      
     } catch (error) {
-      console.error("Create Blog Error:", error);
+      console.error("File Upload Error:", error);
     }
+  }
+
+  const initialValues = {
+    title: blogUpdateData?.data?.title || "",
+    description: blogUpdateData?.data?.description || "",
+    thumbnail: [],
   };
 
+
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-6">
+    <div className="max-w-4xl mx-auto mt-10 p-6 bg-[#f5f5f5] rounded-[20px] ">
+      <p className="text-center">Update Blog</p>
       <Card className="border-0">
         <CardContent>
           <Formik
-            initialValues={{
-              title: "",
-              description: "",
-              topic: "",
-              thumbnail: [],
-            }}
+           initialValues={initialValues}
             validationSchema={validationSchema}
+            enableReinitialize  // Enable reinitialization when initialValues change
             onSubmit={async (values) => {
               try {
                 const uploadedImages = await handleFileUpload(values.thumbnail);
@@ -139,9 +129,8 @@ const CreateBlogComponent = () => {
                     thumbnail: uploadedImages, // Set the uploaded URLs
                   };
 
-                  console.log("Updated Values for Submission:", updatedValues);
-
-                  await handleCreateBlog(updatedValues);
+                  await handleUpdateBlog(updatedValues);
+              
                 } else {
                   console.error("No files uploaded");
                 }
@@ -150,7 +139,7 @@ const CreateBlogComponent = () => {
               }
             }}
           >
-            {({ setFieldValue, isValid, dirty }) => (
+            {({ setFieldValue }) => (
               <Form className="space-y-4">
                 <div>
                   <Label htmlFor="thumbnail">Thumbnail</Label>
@@ -226,92 +215,18 @@ const CreateBlogComponent = () => {
                   />
                 </div>
 
-                <div>
-                  <Label htmlFor="topic">Blog Topic</Label>
-                  <Field name="topic">
-                    {({ field, form }: any) => (
-                      <Select
-                        {...field}
-                        id="topic"
-                        className="mt-1"
-                        onValueChange={(value) => {
-                          form.setFieldValue("topic", value);
-                          setSelectedTopic(value);
-                        }}
-                        value={field.value || ""}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Select a topic" />
-                        </SelectTrigger>
-                        <SelectContent className="SelectContent">
-                          <SelectGroup>
-                            <SelectLabel>Topics</SelectLabel>
-                            <SelectItem value="tech">Tech</SelectItem>
-                            <SelectItem value="health">Health</SelectItem>
-                            <SelectItem value="education">Education</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    )}
-                  </Field>
-                  <ErrorMessage
-                    name="topic"
-                    component="p"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div>
+          
 
-                {selectedTopic === "other" && (
-                  <div className="mt-2">
-                    <Label htmlFor="customTopic">Custom Topic</Label>
-                    <Input
-                      type="text"
-                      id="customTopic"
-                      name="topic"
-                      placeholder="Enter your custom topic"
-                      className="mt-1"
-                    />
-                  </div>
-                )}
-
-                <Button
-                  type="submit"
-                  disabled={!isValid || !dirty}
-                  className="w-full bg-primary_color"
-                >
-                  Create Blog
+                <Button type="submit" className="w-full bg-primary_color">
+                  Update Blog
                 </Button>
               </Form>
             )}
           </Formik>
         </CardContent>
       </Card>
-
-      {/* Modal for Blog Creation Success */}
-      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="bg-white max-w-md  p-[50px]  w-full mx-auto">
-          <MdCheckCircle size={100} className="text-primary_color mx-auto" />
-          <div className="text-center">
-            <p className="font-bold text-text_header_34">Create Success</p>
-            <p className="text-lg">
-              Thank you for submitting your blog! Your post is currently under
-              review by our admin team. Once it has been approved, you will
-              receive a confirmation email notifying you of its successful
-              publication. We appreciate your contribution and look forward to
-              sharing your insights with our community.
-            </p>
-          </div>
-          <Button
-            onClick={() => handleClose()}
-            className="mt-4 bg-primary_color text-black"
-          >
-            Visite Blog Page
-          </Button>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
 
-export default CreateBlogComponent;
+export default UpdateBlogComponent;

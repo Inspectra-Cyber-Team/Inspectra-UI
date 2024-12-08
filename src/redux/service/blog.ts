@@ -42,10 +42,25 @@ export const blogApi = cyberApi.injectEndpoints({
             method: "POST",
             body: { title, description, topic, thumbnail },
         }),
-    })
+    }),
+
+    updateBlog: builder.mutation<any, { uuid: string, title: string, description: string, topic: string, thumbnail: string }>({
+        query: ({ uuid, title, description,thumbnail }) => ({
+            url: `blogs/${uuid}`,
+            method: "PUT",
+            body: { title, description,thumbnail },
+        }),
+    }),
+
+    getBlogByUuid: builder.query<any, { uuid: string }>({
+        query: ({ uuid }) => ({
+            url: `blogs/${uuid}`,
+            method: "GET",
+        }),
+    }),
 
 
   }),
 });
 
-export const {  useGetAllBlogQuery, useLikeBlogMutation, useGetBlogDetailsQuery, useGetBlogByUserUuidQuery, useCreateBlogMutation } = blogApi;
+export const {  useGetAllBlogQuery, useLikeBlogMutation, useGetBlogDetailsQuery, useGetBlogByUserUuidQuery, useCreateBlogMutation, useUpdateBlogMutation, useGetBlogByUuidQuery } = blogApi;

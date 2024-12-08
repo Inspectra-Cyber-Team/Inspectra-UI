@@ -24,6 +24,9 @@ import CommentSection from "@/components/CommentComponent/CommentComponent";
 import { Blog } from "@/types/Blog";
 import { useGetUserLikeBlogQuery } from "@/redux/service/userlikeblog";
 import HoverModal from "./ModalHoverComponent";
+import { useRouter } from "next/navigation";
+
+
 
 type BlogDetailsProps = Readonly<{
   uuid: string;
@@ -35,6 +38,9 @@ type ReportProps = {
 };
 
 export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
+
+  const router = useRouter();
+
   const [userUUID, setUserUUID] = useState("");
 
   useEffect(() => {
@@ -43,6 +49,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
   //calling user like blog
   const { data: userLike, isLoading } = useGetUserLikeBlogQuery({ uuid });
+
 
   const [report, setReport] = useState("");
   const [showSidebar, setShowSidebar] = useState(false);
@@ -144,16 +151,19 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
   const handleMouseLeave = () => {
     if (hoverTimeout) clearTimeout(hoverTimeout);
 
-    // Add a slight delay before hiding
     setTimeout(() => setShowModal(false), 200);
   };
 
+
+
+
   return (
     <section className="w-[88%] mx-auto">
+
       {/* Action Buttons */}
       <div className="flex items-end justify-end gap-3">
         {userUUID === blogData?.user?.uuid && (
-          <Button className="bg-[#B9FF66] text-black rounded-[16px]">
+          <Button onClick={() => router.push(`/blog/${uuid}/update`)}  className="bg-[#B9FF66] text-black rounded-[16px]">
             Update Blog
           </Button>
         )}
@@ -274,6 +284,9 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
       {showModal && userLike && (
         <HoverModal likes={userLike?.data} position={modalPosition} isloading={isLoading} />
       )}
+
+     
+
     </section>
   );
 }
