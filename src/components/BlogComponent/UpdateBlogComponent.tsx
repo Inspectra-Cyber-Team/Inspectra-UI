@@ -14,6 +14,7 @@ import {
   useUpdateBlogMutation,
   useGetBlogByUuidQuery,
 } from "@/redux/service/blog";
+import { useRouter } from "next/navigation";
 
 type UpdateBlogComponentProps = {
   uuid: string;
@@ -39,6 +40,9 @@ const validationSchema = Yup.object().shape({
 });
 
 export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
+
+  const router = useRouter();
+
   const { data: blogUpdateData } = useGetBlogByUuidQuery({ uuid: uuid });
 
   const { toast } = useToast();
@@ -88,6 +92,7 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
           description: "Your blog has been updated successfully",
           variant: "success",
         });
+        router.push("/blogs");
       }
     } catch (error) {
       console.error("File Upload Error:", error);
