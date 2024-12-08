@@ -18,26 +18,34 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   useCreateProjectScanMutation,
-  useGetAllProjectsNameQuery,
+  useGetProjectOverViewUserQuery,
 } from "@/redux/service/project";
-import { ProjectNameType } from "@/types/ProjectNameType";
 
 import { toast } from "@/components/hooks/use-toast";
 import { GitUrlType } from "@/data/GitUrl";
-import { FaGithub } from "react-icons/fa";
+import { getCoverageData, getDuplicationData, timeSince } from "@/lib/utils";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { FaCheck, FaGithub } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
-import ProjectCardComponent from "./ProjectCardComponent";
-import { useRouter } from "next/navigation";
+
 export default function ProjectCardNameComponent() {
+  const [userUUID, setUserUUID] = useState("");
+
+  useEffect(() => {
+    setUserUUID(localStorage.getItem("userUUID") || "");
+  });
+
+  const { data: projectResult, isError } = useGetProjectOverViewUserQuery({
+    uuid: userUUID,
+  });
+
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const router = useRouter();
-  const { data: getAllProjectsName, isError } = useGetAllProjectsNameQuery({});
   const [isLoading, setIsLoading] = useState(false);
-  const projectResult = getAllProjectsName?.data;
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
-  console.log(projectResult);
   const [
     createScanProject,
     { isSuccess: isScanSuccess, isError: isScanError },
@@ -46,12 +54,13 @@ export default function ProjectCardNameComponent() {
   const [gitUrlResult, setGitUrl] = useState<string>(""); // Store the input value
   const [gitResult, setGitResult] = useState([]); // result get from git url
 
+  // scan project
   const handleScanProject = (index: number) => {
     setSelectedIndex(index);
     setIsLoading(true);
     createScanProject({
       project: {
-        projectName: projectResult[index].projectName,
+        projectName: projectResult[index].component?.component.name,
         gitUrl: gitUrlResult,
         branch: selectedBranch,
       },
@@ -63,7 +72,9 @@ export default function ProjectCardNameComponent() {
         description: "Project created successfully",
         variant: "success",
       });
-      router.push(`/project/${projectResult[selectedIndex].projectName}`);
+      router.push(
+        `/project/${projectResult[selectedIndex].component?.component.name}`
+      );
       setSelectedIndex(null); // Reset selected index
     }
 
@@ -129,10 +140,258 @@ export default function ProjectCardNameComponent() {
       {isError ? (
         <LoadProjectComponent />
       ) : (
-        projectResult?.map((projectResult: ProjectNameType, index: number) => {
-          if (projectResult?.isUsed) {
-            return <ProjectCardComponent key={index} />;
+        projectResult?.map((projectResult: any, index: number) => {
+          // check is project is already sacan
+          if (projectResult?.component.component.measures != 0) {
+            return (
+              <section
+                key={index}
+                onClick={() =>
+                  router.push(
+                    `project/${projectResult?.component.component.name}`
+                  )
+                }
+                className="w-full my-5 h-full md:h-[330px] lg:[350px] xl p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
+              >
+                <div className="flex justify-between w-full">
+                  <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark ">
+                    {projectResult?.component.component.name}
+                  </p>
+                  {projectResult?.branch?.map(
+                    (branchItem: any, branchIndex: number) => {
+                      return branchItem?.branches?.map(
+                        (item: any, index: number) => {
+                          return (
+                            <div
+                              key={`${branchIndex}-${index}`}
+                              className="flex text-center items-center"
+                            >
+                              <div
+                                className={`w-[25px] h-[25px] flex items-center justify-center rounded-[5px] ${
+                                  item.status.qualityGateStatus === "OK"
+                                    ? "bg-primary_color"
+                                    : "bg-custom_red"
+                                }`}
+                              >
+                                {item.status.qualityGateStatus === "OK" ? (
+                                  <FaCheck className="dark:text-text_color_light" />
+                                ) : (
+                                  <RxCross2 className="dark:text-text_color_light" />
+                                )}
+                              </div>
+                              <p className="px-2 text-text_body_16">
+                                {item.status.qualityGateStatus === "OK"
+                                  ? "Passed"
+                                  : "Failed"}
+                              </p>
+                            </div>
+                          );
+                        }
+                      );
+                    }
+                  )}
+                </div>
+                <p className=" my-2 text-left text-[14px] text-text_color_desc_light dark:text-text_color_desc_dark ">
+                  {" "}
+                  <span className="text-secondary_color truncate">
+                    Last analysis:
+                  </span>{" "}
+                  {projectResult?.branch?.map(
+                    (branchItem: any, branchIndex: number) =>
+                      branchItem?.branches?.map((item: any, index: number) => (
+                        <span key={`${branchIndex}-${index}`}>
+                          {timeSince(item?.analysisDate)} •{" "}
+                        </span>
+                      ))
+                  )}
+                  {projectResult?.component?.component?.measures?.map(
+                    (item: any, index: number) => {
+                      if (item.metric === "ncloc") {
+                        return (
+                          <span key={index}>{item.value} Lines of Code </span>
+                        );
+                      }
+                    }
+                  )}
+                </p>
+                <hr className="my-5 dark:border-primary_color" />
+
+                  <div className="grid  grid-cols-2 md:grid-cols-3  gap-5">
+                  {/* security */}
+                  <div className="w-full h-full ">
+                    {/* score security */}
+                    <div className="flex w-full justify-center  text-center items-center">
+                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
+                        A
+                      </div>
+                      {projectResult?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "security_issues") {
+                            return (
+                              <p key={index} className="mx-2">
+                                {JSON.parse(item.value).total}
+                              </p>
+                            );
+                          }
+                        }
+                      )}
+                    </div>
+                    <div className="my-5 w-full flex items-center justify-center">
+                      Security
+                    </div>
+                  </div>
+                  {/* reliability */}
+                  <div className="w-full h-full">
+                    {/* score security */}
+                    <div className="flex w-full justify-center  text-center items-center">
+                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
+                        A
+                      </div>
+                      {projectResult?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "reliability_issues") {
+                            return (
+                              <p key={index} className="mx-2">
+                                {JSON.parse(item.value).total}
+                              </p>
+                            );
+                          }
+                        }
+                      )}
+                    </div>
+                    <div className="my-5 w-full flex items-center justify-center">
+                      Reliability
+                    </div>
+                  </div>
+                  {/* Maintainability */}
+                  <div className="w-full h-full">
+                    {/* Maintainability */}
+                    <div className="flex w-full justify-center  text-center items-center">
+                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
+                        A
+                      </div>
+                      {projectResult?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "maintainability_issues") {
+                            return (
+                              <p key={index} className="mx-2">
+                                {JSON.parse(item.value).total}
+                              </p>
+                            );
+                          }
+                        }
+                      )}
+                    </div>
+                    <div className="my-5 w-full flex items-center justify-center">
+                      Maintainability
+                    </div>
+                  </div>
+                  {/* Hotspot Reviewed */}
+                  <div className="w-full h-full">
+                    {/* Hotspot Reviewed */}
+                    <div className="flex w-full justify-center  text-center items-center">
+                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
+                        A
+                      </div>
+                      {projectResult?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "security_hotspots") {
+                            return (
+                              <p key={index} className="mx-2">
+                                {item.value}
+                              </p>
+                            );
+                          }
+                        }
+                      )}
+                    </div>
+                    <div className="my-5 w-full flex items-center text-center justify-center">
+                      Hotspot Reviewed
+                    </div>
+                  </div>
+                  {/* Coverage Reviewed */}
+                  <div className="w-full h-full">
+                    {/* Coverage Reviewed */}
+                    <div className="flex w-full justify-center  text-center items-center">
+                      {projectResult?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "coverage") {
+                            return (
+                              <div
+                                key={index}
+                                className="w-[60px] h-[30px] flex items-center justify-center"
+                              >
+                                <Image
+                                  width={50}
+                                  height={50}
+                                  alt="coverage"
+                                  src={
+                                    getCoverageData(item?.value)?.image ||
+                                    "/default-image.png"
+                                  }
+                                />
+                              </div>
+                            );
+                          }
+                        }
+                      )}
+                      {projectResult?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "coverage") {
+                            return (
+                              <p key={index} className="mx-2">
+                                {item.value}
+                              </p>
+                            );
+                          }
+                        }
+                      )}
+                    </div>
+                    <div className="my-5 w-full flex items-center text-center justify-center">
+                      Coverage
+                    </div>
+                  </div>
+                  {/* duplicated */}
+                  <div className="w-full h-full">
+                    {/* duplicated */}
+                    <div className="flex w-full justify-center  text-center items-center">
+                      {projectResult?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "duplicated_lines_density") {
+                            return (
+                              <div className="w-[60px] h-[30px] flex items-center justify-center">
+                                <Image
+                                  width={60}
+                                  height={50}
+                                  alt="coverage"
+                                  src={getDuplicationData(item.value).image}
+                                />
+                              </div>
+                            );
+                          }
+                        }
+                      )}
+                      {projectResult?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "duplicated_lines_density") {
+                            return (
+                              <p key={index} className="mx-2">
+                                {item.value}
+                              </p>
+                            );
+                          }
+                        }
+                      )}
+                    </div>
+                    <div className="my-5 w-full flex items-center justify-center">
+                      Duplicated
+                    </div>
+                  </div>
+                </div>  
+              </section>
+            );
           }
+          // project not yet scan
           return (
             <section
               key={index}
@@ -140,7 +399,7 @@ export default function ProjectCardNameComponent() {
             >
               <div className="flex justify-between w-full">
                 <p className="text-text_body_16 text-secondary_color dark:text-text_color_dark ">
-                  {projectResult?.projectName}
+                  {projectResult?.component?.component.name}
                 </p>
               </div>
               <hr className="my-5 dark:border-primary_color" />
@@ -149,7 +408,7 @@ export default function ProjectCardNameComponent() {
                   {" "}
                   Project&apos;s{" "}
                   <span className="text-secondary_color truncate">
-                    {projectResult?.projectName}
+                    {projectResult?.component?.component.name}
                   </span>{" "}
                   is not analyzed yet.{" "}
                 </p>
@@ -163,13 +422,15 @@ export default function ProjectCardNameComponent() {
                     <AlertDialogHeader>
                       <AlertDialogTitle className="flex justify-between text-center items-center">
                         <p className="text-text_title_24 text-text_color_light">
-                          {projectResult?.projectName}
+                          {projectResult?.component?.component.name}
                         </p>
                         <AlertDialogCancel className="flex text-center items-center">
-                          <RxCross2
-                            className="text-text_color_light  text-text_header_34"
-                            style={{ height: "1em", width: "0.7em" }}
-                          />
+                          <button disabled={isLoading}>
+                            <RxCross2
+                              className="text-text_color_light  text-text_header_34"
+                              style={{ height: "1em", width: "0.7em" }}
+                            />
+                          </button>
                         </AlertDialogCancel>
                       </AlertDialogTitle>
                     </AlertDialogHeader>

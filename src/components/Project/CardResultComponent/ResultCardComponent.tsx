@@ -2,7 +2,12 @@ import React from "react";
 
 import { facetsData } from "@/data/facets";
 import Image from "next/image";
-import { FacetItem, DuplicationItem, FacetValue, CoverageItem } from "@/types/ProjectType";
+import {
+  FacetItem,
+  DuplicationItem,
+  FacetValue,
+  CoverageItem,
+} from "@/types/ProjectType";
 export default function ResultCardComponent() {
   return (
     <div>
@@ -153,3 +158,5 @@ export default function ResultCardComponent() {
     </div>
   );
 }
+
+
