@@ -14,7 +14,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useRouter } from "next/navigation";
-import { useGetAllTopicQuery } from "@/redux/service/topic";
+import { useUseGetTopicNameQuery } from "@/redux/service/topic";
 
 type BlogTopicComponentProps = Readonly<{
   topic: string;
@@ -29,7 +29,7 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
   const [likedBlogs, setLikedBlogs] = useState<string[]>([]); 
 
   // Fetch blog data for the specific topic and pagination
-  const { data: blogData } = useGetAllTopicQuery({
+  const { data: blogData } = useUseGetTopicNameQuery({
     topicName: topic, // Dynamically use the topic prop
     page: currentPage - 1,
     pageSize: 4,

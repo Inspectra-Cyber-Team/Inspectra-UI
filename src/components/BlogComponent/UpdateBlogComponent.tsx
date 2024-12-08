@@ -1,5 +1,5 @@
 "use client";
-import React, {  useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,9 +10,10 @@ import { Button } from "../ui/button";
 import { MdClear } from "react-icons/md";
 import { useUploadFileMutation } from "@/redux/service/fileupload";
 import { useToast } from "@/components/hooks/use-toast";
-import { useUpdateBlogMutation, useGetBlogByUuidQuery } from "@/redux/service/blog";
-
-
+import {
+  useUpdateBlogMutation,
+  useGetBlogByUuidQuery,
+} from "@/redux/service/blog";
 
 type UpdateBlogComponentProps = {
   uuid: string;
@@ -24,33 +25,27 @@ const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
 const validationSchema = Yup.object().shape({
   title: Yup.string().required("Required"),
   description: Yup.string().required("Description is Required"),
-  thumbnail: Yup.array()
-    .of(
-      Yup.mixed()
-        .test("fileFormat", "Unsupported Format", (value: any) => {
-          if (!value) return true;
-          return SUPPORTED_FORMATS.includes(value.type);
-        })
-        .test("fileSize", "File Size is too large", (value: any) => {
-          if (!value) return true;
-          return value.size <= FILE_SIZE;
-        })
-    )
-    .min(1, "Please select at least one image."),
+  thumbnail: Yup.array().of(
+    Yup.mixed()
+      .test("fileFormat", "Unsupported Format", (value: any) => {
+        if (!value) return true;
+        return SUPPORTED_FORMATS.includes(value.type);
+      })
+      .test("fileSize", "File Size is too large", (value: any) => {
+        if (!value) return true;
+        return value.size <= FILE_SIZE;
+      })
+  ),
 });
 
-export const UpdateBlogComponent = ({uuid}:UpdateBlogComponentProps) => {
-
-  const {data:blogUpdateData} = useGetBlogByUuidQuery({uuid:uuid});
-
-  console.log(blogUpdateData);
+export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
+  const { data: blogUpdateData } = useGetBlogByUuidQuery({ uuid: uuid });
 
   const { toast } = useToast();
 
   const [uploadFile] = useUploadFileMutation();
 
-  const [updateBlog ] = useUpdateBlogMutation();
-
+  const [updateBlog] = useUpdateBlogMutation();
 
   const handleFileUpload = async (files: File[]) => {
     const formData = new FormData();
@@ -82,26 +77,29 @@ export const UpdateBlogComponent = ({uuid}:UpdateBlogComponentProps) => {
   };
 
   const handleUpdateBlog = async (values: any) => {
-
     try {
-     
+      const response = await updateBlog({ uuid: uuid, ...values }).unwrap();
 
-        const response = await updateBlog({ uuid: uuid, ...values }).unwrap();
+      console.log("Update Blog Response:", response);
 
-        console.log("Update Blog Response:", response);
-
-        if (response.status === 200) {
-          toast({
-            title: "Blog Updated",
-            description: "Your blog has been updated successfully",
-            variant: "success",
-          });
-        }
-      
+      if (response.status === 200) {
+        toast({
+          title: "Blog Updated",
+          description: "Your blog has been updated successfully",
+          variant: "success",
+        });
+      }
     } catch (error) {
       console.error("File Upload Error:", error);
     }
-  }
+  };
+
+  useEffect(() => {
+    if (blogUpdateData?.data?.thumbnail) {
+      const previews = blogUpdateData?.data?.thumbnail;
+      setPreviewImages(previews);
+    }
+  }, [blogUpdateData?.data?.thumbnail]);
 
   const initialValues = {
     title: blogUpdateData?.data?.title || "",
@@ -109,33 +107,44 @@ export const UpdateBlogComponent = ({uuid}:UpdateBlogComponentProps) => {
     thumbnail: [],
   };
 
-
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-[#f5f5f5] rounded-[20px] ">
       <p className="text-center">Update Blog</p>
       <Card className="border-0">
         <CardContent>
           <Formik
-           initialValues={initialValues}
+            initialValues={initialValues}
             validationSchema={validationSchema}
-            enableReinitialize  // Enable reinitialization when initialValues change
+            enableReinitialize
             onSubmit={async (values) => {
               try {
-                const uploadedImages = await handleFileUpload(values.thumbnail);
-
-                if (uploadedImages.length > 0) {
-                  const updatedValues = {
-                    ...values,
-                    thumbnail: uploadedImages, // Set the uploaded URLs
-                  };
-
-                  await handleUpdateBlog(updatedValues);
-              
-                } else {
-                  console.error("No files uploaded");
+                // Determine if the thumbnail contains new uploads
+                let updatedThumbnails = previewImages; // Start with the current preview images
+            
+                if (values.thumbnail.some((file) => typeof file !== "string")) {
+                  // If new files are uploaded, handle the upload
+                  updatedThumbnails = await handleFileUpload(
+                    values.thumbnail.filter((file) => typeof file !== "string")
+                  );
                 }
+            
+                // Filter out local blob URLs and combine the newly uploaded URLs with existing URLs
+                const finalThumbnails = [
+                  ...previewImages.filter((url) => typeof url === "string" && !url.startsWith("blob:")),
+                  ...updatedThumbnails,
+                ];
+            
+                const updatedValues = {
+                  ...values,
+                  thumbnail: finalThumbnails, // Use the final thumbnail URLs
+                };
+            
+                 // Submit the updated blog data
+                await handleUpdateBlog(updatedValues);
+            
+               
               } catch (error) {
-                console.error("File Upload Error:", error);
+                console.error("Error updating blog:", error);
               }
             }}
           >
@@ -214,8 +223,6 @@ export const UpdateBlogComponent = ({uuid}:UpdateBlogComponentProps) => {
                     className="text-red-500 text-sm mt-1"
                   />
                 </div>
-
-          
 
                 <Button type="submit" className="w-full bg-primary_color">
                   Update Blog

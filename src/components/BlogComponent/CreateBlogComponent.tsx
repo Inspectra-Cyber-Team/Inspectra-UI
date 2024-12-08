@@ -16,17 +16,13 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
-import { MdClear } from "react-icons/md";
 import { useUploadFileMutation } from "@/redux/service/fileupload";
 import { useCreateBlogMutation } from "@/redux/service/blog";
 import { useToast } from "@/components/hooks/use-toast";
-import { MdCheckCircle } from "react-icons/md";
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
+import { MdCheckCircle, MdClear } from "react-icons/md";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
-
+import { useGetAllTopicQuery } from "@/redux/service/topic";
 
 const FILE_SIZE = 1024 * 1024 * 5; // 5MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
@@ -52,6 +48,8 @@ const validationSchema = Yup.object().shape({
 
 const CreateBlogComponent = () => {
   const router = useRouter();
+
+  const { data: topics } = useGetAllTopicQuery({ page: 0, pageSize: 10 });
 
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -126,6 +124,7 @@ const CreateBlogComponent = () => {
               title: "",
               description: "",
               topic: "",
+              customTopic: "",
               thumbnail: [],
             }}
             validationSchema={validationSchema}
@@ -137,11 +136,10 @@ const CreateBlogComponent = () => {
                   const updatedValues = {
                     ...values,
                     thumbnail: uploadedImages, // Set the uploaded URLs
+                    topic: selectedTopic === "other" ? values.customTopic : selectedTopic,
                   };
-
-                  console.log("Updated Values for Submission:", updatedValues);
-
-                  await handleCreateBlog(updatedValues);
+                  console.log("this is update value", updatedValues);
+                   await handleCreateBlog(updatedValues);
                 } else {
                   console.error("No files uploaded");
                 }
@@ -230,29 +228,32 @@ const CreateBlogComponent = () => {
                   <Label htmlFor="topic">Blog Topic</Label>
                   <Field name="topic">
                     {({ field, form }: any) => (
-                      <Select
-                        {...field}
-                        id="topic"
-                        className="mt-1"
-                        onValueChange={(value) => {
-                          form.setFieldValue("topic", value);
-                          setSelectedTopic(value);
-                        }}
-                        value={field.value || ""}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Select a topic" />
-                        </SelectTrigger>
-                        <SelectContent className="SelectContent">
-                          <SelectGroup>
-                            <SelectLabel>Topics</SelectLabel>
-                            <SelectItem value="tech">Tech</SelectItem>
-                            <SelectItem value="health">Health</SelectItem>
-                            <SelectItem value="education">Education</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
+                    
+                        <Select
+                          {...field}
+                          id="topic"
+                          className="mt-1"
+                          onValueChange={(value) => {
+                            form.setFieldValue("topic", value);
+                            setSelectedTopic(value);
+                          }}
+                          value={field.value || ""}
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select a topic" />
+                          </SelectTrigger>
+                          <SelectContent className="SelectContent">
+                            <SelectGroup>
+                              <SelectLabel>Topics</SelectLabel>
+                              {topics?.content.map((topic: any) => (
+                                <SelectItem key={topic.uuid} value={topic.name}>
+                                  {topic.name}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                   
                     )}
                   </Field>
                   <ErrorMessage
@@ -265,13 +266,18 @@ const CreateBlogComponent = () => {
                 {selectedTopic === "other" && (
                   <div className="mt-2">
                     <Label htmlFor="customTopic">Custom Topic</Label>
-                    <Input
+                    <Field
+                      as={Input}
                       type="text"
                       id="customTopic"
-                      name="topic"
+                      name="customTopic"
                       placeholder="Enter your custom topic"
                       className="mt-1"
                     />
+                    <ErrorMessage
+                      name="customTopic"
+                      component="p"
+                      className="text-red-500 text-sm mt-1"/>
                   </div>
                 )}
 

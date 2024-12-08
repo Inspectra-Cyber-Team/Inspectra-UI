@@ -5,13 +5,19 @@ export const topicApi = cyberApi.injectEndpoints({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getAllTopic: builder.query<
       any,
-      { topicName: string; page: number; pageSize: number }
+      {  page: number; pageSize: number }
     >({
-      query: ({ topicName, page, pageSize }) => ({
+      query: ({page, pageSize }) => ({
+        url: `/topics?page=${page}&size=${pageSize}`,
+      }),
+    }),
+    
+    useGetTopicName: builder.query<any,{topicName: string, page: number, pageSize: number}>({
+      query: ({topicName, page, pageSize }) => ({
         url: `/topics/${topicName}?page=${page}&size=${pageSize}`,
       }),
     }),
   }),
 });
 
-export const { useGetAllTopicQuery } = topicApi;
+export const { useGetAllTopicQuery, useUseGetTopicNameQuery } = topicApi;
