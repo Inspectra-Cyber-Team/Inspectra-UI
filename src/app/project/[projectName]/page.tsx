@@ -21,10 +21,10 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import IssueSidebarComponent from "@/components/ProjectDetailComponents/IssueSidebarComponent";
+import IssueCardComponet from "@/components/ProjectDetailComponents/IssueCardComponet";
 
 export default function page({ params }: ParamProps) {
   const projectName = params.projectName;
-  console.log(projectName);
   return (
     <main className="w-[90%] m-auto bg-card_color_light rounded h-auto p-5 my-10 dark:bg-card_color_dark">
       <Tabs defaultValue="Overview" className="">
@@ -66,14 +66,16 @@ export default function page({ params }: ParamProps) {
         </TabsContent>
         <TabsContent value="Issue">
           <section className="w-full h-full flex justify-between">
-            <div className="w-[35%] bg-background_light_mode dark:bg-background_dark_mode p-5 rounded-[20px] ">
-              <p className="text-text_title_24 text-text_color_light dark:text-text_color_dark">
+            <div className="w-[35%] bg-background_light_mode dark:bg-background_dark_mode p-5 rounded-[20px] hidden md:block ">
+              <p className="text-text_title_24 text-text_color_light dark:text-text_color_dark ">
                 Filter
               </p>
               <hr className="text-text_color_desc_light mt-2" />
-              <IssueSidebarComponent  />
+              <IssueSidebarComponent props={projectName} />
             </div>
-            <div className="w-[60%] h-screen bg-green-500">card</div>
+            <div className="w-[60%] h-screen ">
+              <IssueCardComponet props={projectName} />
+            </div>
           </section>
         </TabsContent>
       </Tabs>

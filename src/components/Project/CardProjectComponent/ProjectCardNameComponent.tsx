@@ -228,11 +228,15 @@ export default function ProjectCardNameComponent() {
         </div>
       </div>
       {isError ? (
+        // no project show waiting image 
         <LoadProjectComponent />
       ) : isFetchDataProjectScan ? (
+        // while fetch data 
         <ProjectScanSkeleton />
+        // check if search result is empty
       ) : filteredResults.length === 0 ? (
         projectResult?.map((projectResult: any, index: number) => {
+          // check project that already scan 
           if (projectResult?.component.component.measures != 0) {
             return (
               <section
@@ -485,6 +489,7 @@ export default function ProjectCardNameComponent() {
               </section>
             );
           } else {
+            // return project not yet scan
             return (
               <section
                 key={index}
@@ -620,6 +625,7 @@ export default function ProjectCardNameComponent() {
           }
         })
       ) : (
+        // check if search not emptu
         filteredResults?.map((item: any, index: number) => {
           if (item?.component.component.measures != 0) {
             return (
