@@ -46,7 +46,7 @@ export default function CreateProjectComponent() {
             description: "Project name cannot contain whitespace",
             variant: "error",
           });
-        }   else {
+        } else {
           // Handle the case where the project name already exists
           toast({
             description: "Project name already exists",
@@ -58,6 +58,7 @@ export default function CreateProjectComponent() {
       console.log(error);
     }
   }, [isSuccess, isError]);
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>

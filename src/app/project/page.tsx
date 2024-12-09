@@ -29,6 +29,7 @@ export default function page() {
           <ResultCardComponent />
         </div>
         <div className="w-full h-full text-center lg:w-[65%] p-10 rounded-[20px] bg-text_color_dark dark:bg-card_color_dark">
+         
           <ProjectCardNameComponent />
         </div>
       </section>

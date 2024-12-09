@@ -1,3 +1,4 @@
+import { facetsData } from "@/data/facets";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -41,3 +42,62 @@ export function startCountdown(minutes: number) {
 }
 
 
+export function timeSince(timestamp: string) {
+  const givenTime = new Date(timestamp);
+  const currentTime = new Date();
+  const differenceInSeconds = Math.floor((currentTime.getTime() - givenTime.getTime()) / 1000);
+
+  const units = [
+    { label: "year", seconds: 60 * 60 * 24 * 365 },
+    { label: "month", seconds: 60 * 60 * 24 * 30 },
+    { label: "week", seconds: 60 * 60 * 24 * 7 },
+    { label: "day", seconds: 60 * 60 * 24 },
+    { label: "hour", seconds: 60 * 60 },
+    { label: "minute", seconds: 60 },
+    { label: "second", seconds: 1 },
+  ];
+
+  for (const unit of units) {
+    const interval = Math.floor(differenceInSeconds / unit.seconds);
+    if (interval >= 1) {
+      return `${interval} ${unit.label}${interval > 1 ? "s" : ""} ago`;
+    }
+  }
+  return "just now";
+}
+
+// Function to determine case based on percent
+export function getDuplicationData(duplicatedLinesDensity: any) {
+  switch (true) {
+    case duplicatedLinesDensity < 3:
+      return facetsData.duplication[0]; // < 3%
+    case duplicatedLinesDensity >= 3 && duplicatedLinesDensity < 5:
+      return facetsData.duplication[1]; // 3% - 5%
+    case duplicatedLinesDensity >= 5 && duplicatedLinesDensity < 10:
+      return facetsData.duplication[2]; // 5% - 10%
+    case duplicatedLinesDensity >= 10 && duplicatedLinesDensity < 20:
+      return facetsData.duplication[3]; // 10% - 20%
+    case duplicatedLinesDensity >= 20:
+      return facetsData.duplication[4]; // > 20%
+    default:
+      return facetsData.duplication[5]; // No Data
+  }
+}
+
+// Function to determine case based on coverage value
+export function getCoverageData(coverageValue: any) {
+  switch (true) {
+    case coverageValue > 80:
+      return facetsData.coverage[0]; // > 80%
+    case coverageValue >= 70 && coverageValue <= 80:
+      return facetsData.coverage[1]; // 70% - 80%
+    case coverageValue >= 50 && coverageValue < 70:
+      return facetsData.coverage[2]; // 50% - 70%
+    case coverageValue >= 30 && coverageValue < 50:
+      return facetsData.coverage[3]; // 30% - 50%
+    case coverageValue < 30:
+      return facetsData.coverage[4]; // < 30%
+    case coverageValue === 0.0:
+      return facetsData.coverage[5]; // 0%
+  }
+}

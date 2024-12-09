@@ -11,7 +11,6 @@ import { useGetAllFAQQuery } from "@/redux/service/faqs";
 export default function FAQsComponent() {
   const getDataFAQ = useGetAllFAQQuery([]);
   const result = getDataFAQ?.data;
-  console.log(result)
   return (
     <div>
       {result?.map((faqItem: FAQsType, index: number) => (

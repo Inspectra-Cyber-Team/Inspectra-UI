@@ -15,7 +15,7 @@ export default function QualityCardComponent() {
             </div>
             <p className=" px-2 text-text_color_light dark:text-text_color_dark text-text_body_16">
               Passed
-            </p>
+            </p>  
           </div>
           <p className=" text-text_color_desc_light dark:text-text_color_desc_dark text-text_body_16">0</p>
         </div>
