@@ -62,15 +62,11 @@ export default function ProjectCardNameComponent() {
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
   const [
     createScanProject,
-    {
-      isSuccess: isScanSuccess,
-      isError: isScanError,
-    },
+    { isSuccess: isScanSuccess, isError: isScanError },
   ] = useCreateProjectScanMutation();
 
   const [gitUrlResult, setGitUrl] = useState<string>(""); // Store the input value
   const [gitResult, setGitResult] = useState([]); // result get from git url
-
   // scan project
   const handleScanProject = (index: number) => {
     setSelectedIndex(index);
@@ -531,69 +527,91 @@ export default function ProjectCardNameComponent() {
                           </AlertDialogCancel>
                         </AlertDialogTitle>
                       </AlertDialogHeader>
-                      {/* git url */}
-                      <div className="relative">
-                        <FaGithub className="absolute top-1/2 left-3 text-text_title_24 transform -translate-y-1/2 text-text_color_desc_light" />
-                        <input
-                          type="text"
-                          placeholder="Enter Git URL"
-                          value={gitUrlResult}
-                          onChange={handleChange} // Update the state with the input value
-                          onKeyDown={handleKeyPress} // Trigger logic on Enter key press
-                          className="mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light pl-12 pr-3 py-3 focus:outline-none  border-ascend_color"
-                        />
-                      </div>
-                      {/* select branch */}
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <div className="">
-                            <p className="text-text_body_16 text-text_color_light my-2">
-                              Branch
-                            </p>
-                            <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
-                              <p className="text-text_body_16  py-3  text-text_color_desc_light">
-                                {selectedBranch}
-                              </p>
-                              <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
-                            </div>
+                      {isLoading ? (
+                        <video src="/images/loadingScan.mp4" autoPlay className="w-full h-full" loop></video>
+                      ) : (
+                        <section className="h-full flex flex-col justify-between">
+                          {/* git url */}
+                          <div className="relative">
+                            <FaGithub className="absolute top-1/2 left-3 text-text_title_24 transform -translate-y-1/2 text-text_color_desc_light" />
+                            <input
+                              type="text"
+                              placeholder="Enter Git URL"
+                              value={gitUrlResult}
+                              onChange={handleChange} // Update the state with the input value
+                              onKeyDown={handleKeyPress} // Trigger logic on Enter key press
+                              className="mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light pl-12 pr-3 py-3 focus:outline-none  border-ascend_color"
+                            />
                           </div>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-[462px] text-text_color_light text-start bg-background_light_mode">
-                          <DropdownMenuSeparator />
-                          {gitResult?.length === 0 ? (
-                            <DropdownMenuItem disabled>
-                              No branch to select
-                            </DropdownMenuItem>
-                          ) : (
-                            gitResult?.map(
-                              (gitResult: GitUrlType, index: number) => (
-                                <DropdownMenuItem
-                                  key={index}
-                                  onClick={() =>
-                                    setSelectedBranch(`${gitResult?.name}`)
-                                  }
-                                >
-                                  {gitResult?.name}
+                          {/* select branch */}
+                          <DropdownMenu>
+                            {gitResult.length != 0 ? (
+                              <DropdownMenuTrigger asChild>
+                                <div className="">
+                                  <p className="text-text_body_16 text-text_color_light my-2">
+                                    Branch
+                                  </p>
+                                  <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-text_color_dark">
+                                    <p className="text-text_body_16  py-3  text-text_color_desc_light">
+                                      {selectedBranch}
+                                    </p>
+                                    <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
+                                  </div>
+                                </div>
+                              </DropdownMenuTrigger>
+                            ) : (
+                              <DropdownMenuTrigger disabled asChild>
+                                <div className="">
+                                  <p className="text-text_body_16 text-text_color_light my-2">
+                                    Branch
+                                  </p>
+                                  <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
+                                    <p className="text-text_body_16  py-3  text-text_color_desc_light">
+                                      {selectedBranch}
+                                    </p>
+                                    <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
+                                  </div>
+                                </div>
+                              </DropdownMenuTrigger>
+                            )}
+                            <DropdownMenuContent className="w-[462px] text-text_color_light text-start bg-background_light_mode">
+                              <DropdownMenuSeparator />
+                              {gitResult?.length === 0 ? (
+                                <DropdownMenuItem disabled>
+                                  No branch to select
                                 </DropdownMenuItem>
-                              )
-                            )
-                          )}
-                          <DropdownMenuSeparator />
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                      {/* submit scan */}
-                      <button
-                        key={index}
-                        disabled={isLoading}
-                        onClick={() => handleScanProject(index)}
-                        className="w-full py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
-                      >
-                        {isLoading ? (
-                          <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
-                        ) : (
-                          "Submit"
-                        )}
-                      </button>
+                              ) : (
+                                gitResult?.map(
+                                  (gitResult: GitUrlType, index: number) => (
+                                    <DropdownMenuItem
+                                      key={index}
+                                      onClick={() =>
+                                        setSelectedBranch(`${gitResult?.name}`)
+                                      }
+                                    >
+                                      {gitResult?.name}
+                                    </DropdownMenuItem>
+                                  )
+                                )
+                              )}
+                              <DropdownMenuSeparator />
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                          {/* submit scan */}
+                          <button
+                            key={index}
+                            disabled={isLoading}
+                            onClick={() => handleScanProject(index)}
+                            className="w-full my-[30px] py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
+                          >
+                            {isLoading ? (
+                              <div className="spinner-border  animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
+                            ) : (
+                              "Submit"
+                            )}
+                          </button>
+                        </section>
+                      )}
                     </AlertDialogContent>
                   </AlertDialog>
                 </div>
