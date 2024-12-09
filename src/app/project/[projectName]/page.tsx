@@ -23,7 +23,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/ui/tabs"
+} from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 
 export default function page({ params }: ParamProps) {
