@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 
 export default function page({ params }: ParamProps) {
   const projectName = params.projectName;
+  console.log(projectName)
   return (
     <main className="w-[90%] m-auto bg-card_color_light rounded h-auto p-5 my-10 dark:bg-card_color_dark">
       <Tabs defaultValue="Overview" className="">
@@ -43,7 +44,7 @@ export default function page({ params }: ParamProps) {
             <CardHeader>
               <CardTitle>Account</CardTitle>
               <CardDescription>
-                Make changes to your account here. Click save when you're done.
+                Make changes to your account here. Click save when you are done.
               </CardDescription>
             </CardHeader>
 

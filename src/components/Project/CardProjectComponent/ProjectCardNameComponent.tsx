@@ -65,7 +65,6 @@ export default function ProjectCardNameComponent() {
     {
       isSuccess: isScanSuccess,
       isError: isScanError,
-      isLoading: isLoadingCreateProject,
     },
   ] = useCreateProjectScanMutation();
 

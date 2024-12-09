@@ -2,7 +2,6 @@ import ProjectCardNameComponent from "@/components/Project/CardProjectComponent/
 import QualityCardComponent from "@/components/Project/CardResultComponent/QualityGateCardComponent";
 import ResultCardComponent from "@/components/Project/CardResultComponent/ResultCardComponent";
 import CreateProjectComponent from "@/components/Project/CreateProjectComponent/CreateProjectComponent";
-import SearchAndFilterComponent from "@/components/Project/SearchAndFilterComponent/SearchAndFilterComponent";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
