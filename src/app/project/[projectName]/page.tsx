@@ -20,10 +20,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import SecurityComponent from "@/components/securityComponent/SecurityComponent";
 
 export default function page({ params }: ParamProps) {
   const projectName = params.projectName;
-  console.log(projectName)
+
+  console.log(projectName);
+
   return (
     <main className="w-[90%] m-auto bg-card_color_light rounded h-auto p-5 my-10 dark:bg-card_color_dark">
       <Tabs defaultValue="Overview" className="">
@@ -67,6 +70,14 @@ export default function page({ params }: ParamProps) {
           <section className="w-full h-full flex justify-between">
             <div className="w-[35%] bg-blue-300 ">side bar</div>
             <div className="w-[60%] h-screen bg-green-500">card</div>
+          </section>
+        </TabsContent>
+
+        <TabsContent value="Security Hotspot">
+          <section className="h-full">
+
+            <SecurityComponent projectName={projectName} />
+
           </section>
         </TabsContent>
       </Tabs>
