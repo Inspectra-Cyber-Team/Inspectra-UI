@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { Suspense } from "react";
 import StoreProvider from "./StoreProvider";
 import ImageBackground from "@/components/BackgroundImageHomepage/ImageBackground";
+import SessionWrapper from "@/app/SessionProvider";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600"],
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body
         className={`${poppins.className} bg-background_light_mode relative  overflow-y-auto   overflow-x-hidden dark:bg-background_dark_mode flex flex-col justify-between  `}
       >
+      <SessionWrapper>
         <StoreProvider >
           <ThemeProvider
             attribute="class"
@@ -49,6 +51,7 @@ export default function RootLayout({
             <FooterComponent />
           </ThemeProvider>
         </StoreProvider>
+      </SessionWrapper>
       </body>
     </html>
   );
