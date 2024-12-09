@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { navProjectDetial } from "@/data/navProjectDetial";
 import React from "react";
 
@@ -15,15 +15,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 
 export default function page({ params }: ParamProps) {
@@ -33,12 +28,15 @@ export default function page({ params }: ParamProps) {
       <Tabs defaultValue="Overview" className="">
         <TabsList className="grid w-full grid-cols-4 mb-5">
           {navProjectDetial.map((item, index: number) => (
-             <TabsTrigger value={item.name} key={index} className="group relative pb-2 text-gray-500 hover:text-secondary_color transition mr-3">
+            <TabsTrigger
+              value={item.name}
+              key={index}
+              className="group relative pb-2 text-gray-500 hover:text-secondary_color transition mr-3"
+            >
               {item.name}
               <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary_color transition-all duration-300 group-hover:w-full"></span>
-             </TabsTrigger>
+            </TabsTrigger>
           ))}
-         
         </TabsList>
         <TabsContent value="Overview">
           <Card>
@@ -64,9 +62,13 @@ export default function page({ params }: ParamProps) {
             </CardFooter>
           </Card>
         </TabsContent>
+        <TabsContent value="Issue">
+          <section className="w-full h-full flex justify-between">
+            <div className="w-[35%] bg-blue-300 ">side bar</div>
+            <div className="w-[60%] h-screen bg-green-500">card</div>
+          </section>
+        </TabsContent>
       </Tabs>
     </main>
   );
 }
-
-

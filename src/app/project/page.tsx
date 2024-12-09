@@ -2,6 +2,7 @@ import ProjectCardNameComponent from "@/components/Project/CardProjectComponent/
 import QualityCardComponent from "@/components/Project/CardResultComponent/QualityGateCardComponent";
 import ResultCardComponent from "@/components/Project/CardResultComponent/ResultCardComponent";
 import CreateProjectComponent from "@/components/Project/CreateProjectComponent/CreateProjectComponent";
+import SearchAndFilterComponent from "@/components/Project/SearchAndFilterComponent/SearchAndFilterComponent";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ export default function page() {
           <ResultCardComponent />
         </div>
         <div className="w-full h-full text-center lg:w-[65%] p-10 rounded-[20px] bg-text_color_dark dark:bg-card_color_dark">
+         
           <ProjectCardNameComponent />
         </div>
       </section>
