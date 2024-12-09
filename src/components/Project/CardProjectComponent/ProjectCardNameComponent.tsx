@@ -26,10 +26,12 @@ import { GitUrlType } from "@/data/GitUrl";
 import { getCoverageData, getDuplicationData, timeSince } from "@/lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { FaCheck, FaGithub } from "react-icons/fa";
+import { FaCheck, FaGithub } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
+import ProjectSkeleton from "@/components/ProjectSkeleton/ProjectSkeleton";
+import ProjectScanSkeleton from "@/components/ProjectSkeleton/ProjectScanSkeleton";
 
 export default function ProjectCardNameComponent() {
   const [userUUID, setUserUUID] = useState("");
@@ -140,369 +142,373 @@ export default function ProjectCardNameComponent() {
       {isError ? (
         <LoadProjectComponent />
       ) : (
-        projectResult?.map((projectResult: any, index: number) => {
-          // check is project is already sacan
-          if (projectResult?.component.component.measures != 0) {
-            return (
-              <section
-                key={index}
-                onClick={() =>
-                  router.push(
-                    `project/${projectResult?.component.component.name}`
-                  )
-                }
-                className="w-full my-5 h-full md:h-[330px] lg:[350px] xl p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
-              >
-                <div className="flex justify-between w-full">
-                  <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark ">
-                    {projectResult?.component.component.name}
-                  </p>
-                  {projectResult?.branch?.map(
-                    (branchItem: any, branchIndex: number) => {
-                      return branchItem?.branches?.map(
-                        (item: any, index: number) => {
-                          return (
-                            <div
-                              key={`${branchIndex}-${index}`}
-                              className="flex text-center items-center"
-                            >
-                              <div
-                                className={`w-[25px] h-[25px] flex items-center justify-center rounded-[5px] ${
-                                  item.status.qualityGateStatus === "OK"
-                                    ? "bg-primary_color"
-                                    : "bg-custom_red"
-                                }`}
-                              >
-                                {item.status.qualityGateStatus === "OK" ? (
-                                  <FaCheck className="dark:text-text_color_light" />
-                                ) : (
-                                  <RxCross2 className="dark:text-text_color_light" />
-                                )}
-                              </div>
-                              <p className="px-2 text-text_body_16">
-                                {item.status.qualityGateStatus === "OK"
-                                  ? "Passed"
-                                  : "Failed"}
-                              </p>
-                            </div>
-                          );
-                        }
-                      );
-                    }
-                  )}
-                </div>
-                <p className=" my-2 text-left text-[14px] text-text_color_desc_light dark:text-text_color_desc_dark ">
-                  {" "}
-                  <span className="text-secondary_color truncate">
-                    Last analysis:
-                  </span>{" "}
-                  {projectResult?.branch?.map(
-                    (branchItem: any, branchIndex: number) =>
-                      branchItem?.branches?.map((item: any, index: number) => (
-                        <span key={`${branchIndex}-${index}`}>
-                          {timeSince(item?.analysisDate)} •{" "}
-                        </span>
-                      ))
-                  )}
-                  {projectResult?.component?.component?.measures?.map(
-                    (item: any, index: number) => {
-                      if (item.metric === "ncloc") {
-                        return (
-                          <span key={index}>{item.value} Lines of Code </span>
-                        );
-                      }
-                    }
-                  )}
-                </p>
-                <hr className="my-5 dark:border-primary_color" />
+        <ProjectScanSkeleton />
+        // projectResult?.map((projectResult: any, index: number) => {
+        //   // check is project is already sacan
+        //   if (projectResult?.component.component.measures != 0) {
+        //     return (
+        //       <section
+        //         key={index}
+        //         onClick={() =>
+        //           router.push(
+        //             `project/${projectResult?.component.component.name}`
+        //           )
+        //         }
+        //         className="w-full my-5 h-full md:h-[330px] lg:h-[350px] xl p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
+        //       >
+        //         <div className="flex justify-between w-full">
+        //           <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark ">
+        //             {projectResult?.component.component.name}
+        //           </p>
+        //           {projectResult?.branch?.map(
+        //             (branchItem: any, branchIndex: number) => {
+        //               return branchItem?.branches?.map(
+        //                 (item: any, index: number) => {
+        //                   return (
+        //                     <div
+        //                       key={`${branchIndex}-${index}`}
+        //                       className="flex text-center items-center"
+        //                     >
+        //                       <div
+        //                         className={`w-[25px] h-[25px] flex items-center justify-center rounded-[5px] ${
+        //                           item.status.qualityGateStatus === "OK"
+        //                             ? "bg-primary_color"
+        //                             : "bg-custom_red"
+        //                         }`}
+        //                       >
+        //                         {item.status.qualityGateStatus === "OK" ? (
+        //                           <FaCheck className="dark:text-text_color_light" />
+        //                         ) : (
+        //                           <RxCross2 className="dark:text-text_color_light" />
+        //                         )}
+        //                       </div>
+        //                       <p className="px-2 text-text_body_16">
+        //                         {item.status.qualityGateStatus === "OK"
+        //                           ? "Passed"
+        //                           : "Failed"}
+        //                       </p>
+        //                     </div>
+        //                   );
+        //                 }
+        //               );
+        //             }
+        //           )}
+        //         </div>
+        //         <p className=" my-2 text-left text-[14px] text-text_color_desc_light dark:text-text_color_desc_dark ">
+        //           {" "}
+        //           <span className="text-secondary_color truncate">
+        //             Last analysis:
+        //           </span>{" "}
+        //           {projectResult?.branch?.map(
+        //             (branchItem: any, branchIndex: number) =>
+        //               branchItem?.branches?.map((item: any, index: number) => (
+        //                 <span key={`${branchIndex}-${index}`}>
+        //                   {timeSince(item?.analysisDate)} •{" "}
+        //                 </span>
+        //               ))
+        //           )}
+        //           {projectResult?.component?.component?.measures?.map(
+        //             (item: any, index: number) => {
+        //               if (item.metric === "ncloc") {
+        //                 return (
+        //                   <span key={index}>{item.value} Lines of Code </span>
+        //                 );
+        //               }
+        //             }
+        //           )}
+        //         </p>
+        //         <hr className="my-5 dark:border-primary_color" />
 
-                  <div className="grid  grid-cols-2 md:grid-cols-3  gap-5">
-                  {/* security */}
-                  <div className="w-full h-full ">
-                    {/* score security */}
-                    <div className="flex w-full justify-center  text-center items-center">
-                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
-                        A
-                      </div>
-                      {projectResult?.component?.component?.measures?.map(
-                        (item: any, index: number) => {
-                          if (item.metric === "security_issues") {
-                            return (
-                              <p key={index} className="mx-2">
-                                {JSON.parse(item.value).total}
-                              </p>
-                            );
-                          }
-                        }
-                      )}
-                    </div>
-                    <div className="my-5 w-full flex items-center justify-center">
-                      Security
-                    </div>
-                  </div>
-                  {/* reliability */}
-                  <div className="w-full h-full">
-                    {/* score security */}
-                    <div className="flex w-full justify-center  text-center items-center">
-                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
-                        A
-                      </div>
-                      {projectResult?.component?.component?.measures?.map(
-                        (item: any, index: number) => {
-                          if (item.metric === "reliability_issues") {
-                            return (
-                              <p key={index} className="mx-2">
-                                {JSON.parse(item.value).total}
-                              </p>
-                            );
-                          }
-                        }
-                      )}
-                    </div>
-                    <div className="my-5 w-full flex items-center justify-center">
-                      Reliability
-                    </div>
-                  </div>
-                  {/* Maintainability */}
-                  <div className="w-full h-full">
-                    {/* Maintainability */}
-                    <div className="flex w-full justify-center  text-center items-center">
-                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
-                        A
-                      </div>
-                      {projectResult?.component?.component?.measures?.map(
-                        (item: any, index: number) => {
-                          if (item.metric === "maintainability_issues") {
-                            return (
-                              <p key={index} className="mx-2">
-                                {JSON.parse(item.value).total}
-                              </p>
-                            );
-                          }
-                        }
-                      )}
-                    </div>
-                    <div className="my-5 w-full flex items-center justify-center">
-                      Maintainability
-                    </div>
-                  </div>
-                  {/* Hotspot Reviewed */}
-                  <div className="w-full h-full">
-                    {/* Hotspot Reviewed */}
-                    <div className="flex w-full justify-center  text-center items-center">
-                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
-                        A
-                      </div>
-                      {projectResult?.component?.component?.measures?.map(
-                        (item: any, index: number) => {
-                          if (item.metric === "security_hotspots") {
-                            return (
-                              <p key={index} className="mx-2">
-                                {item.value}
-                              </p>
-                            );
-                          }
-                        }
-                      )}
-                    </div>
-                    <div className="my-5 w-full flex items-center text-center justify-center">
-                      Hotspot Reviewed
-                    </div>
-                  </div>
-                  {/* Coverage Reviewed */}
-                  <div className="w-full h-full">
-                    {/* Coverage Reviewed */}
-                    <div className="flex w-full justify-center  text-center items-center">
-                      {projectResult?.component?.component?.measures?.map(
-                        (item: any, index: number) => {
-                          if (item.metric === "coverage") {
-                            return (
-                              <div
-                                key={index}
-                                className="w-[60px] h-[30px] flex items-center justify-center"
-                              >
-                                <Image
-                                  width={50}
-                                  height={50}
-                                  alt="coverage"
-                                  src={
-                                    getCoverageData(item?.value)?.image ||
-                                    "/default-image.png"
-                                  }
-                                />
-                              </div>
-                            );
-                          }
-                        }
-                      )}
-                      {projectResult?.component?.component?.measures?.map(
-                        (item: any, index: number) => {
-                          if (item.metric === "coverage") {
-                            return (
-                              <p key={index} className="mx-2">
-                                {item.value}
-                              </p>
-                            );
-                          }
-                        }
-                      )}
-                    </div>
-                    <div className="my-5 w-full flex items-center text-center justify-center">
-                      Coverage
-                    </div>
-                  </div>
-                  {/* duplicated */}
-                  <div className="w-full h-full">
-                    {/* duplicated */}
-                    <div className="flex w-full justify-center  text-center items-center">
-                      {projectResult?.component?.component?.measures?.map(
-                        (item: any, index: number) => {
-                          if (item.metric === "duplicated_lines_density") {
-                            return (
-                              <div className="w-[60px] h-[30px] flex items-center justify-center">
-                                <Image
-                                  width={60}
-                                  height={50}
-                                  alt="coverage"
-                                  src={getDuplicationData(item.value).image}
-                                />
-                              </div>
-                            );
-                          }
-                        }
-                      )}
-                      {projectResult?.component?.component?.measures?.map(
-                        (item: any, index: number) => {
-                          if (item.metric === "duplicated_lines_density") {
-                            return (
-                              <p key={index} className="mx-2">
-                                {item.value}
-                              </p>
-                            );
-                          }
-                        }
-                      )}
-                    </div>
-                    <div className="my-5 w-full flex items-center justify-center">
-                      Duplicated
-                    </div>
-                  </div>
-                </div>  
-              </section>
-            );
-          }
-          // project not yet scan
-          return (
-            <section
-              key={index}
-              className="w-full h-full md:h-[150px] my-5  p-5 border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
-            >
-              <div className="flex justify-between w-full">
-                <p className="text-text_body_16 text-secondary_color dark:text-text_color_dark ">
-                  {projectResult?.component?.component.name}
-                </p>
-              </div>
-              <hr className="my-5 dark:border-primary_color" />
-              <div className="flex  items-center">
-                <p className=" my-2 text-text_body_16 text-text_color_desc_light  dark:text-text_color_desc_dark ">
-                  {" "}
-                  Project&apos;s{" "}
-                  <span className="text-secondary_color truncate">
-                    {projectResult?.component?.component.name}
-                  </span>{" "}
-                  is not analyzed yet.{" "}
-                </p>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <p className="text-link_color underline">
-                      Configure Project
-                    </p>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className=" w-[90%] md:w-full rounded-[20px] bg-text_color_dark  flex flex-col   ">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle className="flex justify-between text-center items-center">
-                        <p className="text-text_title_24 text-text_color_light">
-                          {projectResult?.component?.component.name}
-                        </p>
-                        <AlertDialogCancel className="flex text-center items-center">
-                          <button disabled={isLoading}>
-                            <RxCross2
-                              className="text-text_color_light  text-text_header_34"
-                              style={{ height: "1em", width: "0.7em" }}
-                            />
-                          </button>
-                        </AlertDialogCancel>
-                      </AlertDialogTitle>
-                    </AlertDialogHeader>
-                    {/* git url */}
-                    <div className="relative">
-                      <FaGithub className="absolute top-1/2 left-3 text-text_title_24 transform -translate-y-1/2 text-text_color_desc_light" />
-                      <input
-                        type="text"
-                        placeholder="Enter Git URL"
-                        value={gitUrlResult}
-                        onChange={handleChange} // Update the state with the input value
-                        onKeyDown={handleKeyPress} // Trigger logic on Enter key press
-                        className="mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light pl-12 pr-3 py-3 focus:outline-none  border-ascend_color"
-                      />
-                    </div>
-                    {/* select branch */}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <div className="">
-                          <p className="text-text_body_16 text-text_color_light my-2">
-                            Branch
-                          </p>
-                          <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
-                            <p className="text-text_body_16  py-3  text-text_color_desc_light">
-                              {selectedBranch}
-                            </p>
-                            <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
-                          </div>
-                        </div>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-[462px] text-text_color_light text-start bg-background_light_mode">
-                        <DropdownMenuSeparator />
-                        {gitResult?.length === 0 ? (
-                          <DropdownMenuItem disabled>
-                            No branch to select
-                          </DropdownMenuItem>
-                        ) : (
-                          gitResult?.map(
-                            (gitResult: GitUrlType, index: number) => (
-                              <DropdownMenuItem
-                                key={index}
-                                onClick={() =>
-                                  setSelectedBranch(`${gitResult?.name}`)
-                                }
-                              >
-                                {gitResult?.name}
-                              </DropdownMenuItem>
-                            )
-                          )
-                        )}
-                        <DropdownMenuSeparator />
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    {/* submit scan */}
-                    <button
-                      key={index}
-                      disabled={isLoading}
-                      onClick={() => handleScanProject(index)}
-                      className="w-full py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
-                    >
-                      {isLoading ? (
-                        <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
-                      ) : (
-                        "Submit"
-                      )}
-                    </button>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            </section>
-          );
-        })
+        //         <div className="grid  grid-cols-2 md:grid-cols-3 gap-5">
+        //           {/* security */}
+        //           <div className="w-full h-full ">
+        //             {/* score security */}
+        //             <div className="flex w-full justify-center  text-center items-center">
+        //               <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
+        //                 A
+        //               </div>
+        //               {projectResult?.component?.component?.measures?.map(
+        //                 (item: any, index: number) => {
+        //                   if (item.metric === "security_issues") {
+        //                     return (
+        //                       <p key={index} className="mx-2">
+        //                         {JSON.parse(item.value).total}
+        //                       </p>
+        //                     );
+        //                   }
+        //                 }
+        //               )}
+        //             </div>
+        //             <div className="my-5 w-full flex items-center justify-center">
+        //               Security
+        //             </div>
+        //           </div>
+        //           {/* reliability */}
+        //           <div className="w-full h-full">
+        //             {/* score security */}
+        //             <div className="flex w-full justify-center  text-center items-center">
+        //               <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
+        //                 A
+        //               </div>
+        //               {projectResult?.component?.component?.measures?.map(
+        //                 (item: any, index: number) => {
+        //                   if (item.metric === "reliability_issues") {
+        //                     return (
+        //                       <p key={index} className="mx-2">
+        //                         {JSON.parse(item.value).total}
+        //                       </p>
+        //                     );
+        //                   }
+        //                 }
+        //               )}
+        //             </div>
+        //             <div className="my-5 w-full flex items-center justify-center">
+        //               Reliability
+        //             </div>
+        //           </div>
+        //           {/* Maintainability */}
+        //           <div className="w-full h-full">
+        //             {/* Maintainability */}
+        //             <div className="flex w-full justify-center  text-center items-center">
+        //               <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
+        //                 A
+        //               </div>
+        //               {projectResult?.component?.component?.measures?.map(
+        //                 (item: any, index: number) => {
+        //                   if (item.metric === "maintainability_issues") {
+        //                     return (
+        //                       <p key={index} className="mx-2">
+        //                         {JSON.parse(item.value).total}
+        //                       </p>
+        //                     );
+        //                   }
+        //                 }
+        //               )}
+        //             </div>
+        //             <div className="my-5 w-full flex items-center justify-center">
+        //               Maintainability
+        //             </div>
+        //           </div>
+        //           {/* Hotspot Reviewed */}
+        //           <div className="w-full h-full">
+        //             {/* Hotspot Reviewed */}
+        //             <div className="flex w-full justify-center  text-center items-center">
+        //               <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
+        //                 A
+        //               </div>
+        //               {projectResult?.component?.component?.measures?.map(
+        //                 (item: any, index: number) => {
+        //                   if (item.metric === "security_hotspots") {
+        //                     return (
+        //                       <p key={index} className="mx-2">
+        //                         {item.value}
+        //                       </p>
+        //                     );
+        //                   }
+        //                 }
+        //               )}
+        //             </div>
+        //             <div className="my-5 w-full flex items-center text-center justify-center">
+        //               Hotspot Reviewed
+        //             </div>
+        //           </div>
+        //           {/* Coverage Reviewed */}
+        //           <div className="w-full h-full">
+        //             {/* Coverage Reviewed */}
+        //             <div className="flex w-full justify-center  text-center items-center">
+        //               {projectResult?.component?.component?.measures?.map(
+        //                 (item: any, index: number) => {
+        //                   if (item.metric === "coverage") {
+        //                     return (
+        //                       <div
+        //                         key={index}
+        //                         className="w-[60px] h-[30px] flex items-center justify-center"
+        //                       >
+        //                         <Image
+        //                           width={50}
+        //                           height={50}
+        //                           alt="coverage"
+        //                           src={
+        //                             getCoverageData(item?.value)?.image ||
+        //                             "/default-image.png"
+        //                           }
+        //                         />
+        //                       </div>
+        //                     );
+        //                   }
+        //                 }
+        //               )}
+        //               {projectResult?.component?.component?.measures?.map(
+        //                 (item: any, index: number) => {
+        //                   if (item.metric === "coverage") {
+        //                     return (
+        //                       <p key={index} className="mx-2">
+        //                         {item.value}
+        //                       </p>
+        //                     );
+        //                   }
+        //                 }
+        //               )}
+        //             </div>
+        //             <div className="my-5 w-full flex items-center text-center justify-center">
+        //               Coverage
+        //             </div>
+        //           </div>
+        //           {/* duplicated */}
+        //           <div className="w-full h-full">
+        //             {/* duplicated */}
+        //             <div className="flex w-full justify-center  text-center items-center">
+        //               {projectResult?.component?.component?.measures?.map(
+        //                 (item: any, index: number) => {
+        //                   if (item.metric === "duplicated_lines_density") {
+        //                     return (
+        //                       <div
+        //                         key={index}
+        //                         className="w-[60px] h-[30px] flex items-center justify-center"
+        //                       >
+        //                         <Image
+        //                           width={60}
+        //                           height={50}
+        //                           alt="coverage"
+        //                           src={getDuplicationData(item.value).image}
+        //                         />
+        //                       </div>
+        //                     );
+        //                   }
+        //                 }
+        //               )}
+        //               {projectResult?.component?.component?.measures?.map(
+        //                 (item: any, index: number) => {
+        //                   if (item.metric === "duplicated_lines_density") {
+        //                     return (
+        //                       <p key={index} className="mx-2">
+        //                         {item.value}
+        //                       </p>
+        //                     );
+        //                   }
+        //                 }
+        //               )}
+        //             </div>
+        //             <div className="my-5 w-full flex items-center justify-center">
+        //               Duplicated
+        //             </div>
+        //           </div>
+        //         </div>
+        //       </section>
+        //     );
+        //   }
+        //   // project not yet scan
+        //   return (
+        //     <section
+        //       key={index}
+        //       className="w-full h-full md:h-[150px] my-5  p-5 border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
+        //     >
+        //       <div className="flex justify-between w-full">
+        //         <p className="text-text_body_16 text-secondary_color dark:text-text_color_dark ">
+        //           {projectResult?.component?.component.name}
+        //         </p>
+        //       </div>
+        //       <hr className="my-5 dark:border-primary_color" />
+        //       <div className="flex  items-center">
+        //         <p className=" my-2 text-text_body_16 text-text_color_desc_light  dark:text-text_color_desc_dark ">
+        //           {" "}
+        //           Project&apos;s{" "}
+        //           <span className="text-secondary_color truncate">
+        //             {projectResult?.component?.component.name}
+        //           </span>{" "}
+        //           is not analyzed yet.{" "}
+        //         </p>
+        //         <AlertDialog>
+        //           <AlertDialogTrigger asChild>
+        //             <p className="text-link_color underline">
+        //               Configure Project
+        //             </p>
+        //           </AlertDialogTrigger>
+        //           <AlertDialogContent className=" w-[90%] md:w-full rounded-[20px] bg-text_color_dark  flex flex-col   ">
+        //             <AlertDialogHeader>
+        //               <AlertDialogTitle className="flex justify-between text-center items-center">
+        //                 <p className="text-text_title_24 text-text_color_light">
+        //                   {projectResult?.component?.component.name}
+        //                 </p>
+        //                 <AlertDialogCancel className="flex text-center items-center">
+        //                   <button disabled={isLoading}>
+        //                     <RxCross2
+        //                       className="text-text_color_light  text-text_header_34"
+        //                       style={{ height: "1em", width: "0.7em" }}
+        //                     />
+        //                   </button>
+        //                 </AlertDialogCancel>
+        //               </AlertDialogTitle>
+        //             </AlertDialogHeader>
+        //             {/* git url */}
+        //             <div className="relative">
+        //               <FaGithub className="absolute top-1/2 left-3 text-text_title_24 transform -translate-y-1/2 text-text_color_desc_light" />
+        //               <input
+        //                 type="text"
+        //                 placeholder="Enter Git URL"
+        //                 value={gitUrlResult}
+        //                 onChange={handleChange} // Update the state with the input value
+        //                 onKeyDown={handleKeyPress} // Trigger logic on Enter key press
+        //                 className="mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light pl-12 pr-3 py-3 focus:outline-none  border-ascend_color"
+        //               />
+        //             </div>
+        //             {/* select branch */}
+        //             <DropdownMenu>
+        //               <DropdownMenuTrigger asChild>
+        //                 <div className="">
+        //                   <p className="text-text_body_16 text-text_color_light my-2">
+        //                     Branch
+        //                   </p>
+        //                   <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
+        //                     <p className="text-text_body_16  py-3  text-text_color_desc_light">
+        //                       {selectedBranch}
+        //                     </p>
+        //                     <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
+        //                   </div>
+        //                 </div>
+        //               </DropdownMenuTrigger>
+        //               <DropdownMenuContent className="w-[462px] text-text_color_light text-start bg-background_light_mode">
+        //                 <DropdownMenuSeparator />
+        //                 {gitResult?.length === 0 ? (
+        //                   <DropdownMenuItem disabled>
+        //                     No branch to select
+        //                   </DropdownMenuItem>
+        //                 ) : (
+        //                   gitResult?.map(
+        //                     (gitResult: GitUrlType, index: number) => (
+        //                       <DropdownMenuItem
+        //                         key={index}
+        //                         onClick={() =>
+        //                           setSelectedBranch(`${gitResult?.name}`)
+        //                         }
+        //                       >
+        //                         {gitResult?.name}
+        //                       </DropdownMenuItem>
+        //                     )
+        //                   )
+        //                 )}
+        //                 <DropdownMenuSeparator />
+        //               </DropdownMenuContent>
+        //             </DropdownMenu>
+        //             {/* submit scan */}
+        //             <button
+        //               key={index}
+        //               disabled={isLoading}
+        //               onClick={() => handleScanProject(index)}
+        //               className="w-full py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
+        //             >
+        //               {isLoading ? (
+        //                 <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
+        //               ) : (
+        //                 "Submit"
+        //               )}
+        //             </button>
+        //           </AlertDialogContent>
+        //         </AlertDialog>
+        //       </div>
+        //     </section>
+        //   );
+        // })
       )}
     </div>
   );

@@ -16,8 +16,6 @@ import { toast } from "@/components/hooks/use-toast";
 import { useEffect, useState } from "react";
 export default function CreateProjectComponent() {
   const [projectName, setProjectName] = useState("");
-  const [isOpened, setIsOpened] = useState(true);
-
   const [createProjectName, { isSuccess, isError }] =
     useCreateProjectNameMutation();
 
@@ -40,7 +38,6 @@ export default function CreateProjectComponent() {
           description: "Project created successfully",
           variant: "success",
         });
-        setIsOpened(false);
       }
       if (isError) {
         if (projectName.trim().length === 0 || /\s/.test(projectName)) {
@@ -49,7 +46,7 @@ export default function CreateProjectComponent() {
             description: "Project name cannot contain whitespace",
             variant: "error",
           });
-        }   else {
+        } else {
           // Handle the case where the project name already exists
           toast({
             description: "Project name already exists",
@@ -62,9 +59,6 @@ export default function CreateProjectComponent() {
     }
   }, [isSuccess, isError]);
 
-  const handleClose = () => {
-    setIsOpened(false);
-  };
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -79,7 +73,7 @@ export default function CreateProjectComponent() {
             <p className="text-text_title_24 text-text_color_light">
               Create Project Name
             </p>
-            <AlertDialogCancel onClick={() => handleClose} className="flex text-center items-center">
+            <AlertDialogCancel className="flex text-center items-center">
               <RxCross2
                 className="text-text_color_light  text-text_header_34"
                 style={{ height: "1em", width: "0.7em" }}
