@@ -30,6 +30,7 @@ import { RxCross2 } from "react-icons/rx";
 import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
 import ProjectCardComponent from "./ProjectCardComponent";
 import { useRouter } from "next/navigation";
+
 export default function ProjectCardNameComponent() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const router = useRouter();

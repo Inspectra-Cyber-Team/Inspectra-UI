@@ -9,22 +9,12 @@ export type ParamProps = {
 };
 
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
+import PageOverviewProjectDetail from "@/components/ProjectDetailComponents/PageOverviewProjectDetail";
 
 export default function page({ params }: ParamProps) {
   const projectName = params.projectName;
@@ -38,32 +28,12 @@ export default function page({ params }: ParamProps) {
               <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary_color transition-all duration-300 group-hover:w-full"></span>
              </TabsTrigger>
           ))}
-         
         </TabsList>
+        
         <TabsContent value="Overview">
-          <Card>
-            <CardHeader>
-              <CardTitle>Account</CardTitle>
-              <CardDescription>
-                Make changes to your account here. Click save when you're done.
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-2">
-              <div className="space-y-1">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" defaultValue="Pedro Duarte" />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="username">Username</Label>
-                <Input id="username" defaultValue="@peduarte" />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button>Save changes</Button>
-            </CardFooter>
-          </Card>
+          <PageOverviewProjectDetail/>
         </TabsContent>
+        {projectName}
       </Tabs>
     </main>
   );
