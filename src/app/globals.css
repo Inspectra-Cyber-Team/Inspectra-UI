@@ -112,6 +112,7 @@
   display: block; /* Ensure the canvas respects parent dimensions */
   width: 100% !important;
   height: 100% !important;
+
 }
 
 
@@ -120,9 +121,11 @@
 .prose-pre {
   background: #ffffff !important; /* White background */
   color: #333333 !important; /* Dark text color */
+  box-shadow: #690;
   padding: 1em;
   border-radius: 5px;
   overflow: auto;
+  
 }
 
 .prose-code {
@@ -130,6 +133,7 @@
   color: #333333 !important; /* Dark text color */
   padding: 0.2em 0.4em;
   border-radius: 3px;
+
 }
 
 /* Override specific Prism.js token styles */
@@ -140,6 +144,7 @@
 .token.cdata {
   color: #999988 !important;
   font-style: italic;
+  
 }
 
 .token.punctuation {
@@ -172,6 +177,7 @@
 .style .token.string {
   color: #a67f59 !important;
   background: hsla(0, 0%, 100%, 0.5) !important;
+  
 }
 
 .token.atrule,
@@ -201,4 +207,16 @@
 
 .token.entity {
   cursor: help !important;
+}
+
+
+
+/* Add this to your CSS file */
+.error-message {
+  margin-top: 0px;
+  border: 1px solid red;
+  padding: 10px;
+  position: relative;
+  border-radius: 5px;
+
 }

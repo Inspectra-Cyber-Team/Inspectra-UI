@@ -11,6 +11,8 @@ type RiskComponentProps = {
   description: any;
   issueKey: string;
   componentKey: string;
+  startLineNumber?: number;
+  message?: string;
 };
 
 type tabMappingType = {
@@ -22,9 +24,9 @@ export const RiskComponent = ({
   description,
   issueKey,
   componentKey,
+  startLineNumber,
+  message,
 }: RiskComponentProps) => {
-
-  console.log("isses", componentKey);
   // highlighting the code to match with api response
   const tabMapping: tabMappingType = {
     "Where is the risk?": "",
@@ -57,6 +59,7 @@ export const RiskComponent = ({
   const getContent = () => {
     if (selectedTab === "Where is the risk?") {
       if (sourceIsLoading) return "Loading source data...";
+
       if (sourceError || !sourceData) {
         return "Source data not available.";
       }
@@ -65,17 +68,46 @@ export const RiskComponent = ({
       const dockerfileSources = sourceData?.data[componentKey]?.sources;
 
       if (dockerfileSources && Array.isArray(dockerfileSources)) {
-        // Combine source code with line numbers and comments
         const codeContent = dockerfileSources
+
           .map((source) => {
-            const lineNumber = source.line || "// Missing line number";
-            const code = source.code || "// No code provided for this line";
-            const comment = source.comment || "// No comment provided";
-            return `${lineNumber}: ${code}  // ${comment}`;
+
+            const lineNumber = source?.line;
+
+            const code = source?.code;
+
+            // Base line structure
+            let result = `${lineNumber}: ${code}`;
+
+            return result;
           })
+
           .join("\n\n");
 
-        return `<pre class="prose prose-pre"><code class="language-js">${codeContent}</code></pre>`;
+        // Find the line that matches startLineNumber and add the error message
+        const errorMessage = dockerfileSources
+          .filter((source) => source?.line === startLineNumber)
+          .map((source) => {
+            return `<div class="error-message">/* ${message} */</div>`;
+          })
+          .join("\n");
+
+        // Insert the error message directly below the matching line
+        const finalContent = codeContent
+          .split("\n")
+          .map((line, index) => {
+            if (line.startsWith(`${startLineNumber}:`)) {
+              return `${line}\n</code></pre>\n${errorMessage}<pre class="prose prose-pre"><code class="language-js">`;
+            }
+            return line;
+          })
+          .join("\n");
+
+        return `
+          <pre class="prose prose-pre">
+            <code class="language-js">${finalContent}</code>
+          </pre>
+        `;
       }
 
       return "No Dockerfile sources available.";

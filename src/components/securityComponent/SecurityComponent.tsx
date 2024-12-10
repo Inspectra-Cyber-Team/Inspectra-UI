@@ -27,6 +27,10 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
   const [key,setKey] = useState<string>("");
 
   const [componentFile, setComponentFile] = useState<string>("");
+//  hanle set line number for show issue message in compoent 
+ const [startLineNumber, setStartLineNumber] = useState<number>(0);
+
+
   //calling rule query
 
   const {
@@ -73,7 +77,7 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
         <div className="mb-4">
           <p className="font-semibold">
             Total Security Hotspots:{" "}
-            {securityHotspotData?.[0]?.paging?.total || 0}
+            <span className="text-red-500">{securityHotspotData?.[0]?.paging?.total || 0}</span>
           </p>
         </div>
 
@@ -96,6 +100,7 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
                       setSelectedHotspot(item);
                       setRoleName(item?.ruleKey);
                       setKey(item?.key);
+                      setStartLineNumber(item?.textRange?.startLine);
                       setComponentFile(item?.component);
                     }}
                   >
@@ -113,7 +118,7 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
         {selectedHotspot ? (
           <section>
             <div className="">
-              <p className="font-bold mb-5">{selectedHotspot.message}</p>
+              <p className="font-bold mb-5 ">{selectedHotspot.message}</p>
               <p className='mb-2'>
                 {ruleData?.[0]?.name}{" "}
                 <span className="font-bold"> {roleName}</span>
@@ -199,6 +204,8 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
                 description={ruleData?.[0]?.descriptionSections}
                 issueKey={key}
                 componentKey={componentFile}
+                startLineNumber={startLineNumber}
+                message={selectedHotspot?.message}
               />
             )}
           </>
