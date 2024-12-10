@@ -13,14 +13,14 @@ import { GoFileDirectoryFill } from "react-icons/go";
 export default function IssueSidebarComponent({ ...props }) {
   const { data: issueData } = useGetAllIssueQuery({
     projectName: props.props,
-    page: "0",
-    size: "25",
+    page: 0,
+    size: 25,
   });
   const issueResult = issueData?.data.facets;
   return (
-    <div>
+    <div className="h-full">
       {issueResult?.map((issueItem: IusseSideBarType, index: number) => (
-        <div key={index}>
+        <div  key={index}>
           <Accordion type="single" collapsible >
             <AccordionItem value={`item-${index}`}>
               <AccordionTrigger className=" text-text_color_light  dark:text-text_color_dark text-left md:text-text_body_16">

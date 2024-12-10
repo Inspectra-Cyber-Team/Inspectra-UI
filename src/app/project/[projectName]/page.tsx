@@ -66,14 +66,14 @@ export default function page({ params }: ParamProps) {
         </TabsContent>
         <TabsContent value="Issue">
           <section className="w-full h-full flex justify-between">
-            <div className="w-[35%] bg-background_light_mode dark:bg-background_dark_mode p-5 rounded-[20px] hidden md:block ">
+            <div className="w-[35%] h-full bg-background_light_mode dark:bg-background_dark_mode p-5 rounded-[20px] hidden md:block ">
               <p className="text-text_title_24 text-text_color_light dark:text-text_color_dark ">
                 Filter
               </p>
               <hr className="text-text_color_desc_light mt-2" />
               <IssueSidebarComponent props={projectName} />
             </div>
-            <div className="w-[60%] h-screen ">
+            <div className="w-[60%] ">
               <IssueCardComponet props={projectName} />
             </div>
           </section>

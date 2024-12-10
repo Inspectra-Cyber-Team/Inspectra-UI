@@ -52,9 +52,7 @@ export default function ProjectCardNameComponent() {
     data: projectResult,
     isError,
     isFetching: isFetchDataProjectScan,
-  } = useGetProjectOverViewUserQuery({
-    uuid: userUUID,
-  });
+  } = useGetProjectOverViewUserQuery({ uuid: userUUID });
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const router = useRouter();
@@ -67,30 +65,35 @@ export default function ProjectCardNameComponent() {
 
   const [gitUrlResult, setGitUrl] = useState<string>(""); // Store the input value
   const [gitResult, setGitResult] = useState([]); // result get from git url
-  // scan project
+
   const handleScanProject = (index: number) => {
     setSelectedIndex(index);
     setIsLoading(true);
-    createScanProject({
-      project: {
-        projectName: projectResult[index].component?.component.name,
-        gitUrl: gitUrlResult,
-        branch: selectedBranch,
-      },
-    });
+    if (gitResult.length === 0 || gitUrlResult === "Select Project Branch") {
+      toast({
+        description: "Please Provide Git UR and Branch",
+        variant: "error",
+      });
+      setIsLoading(false);
+    } else {
+      createScanProject({
+        project: {
+          projectName: projectResult[index].component?.component.name,
+          gitUrl: gitUrlResult,
+          branch: selectedBranch,
+        },
+      });
+    }
   };
+
   useEffect(() => {
     if (isScanSuccess && selectedIndex !== null) {
       toast({
-        description: "Project created successfully",
+        description: "Project Scan Success",
         variant: "success",
       });
-      router.push(
-        `/project/${projectResult[selectedIndex].component?.component.name}`
-      );
-      setSelectedIndex(null); // Reset selected index
+      setIsLoading(false);
     }
-
     if (isScanError) {
       toast({
         description: "Project is Current in Use",
@@ -98,15 +101,9 @@ export default function ProjectCardNameComponent() {
       });
       setIsLoading(false);
     }
-  }, [isScanSuccess, isScanError, selectedIndex]);
-
-  // const [listDirectories, setListDirectories] = useState<{
-  //   files: any[];
-  //   subdirectories?: any[];
-  // } | null>(null); // result get from git url
+  }, [isScanError, isScanSuccess, selectedIndex]);
 
   // handle for git input from user and fetch api
-
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -228,15 +225,15 @@ export default function ProjectCardNameComponent() {
         </div>
       </div>
       {isError ? (
-        // no project show waiting image 
+        // no project show waiting image
         <LoadProjectComponent />
       ) : isFetchDataProjectScan ? (
-        // while fetch data 
+        // while fetch data
         <ProjectScanSkeleton />
-        // check if search result is empty
-      ) : filteredResults.length === 0 ? (
+      ) : // check if search result is empty
+      filteredResults.length === 0 ? (
         projectResult?.map((projectResult: any, index: number) => {
-          // check project that already scan 
+          // check project that already scan
           if (projectResult?.component.component.measures != 0) {
             return (
               <section
@@ -512,7 +509,7 @@ export default function ProjectCardNameComponent() {
                   </p>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <p className="text-link_color underline">
+                      <p className="text-link_color underline cursor-pointer">
                         Configure Project
                       </p>
                     </AlertDialogTrigger>
@@ -533,7 +530,12 @@ export default function ProjectCardNameComponent() {
                         </AlertDialogTitle>
                       </AlertDialogHeader>
                       {isLoading ? (
-                        <video src="/images/loadingScan.mp4" autoPlay className="w-full h-full" loop></video>
+                        <video
+                          src="/images/loadingScan.mp4"
+                          autoPlay
+                          className="w-full h-full"
+                          loop
+                        ></video>
                       ) : (
                         <section className="h-full flex flex-col justify-between">
                           {/* git url */}
@@ -625,7 +627,7 @@ export default function ProjectCardNameComponent() {
           }
         })
       ) : (
-        // check if search not emptu
+        // check if search not empty
         filteredResults?.map((item: any, index: number) => {
           if (item?.component.component.measures != 0) {
             return (
