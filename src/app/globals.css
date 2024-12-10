@@ -112,4 +112,15 @@
   display: block; /* Ensure the canvas respects parent dimensions */
   width: 100% !important;
   height: 100% !important;
+
+}
+
+
+.error-message {
+  margin-top: 0px;
+  border: 1px solid red;
+  padding: 10px;
+  position: relative;
+  border-radius: 5px;
+
 }
