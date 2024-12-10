@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, {useEffect } from "react";
 import Prism from "prismjs";
 import "prismjs/themes/prism.css";
 import DOMPurify from "dompurify";
@@ -42,11 +42,12 @@ export const RiskComponent = ({
     isLoading: sourceIsLoading,
   } = useGetSouceQuery({ issueKey: issueKey });
 
-  console.log("sourceData", sourceData);
+
+
 
   useEffect(() => {
     Prism.highlightAll();
-  }, [selectedTab, description]);
+  });	
 
   if (sourceIsLoading) {
     return <p>Loading...</p>;
@@ -77,7 +78,7 @@ export const RiskComponent = ({
             const code = source?.code;
 
             // Base line structure
-            let result = `${lineNumber}: ${code}`;
+            const result = `${lineNumber}: ${code}`;
 
             return result;
           })
@@ -87,7 +88,7 @@ export const RiskComponent = ({
         // Find the line that matches startLineNumber and add the error message
         const errorMessage = dockerfileSources
           .filter((source) => source?.line === startLineNumber)
-          .map((source) => {
+          .map(() => {
             return `<div class="error-message">/* ${message} */</div>`;
           })
           .join("\n");
@@ -95,7 +96,7 @@ export const RiskComponent = ({
         // Insert the error message directly below the matching line
         const finalContent = codeContent
           .split("\n")
-          .map((line, index) => {
+          .map((line) => {
             if (line.startsWith(`${startLineNumber}:`)) {
               return `${line}\n</code></pre>\n${errorMessage}<pre class="prose prose-pre"><code class="language-js">`;
             }

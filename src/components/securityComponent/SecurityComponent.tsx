@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 import RiskComponent from "./RiskComponent";
+import { Hotspot } from "@/types/SecurityHostspot";
 
 type SecurityComponentProps = {
   projectName: string;
@@ -32,7 +33,6 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
 
 
   //calling rule query
-
   const {
     data: ruleData,
     error: ruleError,
@@ -45,7 +45,7 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
     setSelectedTab(tabName);
   };
 
-  const [selectedHotspot, setSelectedHotspot] = useState(null);
+  const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(null);
 
   if (securityHotspotIsLoading) {
     return <p>Loading...</p>;
@@ -86,13 +86,13 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
           type="multiple"
           className="w-full"
         >
-          {Object.entries(groupedData).map(([probability, items]) => (
+          {Object.entries(groupedData).map(([probability, items]:any) => (
             <AccordionItem key={probability} value={probability}>
               <AccordionTrigger>
                 Review Priority: {probability}
               </AccordionTrigger>
               <AccordionContent>
-                {items.map((item) => (
+                {items.map((item:any) => (
                   <button
                     className="p-2 cursor-pointer rounded-md hover:bg-gray-100 text-left w-full"
                     key={item.key}
@@ -144,7 +144,7 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
                   value={selectedTab}
                   onChange={(e) => handleTabChange(e.target.value)}
                 >
-                  <option value="Where is the risk?">Where's the risk?</option>
+                  <option value="Where is the risk?">Where is the risk?</option>
                   <option value="What is the risk?">What is the risk?</option>
                   <option value="Access the risk">Access the risk</option>
                   <option value="How I can fix it?">How I can fix it?</option>
