@@ -1,18 +1,26 @@
+import { useGetProjectDetailQuery } from '@/redux/service/overview';
 import React from 'react'
 import { LuDot } from 'react-icons/lu'
 import { SiTicktick } from 'react-icons/si'
 
 export default function PageOverviewProjectDetail() {
+    const { data: overviewData } = useGetProjectDetailQuery({
+        projectName: 'project168',
+    });
+    const overviewResult = overviewData
+    console.log(overviewResult);
+    
     return (
         <section>
+           
             {/* First section of page */}
             <div className='w-[100%] flex justify-between items-center'>
                 <div className='text-text_color_light'>
-                    <h2>Branch</h2>
+                    <h2>{overviewResult?.name || 'Project Details'}</h2>
                 </div>
                 <div className=''>
                     <ul className='flex items-center gap-3 p-3 text-text_color_light'>
-                        <li>1.7K Lines of Code </li> <LuDot />
+                        <li>13K Lines of Code</li> <LuDot />
                         <li>Version not Provided</li> <LuDot />
                         <li>
                             <button className='bg-primary_color p-2 rounded-full w-[100px]'>
@@ -90,7 +98,6 @@ export default function PageOverviewProjectDetail() {
                                 0 L
                             </p>
                         </div>
-
 
                     </div>
                     <div className='text-text_color_light flex-col items-center gap-3 border-r border-primary_color p-3'>
@@ -221,7 +228,6 @@ export default function PageOverviewProjectDetail() {
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
     )
