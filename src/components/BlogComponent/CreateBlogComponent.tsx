@@ -159,7 +159,7 @@ const CreateBlogComponent = () => {
                     accept="image/*"
                     multiple
                     onChange={(e) => handleFileChange(e, setFieldValue)}
-                    className="mt-1"
+                    className="mt-1 cursor-pointer"
                   />
                   <ErrorMessage
                     name="thumbnail"
