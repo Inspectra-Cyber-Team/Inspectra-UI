@@ -1,9 +1,9 @@
 import { facetsData } from "@/data/facets";
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function convertToDayMonthYear(timestamp: string) {
@@ -11,41 +11,42 @@ export function convertToDayMonthYear(timestamp: string) {
   const date = new Date(timestamp);
 
   // Extract the day, month, and year
-  const day = date.getDate().toString().padStart(2, '0'); // Ensure two digits
-  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
+  const day = date.getDate().toString().padStart(2, "0"); // Ensure two digits
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-indexed
   const year = date.getFullYear();
 
   // Format as day-month-year
   return `${day}-${month}-${year}`;
 }
 
-
-
-// count down verify otp 
+// count down verify otp
 export function startCountdown(minutes: number) {
   let timeRemaining = minutes * 60; // Convert minutes to seconds
   const timerInterval = setInterval(() => {
-      const minutesLeft = Math.floor(timeRemaining / 60);
-      const secondsLeft = timeRemaining % 60;
+    const minutesLeft = Math.floor(timeRemaining / 60);
+    const secondsLeft = timeRemaining % 60;
 
-      // Format the time as MM:SS
-      const formattedTime = `${String(minutesLeft).padStart(2, '0')}:${String(secondsLeft).padStart(2, '0')}`;
-      console.log(formattedTime); // Display the countdown in the console
+    // Format the time as MM:SS
+    const formattedTime = `${String(minutesLeft).padStart(2, "0")}:${String(
+      secondsLeft
+    ).padStart(2, "0")}`;
+    console.log(formattedTime); // Display the countdown in the console
 
-      if (timeRemaining <= 0) {
-          clearInterval(timerInterval); // Stop the timer
-          console.log("Countdown complete!");
-      }
+    if (timeRemaining <= 0) {
+      clearInterval(timerInterval); // Stop the timer
+      console.log("Countdown complete!");
+    }
 
-      timeRemaining--; // Decrease the time remaining by 1 second
+    timeRemaining--; // Decrease the time remaining by 1 second
   }, 1000);
 }
-
 
 export function timeSince(timestamp: string) {
   const givenTime = new Date(timestamp);
   const currentTime = new Date();
-  const differenceInSeconds = Math.floor((currentTime.getTime() - givenTime.getTime()) / 1000);
+  const differenceInSeconds = Math.floor(
+    (currentTime.getTime() - givenTime.getTime()) / 1000
+  );
 
   const units = [
     { label: "year", seconds: 60 * 60 * 24 * 365 },
@@ -100,4 +101,8 @@ export function getCoverageData(coverageValue: any) {
     case coverageValue === 0.0:
       return facetsData.coverage[5]; // 0%
   }
+}
+
+export function sliceString(str: string) {
+  return str?.replaceAll(/next-[a-f0-9\-]+/g, '...');
 }

@@ -190,6 +190,7 @@ export default function ProjectCardNameComponent() {
 
   return (
     <div>
+      {/* search and sort */}
       <div className="flex flex-col md:flex-row justify-between gap-5 pb-5">
         <div className="bg-background_light_mode dark:bg-card_color_dark text-text_color_desc_light dark:text-text_color_desc_dark flex items-center gap-3 px-5 py-3 rounded-xl">
           <IoSearchSharp />
@@ -243,7 +244,7 @@ export default function ProjectCardNameComponent() {
                     `project/${projectResult?.component.component.name}`
                   )
                 }
-                className="w-full my-5 h-full md:h-[330px] lg:h-[350px] xl p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
+                className="w-full cursor-pointer my-5 h-full md:h-[330px] lg:h-[350px] xl p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
               >
                 <div className="flex justify-between w-full">
                   <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark ">
@@ -490,7 +491,7 @@ export default function ProjectCardNameComponent() {
             return (
               <section
                 key={index}
-                className="w-full h-full md:h-[150px] my-5  p-5 border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
+                className="w-full  h-full md:h-[150px] my-5  p-5 border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
               >
                 <div className="flex justify-between w-full">
                   <p className="text-text_body_16 text-secondary_color dark:text-text_color_dark ">
@@ -509,7 +510,7 @@ export default function ProjectCardNameComponent() {
                   </p>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <p className="text-link_color underline cursor-pointer">
+                      <p className="pl-2 text-link_color dark:text-blue-500 underline cursor-pointer">
                         Configure Project
                       </p>
                     </AlertDialogTrigger>
@@ -636,9 +637,9 @@ export default function ProjectCardNameComponent() {
                 onClick={() =>
                   router.push(`project/${item?.component.component.name}`)
                 }
-                className="w-full my-5 h-full md:h-[330px] lg:h-[350px] xl p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
+                className="w-full cursor-pointer my-5 h-full md:h-[330px] lg:h-[350px] xl p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
               >
-                <div className="flex justify-between w-full">
+                <div className="flex  justify-between w-full">
                   <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark ">
                     {item?.component.component.name}
                   </p>
@@ -898,7 +899,7 @@ export default function ProjectCardNameComponent() {
                   </p>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <p className="text-link_color underline">
+                      <p className="text-link_color pl-2 cursor-pointer dark:text-blue-500 underline">
                         Configure Project
                       </p>
                     </AlertDialogTrigger>
