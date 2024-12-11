@@ -21,6 +21,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import SecurityComponent from "@/components/securityComponent/SecurityComponent";
+import { Code } from "lucide-react";
+import CodeComponent from "@/components/codeComponent/CodeComponent";
 
 export default function page({ params }: ParamProps) {
   const projectName = params.projectName;
@@ -30,7 +32,7 @@ export default function page({ params }: ParamProps) {
   return (
     <main className="w-[90%] m-auto bg-card_color_light rounded h-auto p-5 my-10 dark:bg-card_color_dark">
       <Tabs defaultValue="Overview" className="">
-        <TabsList className="grid w-full grid-cols-4 mb-5">
+        <TabsList className="grid w-full grid-cols-5 mb-5">
           {navProjectDetial.map((item, index: number) => (
             <TabsTrigger
               value={item.name}
@@ -75,9 +77,16 @@ export default function page({ params }: ParamProps) {
 
         <TabsContent value="Security Hotspot">
           <section className="h-full">
-
             <SecurityComponent projectName={projectName} />
+          </section>
+        </TabsContent>
 
+        {/* table code */}
+        <TabsContent value="Code">
+          <section className="w-full">
+
+           <CodeComponent projectName={projectName} />
+      
           </section>
         </TabsContent>
       </Tabs>
