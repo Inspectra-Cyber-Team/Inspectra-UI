@@ -1,6 +1,5 @@
 "use client";
 import { navProjectDetial } from "@/data/navProjectDetial";
-import React from "react";
 
 export type ParamProps = {
   params: {
@@ -8,6 +7,8 @@ export type ParamProps = {
   };
 };
 
+import SecurityComponent from "@/components/securityComponent/SecurityComponent";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -19,11 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import SecurityComponent from "@/components/securityComponent/SecurityComponent";
-import IssueSidebarComponent from "@/components/ProjectDetailComponents/IssueSidebarComponent";
-import PageOverviewProjectDetail from "@/components/ProjectDetailComponents/PageOverviewProjectDetail";
-
+import IusseComponent from "@/components/ProjectDetailComponents/IusseComponent";
 export default function page({ params }: ParamProps) {
   const projectName = params.projectName;
 
@@ -49,16 +46,7 @@ export default function page({ params }: ParamProps) {
           <PageOverviewProjectDetail projectName={projectName}/>
         </TabsContent>
         <TabsContent value="Issue">
-          <section className="w-full h-full flex justify-between">
-            <div className="w-[35%] bg-background_light_mode dark:bg-background_dark_mode p-5 rounded-[20px] ">
-              <p className="text-text_title_24 text-text_color_light dark:text-text_color_dark">
-                Filter
-              </p>
-              <hr className="text-text_color_desc_light mt-2" />
-              <IssueSidebarComponent/>
-            </div>
-            <div className="w-[60%] h-screen bg-green-500">card</div>
-          </section>
+            <IusseComponent props={projectName}/>
         </TabsContent>
 
         <TabsContent value="Security Hotspot">

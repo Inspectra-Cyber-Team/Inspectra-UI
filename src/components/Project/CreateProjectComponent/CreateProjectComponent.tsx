@@ -14,11 +14,12 @@ import { RxCross2 } from "react-icons/rx";
 import { useCreateProjectNameMutation } from "@/redux/service/project";
 import { toast } from "@/components/hooks/use-toast";
 import { useEffect, useState } from "react";
+
 export default function CreateProjectComponent() {
+  const [isLoading, setIsLoading] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [createProjectName, { isSuccess, isError }] =
     useCreateProjectNameMutation();
-
   type ProjectNameType = {
     projectName: string;
   };
@@ -28,34 +29,34 @@ export default function CreateProjectComponent() {
   };
 
   const handleSubmit = (values: ProjectNameType) => {
+    setIsLoading(true);
     setProjectName(values.projectName);
     createProjectName({ projectName: values });
   };
   useEffect(() => {
-    try {
-      if (isSuccess) {
+    if (isSuccess) {
+      toast({
+        description: "Project created successfully",
+        variant: "success",
+      });
+      setIsLoading(false);
+    }
+    if (isError) {
+      if (projectName.trim().length === 0 || /\s/.test(projectName)) {
+        // Check if the projectName is empty or contains whitespace
         toast({
-          description: "Project created successfully",
-          variant: "success",
+          description: "Project name cannot contain whitespace",
+          variant: "error",
         });
+        setIsLoading(false);
+      } else {
+        // Handle the case where the project name already exists
+        toast({
+          description: "Project name already exists",
+          variant: "error",
+        });
+        setIsLoading(false);
       }
-      if (isError) {
-        if (projectName.trim().length === 0 || /\s/.test(projectName)) {
-          // Check if the projectName is empty or contains whitespace
-          toast({
-            description: "Project name cannot contain whitespace",
-            variant: "error",
-          });
-        } else {
-          // Handle the case where the project name already exists
-          toast({
-            description: "Project name already exists",
-            variant: "error",
-          });
-        }
-      }
-    } catch (error) {
-      console.log(error);
     }
   }, [isSuccess, isError]);
 
@@ -97,10 +98,14 @@ export default function CreateProjectComponent() {
                 `}
             />
             <button
-              type="submit"
-              className="w-full mt-5 py-3 bg-primary_color text-text_color_light font-semibold flex justify-center rounded-[10px]"
+              disabled={isLoading}
+              className="w-full my-[30px] py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
             >
-              Submit
+              {isLoading ? (
+                <div className="spinner-border  animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
+              ) : (
+                "Submit"
+              )}
             </button>
           </Form>
         </Formik>
