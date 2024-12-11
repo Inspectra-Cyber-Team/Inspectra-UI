@@ -38,7 +38,16 @@ export const issueApi = cyberApi.injectEndpoints({
         url: `issues/${projectKey}`,
       }),
     }),
+    getSourcesIssue: builder.query<any, { projectKey: string }>({
+      query: ({ projectKey }) => ({
+        url: `sources/${projectKey}`,
+      }),
+    }),
   }),
 });
 
-export const { useGetAllIssueQuery, useGetIssueDetailQuery } = issueApi;
+export const {
+  useGetAllIssueQuery,
+  useGetIssueDetailQuery,
+  useGetSourcesIssueQuery,
+} = issueApi;
