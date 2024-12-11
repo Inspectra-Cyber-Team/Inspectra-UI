@@ -46,7 +46,7 @@ export default function page({ params }: ParamProps) {
         </TabsList>
         
         <TabsContent value="Overview">
-          <PageOverviewProjectDetail/>
+          <PageOverviewProjectDetail projectName={projectName}/>
         </TabsContent>
         <TabsContent value="Issue">
           <section className="w-full h-full flex justify-between">

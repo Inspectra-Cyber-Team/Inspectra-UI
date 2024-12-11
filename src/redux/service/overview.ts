@@ -5,7 +5,7 @@ export const overviewApi = cyberApi.injectEndpoints({
     // get user feedback
     getProjectDetail: builder.query<any,{projectName: string}>({
       query: ({projectName}) => ({
-        url: `/projects/overview?projectName=${projectName}`,
+        url: `projects/details?projectName=${projectName}`,
       }),
     }),
   }),

@@ -1,29 +1,41 @@
 import { useGetProjectDetailQuery } from '@/redux/service/overview';
-import React from 'react'
-import { LuDot } from 'react-icons/lu'
-import { SiTicktick } from 'react-icons/si'
+import React from 'react';
+import { LuDot } from 'react-icons/lu';
+import { SiTicktick } from 'react-icons/si';
 
-export default function PageOverviewProjectDetail() {
-    const { data: overviewData } = useGetProjectDetailQuery({
-        projectName: 'project168',
+type OverviewProps = {
+    projectName: string;
+};
+
+type MetricType = {
+    metric: string;
+    value: string;
+    bestValue?: boolean;
+};
+
+export default function PageOverviewProjectDetail({ projectName }: OverviewProps) {
+    const nameOfProject = projectName;
+
+    const { data } = useGetProjectDetailQuery({
+        projectName: nameOfProject,
     });
-    const overviewResult = overviewData
-    console.log(overviewResult);
-    
+
+    const metrics = data?.[0]?.component?.measures || [];
+    let parsedValue: any = null;
+
     return (
-        <section>
-           
-            {/* First section of page */}
-            <div className='w-[100%] flex justify-between items-center'>
-                <div className='text-text_color_light'>
-                    <h2>{overviewResult?.name || 'Project Details'}</h2>
+        <section className="px-4 md:px-8 lg:px-12">
+            {/* First Section of Page */}
+            <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="text-text_color_light">
+                    <h2 className="text-xl md:text-2xl font-bold">Project Details</h2>
                 </div>
-                <div className=''>
-                    <ul className='flex items-center gap-3 p-3 text-text_color_light'>
-                        <li>13K Lines of Code</li> <LuDot />
-                        <li>Version not Provided</li> <LuDot />
+                <div>
+                    <ul className="flex flex-wrap items-center gap-3 p-3 text-text_color_light">
+                        <li className="text-sm md:text-base">13K Lines of Code</li> <LuDot />
+                        <li className="text-sm md:text-base">Version not Provided</li> <LuDot />
                         <li>
-                            <button className='bg-primary_color p-2 rounded-full w-[100px]'>
+                            <button className="bg-primary_color text-white px-4 py-2 rounded-full w-full md:w-[100px]">
                                 Export
                             </button>
                         </li>
@@ -32,203 +44,98 @@ export default function PageOverviewProjectDetail() {
             </div>
             <div className="border-b border-primary_color mt-3 mb-5"></div>
 
-            {/* Second section of page */}
-            <div className='w-[100%] flex justify-between items-center'>
-                <div className='text-text_color_light flex items-center gap-3'>
-                    <h2 className='bg-primary_color p-3 rounded-md'><SiTicktick /></h2>
+            {/* Second Section of Page */}
+            <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="text-text_color_light flex items-center gap-3">
+                    <h2 className="bg-primary_color p-3 rounded-md text-white text-xl">
+                        <SiTicktick />
+                    </h2>
                     <div>
-                        <p className='text-[10px]'>Quality Date</p>
-                        <p className='font-bold'>Passed</p>
+                        <p className="text-xs md:text-sm">Quality Date</p>
+                        <p className="font-bold text-base md:text-lg">Passed</p>
                     </div>
                 </div>
-                <div className=''>
+                <div className="text-sm md:text-base">
                     Last Analysis <b>1 month ago</b>
                 </div>
             </div>
 
-            {/* Third Section of page */}
-            <div className='w-[100%]'>
-                <div className='grid grid-cols-3 mt-5 mb-5'>
-                    <div className='text-text_color_light flex-col items-center gap-3 border-r border-primary_color p-3'>
-                        <p className='text-text_body_16 mb-3'>Security</p>
-                        <div className='text-text_body_16 flex justify-between items-center mb-3'>
-                            <p className='font-bold'>
-                                0 <span className='font-normal'>Open Issues</span>
-                            </p>
-                            <p className='w-[36px] h-[36px] text-text_body_16 flex items-center justify-center border border-primary_color p-2 rounded-md'>
-                                A
-                            </p>
-                        </div>
-                        <div className="flex space-x-4 justify-between">
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 H
-                            </p>
+            {/* Third Section of Page */}
+            <div className="w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 mb-5">
+                    {metrics.map((metric: MetricType, index: number) => {
+                        // Dynamically check and parse JSON string in `value`
+                        try {
+                            if (metric.value.startsWith('{') && metric.value.endsWith('}')) {
+                                parsedValue = JSON.parse(metric.value);
+                            }
+                        } catch (err) {
+                            console.error('Error parsing JSON for metric:', metric.metric, err);
+                        }
 
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 M
-                            </p>
+                        // Format the metric name
+                        const formattedMetric = metric.metric
+                            .replace(/_/g, ' ') // Replace underscores with spaces
+                            .toUpperCase(); // Convert to uppercase
 
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 L
-                            </p>
-                        </div>
-
-
-                    </div>
-                    <div className='text-text_color_light flex-col items-center gap-3 border-r border-primary_color p-3'>
-                        <p className='text-text_body_16 mb-3'>Reliability</p>
-                        <div className='text-text_body_16 flex justify-between items-center mb-3'>
-                            <p className='font-bold'>
-                                4 <span className='font-normal'>Open Issues</span>
-                            </p>
-                            <p className='w-[36px] h-[36px] text-text_body_16 flex items-center justify-center border border-secondary_color p-2 rounded-md'>
-                                C
-                            </p>
-                        </div>
-                        <div className="flex space-x-4 justify-between">
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 H
-                            </p>
-
-                            <p className="px-12 py-2 bg-yellow-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 M
-                            </p>
-
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 L
-                            </p>
-                        </div>
-
-                    </div>
-                    <div className='text-text_color_light flex-col items-center gap-3 border-r border-primary_color p-3'>
-                        <p className='text-text_body_16 mb-3'>Maintainability</p>
-                        <div className='text-text_body_16 flex justify-between items-center mb-3'>
-                            <p className='font-bold'>
-                                0 <span className='font-normal'>Open Issues</span>
-                            </p>
-                            <p className='w-[36px] h-[36px] text-text_body_16 flex items-center justify-center border border-primary_color p-2 rounded-md'>
-                                A
-                            </p>
-                        </div>
-                        <div className="flex space-x-4 justify-between">
-                            <p className="px-12 py-2 bg-red-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                52 H
-                            </p>
-
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 M
-                            </p>
-
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 L
-                            </p>
-                        </div>
-
-
-                    </div>
-                </div>
-
-                <div className="border-b border-primary_color mt-3 mb-5"></div>
-
-                <div className='grid grid-cols-3 mt-5 mb-5'>
-                    <div className='text-text_color_light flex-col items-center gap-3 border-r border-primary_color p-3'>
-                        <p className='text-text_body_16 mb-3'>Security</p>
-                        <div className='text-text_body_16 flex justify-between items-center mb-3'>
-                            <p className='font-bold'>
-                                0 <span className='font-normal'>Open Issues</span>
-                            </p>
-                            <div className="relative w-12 h-12">
-
-                                {/* <div className="absolute w-full h-full rounded-full bg-red-500"></div> */}
-
-                                <div
-                                    className="absolute w-full h-full rounded-full bg-transparent"
-                                    style={{ background: 'conic-gradient(lime 0% 45%, red 45% 100%)' }}>
+                        return (
+                            <div
+                                key={index}
+                                className="text-text_color_light flex flex-col gap-3 border-r border-primary_color p-3"
+                            >
+                                {/* Render formatted metric */}
+                                <p className="text-sm md:text-base lg:text-lg mb-3 font-bold">{formattedMetric}</p>
+                                <div className="text-sm md:text-base flex justify-between items-center mb-3">
+                                    {parsedValue ? (
+                                        <p className="font-bold">
+                                            {parsedValue.total || 0} <span className="font-normal">Total Issues</span>
+                                        </p>
+                                    ) : (
+                                        <p className="font-bold">
+                                            {metric.value}{' '}
+                                            <span className="font-normal">
+                                                {metric.metric === 'ncloc' ? 'Lines of Code' : 'Open Issues'}
+                                            </span>
+                                        </p>
+                                    )}
+                                    <p className="w-[36px] h-[36px] text-sm md:text-base flex items-center justify-center border border-primary_color p-2 rounded-md">
+                                        A
+                                    </p>
                                 </div>
 
-                                <div className="absolute w-1/2 h-1/2 bg-white dark:bg-background_dark_mode rounded-full top-3 left-3"></div>
+                                {/* Render HIGH, MEDIUM, LOW issues */}
+                                {parsedValue ? (
+                                    <div className="flex space-x-4 justify-between">
+                                        <p className="px-4 py-2 bg-gray-100 rounded-md text-sm font-medium shadow-sm">
+                                            {parsedValue.HIGH || 0} H
+                                        </p>
+                                        <p className="px-4 py-2 bg-gray-100 rounded-md text-sm font-medium shadow-sm">
+                                            {parsedValue.MEDIUM || 0} M
+                                        </p>
+                                        <p className="px-4 py-2 bg-gray-100 rounded-md text-sm font-medium shadow-sm">
+                                            {parsedValue.LOW || 0} L
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="flex space-x-4 justify-between">
+                                        <p className="px-4 py-2 bg-gray-100 rounded-md text-sm font-medium shadow-sm">
+                                            0 H
+                                        </p>
+                                        <p className="px-4 py-2 bg-gray-100 rounded-md text-sm font-medium shadow-sm">
+                                            0 M
+                                        </p>
+                                        <p className="px-4 py-2 bg-gray-100 rounded-md text-sm font-medium shadow-sm">
+                                            0 L
+                                        </p>
+                                    </div>
+                                )}
+                                <div className="border-b border-primary_color mt-3"></div>
                             </div>
-                        </div>
-                        <div className="flex space-x-4 justify-between">
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 H
-                            </p>
-
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 M
-                            </p>
-
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 L
-                            </p>
-                        </div>
-                    </div>
-                    <div className='text-text_color_light flex-col items-center gap-3 border-r border-primary_color p-3'>
-                        <p className='text-text_body_16 mb-3'>Reliability</p>
-                        <div className='text-text_body_16 flex justify-between items-center mb-3'>
-                            <p className='font-bold'>
-                                4 <span className='font-normal'>Open Issues</span>
-                            </p>
-                            <div className="relative w-12 h-12">
-
-                                {/* <div className="absolute w-full h-full rounded-full bg-red-500"></div> */}
-
-                                <div
-                                    className="absolute w-full h-full rounded-full bg-transparent border border-gray-100"
-                                    style={{ background: 'conic-gradient(lime 0% 45%, white 45% 0%)' }}>
-                                </div>
-
-                                <div className="absolute w-1/2 h-1/2 bg-white dark:bg-background_dark_mode rounded-full top-3 left-3 border border-gray-100"></div>
-                            </div>
-                        </div>
-                        <div className="flex space-x-4 justify-between">
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 H
-                            </p>
-
-                            <p className="px-12 py-2 bg-yellow-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 M
-                            </p>
-
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 L
-                            </p>
-                        </div>
-                    </div>
-                    <div className='text-text_color_light flex-col items-center gap-3 border-r border-primary_color p-3'>
-                        <p className='text-text_body_16 mb-3'>Maintainability</p>
-                        <div className='text-text_body_16 flex justify-between items-center mb-3'>
-                            <p className='font-bold'>
-                                0 <span className='font-normal'>Open Issues</span>
-                            </p>
-                            <div className="relative w-12 h-12">
-
-                            {/* <div className="absolute w-full h-full rounded-full bg-red-500"></div> */}
-
-                                <div
-                                    className="absolute w-full h-full rounded-full bg-transparent border border-gray-100"
-                                    style={{ background: 'conic-gradient(lime 0% 45%, white 45% 0%)' }}>
-                                </div>
-
-                                <div className="absolute w-1/2 h-1/2 bg-white dark:bg-background_dark_mode rounded-full top-3 left-3 border border-gray-100"></div>
-                            </div>
-                        </div>
-                        <div className="flex space-x-4 justify-between">
-                            <p className="px-12 py-2 bg-red-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                52 H
-                            </p>
-
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 M
-                            </p>
-
-                            <p className="px-12 py-2 bg-gray-100 rounded-md text-text_color_light text-sm font-medium shadow-sm">
-                                0 L
-                            </p>
-                        </div>
-                    </div>
+                            
+                        );
+                    })}
                 </div>
             </div>
         </section>
-    )
+    );
 }
