@@ -98,16 +98,18 @@ export default function IusseComponent({ ...props }) {
               </p>
             ))}
             <hr className="text-text_color_desc_light opacity-15  my-3" />
-            {resultIssueDetail?.issues?.map((item: any, index: number) => (
-              <div className="w-full flex justify-between">
-                <p>cleanCodeAttribute</p>
-                <div className=" text-[14px]  flex justify-center items-center rounded-md px-3 space-x-3 bg-[#60935d21] ">
-                  <p> {item?.cleanCodeAttribute}</p>
-                  <p>|</p>
-                  <p> {item?.cleanCodeAttributeCategory}</p>
-                </div>
-              </div>
-            ))}
+            <div>
+              {resultIssueDetail?.issues?.map((item: any, index: number) => (
+                <p key={index} className="text-[14px] text-text_color_desc_light">
+                  {" "}
+                  <p className="md:whitespace-normal md:max-w-none truncate max-w-full  text-text_color_light  dark:text-text_color_desc_dark">
+                    Line affected: L{item?.line} • Effort • {item?.effort} •{" "}
+                    Introduced • {timeSince(item?.updateDate)} • {item?.type} •{" "}
+                    {item?.severity}
+                  </p>
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       ) : (
