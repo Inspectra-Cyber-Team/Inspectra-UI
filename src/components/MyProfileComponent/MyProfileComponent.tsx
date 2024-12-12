@@ -82,7 +82,7 @@ export default function MyProfileComponent() {
                             <p className="md:w-[35%]">Username</p>
                             <input
                                 type="text"
-                                name="username"
+                                name="name"
                                 className="border border-text_color_desc_light text-text_color_desc_light w-full p-3 rounded-lg"
                                 placeholder={userData?.data?.name || 'Your Username'}
                                 value={formik.values.name}

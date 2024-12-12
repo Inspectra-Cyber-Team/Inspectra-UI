@@ -1,6 +1,5 @@
 "use client";
 import { navProjectDetial } from "@/data/navProjectDetial";
-import React from "react";
 
 export type ParamProps = {
   params: {
@@ -21,10 +20,11 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import SecurityComponent from "@/components/securityComponent/SecurityComponent";
-import { Code } from "lucide-react";
 import CodeComponent from "@/components/codeComponent/CodeComponent";
+import IusseComponent from "@/components/ProjectDetailComponents/IusseComponent";
 
 export default function page({ params }: ParamProps) {
+  
   const projectName = params.projectName;
 
   console.log(projectName);
@@ -69,10 +69,7 @@ export default function page({ params }: ParamProps) {
           </Card>
         </TabsContent>
         <TabsContent value="Issue">
-          <section className="w-full h-full flex justify-between">
-            <div className="w-[35%] bg-blue-300 ">side bar</div>
-            <div className="w-[60%] h-screen bg-green-500">card</div>
-          </section>
+            <IusseComponent props={projectName}/>
         </TabsContent>
 
         <TabsContent value="Security Hotspot">

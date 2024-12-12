@@ -86,13 +86,13 @@ export const LoginAuth = () => {
       >
         <FcGoogle className="text-text_title_24" />
         <span className="text-text_color_dark ml-3">
-          Or Sign in with Google
+           Sign in with Google
         </span>
       </button>
 
       {/* GitHub Button */}
       <button
-        className="w-full py-3 flex items-center font-normal bg-background_light_mode justify-center rounded-[10px]"
+        className="w-full mt-5 py-3 flex items-center font-normal bg-background_light_mode justify-center rounded-[10px]"
         onClick={() => {
           console.log("GitHub sign-in button clicked");
           handleSignIn("github");
@@ -100,7 +100,7 @@ export const LoginAuth = () => {
       >
         <FaGithub className="text-text_title_24" />
         <span className="text-text_color_light ml-3">
-          Or Sign in with GitHub
+           Sign in with GitHub
         </span>
       </button>
 
