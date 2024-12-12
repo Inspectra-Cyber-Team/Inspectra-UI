@@ -106,3 +106,30 @@ export function getCoverageData(coverageValue: any) {
 export function sliceString(str: string) {
   return str?.replaceAll(/next-[a-f0-9\-]+/g, '...');
 }
+
+export function convertToHTML(apiResponseText: any) {
+  // Create a DOMParser instance
+  const parser = new DOMParser();
+
+  // Parse the text as HTML
+  const parsedHTML = parser.parseFromString(apiResponseText, "text/html");
+
+  // Return the inner content as proper HTML
+  return parsedHTML.body.innerHTML;
+}
+
+
+export function formatTimestamp(timestamp: any) {
+  const date = new Date(timestamp);
+  
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true, // for AM/PM format
+  };
+  
+  return date.toLocaleString('en-US', options).replace(',', ' at');
+}
