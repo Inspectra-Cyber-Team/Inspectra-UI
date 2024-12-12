@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.className} bg-background_light_mode relative  overflow-y-auto   overflow-x-hidden dark:bg-background_dark_mode flex flex-col justify-between  `}
+        className={`${poppins.className} bg-background_light_mode relative   overflow-y-auto scrollbar-hide   overflow-x-hidden dark:bg-background_dark_mode flex flex-col justify-between  `}
       >
       <SessionWrapper>
         <StoreProvider >
@@ -41,7 +41,7 @@ export default function RootLayout({
           >
             {/* <BannerComponent /> */}
             <NavbarComponent />
-            <Suspense fallback={""}>
+            <Suspense  fallback={""}>
               {children}
               <Toaster />
             </Suspense>

@@ -65,7 +65,7 @@ export default function BlogComponent() {
           <div
             key={index}
             onClick={() => router.push(`/blog/${blog?.uuid}`)}
-            className="flex  my-2 flex-wrap lg:flex-nowrap justify-center lg:justify-between items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5 lg:pb-0"
+            className="flex  my-2 flex-wrap lg:flex-nowrap justify-center lg:justify-between cursor-pointer items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5 lg:pb-0"
           >
             <div className="flex flex-col gap-3 lg:w-[55%]">
               {/* profile */}
@@ -83,12 +83,12 @@ export default function BlogComponent() {
               </div>
 
               {/* title */}
-              <p className="text-text_title_20  cursor-pointer  line-clamp-2 text-text_color_light dark:text-text_color_dark">
+              <p className="text-text_title_20  cursor-pointer  line-clamp-1 text-text_color_light dark:text-text_color_dark">
                 {blog?.title}
               </p>
 
               {/* description */}
-              <p className="text-text_body_16  cursor-pointer  text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-2">
+              <p className="text-text_body_16  cursor-pointer  text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-1">
                 {blog?.description}
               </p>
 
@@ -131,9 +131,9 @@ export default function BlogComponent() {
             </div>
 
             {/* thumbnail */}
-            <div className={"w-[200px] h-[150px]"}>
+            <div className={"w-[200px] h-[150px] hidden lg:block"}>
               <img
-                className="w-full h-full object-contain rounded-xl"
+                className="w-full h-full object-cover rounded-xl"
                 src={blog?.thumbnail[0]}
                 alt="thumbnail"
               />

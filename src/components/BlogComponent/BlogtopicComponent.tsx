@@ -74,7 +74,7 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
             <button
               key={blog?.uuid}
               onClick={() => router.push(`/blog/${blog?.uuid}`)}
-              className="flex my-2 flex-wrap lg:flex-nowrap justify-center lg:justify-between items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5 lg:pb-0"
+              className="flex my-2 flex-wrap lg:flex-nowrap cursor-pointer justify-center lg:justify-between items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5 lg:pb-0"
             >
               <div className="flex flex-col gap-3 lg:w-[55%]">
                 {/* profile */}
