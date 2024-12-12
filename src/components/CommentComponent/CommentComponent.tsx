@@ -131,12 +131,12 @@ const CommentSection = ({ uuid }: commentProp) => {
             placeholder="Write your comment here..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="mt-4 p-3 h-[130px] rounded-[20px] border-0 bg-[#f5f5f5] dark:border-b-background_dark_mode"
+            className="mt-4 p-3 h-[130px] rounded-[20px] border-0 bg-[#f5f5f5] dark:bg-card_color_dark dark:border-b-background_dark_mode"
           />
           <div className={"flex justify-end"}>
             <Button
               onClick={() => handleCreateComment(uuid)}
-              className="right-4 mt-2 bg-primary_color px-3 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
+              className="right-4 mt-2 bg-primary_color px-3 text-text_color_light dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
             >
               Submit
             </Button>
@@ -225,7 +225,7 @@ const CommentSection = ({ uuid }: commentProp) => {
                   <div className="flex justify-end">
                     <Button
                       onClick={() => handleReplySubmit(comment.uuid)}
-                      className="mt-2 bg-primary_color px-3 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
+                      className="mt-2 bg-primary_color px-3 text-text_color_light dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
                     >
                       Submit
                     </Button>
