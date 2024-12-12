@@ -4,12 +4,15 @@ import * as React from "react";
 import { FaFolder, FaFileAlt } from "react-icons/fa"; 
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  SortingState,
   useReactTable,
+  VisibilityState,
 } from "@tanstack/react-table";
 
 import {
@@ -19,7 +22,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 import { useGetCodeQuery } from "@/redux/service/code";
+import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 type CodeMetric = {
   key: string;
@@ -109,9 +125,18 @@ type CodeComponentProps = Readonly<{
 
 export default function CodeComponent({ projectName }: CodeComponentProps) {
 
+  const router = useRouter();
+
   const [componentName, setComponentName] = React.useState<string>("");
  
 
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+const [rowSelection, setRowSelection] = React.useState({})
 
 
   React.useEffect(() => {
@@ -167,8 +192,10 @@ export default function CodeComponent({ projectName }: CodeComponentProps) {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      sorting: [],
-      columnFilters: [],
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
     },
   });
 
@@ -186,6 +213,7 @@ export default function CodeComponent({ projectName }: CodeComponentProps) {
     if (qualifier === "DIR" && row.original.key !== componentName) {
       setComponentName(row.original.key);
     } 
+    
   }, 300);
 
   if (codeIsLoading) return <div>Loading...</div>;
@@ -194,6 +222,44 @@ export default function CodeComponent({ projectName }: CodeComponentProps) {
 
   return (
     <div>
+       <div className="w-full">
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Filter emails..."
+          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("email")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Columns <ChevronDown />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </div>  
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -223,5 +289,6 @@ export default function CodeComponent({ projectName }: CodeComponentProps) {
         </TableBody>
       </Table>
     </div>
+    
   );
 }

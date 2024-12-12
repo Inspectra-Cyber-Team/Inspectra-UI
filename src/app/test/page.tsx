@@ -3,6 +3,6 @@ import React from 'react'
 
 export default function page() {
   return (
-    <ShowCodeComponent componentKey="django:Dockerfil" />
+    <ShowCodeComponent componentKey="django:Dockerfile" />
   )
 }
