@@ -104,7 +104,7 @@ export function getCoverageData(coverageValue: any) {
 }
 
 export function sliceString(str: string) {
-  return str?.replaceAll(/next-[a-f0-9\-]+/g, '...');
+  return str?.replaceAll(/next-[a-f0-9\-]+/g, "...");
 }
 
 export function convertToHTML(apiResponseText: any) {
@@ -118,18 +118,51 @@ export function convertToHTML(apiResponseText: any) {
   return parsedHTML.body.innerHTML;
 }
 
-
 export function formatTimestamp(timestamp: any) {
   const date = new Date(timestamp);
-  
+
   const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
     hour12: true, // for AM/PM format
   };
-  
-  return date.toLocaleString('en-US', options).replace(',', ' at');
+
+  return date.toLocaleString("en-US", options).replace(",", " at");
+}
+
+// regex for more info tab
+export function convertApiResponseToHtml(apiResponse: any) {
+  // Match all <a>, <h3>, and <li> tags and their content within the apiResponse
+  const regex =
+    /<(a href="([^"]+)">([^<]+)<\/a>)|(<h3>([^<]+)<\/h3>)|(<li>([^<]+)<\/li>)/g;
+
+  // Process the API response and replace the tags with the desired format
+  const htmlOutput = apiResponse.replace(
+    regex,
+    (
+      match: any,
+      aTag: any,
+      url: any,
+      aText: any,
+      h3Tag: any,
+      h3Text: any,
+      liTag: any,
+      liText: any
+    ) => {
+      // Check if it's an <a> tag, <h3> tag, or <li> tag
+      if (aTag) {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: blue; text-decoration: underline;" class="link">${aText}</a>`;
+      } else if (h3Tag) {
+        return `<h3>${h3Text}</h3>`;
+      } else if (liTag) {
+        return `<li ">${liText}</li>`;
+      }
+      return match;
+    }
+  );
+
+  return htmlOutput;
 }

@@ -1,11 +1,15 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatTimestamp, sliceString, timeSince } from "@/lib/utils";
+import {
+  convertApiResponseToHtml,
+  formatTimestamp,
+  timeSince,
+} from "@/lib/utils";
 import {
   useGetAllIssueQuery,
   useGetIssueDetailQuery,
-  useGetSourcesIssueQuery,
 } from "@/redux/service/issue";
+import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 import { IusseSideBarType } from "@/types/IssueType";
 import { useEffect, useState } from "react";
 import { FaFile } from "react-icons/fa";
@@ -13,8 +17,8 @@ import { GoFileDirectoryFill } from "react-icons/go";
 import { IoIosMore } from "react-icons/io";
 
 import Prism from "prismjs";
-import "prismjs/themes/prism.css";
 import "prismjs/themes/prism-okaidia.css";
+import "prismjs/themes/prism.css";
 
 import {
   Accordion,
@@ -22,7 +26,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
-import { useRouter } from "next/navigation";
+import WhereIssue from "./WhereIssue";
+import WhyIssue from "./WhyIssue";
+
 export default function IusseComponent({ ...props }) {
   //   state for store filter
   const [fileStore, setFileStore] = useState<string>("");
@@ -45,10 +51,7 @@ export default function IusseComponent({ ...props }) {
 
   const [size, setSize] = useState();
 
-  // fetch sources issue
-  const { data: issueSource } = useGetSourcesIssueQuery({
-    projectKey: projectKey,
-  });
+  console.log("component in parent ", componentProject);
 
   //   fetch all isssue from api
   const { data: issueData } = useGetAllIssueQuery({
@@ -69,12 +72,12 @@ export default function IusseComponent({ ...props }) {
     projectKey: projectKey,
   });
 
+  // fetch rule detail for issue tab
+  const { data: ruleIssue } = useGetRulesByRuleNameQuery({ ruleName: ruleKey });
+
   const issueCardResult = issueData?.data?.issues;
   const issueSideBarResult = issueData?.data.facets;
   const resultIssueDetail = issueDetail?.data;
-  const issueSourceResult = issueSource?.data[componentProject];
-
-  const router = useRouter();
 
   useEffect(() => setSize(issueData?.data?.total), [issueData]);
 
@@ -83,7 +86,7 @@ export default function IusseComponent({ ...props }) {
   });
 
   return (
-    <section className="w-full h-full  flex justify-between">
+    <main className="w-full h-full  flex justify-between">
       {/* when on click issue card */}
       {activeContent === true ? (
         <div className="w-full h-full  flex justify-between">
@@ -92,14 +95,6 @@ export default function IusseComponent({ ...props }) {
             <div className="w-full text-text_body_16 text-text_color_light dark:text-text_color_dark text-end">
               <p> {issueData?.data?.total} issues</p>
               <hr className="text-text_color_desc_light mt-2" />
-              {/* {resultIssueDetail?.components.map((item: any, index: number) => (
-                <p
-                  className="text-[12px] text-left text-text_color_desc_light dark:text-text_color_desc_dark"
-                  key={index}
-                >
-                  {sliceString(item.path)}
-                </p>
-              ))} */}
               {issueCardResult.map((item: any, index: number) => (
                 <div
                   onClick={() => {
@@ -148,6 +143,7 @@ export default function IusseComponent({ ...props }) {
 
             {/* tab inside issue  */}
             <Tabs defaultValue="Where is the issue?">
+              {/* for trigger different tab */}
               <TabsList className="grid grid-cols-4 ">
                 <TabsTrigger
                   value="Where is the issue?"
@@ -174,65 +170,19 @@ export default function IusseComponent({ ...props }) {
                   More info
                 </TabsTrigger>
               </TabsList>
+              {/* tab for each content */}
               <TabsContent value="Where is the issue?">
-                <div className="w-full h-full my-5  border border-1 border-opacity-30 border-text_color_desc_light  rounded-[20px] text-text_color_light dark:text-text_color_desc_dark ">
-                  {/* header content */}
-                  <div className=" w-full border-b border-opacity-30 border-text_color_desc_light  p-5">
-                    <div className="w-full md:w-[75%] lg:w-[95%] xl:w-[70%]  flex justify-between">
-                      <p
-                        onClick={() => router.push(`/project`)}
-                        className=" hidden md:block hover:underline hover:cursor-pointer hover:text-blue-500"
-                      >
-                        {issueSourceResult?.component?.projectName}
-                      </p>
-                      <p className="hidden md:block">{"|"}</p>
-                      <p>
-                        {sliceString(issueSourceResult?.component?.longName)}
-                      </p>
-                    </div>
-                  </div>
-                  {/* code content */}
-                  <div className="w-full h-full  p-5 ">
-                    {issueSourceResult?.sources.map(
-                      (item: any, index: number) => (
-                        <div key={index} className="flex w-full ">
-                          <p>{item.line}</p>
-                          <pre
-                            style={{
-                              background: "transparent",
-                              paddingLeft: "30px", // Add this line
-                              paddingTop: "0",
-                              margin: 0,
-                              width: "100%",
-                              height: "100%",
-                            }}
-                          >
-                            <code
-                              className="language-javascript"
-                              dangerouslySetInnerHTML={{ __html: item.code }}
-                            ></code>
-
-                            {resultIssueDetail?.issues?.map(
-                              (issue: any, index: number) => (
-                                <div key={index} className="w-full mx-auto">
-                                  {issue?.textRange?.startLine === item.line &&
-                                  issue?.textRange?.endLine === item.line ? (
-                                    <p className="my-3 p-3 rounded-md border-2 border-custom_red ">
-                                      {issue?.message}
-                                    </p>
-                                  ) : null}
-                                </div>
-                              )
-                            )}
-                          </pre>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
+                {componentProject && projectKey ? (
+                  <WhereIssue
+                    projectKey={projectKey}
+                    componentKey={componentProject}
+                  />
+                ) : (
+                  <div>Waiting for data...</div>
+                )}
               </TabsContent>
               <TabsContent value="Why is this an issue?">
-                why is this an issue
+                <WhyIssue ruleKey={ruleKey} />
               </TabsContent>
               <TabsContent value="Activity">
                 <div className="w-full  text-text_color_light dark:text-text_color_dark m-7">
@@ -240,7 +190,9 @@ export default function IusseComponent({ ...props }) {
                   <p className="text-text_body_16 mt-5">
                     {resultIssueDetail?.issues?.map(
                       (issue: any, index: number) => (
-                        <p key={index}>{formatTimestamp(issue?.creationDate)}</p>
+                        <p key={index}>
+                          {formatTimestamp(issue?.creationDate)}
+                        </p>
                       )
                     )}
                   </p>
@@ -249,13 +201,34 @@ export default function IusseComponent({ ...props }) {
                   </p>
                 </div>
               </TabsContent>
-              <TabsContent value="More info">more info</TabsContent>
+              <TabsContent value="More info">
+                <div className="w-full  text-text_color_light dark:text-text_color_dark my-5">
+                  <div>
+                    {ruleIssue?.map((rule: any) =>
+                      rule?.descriptionSections?.map(
+                        (ruleDes: any, descIndex: number) => {
+                          return ruleDes?.key === "resources" ? (
+                            <p
+                              key={descIndex} // Added a key prop for list item elements
+                              dangerouslySetInnerHTML={{
+                                __html: convertApiResponseToHtml(
+                                  ruleDes?.content
+                                ), // Insert HTML content
+                              }}
+                            ></p>
+                          ) : null; // Return null for non-matching cases
+                        }
+                      )
+                    )}
+                  </div>
+                </div>
+              </TabsContent>
             </Tabs>
           </div>
         </div>
       ) : (
         // default card issue and filter
-        <div className="w-full h-full  flex justify-between">
+        <section className="w-full h-full  flex justify-between">
           {/* filter side bar */}
           <div className="w-[35%] hidden lg:block h-full bg-background_light_mode dark:bg-background_dark_mode p-5 rounded-[20px]  ">
             <p className="text-text_title_24 text-text_color_light dark:text-text_color_dark ">
@@ -379,10 +352,10 @@ export default function IusseComponent({ ...props }) {
                   <div className="w-full flex justify-between">
                     <p
                       onClick={() => {
-                        setActiveContent(true),
-                          setProjectKey(issue?.key),
-                          setComponentProject(issue.component);
-                          setRuleKey(issue.rule);
+                        setActiveContent(true);
+                        setProjectKey(issue?.key);
+                        setComponentProject(issue.component);
+                        setRuleKey(issue.rule);
                       }}
                       className=" text-text_body_16 cursor-pointer truncate  w-[60%] md:w-[75%] xl:w-[80%] text-ascend_color underline"
                     >
@@ -480,8 +453,8 @@ export default function IusseComponent({ ...props }) {
               ))}
             </section>
           </div>
-        </div>
+        </section>
       )}
-    </section>
+    </main>
   );
 }
