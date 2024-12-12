@@ -1,7 +1,6 @@
 import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 import React, { useEffect } from "react";
-import "prismjs/themes/prism-okaidia.css";
-import "prismjs/themes/prism.css";
+
 import Prism from "prismjs";
 
 export default function WhyIssue({ ruleKey }: any) {

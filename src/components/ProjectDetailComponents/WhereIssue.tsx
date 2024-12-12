@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import "prismjs/themes/prism-okaidia.css";
-import "prismjs/themes/prism.css";
+
 import Prism from "prismjs";
 import { useRouter } from "next/navigation";
 import { sliceString } from "@/lib/utils";
@@ -9,10 +8,7 @@ import {
   useGetSourcesIssueQuery,
   useGetIssueDetailQuery,
 } from "@/redux/service/issue";
-export default function WhereIssue(
-  { projectKey }: any,
-  { componentProject }: any
-) {
+export default function WhereIssue({ projectKey }: any) {
   const { data: issueDetail } = useGetIssueDetailQuery({
     projectKey: projectKey,
   });
@@ -21,8 +17,10 @@ export default function WhereIssue(
     projectKey: projectKey,
   });
   const router = useRouter();
-  const issueSourceResult = issueSource?.data?.[componentProject];
   const resultIssueDetail = issueDetail?.data;
+
+  const component = resultIssueDetail?.components[1]?.key;
+  const issueSourceResult = issueSource?.data?.[component];
 
   useEffect(() => {
     // Run Prism's highlightAll function when ruleIssue changes or component mounts

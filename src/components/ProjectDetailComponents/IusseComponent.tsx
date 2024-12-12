@@ -17,7 +17,7 @@ import { GoFileDirectoryFill } from "react-icons/go";
 import { IoIosMore } from "react-icons/io";
 
 import Prism from "prismjs";
-import "prismjs/themes/prism-okaidia.css";
+
 import "prismjs/themes/prism.css";
 
 import {
@@ -172,14 +172,7 @@ export default function IusseComponent({ ...props }) {
               </TabsList>
               {/* tab for each content */}
               <TabsContent value="Where is the issue?">
-                {componentProject && projectKey ? (
-                  <WhereIssue
-                    projectKey={projectKey}
-                    componentKey={componentProject}
-                  />
-                ) : (
-                  <div>Waiting for data...</div>
-                )}
+                <WhereIssue projectKey={projectKey} />
               </TabsContent>
               <TabsContent value="Why is this an issue?">
                 <WhyIssue ruleKey={ruleKey} />
