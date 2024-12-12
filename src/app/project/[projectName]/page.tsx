@@ -7,18 +7,10 @@ export type ParamProps = {
   };
 };
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
+
 import SecurityComponent from "@/components/securityComponent/SecurityComponent";
 
 import PageOverviewProjectDetail from "@/components/ProjectDetailComponents/PageOverviewProjectDetail";
@@ -35,10 +27,10 @@ export default function page({ params }: ParamProps) {
     <main className="w-[90%] m-auto bg-card_color_light rounded h-auto p-5 my-10 dark:bg-card_color_dark">
       <Tabs defaultValue="Overview" className="">
         <TabsList className="grid w-full grid-cols-5 mb-5">
-          {navProjectDetial.map((item, index: number) => (
+          {navProjectDetial.map((item) => (
             <TabsTrigger
               value={item.name}
-              key={index}
+              key={item.name}
               className="group relative pb-2 text-gray-500 hover:text-secondary_color transition mr-3"
             >
               {item.name}

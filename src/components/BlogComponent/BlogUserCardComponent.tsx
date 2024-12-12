@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { useGetBlogByUserUuidQuery } from "@/redux/service/blog";
 import { useRouter } from "next/navigation";
 
@@ -26,7 +25,7 @@ type Blog = {
   createdAt: string;
 };
 
-export default function BlogUserCardComponent({ uuid }: BlogCardProps) {
+export default function BlogUserCardComponent({ uuid }: Readonly<BlogCardProps>) {
   const router = useRouter();
   const { data } = useGetBlogByUserUuidQuery({ uuid: uuid });
 
@@ -92,9 +91,9 @@ export default function BlogUserCardComponent({ uuid }: BlogCardProps) {
                       <span>{blog?.countComments}</span>
                     </div>
                   </div>
-                  <div onClick={() => router.push(`/blog/${blog?.uuid}`)} className="text-text_color_desc_light dark:text-text_color_desc_dark cursor-pointer font-medium hover:underline">
+                  <button onClick={() => router.push(`/blog/${blog?.uuid}`)} className="text-text_color_desc_light dark:text-text_color_desc_dark cursor-pointer font-medium hover:underline">
                     Read more
-                  </div>
+                  </button>
                 </div>
               </div>
             </div>
