@@ -7,7 +7,7 @@ import { FileIcon } from "lucide-react";
 import Prism from "prismjs";
 import "prismjs/themes/prism.css";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
+import { Skeleton } from "@/components/ui/skeleton"
 import { useGetSourceCodeByLineQuery } from "@/redux/service/source";
 
 type LineData = {
@@ -41,14 +41,18 @@ export default function CodeViewer({ componentKey }: CodeViewerProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">Loading...</div>
+      <div className="w-full h-screen mx-auto max-w-[88%]">
+      <Skeleton className="w-full h-[100px]" />
+      <Skeleton className="border-b mt-1" /> 
+      <Skeleton className="w-full h-[50%]" />
+    </div>
     );
   }
 
   if (error) {
     return (
       <div className="flex items-center justify-center p-8 text-red-500">
-        Error loading source code.
+        <img className="max-w-lg rounded-sm h-full" src="/images/error1.png" alt="error"  />
       </div>
     );
   }
