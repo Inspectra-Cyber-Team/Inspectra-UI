@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function page() {
   return (
-    <section className="w-[88%] mx-auto my-[20px]">
+    <section className="w-[90%] mx-auto my-[60px]">
       <BlogPageComponent />
     </section>
   );

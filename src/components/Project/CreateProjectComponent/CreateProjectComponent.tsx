@@ -63,14 +63,14 @@ export default function CreateProjectComponent() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <div className="px-4 py-2 rounded-2xl inline-flex w-auto md:w-[170px]  items-center text-text_color_light md:flex md:justify-around bg-text_color_dark">
+        <div className="px-4 py-2 cursor-pointer rounded-2xl inline-flex w-auto md:w-[170px]  items-center text-text_color_light md:flex md:justify-around bg-text_color_dark">
           <p className="hidden md:block">Create Project</p>
           <LuPlus />
         </div>
       </AlertDialogTrigger>
-      <AlertDialogContent className=" w-[90%] md:w-full rounded-[20px] bg-text_color_dark h-[300px] flex flex-col justify-around">
+      <AlertDialogContent className=" w-[90%]  md:w-full rounded-[20px] bg-text_color_dark h-[300px] flex flex-col justify-around">
         <AlertDialogHeader>
-          <AlertDialogTitle className="flex justify-between text-center items-center">
+          <AlertDialogTitle className="flex  justify-between text-center items-center">
             <p className="text-text_title_24 text-text_color_light">
               Create Project Name
             </p>

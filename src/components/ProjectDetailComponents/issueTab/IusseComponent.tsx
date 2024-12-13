@@ -1,26 +1,34 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { sliceString, timeSince } from "@/lib/utils";
+import {
+  convertApiResponseToHtml,
+  formatTimestamp,
+  timeSince,
+} from "@/lib/utils";
 import {
   useGetAllIssueQuery,
   useGetIssueDetailQuery,
-  useGetSourcesIssueQuery,
 } from "@/redux/service/issue";
+import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 import { IusseSideBarType } from "@/types/IssueType";
 import { useEffect, useState } from "react";
 import { FaFile } from "react-icons/fa";
 import { GoFileDirectoryFill } from "react-icons/go";
 import { IoIosMore } from "react-icons/io";
 
+import Prism from "prismjs";
+
+import "prismjs/themes/prism.css";
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../ui/accordion";
-import { useRouter } from "next/navigation";
-import Prism from "prismjs";
-import "prismjs/themes/prism.css";
+} from "../../ui/accordion";
+import WhereIssue from "./WhereIssue";
+import WhyIssue from "./WhyIssue";
+import HowToFix from "./HowToFix";
 
 export default function IusseComponent({ ...props }) {
   //   state for store filter
@@ -39,13 +47,12 @@ export default function IusseComponent({ ...props }) {
   const [projectKey, setProjectKey] = useState("");
   // store component
   const [componentProject, setComponentProject] = useState("");
+  // store rule key
+  const [ruleKey, setRuleKey] = useState("");
 
   const [size, setSize] = useState();
 
-  // fetch sources issue
-  const { data: issueSource } = useGetSourcesIssueQuery({
-    projectKey: projectKey,
-  });
+  console.log("component in parent ", componentProject);
 
   //   fetch all isssue from api
   const { data: issueData } = useGetAllIssueQuery({
@@ -66,19 +73,20 @@ export default function IusseComponent({ ...props }) {
     projectKey: projectKey,
   });
 
-  const router = useRouter();
+  // fetch rule detail for issue tab
+  const { data: ruleIssue } = useGetRulesByRuleNameQuery({ ruleName: ruleKey });
+
+  const issueCardResult = issueData?.data?.issues;
+  const issueSideBarResult = issueData?.data.facets;
+  const resultIssueDetail = issueDetail?.data;
 
   useEffect(() => setSize(issueData?.data?.total), [issueData]);
   useEffect(() => {
     Prism.highlightAll();
   });
-  const issueCardResult = issueData?.data?.issues;
-  const issueSideBarResult = issueData?.data.facets;
-  const resultIssueDetail = issueDetail?.data;
-  const issueSourceResult = issueSource?.data[componentProject];
 
   return (
-    <section className="w-full h-full  flex justify-between">
+    <main className="w-full h-full  flex justify-between">
       {/* when on click issue card */}
       {activeContent === true ? (
         <div className="w-full h-full  flex justify-between">
@@ -87,22 +95,15 @@ export default function IusseComponent({ ...props }) {
             <div className="w-full text-text_body_16 text-text_color_light dark:text-text_color_dark text-end">
               <p> {issueData?.data?.total} issues</p>
               <hr className="text-text_color_desc_light mt-2" />
-              {/* {resultIssueDetail?.components.map((item: any, index: number) => (
-                <p
-                  className="text-[12px] text-left text-text_color_desc_light dark:text-text_color_desc_dark"
-                  key={index}
-                >
-                  {sliceString(item.path)}
-                </p>
-              ))} */}
               {issueCardResult.map((item: any, index: number) => (
                 <div
                   onClick={() => {
                     setProjectKey(item.key);
                     setComponentProject(item.component);
+                    setRuleKey(item.rule);
                   }}
                   key={index}
-                  className=" flex flex-col my-5 py-2 px-1 justify-center hover:border-r-2 hover:border-text_color_light hover:bg-background_light_mode  dark:hover:border-text_color_dark dark:hover:bg-card_color_dark  text-[14px]"
+                  className=" flex flex-col my-5 py-2   justify-center hover:border-r-2 hover:border-text_color_light hover:bg-background_light_mode  dark:hover:border-text_color_dark dark:hover:bg-card_color_dark  text-[14px]"
                 >
                   <p className=" text-left ">{item.message}</p>
                 </div>
@@ -140,26 +141,38 @@ export default function IusseComponent({ ...props }) {
               ))}
             </div>
 
+            {/* tab inside issue  */}
             <Tabs defaultValue="Where is the issue?">
-              <TabsList className="grid grid-cols-4 ">
+              {/* for trigger different tab */}
+              <TabsList className="flex   justify-between !bg-transparent overflow-x-auto scrollbar-hide overflow-y-hidden">
                 <TabsTrigger
                   value="Where is the issue?"
                   className="border-b-2 border-transparent data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   Where is the issue?
                 </TabsTrigger>
+                <p className="mx-2">|</p>
                 <TabsTrigger
                   value="Why is this an issue?"
                   className="border-b-2 border-transparent data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   Why is this an issue?
                 </TabsTrigger>
+                <p className="mx-2">|</p>
+                <TabsTrigger
+                  value="How Can I fix it?"
+                  className="border-b-2 border-transparent data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                >
+                  How Can I fix it?
+                </TabsTrigger>
+                <p className="mx-2">|</p>
                 <TabsTrigger
                   value="Activity"
                   className="border-b-2 border-transparent data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   Activity
                 </TabsTrigger>
+                <p className="mx-2">|</p>
                 <TabsTrigger
                   value="More info"
                   className="border-b-2 border-transparent data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
@@ -167,73 +180,72 @@ export default function IusseComponent({ ...props }) {
                   More info
                 </TabsTrigger>
               </TabsList>
+              {/* tab for each content */}
               <TabsContent value="Where is the issue?">
-                <div className="w-full  border border-1 border-opacity-30 border-text_color_desc_light  text-text_color_light dark:text-text_color_desc_dark">
-                  {/* header content */}
-                  <div className=" w-full border-b border-opacity-30 border-text_color_desc_light  p-5">
-                    <div className="w-[50%]  flex justify-between">
-                      <p
-                        onClick={() => router.push(`/project`)}
-                        className="hover:underline hover:cursor-pointer hover:text-blue-500"
-                      >
-                        {issueSourceResult?.component?.projectName}
-                      </p>
-                      <p>{"|"}</p>
-                      <p>
-                        {sliceString(issueSourceResult?.component?.longName)}
-                      </p>
-                    </div>
-                  </div>
-                  {/* code content */}
-                  <div className="w-full h-full  p-5 ">
-                    {issueSourceResult?.sources.map(
-                      (item: any, index: number) => (
-                        <div key={index} className="flex ">
-                          <p>{item.line}</p>
-                          <div>
-                            <pre
-                              style={{
-                                background: "transparent",
-                                padding: 0,
-                                margin: 0,
-                                height: "100%",
-                                paddingLeft: "20px",
+                <WhereIssue projectKey={projectKey} />
+              </TabsContent>
+              <TabsContent value="Why is this an issue?">
+                <WhyIssue ruleKey={ruleKey} />
+              </TabsContent>
+              <TabsContent value="How Can I fix it?">
+                {ruleIssue?.map((rule: any) =>
+                  rule?.descriptionSections?.map(
+                    (itemDes: any, descIndex: number) =>
+                      itemDes?.key === "how_to_fix" ? (
+                        <HowToFix key={descIndex} ruleKey={ruleKey} />
+                      ) : (
+                        <div key={descIndex}></div>
+                      )
+                  )
+                )}
+
+                {/* <HowToFix ruleKey={ruleKey} /> */}
+              </TabsContent>
+              <TabsContent value="Activity">
+                <div className="w-full  text-text_color_light dark:text-text_color_dark m-7">
+                  <p className=" text-text_title_20 ">Activity</p>
+                  <p className="text-text_body_16 mt-5">
+                    {resultIssueDetail?.issues?.map(
+                      (issue: any, index: number) => (
+                        <p key={index}>
+                          {formatTimestamp(issue?.creationDate)}
+                        </p>
+                      )
+                    )}
+                  </p>
+                  <p className="text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
+                    Created Issue
+                  </p>
+                </div>
+              </TabsContent>
+              <TabsContent value="More info">
+                <div className="w-full  text-text_color_light dark:text-text_color_dark my-5">
+                  <div>
+                    {ruleIssue?.map((rule: any) =>
+                      rule?.descriptionSections?.map(
+                        (ruleDes: any, descIndex: number) => {
+                          return ruleDes?.key === "resources" ? (
+                            <p
+                              key={descIndex} // Added a key prop for list item elements
+                              dangerouslySetInnerHTML={{
+                                __html: convertApiResponseToHtml(
+                                  ruleDes?.content
+                                ), // Insert HTML content
                               }}
-                            >
-                              <code
-                                className="language-js"
-                                dangerouslySetInnerHTML={{ __html: item.code }}
-                              />
-                              {resultIssueDetail?.issues?.map(
-                                (issue: any, index: number) => {
-                                  const isErrorForThisLine =
-                                    issue?.textRange.startLine === item.line &&
-                                    issue?.textRange.endLine === item.line;
-                                  return isErrorForThisLine ? (
-                                    <p key={index} className="text-custom_red">
-                                      Error: {issue.message}
-                                    </p>
-                                  ) : null;
-                                }
-                              )}
-                            </pre>
-                          </div>
-                        </div>
+                            ></p>
+                          ) : null; // Return null for non-matching cases
+                        }
                       )
                     )}
                   </div>
                 </div>
               </TabsContent>
-              <TabsContent value="Why is this an issue?">
-                why is this an issue
-              </TabsContent>
-              <TabsContent value="Activity">activity</TabsContent>
-              <TabsContent value="More info">more info</TabsContent>
             </Tabs>
           </div>
         </div>
       ) : (
-        <div className="w-full h-full  flex justify-between">
+        // default card issue and filter
+        <section className="w-full h-full  flex justify-between">
           {/* filter side bar */}
           <div className="w-[35%] hidden lg:block h-full bg-background_light_mode dark:bg-background_dark_mode p-5 rounded-[20px]  ">
             <p className="text-text_title_24 text-text_color_light dark:text-text_color_dark ">
@@ -357,9 +369,10 @@ export default function IusseComponent({ ...props }) {
                   <div className="w-full flex justify-between">
                     <p
                       onClick={() => {
-                        setActiveContent(true),
-                          setProjectKey(issue?.key),
-                          setComponentProject(issue.component);
+                        setActiveContent(true);
+                        setProjectKey(issue?.key);
+                        setComponentProject(issue.component);
+                        setRuleKey(issue.rule);
                       }}
                       className=" text-text_body_16 cursor-pointer truncate  w-[60%] md:w-[75%] xl:w-[80%] text-ascend_color underline"
                     >
@@ -457,8 +470,8 @@ export default function IusseComponent({ ...props }) {
               ))}
             </section>
           </div>
-        </div>
+        </section>
       )}
-    </section>
+    </main>
   );
 }

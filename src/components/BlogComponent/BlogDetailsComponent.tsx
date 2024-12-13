@@ -154,56 +154,15 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     setTimeout(() => setShowModal(false), 200);
   };
 
-
-
-
   return (
-    <section className="w-[88%] mx-auto">
-
-      {/* Action Buttons */}
-      <div className="flex items-end justify-end gap-3">
-        {userUUID === blogData?.user?.uuid && (
-          <Button onClick={() => router.push(`/blog/${uuid}/update`)}  className="bg-[#B9FF66] text-black rounded-[16px]">
-            Update Blog
-          </Button>
-        )}
-
-        <Dialog>
-          <DialogTrigger asChild>
-            <div className="bg-black rounded-[16px]">
-              <MdReport className="text-orange-400 text-[40px] cursor-pointer" />
-            </div>
-          </DialogTrigger>
-          <DialogContent className="bg-white max-w-md">
-            <DialogHeader>
-              <DialogTitle>Report</DialogTitle>
-            </DialogHeader>
-            <Textarea
-              placeholder="Write your concern here..."
-              value={report}
-              onChange={(e) => setReport(e.target.value)}
-              className="mt-4"
-            />
-            <div className="flex justify-end">
-              <Button
-                onClick={() =>
-                  handleSubmitReport({ blogUuid: uuid, message: report })
-                }
-                className="bg-primary_color px-3 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
-              >
-                Submit
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+    <section className="w-[90%] mx-auto my-[20px] md:my-[60px]">
 
       {/* Blog Details */}
-      <div className="w-[60%] mx-auto">
+      <div className="w-[90%] mx-auto">
         <h1 className="lg:text-[34px] md:text-[20px] font-bold">
           {blogData?.title}
         </h1>
-        <div className="flex text-[16px] my-5 gap-[35px]">
+        <div className="flex flex-col md:flex-row text-[16px] my-5 gap-[35px]">
           {/* Author Info */}
           <div className="flex items-center">
             <img
@@ -220,44 +179,85 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
             <FaCalendarAlt className="text-text_color_desc_light text-[24px]" />
             <p>{convertToDayMonthYear(blogData?.createdAt || "")}</p>
           </div>
-          {/* Views */}
-          <div className="flex gap-2 items-center">
-            <FaEye className="text-text_color_desc_light text-[24px]" />
-            <p>{blogData?.viewsCount}</p>
-          </div>
-          {/* Likes */}
-          <div
-            className="flex gap-2 items-center "
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            <FaHandsClapping
-              className={`text-[24px] cursor-pointer ${
-                likeColor ? "text-orange-400" : "text-text_color_desc_light"
-              }`}
-              onClick={() => handleLike(blogData?.uuid)}
-            />
-            <p>{blogData?.likesCount}</p>
-          </div>
-          {/* Comments */}
-          <div className="flex gap-2 items-center">
-            <FaCommentDots
-              className="text-text_color_desc_light text-[24px] cursor-pointer"
-              onClick={() => setShowSidebar(!showSidebar)}
-            />
-            <p>{blogData?.countComments}</p>
-          </div>
+            <div className="flex gap-[35px]">
+              {/* Views */}
+              <div className="flex gap-2 items-center">
+                <FaEye className="text-text_color_desc_light text-[24px]" />
+                <p>{blogData?.viewsCount}</p>
+              </div>
+              {/* Likes */}
+              <div
+                className="flex gap-2 items-center "
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                <FaHandsClapping
+                  className={`text-[24px] cursor-pointer ${likeColor ? "text-orange-400" : "text-text_color_desc_light"
+                    }`}
+                  onClick={() => handleLike(blogData?.uuid)}
+                />
+                <p>{blogData?.likesCount}</p>
+              </div>
+              {/* Comments */}
+              <div className="flex gap-2 items-center">
+                <FaCommentDots
+                  className="text-text_color_desc_light text-[24px] cursor-pointer"
+                  onClick={() => setShowSidebar(!showSidebar)}
+                />
+                <p>{blogData?.countComments}</p>
+              </div>
+              {/* Action Buttons */}
+            <div className="flex items-end justify-end gap-3">
+              {userUUID === blogData?.user?.uuid && (
+                <Button onClick={() => router.push(`/blog/${uuid}/update`)} className="bg-[#B9FF66] text-black rounded-[16px]">
+                  Update Blog
+                </Button>
+              )}
+
+              <Dialog>
+                <DialogTrigger asChild>
+                  <div className="rounded-[16px]">
+                    <MdReport className="text-custom_red text-[40px] cursor-pointer" />
+                  </div>
+                </DialogTrigger>
+                <DialogContent className="bg-background_light_mode dark:bg-background_dark_mode max-w-md text-text_color_light dark:text-text_color_dark">
+                  <DialogHeader>
+                    <DialogTitle>Report</DialogTitle>
+                  </DialogHeader>
+                  <Textarea
+                    placeholder="Write your concern here..."
+                    value={report}
+                    onChange={(e) => setReport(e.target.value)}
+                    className="mt-4"
+                  />
+                  <div className="flex justify-end">
+                    <Button
+                      onClick={() =>
+                        handleSubmitReport({ blogUuid: uuid, message: report })
+                      }
+                      className="bg-primary_color px-3 text-text_color_light dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+            </div>
+            
         </div>
         {/* Thumbnail */}
         {blogData?.thumbnail?.[0] && (
-          <img
-            className="w-full h-[400px] object-cover mt-5"
-            src={blogData.thumbnail[0]}
-            alt="thumbnail"
-          />
+          <div className="w-full md:h-[400px]">
+            <img
+              className="w-full h-full object-contain"
+              src={blogData.thumbnail[0]}
+              alt="thumbnail"
+            />
+          </div>
         )}
         {/* Description */}
-        <p className="mt-5">{blogData?.description}</p>
+        <p className="my-10">{blogData?.description}</p>
       </div>
 
       {/* User Card */}
@@ -268,10 +268,10 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
       {/* Sidebar */}
       {showSidebar && (
-        <div className="fixed px-5 hidden md:block lg:block xl:block overflow-y-auto scrollbar-hide right-0 top-0 h-full w-[30%] bg-white shadow-lg z-50 transform translate-x-0">
+        <div className="fixed px-5 hidden md:block lg:block xl:block overflow-y-auto scrollbar-hide right-0 top-0 h-full w-[30%] bg-white dark:bg-background_dark_mode shadow-lg z-50 transform translate-x-0">
           <p className="font-bold mt-3">User Response</p>
           <button
-            className="absolute top-4 right-4 text-gray-600"
+            className="absolute top-4 right-4 text-gray-600 dark:text-text_color_dark"
             onClick={() => setShowSidebar(false)}
           >
             <MdClear />
@@ -284,9 +284,6 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
       {showModal && userLike && (
         <HoverModal likes={userLike?.data} position={modalPosition} isloading={isLoading} />
       )}
-
-     
-
     </section>
   );
 }

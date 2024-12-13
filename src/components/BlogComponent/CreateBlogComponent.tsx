@@ -49,6 +49,30 @@ const validationSchema = Yup.object().shape({
 const CreateBlogComponent = () => {
   const router = useRouter();
 
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = "copy";
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const files = Array.from(e.dataTransfer.files).filter((file) =>
+      SUPPORTED_FORMATS.includes(file.type)
+    );
+
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setPreviewImages(previews);
+  };
+
+  const removeImage = (index: number) => {
+    const updatedPreviews = [...previewImages];
+    updatedPreviews.splice(index, 1);
+    setPreviewImages(updatedPreviews);
+  };
+
   const { data: topics } = useGetAllTopicQuery({ page: 0, pageSize: 10 });
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -139,7 +163,7 @@ const CreateBlogComponent = () => {
                     topic: selectedTopic === "other" ? values.customTopic : selectedTopic,
                   };
                   console.log("this is update value", updatedValues);
-                   await handleCreateBlog(updatedValues);
+                  await handleCreateBlog(updatedValues);
                 } else {
                   console.error("No files uploaded");
                 }
@@ -150,22 +174,37 @@ const CreateBlogComponent = () => {
           >
             {({ setFieldValue, isValid, dirty }) => (
               <Form className="space-y-4">
-                <div>
-                  <Label htmlFor="thumbnail">Thumbnail</Label>
+                {/* Drag-and-Drop Thumbnail Selection */}
+                <div
+                  className="file-upload-design mt-4 p-4 rounded border-dashed border-2"
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
+                >
+                  <p>Drag and Drop Images Here</p>
+                  <p>or</p>
+                  {/* Clicking this text opens the hidden file input */}
+                  <span
+                    className="browse-button cursor-pointer text-blue-500 font-bold"
+                    onClick={() => {
+                      const thumbnailInput = document.getElementById('thumbnail');
+                      if (thumbnailInput) thumbnailInput.click();
+                    }}
+                  >
+                    Browse Files
+                  </span>
+
                   <Input
-                    type="file"
                     id="thumbnail"
-                    name="thumbnail"
+                    type="file"
                     accept="image/*"
                     multiple
                     onChange={(e) => handleFileChange(e, setFieldValue)}
-                    className="mt-1"
+                    className="hidden"
                   />
-                  <ErrorMessage
-                    name="thumbnail"
-                    component="p"
-                    className="text-red-500 text-sm mt-1"
-                  />
+                </div>
+
+                {/* Preview Selected Thumbnails */}
+                {previewImages.length > 0 && (
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                     {previewImages.map((src, index) => (
                       <div key={index} className="relative">
@@ -176,19 +215,15 @@ const CreateBlogComponent = () => {
                         />
                         <Button
                           type="button"
-                          className="absolute -top-2 right-0 px-1 text-white"
-                          onClick={() => {
-                            const updatedFiles = [...previewImages];
-                            updatedFiles.splice(index, 1);
-                            setPreviewImages(updatedFiles);
-                          }}
+                          className="absolute top-0 right-0 bg-red-500 text-white px-2 rounded"
+                          onClick={() => removeImage(index)}
                         >
                           <MdClear />
                         </Button>
                       </div>
                     ))}
                   </div>
-                </div>
+                )}
 
                 <div>
                   <Label htmlFor="title">Title</Label>
@@ -228,32 +263,32 @@ const CreateBlogComponent = () => {
                   <Label htmlFor="topic">Blog Topic</Label>
                   <Field name="topic">
                     {({ field, form }: any) => (
-                    
-                        <Select
-                          {...field}
-                          id="topic"
-                          className="mt-1"
-                          onValueChange={(value) => {
-                            form.setFieldValue("topic", value);
-                            setSelectedTopic(value);
-                          }}
-                          value={field.value || ""}
-                        >
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select a topic" />
-                          </SelectTrigger>
-                          <SelectContent className="SelectContent">
-                            <SelectGroup>
-                              <SelectLabel>Topics</SelectLabel>
-                              {topics?.content.map((topic: any) => (
-                                <SelectItem key={topic.uuid} value={topic.name}>
-                                  {topic.name}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                   
+
+                      <Select
+                        {...field}
+                        id="topic"
+                        className="mt-1"
+                        onValueChange={(value) => {
+                          form.setFieldValue("topic", value);
+                          setSelectedTopic(value);
+                        }}
+                        value={field.value || ""}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select a topic" />
+                        </SelectTrigger>
+                        <SelectContent className="SelectContent">
+                          <SelectGroup>
+                            <SelectLabel>Topics</SelectLabel>
+                            {topics?.content.map((topic: any) => (
+                              <SelectItem key={topic.uuid} value={topic.name}>
+                                {topic.name}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+
                     )}
                   </Field>
                   <ErrorMessage
@@ -277,14 +312,14 @@ const CreateBlogComponent = () => {
                     <ErrorMessage
                       name="customTopic"
                       component="p"
-                      className="text-red-500 text-sm mt-1"/>
+                      className="text-red-500 text-sm mt-1" />
                   </div>
                 )}
 
                 <Button
                   type="submit"
                   disabled={!isValid || !dirty}
-                  className="w-full bg-primary_color"
+                  className="w-full bg-primary_color dark:text-text_color_light"
                 >
                   Create Blog
                 </Button>
@@ -296,15 +331,16 @@ const CreateBlogComponent = () => {
 
       {/* Modal for Blog Creation Success */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="bg-white max-w-md  p-[50px]  w-full mx-auto">
+        <DialogContent className="bg-white dark:bg-background_dark_mode max-w-md  p-[50px]  w-full mx-auto">
           <MdCheckCircle size={100} className="text-primary_color mx-auto" />
           <div className="text-center">
             <p className="font-bold text-text_header_34">Create Success</p>
-            <p className="text-lg">
-              Thank you for submitting your blog! Your post is currently under
+            <p className="text-lg dark:text-text_color_desc_dark text-left">
+              Thank you for submitting your blog! <br /><br /> Your post is currently under
               review by our admin team. Once it has been approved, you will
               receive a confirmation email notifying you of its successful
-              publication. We appreciate your contribution and look forward to
+              publication. <br /><br />
+              We appreciate your contribution and look forward to
               sharing your insights with our community.
             </p>
           </div>

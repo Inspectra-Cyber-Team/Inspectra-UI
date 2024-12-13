@@ -15,4 +15,8 @@ export const navProjectDetial = [
       name: "Security Hotspot",
       link: (projectName: string) => `/project/${projectName}/security-hotspot`,
     },
+    {
+      name: "Code",
+      link: (projectName: string) => `/project/${projectName}/code`,
+    }
   ];
