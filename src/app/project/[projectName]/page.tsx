@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import IusseComponent from "@/components/ProjectDetailComponents/IusseComponent";
+import PageOverviewProjectDetail from "@/components/ProjectDetailComponents/PageOverviewProjectDetail";
 export default function page({ params }: ParamProps) {
   const projectName = params.projectName;
 
