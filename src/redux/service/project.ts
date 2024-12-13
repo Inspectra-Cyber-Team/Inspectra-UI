@@ -10,6 +10,7 @@ export const projectAPI = cyberApi.injectEndpoints({
         url: `projects`,
         method: "POST",
         body: projectName,
+        invalidatesTags: ["Projects"],
       }),
     }),
     // get user Project
@@ -27,6 +28,7 @@ export const projectAPI = cyberApi.injectEndpoints({
         url: `scans/next`,
         method: "POST",
         body: project,
+        invalidatesTags: ["Projects"],
       }),
     }),
 
@@ -38,6 +40,15 @@ export const projectAPI = cyberApi.injectEndpoints({
         providesTags: ["Projects"],
       }),
     }),
+
+    // delete project by name
+    deleteProject: builder.mutation<any, { projectName: string }>({
+      query: ({ projectName }) => ({
+        url: `projects/${projectName}`,
+        method: "DELETE",
+        invalidatesTags: ["Projects"],
+      }),
+    }),
   }),
 });
 
@@ -45,5 +56,6 @@ export const {
   useCreateProjectNameMutation,
   useGetAllProjectsNameQuery,
   useCreateProjectScanMutation,
-  useGetProjectOverViewUserQuery
+  useGetProjectOverViewUserQuery,
+  useDeleteProjectMutation,
 } = projectAPI;

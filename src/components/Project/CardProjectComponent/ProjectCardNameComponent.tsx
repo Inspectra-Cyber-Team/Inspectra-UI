@@ -25,9 +25,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { CgDanger } from "react-icons/cg";
 import {
   useCreateProjectScanMutation,
   useGetProjectOverViewUserQuery,
+  useDeleteProjectMutation,
 } from "@/redux/service/project";
 
 import { toast } from "@/components/hooks/use-toast";
@@ -40,6 +42,20 @@ import { FaCheck, FaGithub } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "@radix-ui/react-menubar";
+import { Copy } from "lucide-react";
+import { Input } from "postcss";
 
 export default function ProjectCardNameComponent() {
   const [userUUID, setUserUUID] = useState("");
@@ -53,7 +69,7 @@ export default function ProjectCardNameComponent() {
     isError,
     isFetching: isFetchDataProjectScan,
   } = useGetProjectOverViewUserQuery({ uuid: userUUID });
-
+  const [deleteProject] = useDeleteProjectMutation();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -244,7 +260,7 @@ export default function ProjectCardNameComponent() {
                     `project/${projectResult?.component.component.name}`
                   )
                 }
-                className="w-full cursor-pointer my-5 h-full md:h-[330px] lg:h-[350px] xl p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
+                className="w-full cursor-pointer my-5 h-full  p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
               >
                 <div className="flex justify-between w-full">
                   <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark ">
@@ -277,6 +293,9 @@ export default function ProjectCardNameComponent() {
                                   ? "Passed"
                                   : "Failed"}
                               </p>
+                              <p className="mx-2">|</p>
+
+                              <RxCross2 className="h-6 w-6 text-custom_red" />
                             </div>
                           );
                         }
@@ -325,7 +344,7 @@ export default function ProjectCardNameComponent() {
 
                 <hr className="my-5 dark:border-primary_color" />
 
-                <div className="grid  grid-cols-2 md:grid-cols-3 lg:gap-4 xl:gap-[50px]">
+                <div className="grid  grid-cols-2 md:grid-cols-3 lg:gap-4 xl:gap-5">
                   {/* security */}
                   <div className="w-full h-full ">
                     {/* score security */}
@@ -550,7 +569,7 @@ export default function ProjectCardNameComponent() {
                       {/* grade */}
                       {projectResult?.component?.component?.measures?.map(
                         (item: any, index: number) => {
-                          if (item.metric === "reliability_issues") {
+                          if (item.metric === "maintainability_issues") {
                             // check conditon return grade base on score
                             const parsedValue = JSON.parse(item.value);
                             if (parsedValue.INFO > 0) {
@@ -757,8 +776,8 @@ export default function ProjectCardNameComponent() {
                         }
                       )}
                     </div>
-                    <div className="my-5 w-full flex items-center text-center justify-center">
-                      Hotspot Reviewed
+                    <div className="mt-5 w-full flex items-center text-center justify-center">
+                      Hotspot
                     </div>
                   </div>
                   {/* Coverage Reviewed */}
@@ -799,7 +818,7 @@ export default function ProjectCardNameComponent() {
                         }
                       )}
                     </div>
-                    <div className="my-5 w-full flex items-center text-center justify-center">
+                    <div className="mt-5 w-full flex items-center text-center justify-center">
                       Coverage
                     </div>
                   </div>
@@ -838,7 +857,7 @@ export default function ProjectCardNameComponent() {
                         }
                       )}
                     </div>
-                    <div className="my-5 w-full flex items-center justify-center">
+                    <div className="mt-5 w-full flex items-center justify-center">
                       Duplicated
                     </div>
                   </div>
@@ -856,10 +875,48 @@ export default function ProjectCardNameComponent() {
                   <p className="text-text_body_16 text-secondary_color dark:text-text_color_dark ">
                     {projectResult?.component?.component.name}
                   </p>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <RxCross2 className="h-6 w-6 text-custom_red cursor-pointer" />
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md">
+                      <DialogHeader className="my-2">
+                        <DialogTitle className="w-full flex justify-center items-center ">
+                          <div>
+                            {" "}
+                            <CgDanger className="h-[60px] w-[60px] text-custom_red" />
+                          </div>
+                        </DialogTitle>
+                        <DialogDescription className="text-center ">
+                          Are you sure want to delete this project ?{" "}
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="w-full flex justify-center gap-5 ">
+                        <Button
+                          type="button"
+                          className="px-5"
+                          variant="secondary"
+                          onClick={() =>
+                            deleteProject({
+                              projectName:
+                                projectResult?.component?.component.name,
+                            })
+                          }
+                        >
+                          Yes
+                        </Button>
+                        <DialogClose asChild>
+                          <Button type="button" variant="secondary">
+                            Close
+                          </Button>
+                        </DialogClose>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
                 <hr className="my-5 dark:border-primary_color" />
-                <div className="flex  items-center">
-                  <p className=" my-2 text-text_body_16 text-text_color_desc_light  dark:text-text_color_desc_dark ">
+                <div className="flex  flex-col items-start md:flex-row md:items-center">
+                  <p className=" text-left my-2 text-text_body_16 text-text_color_desc_light  dark:text-text_color_desc_dark ">
                     {" "}
                     Project&apos;s{" "}
                     <span className="text-secondary_color truncate">
@@ -869,7 +926,7 @@ export default function ProjectCardNameComponent() {
                   </p>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <p className="pl-2 text-link_color dark:text-blue-500 underline cursor-pointer">
+                      <p className=" md:pl-2 text-link_color dark:text-blue-500 underline cursor-pointer">
                         Configure Project
                       </p>
                     </AlertDialogTrigger>
@@ -995,7 +1052,7 @@ export default function ProjectCardNameComponent() {
                 onClick={() =>
                   router.push(`project/${item?.component.component.name}`)
                 }
-                className="w-full cursor-pointer my-5 h-full md:h-[330px] lg:h-[350px] xl p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
+                className="w-full cursor-pointer my-5 h-full  p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
               >
                 <div className="flex  justify-between w-full">
                   <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark ">
@@ -1027,6 +1084,8 @@ export default function ProjectCardNameComponent() {
                                 ? "Passed"
                                 : "Failed"}
                             </p>
+                            <p className="mx-2">|</p>
+                            <RxCross2 className="h-6 w-6 text-custom_red" />
                           </div>
                         );
                       }
@@ -1386,7 +1445,7 @@ export default function ProjectCardNameComponent() {
                       {/* total score */}
                       {item?.component?.component?.measures?.map(
                         (item: any, index: number) => {
-                          if (item.metric === "reliability_issues") {
+                          if (item.metric === "maintainability_issues") {
                             return (
                               <p key={index} className="mx-2">
                                 {JSON.parse(item.value).total}
@@ -1407,7 +1466,7 @@ export default function ProjectCardNameComponent() {
                       {/* grade */}
                       {item?.component?.component?.measures?.map(
                         (item: any, index: number) => {
-                          if (item.metric === "reliability_issues") {
+                          if (item.metric === "security_hotspots") {
                             // check conditon return grade base on score
                             const parsedValue = JSON.parse(item.value);
                             if (parsedValue.INFO > 0) {
@@ -1506,7 +1565,7 @@ export default function ProjectCardNameComponent() {
                       )}
                     </div>
                     <div className="my-5 w-full flex items-center text-center justify-center">
-                      Hotspot Reviewed
+                      Hotspot
                     </div>
                   </div>
                   {/* Coverage Reviewed */}
@@ -1603,20 +1662,55 @@ export default function ProjectCardNameComponent() {
                   <p className="text-text_body_16 text-secondary_color dark:text-text_color_dark ">
                     {item?.component?.component.name}
                   </p>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline">Share</Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md">
+                      <DialogHeader>
+                        <DialogTitle>Share link</DialogTitle>
+                        <DialogDescription>
+                          Anyone who has this link will be able to view this.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="flex items-center space-x-2">
+                        <div className="grid flex-1 gap-2"></div>
+                        <Button type="submit" size="sm" className="px-3">
+                          <span className="sr-only">Copy</span>
+                          <Copy />
+                        </Button>
+                      </div>
+                      <DialogFooter className="sm:justify-start">
+                        <DialogClose asChild>
+                          <Button type="button" variant="secondary">
+                            Close
+                          </Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                  {/* <Dialog>
+                    <DialogTrigger  asChild>
+                      <RxCross2 className="h-6 w-6 text-custom_red" />
+                    </DialogTrigger>
+                    <DialogContent>
+                      <p>Heloo</p>
+                    </DialogContent>
+                  </Dialog> */}
                 </div>
                 <hr className="my-5 dark:border-primary_color" />
-                <div className="flex  items-center">
-                  <p className=" my-2 text-text_body_16 text-text_color_desc_light  dark:text-text_color_desc_dark ">
+                <div className="flex items-end flex-col md:flex-row  md:items-center">
+                  <p className="text-left my-2 text-text_body_16 text-text_color_desc_light  dark:text-text_color_desc_dark ">
                     {" "}
                     Project&apos;s{" "}
-                    <span className="text-secondary_color truncate">
+                    <span className="text-secondary_color ">
                       {item?.component?.component.name}
-                    </span>{" "}
+                    </span>
                     is not analyzed yet.{" "}
                   </p>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <p className="text-link_color pl-2 cursor-pointer dark:text-blue-500 underline">
+                      <p className="text-link_color md:pl-2 cursor-pointer dark:text-blue-500 underline">
                         Configure Project
                       </p>
                     </AlertDialogTrigger>
