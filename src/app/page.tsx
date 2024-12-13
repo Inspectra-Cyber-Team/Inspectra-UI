@@ -13,19 +13,19 @@ export default function Home() {
       {/* Hero Section */}
       <HeroComponent />
       {/* Our Working Process */}
-      <section className="w-full relative h-[1750px]  md:h-[1200px]  lg:h-[1150px] xl:h-[900px]">
+      <section className="w-full relative h-[1550px]  md:h-[1200px]  lg:h-[1150px] xl:h-[900px]">
         <section className="w-full rounded-tl-[50px] text-center rounded-br-[50px]   md:h-[900px] lg:h-[900px] xl:h-[650px] bg-text_color_light ">
           <p className=" text-text_title_24 md:text-text_header_34 py-10 text-primary_color">
             Our Working Process
           </p>
-          <section className="w-full h-full  flex flex-col-reverse xl:flex-row">
+          <section className="w-full h-full flex flex-col-reverse xl:flex-row">
             {/* First Content */}
             <section className="w-full md:w-[60%]  md:absolute md:bottom-[130px] md:right-[200px] lg:absolute lg:bottom-20 lg:right-[232px] xl:relative xl:bottom-auto xl:right-auto">
               <WorkingProcessCard />
             </section>
 
             {/* Second Content */}
-            <section className=" w-full  md:w-[40%] md:absolute md:-bottom-[120px] md:right-[320px]  lg:absolute lg:top-[130px] lg:right-[340px] xl:relative xl:top-[100px] xl:right-auto h-full flex flex-col  md:justify-start md:items-start">
+            <section className=" w-full md:w-[40%] md:absolute md:-bottom-[120px] md:right-[320px]  lg:absolute lg:top-[130px] lg:right-[340px] xl:relative xl:top-[100px] xl:right-auto h-full flex flex-col md:justify-start md:items-start">
               <p className=" md:w-[500px] text-center xl:text-start text-text_body_16 text-secondary_color ">
                 Steps into getting your work started
               </p>

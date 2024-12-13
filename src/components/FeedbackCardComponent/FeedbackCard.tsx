@@ -12,11 +12,11 @@ export default function FeedbackCard() {
   console.log('this is result',result);
 
   return (
-    <div className="grid gap-[10px] gap-y-5 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-items-center xl:justify-items-between my-10">
+    <div className="grid gap-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-items-center xl:justify-items-between my-10">
       {result?.map((feedback: feedbackType, index: number) => (
         <div
           key={index}
-          className=" w-[350px] md:w-[330px] lg:w-[350px] h-full rounded-[20px] p-5 text-text_color_light dark:text-text_color_dark bg-card_color_light dark:bg-card_color_dark flex flex-col justify-between"
+          className=" w-full h-full rounded-[20px] p-5 text-text_color_light dark:text-text_color_dark bg-card_color_light dark:bg-card_color_dark flex flex-col justify-between"
         >
           {/* Feed content */}
             <p className="text-text_color_light text-start text-text_body_16 dark:text-text_color_dark">
