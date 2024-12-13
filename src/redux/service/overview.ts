@@ -8,7 +8,14 @@ export const overviewApi = cyberApi.injectEndpoints({
         url: `projects/details?projectName=${projectName}`,
       }),
     }),
+
+    // get qualtity gate
+    getQualityGate: builder.query<any,{projectName: string}>({
+      query: ({projectName}) => ({
+        url: `quality-gates/${projectName}`,
+      }),
+    }),
   }),
 });
 
-export const {  useGetProjectDetailQuery } = overviewApi;
+export const {  useGetProjectDetailQuery, useGetQualityGateQuery } = overviewApi;
