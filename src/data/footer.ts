@@ -28,7 +28,7 @@ export const SupportFooter = [
         link: '/faq'
     },
     {
-        name: 'About Us',
+        name: 'About',
         link: '/aboutUs'
     }
 ]

@@ -75,7 +75,8 @@ export default function NavbarComponent() {
                 alt="Logo"
                 width={50}
                 height={50}
-                className="object-cover w-full h-full"
+                onClick={()=> router.push("/")}
+                className="object-cover w-full h-full cursor-pointer"
               />
             </div>
             {/* content navbar */}
@@ -123,7 +124,7 @@ export default function NavbarComponent() {
                         >
                           <img
                             src={`${userData?.data?.profile}`}
-                            alt="Logo"
+                            alt="Profile"
                             width={50}
                             height={50}
                             className="object-cover w-full h-full"
