@@ -6,12 +6,39 @@ import { FaHandsClapping } from "react-icons/fa6";
 import { useGetAllBlogQuery } from "@/redux/service/blog";
 import { Blog } from "@/types/Blog";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function RecentPostComponent() {
-  const { data: blogData } = useGetAllBlogQuery({ page: 0, pageSize: 10 });
+
+  const { data: blogData ,isLoading, isError} = useGetAllBlogQuery({ page: 0, pageSize: 10 });
+  
   const router = useRouter();
 
   const blogList = blogData?.content.slice(0, 4);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+      <Skeleton className="h-6 w-32" />
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="flex items-center gap-3">
+          <Skeleton className="h-16 w-16 rounded-lg" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-48" />
+            <div className="flex gap-2">
+              <Skeleton className="h-3 w-8" />
+              <Skeleton className="h-3 w-8" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    )
+  }
+
+  if (isError) {
+    return <p className="text-center">Something went wrong</p>;
+  }
 
   return (
     <div>

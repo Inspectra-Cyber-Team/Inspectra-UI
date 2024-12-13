@@ -5,7 +5,7 @@ export const codeApi = cyberApi.injectEndpoints({
         getCode: builder.query<any,{projectName:string,page:number,size:number}>({
         
             query: ({ projectName, page, size }) => 
-                `codes/component-tree/${projectName}?page=${page}&size=${size}`,
+                `codes/component-tree?projectName=${projectName}&page=${page}&size=${size}`,
         }),
     }),
     })

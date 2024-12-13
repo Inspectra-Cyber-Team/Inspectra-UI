@@ -248,3 +248,48 @@
 .browse-button:hover {
   background-color: rgb(14, 14, 14);
 }
+
+
+
+.author {
+  cursor: pointer;
+}
+
+.author:hover {
+  text-decoration: underline;
+}
+
+.line-author {
+  display: inline-block;
+  min-width: 100px;
+  color: #888;
+  cursor: pointer;
+}
+
+.line-author:hover {
+  text-decoration: underline;
+}
+
+/* .line-number {
+  display: inline-block;
+  min-width: 40px;
+  color: #666;
+  user-select: none;
+} */
+
+
+pre[class*="language-"], code[class*="language-"] {
+  background: transparent !important;
+  box-shadow: none; /* Remove any shadows if present */
+}
+
+.token.keyword { color: #ff79c6; }
+.token.string { color: #50fa7b; }
+.token.function { color: #50fa7b; }
+.token.comment { color: #6272a4; }
+.token.operator { color: #ff79c6; }
+.token.punctuation { color: #f8f8f2; }
+.token.property { color: #66d9ef; }
+.token.class-name { color: #66d9ef; }
+.token.constant { color: #bd93f9; }
+.token.builtin { color: #50fa7b; }
