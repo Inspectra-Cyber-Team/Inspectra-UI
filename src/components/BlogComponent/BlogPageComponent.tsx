@@ -9,6 +9,7 @@ import { useState } from "react";
 import BlogTopicComponent from "./BlogtopicComponent";
 
 export default function BlogPageComponent() {
+  
   const [topic, setTopic] = useState<string>("");
 
   const handleTopicClick = (topicName: string) => {

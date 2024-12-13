@@ -270,12 +270,12 @@
   text-decoration: underline;
 }
 
-.line-number {
+/* .line-number {
   display: inline-block;
   min-width: 40px;
   color: #666;
   user-select: none;
-}
+} */
 
 
 pre[class*="language-"], code[class*="language-"] {

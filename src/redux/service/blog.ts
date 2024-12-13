@@ -28,9 +28,9 @@ export const blogApi = cyberApi.injectEndpoints({
     }),
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-     getBlogByUserUuid: builder.query<any,{uuid:string}>({
-        query: ({uuid}) => ({
-            url: `/blogs/user/${uuid}`,
+     getBlogByUserUuid: builder.query<any,{uuid:string,page:number,size:number}>({
+        query: ({uuid,page,size}) => ({
+            url: `/blogs/user/${uuid}?page=${page}&size=${size}`,
             method: "GET",
         }),
      }),

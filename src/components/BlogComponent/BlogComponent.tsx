@@ -14,6 +14,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 export default function BlogComponent() {
   const router = useRouter();
@@ -21,19 +23,25 @@ export default function BlogComponent() {
   const [currentPage, setCurrentPage] = useState(1); // Track current page state
   const [totalPages, setTotalPages] = useState(1); // Track total pages based on API response
 
-  const { data: blogData } = useGetAllBlogQuery({
+  const { data: blogData, isLoading} = useGetAllBlogQuery({
     page: currentPage - 1,
     pageSize: 4,
   });
-  // Adjust for zero-based page indexing
-  const blogList = blogData?.content;
 
-  // Set total pages from the API response
-  useEffect(() => {
-    if (blogData) {
-      setTotalPages(blogData?.totalPages);
-    }
-  }, [blogData]);
+
+    // Adjust for zero-based page indexing
+    const blogList = blogData?.content;
+
+    // Set total pages from the API response
+    useEffect(() => {
+      if (blogData) {
+        setTotalPages(blogData?.totalPages);
+      }
+    }, [blogData]);
+  
+
+
+
 
   // Function to handle page change
   const handlePageChange = (page: number) => {
@@ -56,6 +64,37 @@ export default function BlogComponent() {
       console.error("Error liking the blog:", error);
     }
   };
+
+
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-7xl mx-auto p-4">
+   
+        {/* Main Content */}
+        <div className="space-y-8 ">
+          {/* Blog Post Skeleton */}
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex w-full gap-4 ">
+              <div className="flex-1 space-y-4">
+            
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <div className="flex items-center gap-4">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-16" />
+                  <Skeleton className="h-4 w-16" />
+                </div>
+              </div>
+              {/* Image placeholder on the right */}
+              <Skeleton className="h-32 w-32 rounded-lg" />
+            </div>
+          ))}
+        </div>
+    
+    </div>
+    )
+  }
+
 
   return (
     <div>

@@ -11,7 +11,7 @@ export const scourceApi = cyberApi.injectEndpoints ({
 
         getSourceCodeByLine: build.query<any,{componetKey:string}>({
             query: ({componetKey}) => ({
-                url: `sources/lines/${componetKey}`
+                url: `sources/lines?componentKey=${componetKey}`
             })
   
     })
