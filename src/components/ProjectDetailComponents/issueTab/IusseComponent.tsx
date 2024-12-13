@@ -24,10 +24,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../../ui/accordion";
+import HowToFix from "./HowToFix";
 import WhereIssue from "./WhereIssue";
 import WhyIssue from "./WhyIssue";
-import HowToFix from "./HowToFix";
-import { useTheme } from "next-themes";
 
 export default function IusseComponent({ ...props }) {
   //   state for store filter
@@ -44,8 +43,7 @@ export default function IusseComponent({ ...props }) {
   const [activeContent, setActiveContent] = useState(false);
   // store project key
   const [projectKey, setProjectKey] = useState("");
-  // store component
-  const [componentProject, setComponentProject] = useState("");
+
   // store rule key
   const [ruleKey, setRuleKey] = useState("");
 
@@ -81,7 +79,7 @@ export default function IusseComponent({ ...props }) {
   useEffect(() => {
     Prism.highlightAll();
   });
-  const { theme } = useTheme();
+
   return (
     <main className="w-full h-full  flex justify-between">
       {/* when on click issue card */}
@@ -96,7 +94,7 @@ export default function IusseComponent({ ...props }) {
                 <div
                   onClick={() => {
                     setProjectKey(item.key);
-                    setComponentProject(item.component);
+
                     setRuleKey(item.rule);
                   }}
                   key={index}
@@ -368,7 +366,7 @@ export default function IusseComponent({ ...props }) {
                       onClick={() => {
                         setActiveContent(true);
                         setProjectKey(issue?.key);
-                        setComponentProject(issue.component);
+
                         setRuleKey(issue.rule);
                       }}
                       className=" text-text_body_16 cursor-pointer truncate  w-[60%] md:w-[75%] xl:w-[80%] text-ascend_color underline"

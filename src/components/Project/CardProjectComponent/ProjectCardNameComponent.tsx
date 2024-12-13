@@ -25,23 +25,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CgDanger } from "react-icons/cg";
 import {
   useCreateProjectScanMutation,
-  useGetProjectOverViewUserQuery,
   useDeleteProjectMutation,
+  useGetProjectOverViewUserQuery,
 } from "@/redux/service/project";
+import { CgDanger } from "react-icons/cg";
 
 import { toast } from "@/components/hooks/use-toast";
 import ProjectScanSkeleton from "@/components/ProjectSkeleton/ProjectScanSkeleton";
-import { GitUrlType } from "@/data/GitUrl";
-import { getCoverageData, getDuplicationData, timeSince } from "@/lib/utils";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { FaCheck, FaGithub } from "react-icons/fa6";
-import { IoIosArrowDown } from "react-icons/io";
-import { RxCross2 } from "react-icons/rx";
-import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -52,10 +45,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Label } from "@radix-ui/react-menubar";
+import { GitUrlType } from "@/data/GitUrl";
+import { getCoverageData, getDuplicationData, timeSince } from "@/lib/utils";
 import { Copy } from "lucide-react";
-import { Input } from "postcss";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { FaCheck, FaGithub } from "react-icons/fa6";
+import { IoIosArrowDown } from "react-icons/io";
+import { RxCross2 } from "react-icons/rx";
+import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
 
 export default function ProjectCardNameComponent() {
   const [userUUID, setUserUUID] = useState("");
@@ -69,7 +67,8 @@ export default function ProjectCardNameComponent() {
     isError,
     isFetching: isFetchDataProjectScan,
   } = useGetProjectOverViewUserQuery({ uuid: userUUID });
-  const [deleteProject] = useDeleteProjectMutation();
+  const [deleteProject, { isSuccess: isDeleteSuccess }] =
+    useDeleteProjectMutation();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -145,6 +144,29 @@ export default function ProjectCardNameComponent() {
   const [filteredResults, setFilteredResults] = useState<any[]>(
     projectResult || []
   );
+
+  // handle delete project
+  const handleDeleteProject = (projectName: string) => {
+    setIsLoading(true);
+    deleteProject({ projectName: projectName });
+  };
+
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      toast({
+        description: "Project Delete Successully",
+        variant: "success",
+      });
+      setIsLoading(false);
+    }
+    if (isScanError) {
+      toast({
+        description: "Project is Current in Use",
+        variant: "error",
+      });
+      setIsLoading(false);
+    }
+  }, [isDeleteSuccess]);
 
   const [inputValue, setInputValue] = useState("");
 
@@ -255,15 +277,17 @@ export default function ProjectCardNameComponent() {
             return (
               <section
                 key={index}
-                onClick={() =>
-                  router.push(
-                    `project/${projectResult?.component.component.name}`
-                  )
-                }
                 className="w-full cursor-pointer my-5 h-full  p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
               >
                 <div className="flex justify-between w-full">
-                  <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark ">
+                  <p
+                    onClick={() =>
+                      router.push(
+                        `project/${projectResult?.component.component.name}`
+                      )
+                    }
+                    className="text-text_body_16 text-text_color_light dark:text-text_color_dark hover:text-ascend_color hover:underline "
+                  >
                     {projectResult?.component.component.name}
                   </p>
                   {projectResult?.branch?.map(
@@ -295,7 +319,54 @@ export default function ProjectCardNameComponent() {
                               </p>
                               <p className="mx-2">|</p>
 
-                              <RxCross2 className="h-6 w-6 text-custom_red" />
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <RxCross2 className="h-6 w-6 text-custom_red cursor-pointer" />
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-md">
+                                  <DialogHeader className="my-2">
+                                    <DialogTitle className="w-full flex justify-center items-center ">
+                                      <div>
+                                        {" "}
+                                        <CgDanger className="h-[60px] w-[60px] text-custom_red" />
+                                      </div>
+                                    </DialogTitle>
+                                    <DialogDescription className="text-center ">
+                                      Are you sure want to delete this project ?{" "}
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <div className="w-full flex justify-center gap-5 ">
+                                    <Button
+                                      disabled={isLoading}
+                                      type="button"
+                                      className="px-5 hover:bg-custom_red "
+                                      variant="secondary"
+                                      onClick={() =>
+                                        handleDeleteProject(
+                                          projectResult?.component?.component
+                                            .name
+                                        )
+                                      }
+                                    >
+                                      {isLoading ? (
+                                        <div className="spinner-border animate-spin  inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_dark border-t-transparent"></div>
+                                      ) : (
+                                        "Yes"
+                                      )}
+                                    </Button>
+                                    <DialogClose asChild>
+                                      <Button
+                                        disabled={isLoading}
+                                        type="button"
+                                        variant="secondary"
+                                        className=" hover:bg-custom_red"
+                                      >
+                                        Close
+                                      </Button>
+                                    </DialogClose>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
                             </div>
                           );
                         }
@@ -893,20 +964,29 @@ export default function ProjectCardNameComponent() {
                       </DialogHeader>
                       <div className="w-full flex justify-center gap-5 ">
                         <Button
+                          disabled={isLoading}
                           type="button"
-                          className="px-5"
+                          className="px-5 hover:bg-custom_red "
                           variant="secondary"
                           onClick={() =>
-                            deleteProject({
-                              projectName:
-                                projectResult?.component?.component.name,
-                            })
+                            handleDeleteProject(
+                              projectResult?.component?.component.name
+                            )
                           }
                         >
-                          Yes
+                          {isLoading ? (
+                            <div className="spinner-border animate-spin  inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_dark border-t-transparent"></div>
+                          ) : (
+                            "Yes"
+                          )}
                         </Button>
                         <DialogClose asChild>
-                          <Button type="button" variant="secondary">
+                          <Button
+                            disabled={isLoading}
+                            type="button"
+                            variant="secondary"
+                            className=" hover:bg-custom_red"
+                          >
                             Close
                           </Button>
                         </DialogClose>
@@ -1049,13 +1129,15 @@ export default function ProjectCardNameComponent() {
             return (
               <section
                 key={index}
-                onClick={() =>
-                  router.push(`project/${item?.component.component.name}`)
-                }
                 className="w-full cursor-pointer my-5 h-full  p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
               >
                 <div className="flex  justify-between w-full">
-                  <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark ">
+                  <p
+                    onClick={() =>
+                      router.push(`project/${item?.component.component.name}`)
+                    }
+                    className="text-text_body_16 text-text_color_light dark:text-text_color_dark hover:underline hover:text-ascend_color "
+                  >
                     {item?.component.component.name}
                   </p>
                   {item?.branch?.map((branchItem: any, branchIndex: number) => {
@@ -1085,7 +1167,53 @@ export default function ProjectCardNameComponent() {
                                 : "Failed"}
                             </p>
                             <p className="mx-2">|</p>
-                            <RxCross2 className="h-6 w-6 text-custom_red" />
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <RxCross2 className="h-6 w-6 text-custom_red cursor-pointer" />
+                              </DialogTrigger>
+                              <DialogContent className="sm:max-w-md">
+                                <DialogHeader className="my-2">
+                                  <DialogTitle className="w-full flex justify-center items-center ">
+                                    <div>
+                                      {" "}
+                                      <CgDanger className="h-[60px] w-[60px] text-custom_red" />
+                                    </div>
+                                  </DialogTitle>
+                                  <DialogDescription className="text-center ">
+                                    Are you sure want to delete this project ?{" "}
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <div className="w-full flex justify-center gap-5 ">
+                                  <Button
+                                    disabled={isLoading}
+                                    type="button"
+                                    className="px-5 hover:bg-custom_red "
+                                    variant="secondary"
+                                    onClick={() =>
+                                      handleDeleteProject(
+                                        projectResult?.component?.component.name
+                                      )
+                                    }
+                                  >
+                                    {isLoading ? (
+                                      <div className="spinner-border animate-spin  inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_dark border-t-transparent"></div>
+                                    ) : (
+                                      "Yes"
+                                    )}
+                                  </Button>
+                                  <DialogClose asChild>
+                                    <Button
+                                      disabled={isLoading}
+                                      type="button"
+                                      variant="secondary"
+                                      className=" hover:bg-custom_red"
+                                    >
+                                      Close
+                                    </Button>
+                                  </DialogClose>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
                           </div>
                         );
                       }
@@ -1664,39 +1792,51 @@ export default function ProjectCardNameComponent() {
                   </p>
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="outline">Share</Button>
+                      <RxCross2 className="h-6 w-6 text-custom_red cursor-pointer" />
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-md">
-                      <DialogHeader>
-                        <DialogTitle>Share link</DialogTitle>
-                        <DialogDescription>
-                          Anyone who has this link will be able to view this.
+                      <DialogHeader className="my-2">
+                        <DialogTitle className="w-full flex justify-center items-center ">
+                          <div>
+                            {" "}
+                            <CgDanger className="h-[60px] w-[60px] text-custom_red" />
+                          </div>
+                        </DialogTitle>
+                        <DialogDescription className="text-center ">
+                          Are you sure want to delete this project ?{" "}
                         </DialogDescription>
                       </DialogHeader>
-                      <div className="flex items-center space-x-2">
-                        <div className="grid flex-1 gap-2"></div>
-                        <Button type="submit" size="sm" className="px-3">
-                          <span className="sr-only">Copy</span>
-                          <Copy />
+                      <div className="w-full flex justify-center gap-5 ">
+                        <Button
+                          disabled={isLoading}
+                          type="button"
+                          className="px-5 hover:bg-custom_red "
+                          variant="secondary"
+                          onClick={() =>
+                            handleDeleteProject(
+                              projectResult?.component?.component.name
+                            )
+                          }
+                        >
+                          {isLoading ? (
+                            <div className="spinner-border animate-spin  inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_dark border-t-transparent"></div>
+                          ) : (
+                            "Yes"
+                          )}
                         </Button>
-                      </div>
-                      <DialogFooter className="sm:justify-start">
                         <DialogClose asChild>
-                          <Button type="button" variant="secondary">
+                          <Button
+                            disabled={isLoading}
+                            type="button"
+                            variant="secondary"
+                            className=" hover:bg-custom_red"
+                          >
                             Close
                           </Button>
                         </DialogClose>
-                      </DialogFooter>
+                      </div>
                     </DialogContent>
                   </Dialog>
-                  {/* <Dialog>
-                    <DialogTrigger  asChild>
-                      <RxCross2 className="h-6 w-6 text-custom_red" />
-                    </DialogTrigger>
-                    <DialogContent>
-                      <p>Heloo</p>
-                    </DialogContent>
-                  </Dialog> */}
                 </div>
                 <hr className="my-5 dark:border-primary_color" />
                 <div className="flex items-end flex-col md:flex-row  md:items-center">
