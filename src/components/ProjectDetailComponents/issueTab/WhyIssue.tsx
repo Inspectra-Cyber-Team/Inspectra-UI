@@ -2,7 +2,7 @@ import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 import React, { useEffect } from "react";
 
 import Prism from "prismjs";
-
+import "prismjs/themes/prism.css";
 export default function WhyIssue({ ruleKey }: any) {
   const { data: ruleIssue } = useGetRulesByRuleNameQuery({ ruleName: ruleKey });
 

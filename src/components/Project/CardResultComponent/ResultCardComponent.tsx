@@ -35,8 +35,8 @@ export default function ResultCardComponent() {
                           {coverageItem?.image ? (
                             <div className="w-[50px] h-[50px] flex items-center justify-center">
                               <Image
-                                width={50}
-                                height={50}
+                                width={40}
+                                height={40}
                                 alt="coverage"
                                 src={coverageItem.image}
                               />
@@ -86,10 +86,10 @@ export default function ResultCardComponent() {
                         <div className="flex items-center justify-center">
                           {/* Conditionally Render Image */}
                           {duplicationItem?.image ? (
-                            <div className="w-[50px] h-[50px] mt-2 flex items-center justify-center">
+                            <div className="w-[40px] h-[30px] mt-1 flex items-center justify-center">
                               <Image
-                                width={50}
-                                height={50}
+                                width={30}
+                                height={30}
                                 alt="duplication"
                                 src={duplicationItem.image}
                               />

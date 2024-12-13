@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 
 import Prism from "prismjs";
+import "prismjs/themes/prism.css";
 import { useRouter } from "next/navigation";
 import { sliceString } from "@/lib/utils";
 import {
@@ -19,9 +20,10 @@ export default function WhereIssue({ projectKey }: any) {
   const router = useRouter();
   const resultIssueDetail = issueDetail?.data;
 
-  const component = resultIssueDetail?.components[1]?.key;
+  const component = resultIssueDetail?.components[0]?.key;
+  console.log(component)
   const issueSourceResult = issueSource?.data?.[component];
-
+  console.log(issueSourceResult)
   useEffect(() => {
     // Run Prism's highlightAll function when ruleIssue changes or component mounts
     Prism.highlightAll();

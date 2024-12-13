@@ -154,7 +154,7 @@ export function convertApiResponseToHtml(apiResponse: any) {
     ) => {
       // Check if it's an <a> tag, <h3> tag, or <li> tag
       if (aTag) {
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: blue; text-decoration: underline;" class="link">${aText}</a>`;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: #0000EE; text-decoration: underline;" class="link">${aText}</a>`;
       } else if (h3Tag) {
         return `<h3>${h3Text}</h3>`;
       } else if (liTag) {
@@ -166,3 +166,14 @@ export function convertApiResponseToHtml(apiResponse: any) {
 
   return htmlOutput;
 }
+
+export const getLabelGrade = (value: number) => {
+  if (value > 0) {
+    if (value >= 10) return "A"; // Assign A for values 10 or more
+    if (value >= 7) return "B"; // Assign B for values between 7 and 9
+    if (value >= 5) return "C"; // Assign C for values between 5 and 6
+    if (value >= 2) return "D"; // Assign D for values between 2 and 4
+    return "E"; // Assign E for values 1 or less
+  }
+  return "F"; // Return F for 0 or negative values
+};

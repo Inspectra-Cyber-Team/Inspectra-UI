@@ -8,30 +8,27 @@ import { useTheme } from "next-themes";
 export default function FeedbackComponent() {
   const { theme } = useTheme();
   const { toast } = useToast();
-  const [createUserFeedback] =
-    useCreateUserFeedbackMutation();
+  const [createUserFeedback] = useCreateUserFeedbackMutation();
 
   const initialValues: createFeedbackType = {
     message: "",
   };
 
   const handleSubmit = async (values: createFeedbackType) => {
-
     console.log(values);
     try {
-
-        const ressponse = await createUserFeedback({ message: values });
-        console.log(ressponse);
-        toast({
-          description: "Thank For FeedBack Our Team Will Review It",
-          variant: "success",
-        });
-      } catch (error) {
+      const ressponse = await createUserFeedback({ message: values });
+      console.log(ressponse);
+      toast({
+        description: "Thank For FeedBack Our Team Will Review It",
+        variant: "success",
+      });
+    } catch (error) {
       toast({
         description: `${error}`,
       });
     }
-    }
+  };
 
   return (
     <section className="w-[90%] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -61,7 +58,7 @@ export default function FeedbackComponent() {
               id="message"
               name="message"
               placeholder="Your Message"
-              className={`mt-1 w-full border mb-5 rounded-tl-[20px] rounded-br-[20px]  pb-[100px] min-h-[150px] bg-text_color_dark dark:text-text_color_light  focus:outline-none focus:right-2 focus:border-text_color_light   `}
+              className={`mt-1 w-full border px-5 mb-5 rounded-tl-[20px] rounded-br-[20px]  pb-[100px] min-h-[150px] bg-text_color_dark dark:bg-card_color_dark  focus:outline-none focus:right-2 focus:border-text_color_light   `}
             />
 
             <button

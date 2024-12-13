@@ -9,8 +9,8 @@ import {
 import { FAQsType } from "@/types/FAQ";
 import { useGetAllFAQQuery } from "@/redux/service/faqs";
 export default function FAQsComponent() {
-  const getDataFAQ = useGetAllFAQQuery([]);
-  const result = getDataFAQ?.data;
+  const getDataFAQ = useGetAllFAQQuery({});
+  const result = getDataFAQ?.data?.data;
   return (
     <div>
       {result?.map((faqItem: FAQsType, index: number) => (
@@ -20,7 +20,7 @@ export default function FAQsComponent() {
               <AccordionTrigger className=" text-text_color_light dark:text-text_color_dark text-left md:text-text_title_20">
                 {faqItem.question}
               </AccordionTrigger>
-              <AccordionContent className="text-left text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
+              <AccordionContent className="text-left !text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
                 {faqItem.answer}
               </AccordionContent>
             </AccordionItem>

@@ -301,22 +301,123 @@ export default function ProjectCardNameComponent() {
                     (item: any, index: number) => {
                       if (item.metric === "ncloc") {
                         return (
-                          <span key={index}>{item.value} Lines of Code </span>
+                          <span key={index}>{item.value} Lines of Code • </span>
+                        );
+                      }
+                    }
+                  )}
+                  {projectResult?.component?.component?.measures?.map(
+                    (item: any, index: number) => {
+                      if (item.metric === "ncloc_language_distribution") {
+                        return (
+                          <span key={index}>
+                            Language •{" "}
+                            {item.value
+                              .match(/\w+(?==)/g)
+                              ?.join(" ")
+                              .toUpperCase()}{" "}
+                          </span>
                         );
                       }
                     }
                   )}
                 </p>
+
                 <hr className="my-5 dark:border-primary_color" />
 
-                <div className="grid  grid-cols-2 md:grid-cols-3 gap-5">
+                <div className="grid  grid-cols-2 md:grid-cols-3 lg:gap-4 xl:gap-[50px]">
                   {/* security */}
                   <div className="w-full h-full ">
                     {/* score security */}
                     <div className="flex w-full justify-center  text-center items-center">
-                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
-                        A
-                      </div>
+                      {projectResult?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "security_issues") {
+                            // check conditon return grade base on score
+                            const parsedValue = JSON.parse(item.value);
+                            if (parsedValue.INFO > 0) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  A
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.LOW > 0 &&
+                              parsedValue.LOW > parsedValue.INFO &&
+                              parsedValue.LOW > parsedValue.MEDIUM &&
+                              parsedValue.LOW > parsedValue.HIGH &&
+                              parsedValue.LOW > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#60935D]"
+                                >
+                                  B
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.MEDIUM > 0 &&
+                              parsedValue.MEDIUM > parsedValue.INFO &&
+                              parsedValue.MEDIUM > parsedValue.LOW &&
+                              parsedValue.MEDIUM > parsedValue.HIGH &&
+                              parsedValue.MEDIUM > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F7DC6F]"
+                                >
+                                  C
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.HIGH > 0 &&
+                              parsedValue.HIGH > parsedValue.INFO &&
+                              parsedValue.HIGH > parsedValue.LOW &&
+                              parsedValue.HIGH > parsedValue.MEDIUM &&
+                              parsedValue.HIGH > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F9B800]"
+                                >
+                                  D
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.BLOCKER > 0 &&
+                              parsedValue.BLOCKER > parsedValue.INFO &&
+                              parsedValue.BLOCKER > parsedValue.LOW &&
+                              parsedValue.BLOCKER > parsedValue.MEDIUM &&
+                              parsedValue.BLOCKER > parsedValue.HIGH
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
+                                >
+                                  F
+                                </div>
+                              );
+                            } else {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  A
+                                </div>
+                              );
+                            }
+                          }
+                        }
+                      )}
+
                       {projectResult?.component?.component?.measures?.map(
                         (item: any, index: number) => {
                           if (item.metric === "security_issues") {
@@ -335,11 +436,97 @@ export default function ProjectCardNameComponent() {
                   </div>
                   {/* reliability */}
                   <div className="w-full h-full">
-                    {/* score security */}
+                    {/* score reliability */}
                     <div className="flex w-full justify-center  text-center items-center">
-                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
-                        A
-                      </div>
+                      {/* grade */}
+                      {projectResult?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "reliability_issues") {
+                            // check conditon return grade base on score
+                            const parsedValue = JSON.parse(item.value);
+                            if (parsedValue.INFO > 0) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  A
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.LOW > 0 &&
+                              parsedValue.LOW > parsedValue.INFO &&
+                              parsedValue.LOW > parsedValue.MEDIUM &&
+                              parsedValue.LOW > parsedValue.HIGH &&
+                              parsedValue.LOW > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#60935D]"
+                                >
+                                  B
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.MEDIUM > 0 &&
+                              parsedValue.MEDIUM > parsedValue.INFO &&
+                              parsedValue.MEDIUM > parsedValue.LOW &&
+                              parsedValue.MEDIUM > parsedValue.HIGH &&
+                              parsedValue.MEDIUM > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F7DC6F]"
+                                >
+                                  C
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.HIGH > 0 &&
+                              parsedValue.HIGH > parsedValue.INFO &&
+                              parsedValue.HIGH > parsedValue.LOW &&
+                              parsedValue.HIGH > parsedValue.MEDIUM &&
+                              parsedValue.HIGH > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F9B800]"
+                                >
+                                  D
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.BLOCKER > 0 &&
+                              parsedValue.BLOCKER > parsedValue.INFO &&
+                              parsedValue.BLOCKER > parsedValue.LOW &&
+                              parsedValue.BLOCKER > parsedValue.MEDIUM &&
+                              parsedValue.BLOCKER > parsedValue.HIGH
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
+                                >
+                                  F
+                                </div>
+                              );
+                            } else {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  No Data
+                                </div>
+                              );
+                            }
+                          }
+                        }
+                      )}
+                      {/* total score */}
                       {projectResult?.component?.component?.measures?.map(
                         (item: any, index: number) => {
                           if (item.metric === "reliability_issues") {
@@ -360,9 +547,95 @@ export default function ProjectCardNameComponent() {
                   <div className="w-full h-full">
                     {/* Maintainability */}
                     <div className="flex w-full justify-center  text-center items-center">
-                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
-                        A
-                      </div>
+                      {/* grade */}
+                      {projectResult?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "reliability_issues") {
+                            // check conditon return grade base on score
+                            const parsedValue = JSON.parse(item.value);
+                            if (parsedValue.INFO > 0) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  A
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.LOW > 0 &&
+                              parsedValue.LOW > parsedValue.INFO &&
+                              parsedValue.LOW > parsedValue.MEDIUM &&
+                              parsedValue.LOW > parsedValue.HIGH &&
+                              parsedValue.LOW > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#60935D]"
+                                >
+                                  B
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.MEDIUM > 0 &&
+                              parsedValue.MEDIUM > parsedValue.INFO &&
+                              parsedValue.MEDIUM > parsedValue.LOW &&
+                              parsedValue.MEDIUM > parsedValue.HIGH &&
+                              parsedValue.MEDIUM > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F7DC6F]"
+                                >
+                                  C
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.HIGH > 0 &&
+                              parsedValue.HIGH > parsedValue.INFO &&
+                              parsedValue.HIGH > parsedValue.LOW &&
+                              parsedValue.HIGH > parsedValue.MEDIUM &&
+                              parsedValue.HIGH > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F9B800]"
+                                >
+                                  D
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.BLOCKER > 0 &&
+                              parsedValue.BLOCKER > parsedValue.INFO &&
+                              parsedValue.BLOCKER > parsedValue.LOW &&
+                              parsedValue.BLOCKER > parsedValue.MEDIUM &&
+                              parsedValue.BLOCKER > parsedValue.HIGH
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
+                                >
+                                  F
+                                </div>
+                              );
+                            } else {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  No Data
+                                </div>
+                              );
+                            }
+                          }
+                        }
+                      )}
+                      {/* score */}
                       {projectResult?.component?.component?.measures?.map(
                         (item: any, index: number) => {
                           if (item.metric === "maintainability_issues") {
@@ -383,9 +656,95 @@ export default function ProjectCardNameComponent() {
                   <div className="w-full h-full">
                     {/* Hotspot Reviewed */}
                     <div className="flex w-full justify-center  text-center items-center">
-                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
-                        A
-                      </div>
+                      {/* grade */}
+                      {projectResult?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "reliability_issues") {
+                            // check conditon return grade base on score
+                            const parsedValue = JSON.parse(item.value);
+                            if (parsedValue.INFO > 0) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  A
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.LOW > 0 &&
+                              parsedValue.LOW > parsedValue.INFO &&
+                              parsedValue.LOW > parsedValue.MEDIUM &&
+                              parsedValue.LOW > parsedValue.HIGH &&
+                              parsedValue.LOW > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#60935D]"
+                                >
+                                  B
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.MEDIUM > 0 &&
+                              parsedValue.MEDIUM > parsedValue.INFO &&
+                              parsedValue.MEDIUM > parsedValue.LOW &&
+                              parsedValue.MEDIUM > parsedValue.HIGH &&
+                              parsedValue.MEDIUM > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F7DC6F]"
+                                >
+                                  C
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.HIGH > 0 &&
+                              parsedValue.HIGH > parsedValue.INFO &&
+                              parsedValue.HIGH > parsedValue.LOW &&
+                              parsedValue.HIGH > parsedValue.MEDIUM &&
+                              parsedValue.HIGH > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F9B800]"
+                                >
+                                  D
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.BLOCKER > 0 &&
+                              parsedValue.BLOCKER > parsedValue.INFO &&
+                              parsedValue.BLOCKER > parsedValue.LOW &&
+                              parsedValue.BLOCKER > parsedValue.MEDIUM &&
+                              parsedValue.BLOCKER > parsedValue.HIGH
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
+                                >
+                                  F
+                                </div>
+                              );
+                            } else {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  No Data
+                                </div>
+                              );
+                            }
+                          }
+                        }
+                      )}
+                      {/* score  */}
                       {projectResult?.component?.component?.measures?.map(
                         (item: any, index: number) => {
                           if (item.metric === "security_hotspots") {
@@ -454,11 +813,11 @@ export default function ProjectCardNameComponent() {
                             return (
                               <div
                                 key={index}
-                                className="w-[60px] h-[30px] flex items-center justify-center"
+                                className="w-[35px] h-[30px] flex items-center justify-center"
                               >
                                 <Image
-                                  width={60}
-                                  height={50}
+                                  width={35}
+                                  height={30}
                                   alt="coverage"
                                   src={getDuplicationData(item.value).image}
                                 />
@@ -582,8 +941,7 @@ export default function ProjectCardNameComponent() {
                                 </div>
                               </DropdownMenuTrigger>
                             )}
-                            <DropdownMenuContent className="w-[462px] text-text_color_light text-start bg-background_light_mode">
-                              <DropdownMenuSeparator />
+                            <DropdownMenuContent className="w-[462px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
                               {gitResult?.length === 0 ? (
                                 <DropdownMenuItem disabled>
                                   No branch to select
@@ -592,6 +950,7 @@ export default function ProjectCardNameComponent() {
                                 gitResult?.map(
                                   (gitResult: GitUrlType, index: number) => (
                                     <DropdownMenuItem
+                                      className=""
                                       key={index}
                                       onClick={() =>
                                         setSelectedBranch(`${gitResult?.name}`)
@@ -602,7 +961,6 @@ export default function ProjectCardNameComponent() {
                                   )
                                 )
                               )}
-                              <DropdownMenuSeparator />
                             </DropdownMenuContent>
                           </DropdownMenu>
                           {/* submit scan */}
@@ -628,7 +986,7 @@ export default function ProjectCardNameComponent() {
           }
         })
       ) : (
-        // check if search not empty
+        //check if user search
         filteredResults?.map((item: any, index: number) => {
           if (item?.component.component.measures != 0) {
             return (
@@ -691,7 +1049,22 @@ export default function ProjectCardNameComponent() {
                     (item: any, index: number) => {
                       if (item.metric === "ncloc") {
                         return (
-                          <span key={index}>{item.value} Lines of Code </span>
+                          <span key={index}>{item.value} Lines of Code • </span>
+                        );
+                      }
+                    }
+                  )}
+                  {item?.component?.component?.measures?.map(
+                    (item: any, index: number) => {
+                      if (item.metric === "ncloc_language_distribution") {
+                        return (
+                          <span key={index}>
+                            Language •{" "}
+                            {item.value
+                              .match(/\w+(?==)/g)
+                              ?.join(" ")
+                              .toUpperCase()}{" "}
+                          </span>
                         );
                       }
                     }
@@ -699,20 +1072,106 @@ export default function ProjectCardNameComponent() {
                 </p>
                 <hr className="my-5 dark:border-primary_color" />
 
-                <div className="grid  grid-cols-2 md:grid-cols-3 gap-5">
+                {/* result section */}
+                <div className="grid  grid-cols-2 md:grid-cols-3 lg:gap-5 xl:gap-[50px]">
                   {/* security */}
                   <div className="w-full h-full ">
                     {/* score security */}
                     <div className="flex w-full justify-center  text-center items-center">
-                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
-                        A
-                      </div>
                       {item?.component?.component?.measures?.map(
-                        (item: any, index: number) => {
-                          if (item.metric === "security_issues") {
+                        (resultItem: any, index: number) => {
+                          if (resultItem.metric === "security_issues") {
+                            // check conditon return grade base on score
+                            const parsedValue = JSON.parse(resultItem.value);
+                            if (parsedValue.INFO > 0) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  A
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.LOW > 0 &&
+                              parsedValue.LOW > parsedValue.INFO &&
+                              parsedValue.LOW > parsedValue.MEDIUM &&
+                              parsedValue.LOW > parsedValue.HIGH &&
+                              parsedValue.LOW > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#60935D]"
+                                >
+                                  B
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.MEDIUM > 0 &&
+                              parsedValue.MEDIUM > parsedValue.INFO &&
+                              parsedValue.MEDIUM > parsedValue.LOW &&
+                              parsedValue.MEDIUM > parsedValue.HIGH &&
+                              parsedValue.MEDIUM > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F7DC6F]"
+                                >
+                                  C
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.HIGH > 0 &&
+                              parsedValue.HIGH > parsedValue.INFO &&
+                              parsedValue.HIGH > parsedValue.LOW &&
+                              parsedValue.HIGH > parsedValue.MEDIUM &&
+                              parsedValue.HIGH > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F9B800]"
+                                >
+                                  D
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.BLOCKER > 0 &&
+                              parsedValue.BLOCKER > parsedValue.INFO &&
+                              parsedValue.BLOCKER > parsedValue.LOW &&
+                              parsedValue.BLOCKER > parsedValue.MEDIUM &&
+                              parsedValue.BLOCKER > parsedValue.HIGH
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
+                                >
+                                  F
+                                </div>
+                              );
+                            } else {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  A
+                                </div>
+                              );
+                            }
+                          }
+                        }
+                      )}
+
+                      {item?.component?.component?.measures?.map(
+                        (scoreItem: any, index: number) => {
+                          if (scoreItem.metric === "security_issues") {
                             return (
                               <p key={index} className="mx-2">
-                                {JSON.parse(item.value).total}
+                                {JSON.parse(scoreItem.value).total}
                               </p>
                             );
                           }
@@ -725,12 +1184,98 @@ export default function ProjectCardNameComponent() {
                   </div>
                   {/* reliability */}
                   <div className="w-full h-full">
-                    {/* score security */}
+                    {/* score reliability */}
                     <div className="flex w-full justify-center  text-center items-center">
-                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
-                        A
-                      </div>
-                      {projectResult?.component?.component?.measures?.map(
+                      {/* grade */}
+                      {item?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "reliability_issues") {
+                            // check conditon return grade base on score
+                            const parsedValue = JSON.parse(item.value);
+                            if (parsedValue.INFO > 0) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  A
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.LOW > 0 &&
+                              parsedValue.LOW > parsedValue.INFO &&
+                              parsedValue.LOW > parsedValue.MEDIUM &&
+                              parsedValue.LOW > parsedValue.HIGH &&
+                              parsedValue.LOW > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#60935D]"
+                                >
+                                  B
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.MEDIUM > 0 &&
+                              parsedValue.MEDIUM > parsedValue.INFO &&
+                              parsedValue.MEDIUM > parsedValue.LOW &&
+                              parsedValue.MEDIUM > parsedValue.HIGH &&
+                              parsedValue.MEDIUM > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F7DC6F]"
+                                >
+                                  C
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.HIGH > 0 &&
+                              parsedValue.HIGH > parsedValue.INFO &&
+                              parsedValue.HIGH > parsedValue.LOW &&
+                              parsedValue.HIGH > parsedValue.MEDIUM &&
+                              parsedValue.HIGH > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F9B800]"
+                                >
+                                  D
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.BLOCKER > 0 &&
+                              parsedValue.BLOCKER > parsedValue.INFO &&
+                              parsedValue.BLOCKER > parsedValue.LOW &&
+                              parsedValue.BLOCKER > parsedValue.MEDIUM &&
+                              parsedValue.BLOCKER > parsedValue.HIGH
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
+                                >
+                                  F
+                                </div>
+                              );
+                            } else {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  No Data
+                                </div>
+                              );
+                            }
+                          }
+                        }
+                      )}
+                      {/* total score */}
+                      {item?.component?.component?.measures?.map(
                         (item: any, index: number) => {
                           if (item.metric === "reliability_issues") {
                             return (
@@ -750,12 +1295,98 @@ export default function ProjectCardNameComponent() {
                   <div className="w-full h-full">
                     {/* Maintainability */}
                     <div className="flex w-full justify-center  text-center items-center">
-                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
-                        A
-                      </div>
+                      {/* grade */}
                       {item?.component?.component?.measures?.map(
                         (item: any, index: number) => {
-                          if (item.metric === "maintainability_issues") {
+                          if (item.metric === "reliability_issues") {
+                            // check conditon return grade base on score
+                            const parsedValue = JSON.parse(item.value);
+                            if (parsedValue.INFO > 0) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  A
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.LOW > 0 &&
+                              parsedValue.LOW > parsedValue.INFO &&
+                              parsedValue.LOW > parsedValue.MEDIUM &&
+                              parsedValue.LOW > parsedValue.HIGH &&
+                              parsedValue.LOW > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#60935D]"
+                                >
+                                  B
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.MEDIUM > 0 &&
+                              parsedValue.MEDIUM > parsedValue.INFO &&
+                              parsedValue.MEDIUM > parsedValue.LOW &&
+                              parsedValue.MEDIUM > parsedValue.HIGH &&
+                              parsedValue.MEDIUM > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F7DC6F]"
+                                >
+                                  C
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.HIGH > 0 &&
+                              parsedValue.HIGH > parsedValue.INFO &&
+                              parsedValue.HIGH > parsedValue.LOW &&
+                              parsedValue.HIGH > parsedValue.MEDIUM &&
+                              parsedValue.HIGH > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F9B800]"
+                                >
+                                  D
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.BLOCKER > 0 &&
+                              parsedValue.BLOCKER > parsedValue.INFO &&
+                              parsedValue.BLOCKER > parsedValue.LOW &&
+                              parsedValue.BLOCKER > parsedValue.MEDIUM &&
+                              parsedValue.BLOCKER > parsedValue.HIGH
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
+                                >
+                                  F
+                                </div>
+                              );
+                            } else {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  No Data
+                                </div>
+                              );
+                            }
+                          }
+                        }
+                      )}
+                      {/* total score */}
+                      {item?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "reliability_issues") {
                             return (
                               <p key={index} className="mx-2">
                                 {JSON.parse(item.value).total}
@@ -773,9 +1404,95 @@ export default function ProjectCardNameComponent() {
                   <div className="w-full h-full">
                     {/* Hotspot Reviewed */}
                     <div className="flex w-full justify-center  text-center items-center">
-                      <div className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color">
-                        A
-                      </div>
+                      {/* grade */}
+                      {item?.component?.component?.measures?.map(
+                        (item: any, index: number) => {
+                          if (item.metric === "reliability_issues") {
+                            // check conditon return grade base on score
+                            const parsedValue = JSON.parse(item.value);
+                            if (parsedValue.INFO > 0) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  A
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.LOW > 0 &&
+                              parsedValue.LOW > parsedValue.INFO &&
+                              parsedValue.LOW > parsedValue.MEDIUM &&
+                              parsedValue.LOW > parsedValue.HIGH &&
+                              parsedValue.LOW > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#60935D]"
+                                >
+                                  B
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.MEDIUM > 0 &&
+                              parsedValue.MEDIUM > parsedValue.INFO &&
+                              parsedValue.MEDIUM > parsedValue.LOW &&
+                              parsedValue.MEDIUM > parsedValue.HIGH &&
+                              parsedValue.MEDIUM > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F7DC6F]"
+                                >
+                                  C
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.HIGH > 0 &&
+                              parsedValue.HIGH > parsedValue.INFO &&
+                              parsedValue.HIGH > parsedValue.LOW &&
+                              parsedValue.HIGH > parsedValue.MEDIUM &&
+                              parsedValue.HIGH > parsedValue.BLOCKER
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#F9B800]"
+                                >
+                                  D
+                                </div>
+                              );
+                            } else if (
+                              parsedValue.BLOCKER > 0 &&
+                              parsedValue.BLOCKER > parsedValue.INFO &&
+                              parsedValue.BLOCKER > parsedValue.LOW &&
+                              parsedValue.BLOCKER > parsedValue.MEDIUM &&
+                              parsedValue.BLOCKER > parsedValue.HIGH
+                            ) {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
+                                >
+                                  F
+                                </div>
+                              );
+                            } else {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                >
+                                  No Data
+                                </div>
+                              );
+                            }
+                          }
+                        }
+                      )}
+                      {/* score  */}
                       {item?.component?.component?.measures?.map(
                         (item: any, index: number) => {
                           if (item.metric === "security_hotspots") {
@@ -838,17 +1555,17 @@ export default function ProjectCardNameComponent() {
                   <div className="w-full h-full">
                     {/* duplicated */}
                     <div className="flex w-full justify-center  text-center items-center">
-                      {projectResult?.component?.component?.measures?.map(
+                      {item?.component?.component?.measures?.map(
                         (item: any, index: number) => {
                           if (item.metric === "duplicated_lines_density") {
                             return (
                               <div
                                 key={index}
-                                className="w-[60px] h-[30px] flex items-center justify-center"
+                                className="w-[35px] h-[30px] flex items-center justify-center"
                               >
                                 <Image
-                                  width={60}
-                                  height={50}
+                                  width={35}
+                                  height={30}
                                   alt="coverage"
                                   src={getDuplicationData(item.value).image}
                                 />

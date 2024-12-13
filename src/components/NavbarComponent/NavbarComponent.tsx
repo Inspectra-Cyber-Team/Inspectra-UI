@@ -22,9 +22,7 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
-
 export default function NavbarComponent() {
-
   const router = useRouter();
 
   const [userUUID, setUserUUID] = useState("");
@@ -120,14 +118,19 @@ export default function NavbarComponent() {
                   <Menubar className="hidden md:block md:w-full md:h-full">
                     <MenubarMenu>
                       <MenubarTrigger>
-                        <div className="  w-[40px] h-[40px] overflow-hidden rounded-full">
+                        <div
+                          className="  w-[40px] h-[40px] overflow-hidden rounded-full "
+                        >
                           <img
                             src={`${userData?.data?.profile}`}
                             alt="Logo"
                             width={50}
                             height={50}
                             className="object-cover w-full h-full"
-                            onError={(e) => (e.currentTarget.src = '/images/default-profile.jpg')}
+                            onError={(e) =>
+                              (e.currentTarget.src =
+                                "/images/default-profile.jpg")
+                            }
                           />
                         </div>
                       </MenubarTrigger>
@@ -140,7 +143,10 @@ export default function NavbarComponent() {
                         </p>
                         <hr className="my-5" />
                         {/* Profile */}
-                        <button onClick={()=> router.push("/myProfile")} className="p-3 my-3 flex w-full justify-between items-center text-center ">
+                        <button
+                          onClick={() => router.push("/myProfile")}
+                          className="p-3 my-3 flex w-full justify-between items-center text-center "
+                        >
                           <div className="flex items-center">
                             <div className="flex items-center justify-center w-6 h-6">
                               <FaUser className="w-full h-full text-text_title_20" />
@@ -153,7 +159,10 @@ export default function NavbarComponent() {
                         </button>
 
                         {/* Blog History */}
-                        <button onClick={()=> router.push("/blogHistory")} className="p-3 my-3    flex w-full justify-between items-center text-center">
+                        <button
+                          onClick={() => router.push("/blogHistory")}
+                          className="p-3 my-3    flex w-full justify-between items-center text-center"
+                        >
                           <div className="flex items-center">
                             <div className="flex items-center justify-center w-6 h-6">
                               <SiMicrodotblog className="w-full h-full text-text_title_20" />
@@ -168,7 +177,10 @@ export default function NavbarComponent() {
                         </button>
 
                         {/* Scan History */}
-                        <button onClick={()=> router.push("/scanHistory")} className="p-3 my-3 flex w-full justify-between items-center text-center">
+                        <button
+                          onClick={() => router.push("/scanHistory")}
+                          className="p-3 my-3 flex w-full justify-between items-center text-center"
+                        >
                           <div className="flex items-center">
                             <div className="flex items-center justify-center w-6 h-6">
                               <TbScan className="w-full h-full text-text_title_20" />
@@ -239,7 +251,10 @@ export default function NavbarComponent() {
                                 width={50}
                                 height={50}
                                 className="object-cover w-full h-full"
-                                onError={(e) => (e.currentTarget.src = '/images/default-profile.jpg')}
+                                onError={(e) =>
+                                  (e.currentTarget.src =
+                                    "/images/default-profile.jpg")
+                                }
                               />
                             </div>
                             <div className="px-5">

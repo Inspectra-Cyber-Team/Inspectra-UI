@@ -1,5 +1,6 @@
 import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 import Prism from "prismjs";
+import "prismjs/themes/prism.css";
 import React, { useEffect } from "react";
 
 export default function HowToFix({ ruleKey }: any) {
