@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 import { FaFile } from "react-icons/fa";
 import { GoFileDirectoryFill } from "react-icons/go";
 import { IoIosMore } from "react-icons/io";
-import Prism from "prismjs";
 
 import {
   Accordion,
@@ -20,6 +19,9 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import { useRouter } from "next/navigation";
+import Prism from "prismjs";
+import "prismjs/themes/prism.css";
+
 export default function IusseComponent({ ...props }) {
   //   state for store filter
   const [fileStore, setFileStore] = useState<string>("");
@@ -67,7 +69,6 @@ export default function IusseComponent({ ...props }) {
   const router = useRouter();
 
   useEffect(() => setSize(issueData?.data?.total), [issueData]);
-
   useEffect(() => {
     Prism.highlightAll();
   });
@@ -75,6 +76,7 @@ export default function IusseComponent({ ...props }) {
   const issueSideBarResult = issueData?.data.facets;
   const resultIssueDetail = issueDetail?.data;
   const issueSourceResult = issueSource?.data[componentProject];
+
   return (
     <section className="w-full h-full  flex justify-between">
       {/* when on click issue card */}
@@ -188,18 +190,34 @@ export default function IusseComponent({ ...props }) {
                       (item: any, index: number) => (
                         <div key={index} className="flex ">
                           <p>{item.line}</p>
-                          <pre
-                            style={{
-                              background: "transparent",
-                              padding: 0,
-                              margin: 0,
-                              height: "100%",
-                            }}
-                          >
-                            <code className="language-javascript">
-                              {item.code}
-                            </code>
-                          </pre>
+                          <div>
+                            <pre
+                              style={{
+                                background: "transparent",
+                                padding: 0,
+                                margin: 0,
+                                height: "100%",
+                                paddingLeft: "20px",
+                              }}
+                            >
+                              <code
+                                className="language-js"
+                                dangerouslySetInnerHTML={{ __html: item.code }}
+                              />
+                              {resultIssueDetail?.issues?.map(
+                                (issue: any, index: number) => {
+                                  const isErrorForThisLine =
+                                    issue?.textRange.startLine === item.line &&
+                                    issue?.textRange.endLine === item.line;
+                                  return isErrorForThisLine ? (
+                                    <p key={index} className="text-custom_red">
+                                      Error: {issue.message}
+                                    </p>
+                                  ) : null;
+                                }
+                              )}
+                            </pre>
+                          </div>
                         </div>
                       )
                     )}
