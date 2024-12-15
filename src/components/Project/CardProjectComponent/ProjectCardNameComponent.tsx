@@ -40,14 +40,12 @@ import {
   DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { GitUrlType } from "@/data/GitUrl";
 import { getCoverageData, getDuplicationData, timeSince } from "@/lib/utils";
-import { Copy } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FaCheck, FaGithub } from "react-icons/fa6";
