@@ -64,20 +64,17 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
     const formattedDate = format(date, 'MMMM do, yyyy');
 
     // Find the highest total issues dynamically across all metrics
-    const maxIssues = metrics.reduce((m: any) => {
+    const maxIssues = metrics.reduce((max:any, metric:any) => {
         try {
-            if (["maintainability_issues", "reliability_issues", "security_issues"].includes(m.metric)) {
-                const value = JSON.parse(m.value)?.total || 0;
-                return Math.max(value);
-            }
-            else {
-                const value = parseFloat(m.value) || 0;
-                return Math.max(value);
-            }
+            const value = metric.value.startsWith('{') && metric.value.endsWith('}')
+                ? JSON.parse(metric.value)?.total || 0
+                : parseFloat(metric.value) || 0;
+                console.log("Hel",metric,value)
+            return Math.max(max, value);
         } catch (err) {
-            console.error("Error parsing metric:", m.metric, err);
+            console.error(`Error parsing metric: ${metric.metric}`, err);
+            return max;
         }
-        return max;
     }, 0); // Default to 0 if no issues found
 
     return (
@@ -134,7 +131,7 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
 
                         try {
 
-                            if (metric.value.startsWith('{') && metric.value.endsWith('}')) {
+                            if (metric.value.startsWith('{') && metric.value.endsWith('}') ) {
                                 parsedValue = JSON.parse(metric.value);
                                 const totalIssues = parsedValue.total || 0;
                                 percentage = maxIssues > 0 ? (totalIssues / maxIssues) * 100 : 0;
@@ -194,7 +191,7 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
                                     ) : (
                                         <>
                                             <p className="font-bold">
-                                                {parsedValue?.total || 0} <span className="font-normal">Open Issues</span>
+                                                {parsedValue?.total || 0} <span className="font-normal">{metric.metric === 'ncloc' ? 'Lines of Code' : 'Open Issues'}</span>
                                             </p>
                                             <div className='text-text_body_16 flex justify-between items-center mb-3'>
                                                 <div className="relative w-12 h-12">
@@ -225,14 +222,12 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
                                     </div>
                                 ) : (
                                     <div className="flex space-x-4 justify-between">
-                                        <p className="px-4 py-2 bg-red-400 text-white rounded-md text-sm font-medium shadow-sm">
-                                            0 H
-                                        </p>
-                                        <p className="px-4 py-2 bg-yellow-300 text-white rounded-md text-sm font-medium shadow-sm">
-                                            0 M
-                                        </p>
-                                        <p className="px-4 py-2 bg-green-500 text-white rounded-md text-sm font-medium shadow-sm">
-                                            0 L
+                                        <p className="px-3 py-2 rounded-md shadow-sm">
+                                            {metric.bestValue === true ? (
+                                                <span className="text-green-500 font-bold">Best Value</span>
+                                            ) : (
+                                                <span className="text-red-500 font-medium">No Best Value</span>
+                                            )}
                                         </p>
                                     </div>
                                 )}
