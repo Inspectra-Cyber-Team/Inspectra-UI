@@ -21,7 +21,7 @@ export default function page() {
           <p className='text-primary_color'>See the Unseen, Secure the Unknown.</p>
         </div>
         <div className='my-3 w-[90%] lg:w-[70%] mx-auto'>
-          <p>Inspectra empowers you to uncover hidden risks with precision. Through deep, intelligent scanning and proactive insights, we help you secure your code and protect against unseen vulnerabilities—keeping your systems resilient and your data safe</p>
+          <p>Inspectra empowers you to uncover hidden risks with precision. Through deep, intelligent scanning and proactive insights, we help you secure your code and protect against unseen vulnerabilities—keeping your systems resilient and your data safe based on Sonarqube Architecture</p>
         </div>
       </section>
 

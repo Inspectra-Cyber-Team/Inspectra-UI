@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+'use client'
+import React, {  useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useReplyMutation } from "@/redux/service/reply";
@@ -12,6 +13,7 @@ import {
 } from "@/redux/service/comment";
 import { Content, Reply } from "@/types/Blog";
 import { useToast } from "../hooks/use-toast";
+import { Skeleton } from "../ui/skeleton";
 
 type commentProp = {
   uuid: string;
@@ -35,16 +37,74 @@ const CommentSection = ({ uuid }: commentProp) => {
     }
   };
 
+
+
   //get all comment
-  const { data: comment } = useGetCommentByBlogUuidQuery({
+  const { data: comment ,isLoading} = useGetCommentByBlogUuidQuery({
     uuid: uuid,
     page: 0,
-    size: 4,
+    size: 25,
   });
 
-  const [replyToComment] = useReplyMutation();
+  const [dataComment, setDataComment] = useState<Content[]>([]);
 
-  const commentData = comment?.content;
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+
+
+   useEffect(() => {
+
+      const connectWebSocket = () => {
+
+        const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL as string);
+  
+        ws.onopen = () => console.log("WebSocket connection established.");
+        ws.onmessage = (event) => {
+          try {
+            const newComment = JSON.parse(event.data);
+
+            console.log("Received new comment:", newComment);
+     
+            if (
+              newComment &&
+              newComment.uuid &&
+              newComment.content &&
+              newComment.user &&
+              newComment.replies &&
+              newComment.createdAt
+            ) {
+              // Append the new comment to the existing list
+              setDataComment((prevData) => [...prevData, newComment]);
+            } else {
+              console.warn("Received comment is missing required fields:", newComment);
+            }
+            
+          } catch (error) {
+            console.error("Error parsing WebSocket message:", error);
+          }
+        };
+        ws.onerror = () => console.error("WebSocket error. Retrying...");
+        ws.onclose = () => console.error("WebSocket closed. Retrying...");
+  
+        setSocket(ws);
+      };
+      if (!socket) connectWebSocket();
+
+      return () => {
+        socket?.close();
+       
+      };
+    }, [uuid,socket]);
+
+    
+  useEffect(() => {
+    if (comment) {
+      setDataComment(comment?.content);
+    }
+  }, [comment]);
+    
+   console.log('this is new comment',dataComment)
+
+  const [replyToComment] = useReplyMutation();
 
   const [replyContent, setReplyContent] = useState<{ [key: string]: string }>(
     {}
@@ -123,6 +183,40 @@ const CommentSection = ({ uuid }: commentProp) => {
     }
   };
 
+  if (isLoading) {
+
+    return (
+        <div className="space-y-6">
+        {[...Array(2)].map((_, index: number) => (
+         <div key={index} className="space-y-4">
+           <div className="flex items-start gap-3">
+             <Skeleton className="h-10 w-10 rounded-full" />
+             <div className="flex-1 space-y-2">
+               <div className="flex items-center justify-between">
+                 <div className="flex items-center gap-2">
+                   <Skeleton className="h-4 w-24" />
+                   <Skeleton className="h-4 w-20" />
+                 </div>
+               </div>
+               <Skeleton className="h-4 w-3/4" />
+               <div className="flex items-center gap-4">
+                 <div className="flex items-center gap-1">
+                   <Skeleton className="h-4 w-4" />
+                   <Skeleton className="h-4 w-4" />
+                 </div>
+                 <Skeleton className="h-4 w-24" />
+                 <div className="flex-1 flex justify-end">
+                   <Skeleton className="h-4 w-16" />
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+       ))}
+      </div>
+    );
+  }
+
   return (
     <section className="">
       <section className={"flex h-full mx-auto flex-col justify-between"}>
@@ -131,12 +225,12 @@ const CommentSection = ({ uuid }: commentProp) => {
             placeholder="Write your comment here..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="mt-4 p-3 h-[130px] rounded-[20px] border-0 bg-[#f5f5f5] dark:border-b-background_dark_mode"
+            className="mt-4 p-3 h-[130px] rounded-[20px] border-0 bg-[#f5f5f5] dark:bg-card_color_dark dark:border-b-background_dark_mode"
           />
           <div className={"flex justify-end"}>
             <Button
               onClick={() => handleCreateComment(uuid)}
-              className="right-4 mt-2 bg-primary_color px-3 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
+              className="right-4 mt-2 bg-primary_color px-3 text-text_color_light dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
             >
               Submit
             </Button>
@@ -145,11 +239,11 @@ const CommentSection = ({ uuid }: commentProp) => {
       </section>
 
       <section className="mt-2">
-        <Button onClick={() => setShowComments(!showComments)} className="mb-4">
+        <button onClick={() => setShowComments(!showComments)} className="mb-4">
           {showComments ? "Hide Comments" : "Show Comments"}
-        </Button>
+        </button>
         {showComments &&
-          commentData?.map((comment: Content) => (
+          dataComment?.map((comment: Content) => (
             <div key={comment.uuid} className="border-b border-gray-200 py-2">
               <div className="flex items-center mb-2">
                 <img
@@ -202,10 +296,10 @@ const CommentSection = ({ uuid }: commentProp) => {
                   )}
                 </div>
 
-                <div className="flex justify-end">
-                  <Button onClick={() => toggleReplyInput(comment.uuid)}>
+                <div className="flex justify-end text-[14px]">
+                  <button onClick={() => toggleReplyInput(comment.uuid)}>
                     Reply
-                  </Button>
+                  </button>
                 </div>
               </div>
 
@@ -225,7 +319,7 @@ const CommentSection = ({ uuid }: commentProp) => {
                   <div className="flex justify-end">
                     <Button
                       onClick={() => handleReplySubmit(comment.uuid)}
-                      className="mt-2 bg-primary_color px-3 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
+                      className="mt-2 bg-primary_color px-3 text-text_color_light dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
                     >
                       Submit
                     </Button>

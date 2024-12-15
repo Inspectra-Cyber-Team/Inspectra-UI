@@ -14,6 +14,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 export default function BlogComponent() {
   const router = useRouter();
@@ -21,19 +23,25 @@ export default function BlogComponent() {
   const [currentPage, setCurrentPage] = useState(1); // Track current page state
   const [totalPages, setTotalPages] = useState(1); // Track total pages based on API response
 
-  const { data: blogData } = useGetAllBlogQuery({
+  const { data: blogData, isLoading} = useGetAllBlogQuery({
     page: currentPage - 1,
     pageSize: 4,
   });
-  // Adjust for zero-based page indexing
-  const blogList = blogData?.content;
 
-  // Set total pages from the API response
-  useEffect(() => {
-    if (blogData) {
-      setTotalPages(blogData?.totalPages);
-    }
-  }, [blogData]);
+
+    // Adjust for zero-based page indexing
+    const blogList = blogData?.content;
+
+    // Set total pages from the API response
+    useEffect(() => {
+      if (blogData) {
+        setTotalPages(blogData?.totalPages);
+      }
+    }, [blogData]);
+  
+
+
+
 
   // Function to handle page change
   const handlePageChange = (page: number) => {
@@ -57,6 +65,37 @@ export default function BlogComponent() {
     }
   };
 
+
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-7xl mx-auto p-4">
+   
+        {/* Main Content */}
+        <div className="space-y-8 ">
+          {/* Blog Post Skeleton */}
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex w-full gap-4 ">
+              <div className="flex-1 space-y-4">
+            
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <div className="flex items-center gap-4">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-16" />
+                  <Skeleton className="h-4 w-16" />
+                </div>
+              </div>
+              {/* Image placeholder on the right */}
+              <Skeleton className="h-32 w-32 rounded-lg" />
+            </div>
+          ))}
+        </div>
+    
+    </div>
+    )
+  }
+
+
   return (
     <div>
       {/* blog card */}
@@ -65,7 +104,7 @@ export default function BlogComponent() {
           <div
             key={index}
             onClick={() => router.push(`/blog/${blog?.uuid}`)}
-            className="flex  my-2 flex-wrap lg:flex-nowrap justify-center lg:justify-between items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5 lg:pb-0"
+            className="flex  my-2 flex-wrap lg:flex-nowrap justify-center lg:justify-between cursor-pointer items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5 lg:pb-0"
           >
             <div className="flex flex-col gap-3 lg:w-[55%]">
               {/* profile */}
@@ -83,12 +122,12 @@ export default function BlogComponent() {
               </div>
 
               {/* title */}
-              <p className="text-text_title_20  cursor-pointer  line-clamp-2 text-text_color_light dark:text-text_color_dark">
+              <p className="text-text_title_20  cursor-pointer  line-clamp-1 text-text_color_light dark:text-text_color_dark">
                 {blog?.title}
               </p>
 
               {/* description */}
-              <p className="text-text_body_16  cursor-pointer  text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-2">
+              <p className="text-text_body_16  cursor-pointer  text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-1">
                 {blog?.description}
               </p>
 
@@ -131,9 +170,9 @@ export default function BlogComponent() {
             </div>
 
             {/* thumbnail */}
-            <div className={"w-[200px] h-[150px]"}>
+            <div className={"w-[200px] h-[150px] hidden lg:block"}>
               <img
-                className="w-full h-full object-contain rounded-xl"
+                className="w-full h-full object-cover rounded-xl"
                 src={blog?.thumbnail[0]}
                 alt="thumbnail"
               />

@@ -7,22 +7,18 @@ export type ParamProps = {
   };
 };
 
-import SecurityComponent from "@/components/securityComponent/SecurityComponent";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import IusseComponent from "@/components/ProjectDetailComponents/IusseComponent";
+
+import SecurityComponent from "@/components/securityComponent/SecurityComponent";
+
 import PageOverviewProjectDetail from "@/components/ProjectDetailComponents/PageOverviewProjectDetail";
+import CodeComponent from "@/components/codeComponent/CodeComponent";
+import IusseComponent from "@/components/ProjectDetailComponents/issueTab/IusseComponent";
+
 export default function page({ params }: ParamProps) {
+  
   const projectName = params.projectName;
 
   console.log(projectName);
@@ -30,11 +26,11 @@ export default function page({ params }: ParamProps) {
   return (
     <main className="w-[90%] m-auto bg-card_color_light rounded h-auto p-5 my-10 dark:bg-card_color_dark">
       <Tabs defaultValue="Overview" className="">
-        <TabsList className="grid w-full grid-cols-4 mb-5">
-          {navProjectDetial.map((item, index: number) => (
+        <TabsList className="grid w-full grid-cols-5 mb-5">
+          {navProjectDetial.map((item) => (
             <TabsTrigger
               value={item.name}
-              key={index}
+              key={item.name}
               className="group relative pb-2 text-gray-500 hover:text-secondary_color transition mr-3"
             >
               {item.name}
@@ -52,9 +48,16 @@ export default function page({ params }: ParamProps) {
 
         <TabsContent value="Security Hotspot">
           <section className="h-full">
-
             <SecurityComponent projectName={projectName} />
+          </section>
+        </TabsContent>
 
+        {/* table code */}
+        <TabsContent value="Code">
+          <section className="w-full">
+
+           <CodeComponent projectName={projectName} />
+      
           </section>
         </TabsContent>
       </Tabs>

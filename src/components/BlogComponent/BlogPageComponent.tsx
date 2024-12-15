@@ -9,6 +9,7 @@ import { useState } from "react";
 import BlogTopicComponent from "./BlogtopicComponent";
 
 export default function BlogPageComponent() {
+  
   const [topic, setTopic] = useState<string>("");
 
   const handleTopicClick = (topicName: string) => {
@@ -27,19 +28,21 @@ export default function BlogPageComponent() {
           href={"/blog/create"}
           className="px-3 py-2 bg-primary_color text-text_color_light flex rounded-[17px] items-center justify-center"
         >
-          Create Blog
+          <span className="hidden md:block">Create Blog</span>
           <FaPlus className={"ml-1"} />
         </Link>
       </div>
-      <div className="flex justify-between gap-[100px] my-5">
-        {/* Conditionally render BlogTopicComponent or BlogComponent */}
-        {topic ? <BlogTopicComponent topic={topic} /> : <BlogComponent />}
+      <div className="flex justify-between gap-10 my-5">
+        {/* Main Content */}
+        <div className="w-full lg:w-[70%]">
+          {topic ? <BlogTopicComponent topic={topic} /> : <BlogComponent />}
+        </div>
 
         {/* Sidebar */}
-        <div className="w-[30%] hidden lg:block">
+        <div className="hidden lg:block w-[30%]">
           {/* Common Topics */}
           <div>
-            <p className="text-text_title_20 text-black my-2 dark: dark:text-text_color_desc_dark">
+            <p className="text-text_title_20 text-black my-2 dark:text-text_color_desc_dark">
               Common Topics
             </p>
             <div className="py-2 flex flex-wrap gap-3">
@@ -52,13 +55,13 @@ export default function BlogPageComponent() {
                   {common.topic}
                 </button>
               ))}
-
-              {/* Recent Posts */}
-              <RecentPostComponent />
             </div>
+            {/* Recent Posts */}
+            <RecentPostComponent />
           </div>
         </div>
       </div>
+
     </section>
   );
 }

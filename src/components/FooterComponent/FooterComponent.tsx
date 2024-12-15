@@ -22,9 +22,9 @@ export default function FooterComponent() {
     <footer>
       {!isRender && (
         <div className="w-[95%] my-5 md:w-[98%] z-20 rounded-[20px] bg-card_color_light dark:bg-card_color_dark  mx-auto">
-          <section className="w-[95%] flex flex-col md:flex-row justify-between mx-auto space-y-5 md:space-y-0">
+          <section className="w-[95%] flex flex-col md:flex-row justify-between mx-auto ">
             {/* Section 1: Logo */}
-            <section className="w-full md:w-[30%]">
+            <section className="w-auto md:w-[30%]">
               <div className="p-2 md:p-5">
                 <div className="flex items-center">
                   <div className="w-[40px] h-[40px] overflow-hidden rounded-full">
@@ -43,67 +43,69 @@ export default function FooterComponent() {
                 {/* Content */}
                 <div className="text-text_body_16 lg:text-text_title_24 text-text_color_light dark:text-text_color_dark mt-5">
                   <div className="flex md:block lg:flex">
-                    <p className="mr-2">See the</p>
-                    <span className="md:text-text_body_16 lg:text-text_title_24 text-secondary_color">
+                    <p className="mr-2">See the <span className="md:text-text_body_16 lg:text-text_title_24 text-secondary_color">
                       Unseen
-                    </span>
+                    </span></p>
+                    
                   </div>
-                  <div className="flex md:block lg:flex">
-                    <p className="mr-2">Secure the</p>
-                    <span className="md:text-text_body_16 lg:text-text_title_24 text-secondary_color">
+                  <div className="md:block lg:flex">
+                    <p className="mr-2">Secure the <span className="md:text-text_body_16 lg:text-text_title_24 text-secondary_color">
                       Unknown
-                    </span>
+                    </span></p>
+                    
                   </div>
                 </div>
               </div>
             </section>
 
             {/* Section 2: Features and Others */}
-            <section className="w-full md:w-[65%] flex flex-col md:flex-row justify-between">
-              {/* Features */}
-              <div className="p-2 w-[20%] md:p-5">
-                <div className="text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
-                  Feature
+            <section className="w-auto flex flex-col md:flex-row justify-end">
+              <div className="flex flex-row-reverse md:flex-row justify-between">
+                {/* Features */}
+                <div className="p-2 md:p-5 w-[50%] md:w-auto">
+                  <div className="text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
+                    Feature
+                  </div>
+                  <div className="mt-5">
+                    {FeaturesFooter.map((featuresItem, index: number) => (
+                      <Link
+                        key={index}
+                        className="my-3 block text-text_body_16 text-text_color_light dark:text-text_color_dark"
+                        href={featuresItem.link}
+                      >
+                        {featuresItem.name}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-                <div className="mt-5">
-                  {FeaturesFooter.map((featuresItem, index: number) => (
-                    <Link
-                      key={index}
-                      className="my-3 block text-text_body_16 text-text_color_light dark:text-text_color_dark"
-                      href={featuresItem.link}
-                    >
-                      {featuresItem.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
 
-              {/* Support */}
-              <div className="p-2 w-[20%] md:p-5">
-                <div className="text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
-                  Support
-                </div>
-                <div className="mt-5">
-                  {SupportFooter.map((featuresItem, index: number) => (
-                    <Link
-                      key={index}
-                      className="my-3 block text-text_body_16 text-text_color_light dark:text-text_color_dark"
-                      href={featuresItem.link}
-                    >
-                      {featuresItem.name}
-                    </Link>
-                  ))}
+                {/* Support */}
+                <div className="p-2 md:p-5">
+                  <div className="text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
+                    Support
+                  </div>
+                  <div className="mt-5">
+                    {SupportFooter.map((featuresItem, index: number) => (
+                      <Link
+                        key={index}
+                        className="my-3 block text-text_body_16 text-text_color_light dark:text-text_color_dark"
+                        href={featuresItem.link}
+                      >
+                        {featuresItem.name}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
 
               {/* Sponsors */}
-              <div className="p-2 w-full md:p-5">
+              <div className="p-2 w-auto md:p-5">
                 <div className="text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
                   Our Sponsors
                 </div>
-                <div className="w-[90%] flex flex-wrap justify-between lg:space-y-0 space-y-4 lg:flex-row xl:grid xl:grid-cols-3 xl:gap-4 mt-5">
+                <div className="w-[90%] flex flex-col xl:justify-between lg:space-y-0 space-y-4 xl:flex-row xl:grid xl:grid-cols-3 gap-4 mt-5">
                   {/* First Image */}
-                  <div className="flex justify-center">
+                  <div className="flex justify-center md:justify-start xl:justify-center">
                     <img
                       src="/images/CBRD_Logo.png"
                       alt="CBRD logo"
@@ -112,7 +114,7 @@ export default function FooterComponent() {
                   </div>
 
                   {/* Second Image */}
-                  <div className="flex justify-center">
+                  <div className="flex justify-center md:justify-start xl:justify-center">
                     <img
                       src="/images/MPTC-Logo.png"
                       alt="MPTC"
@@ -121,17 +123,17 @@ export default function FooterComponent() {
                   </div>
 
                   {/* Third Image */}
-                  <div className="flex justify-center">
-                    <div className="w-[200px] h-[100px] flex items-center justify-center">
+                  <div className="flex justify-center md:justify-start xl:justify-center">
+                    <div className="w-[200px] h-auto flex items-center justify-center">
                       {theme === "dark" ? (
                         <img
-                          src="/images/White-CSTAD-Logo.png"
+                          src="/images/istad-logo-white.png"
                           alt="Logo"
                           className="object-contain w-full h-full"
                         />
                       ) : (
                         <img
-                          src="/images/Dark-CSTAD-Logo.png"
+                          src="/images/istad-logo.png"
                           alt="Logo"
                           className="object-contain w-full h-full"
                         />
