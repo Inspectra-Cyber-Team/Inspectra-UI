@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 import {
   Select,
   SelectContent,
@@ -23,14 +22,16 @@ import { MdCheckCircle, MdClear } from "react-icons/md";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import { useGetAllTopicQuery } from "@/redux/service/topic";
+import TextEditor from "../TextEdittor/TextEditor";
+
 
 const FILE_SIZE = 1024 * 1024 * 5; // 5MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
 
 const validationSchema = Yup.object().shape({
-  title: Yup.string().required("Required"),
+  title: Yup.string().required("Title is Required"),
   description: Yup.string().required("Description is Required"),
-  topic: Yup.string().required("Required"),
+  topic: Yup.string().required("Topic is Required"),
   thumbnail: Yup.array()
     .of(
       Yup.mixed()
@@ -136,6 +137,10 @@ const CreateBlogComponent = () => {
       }
     } catch (error) {
       console.error("Create Blog Error:", error);
+      toast({
+        description: "Failed to create blog",
+        variant: "error",
+      });
     }
   };
 
@@ -160,9 +165,12 @@ const CreateBlogComponent = () => {
                   const updatedValues = {
                     ...values,
                     thumbnail: uploadedImages, // Set the uploaded URLs
-                    topic: selectedTopic === "other" ? values.customTopic : selectedTopic,
+                    topic:
+                      selectedTopic === "other"
+                        ? values.customTopic
+                        : selectedTopic,
                   };
-                  console.log("this is update value", updatedValues);
+
                   await handleCreateBlog(updatedValues);
                 } else {
                   console.error("No files uploaded");
@@ -173,8 +181,12 @@ const CreateBlogComponent = () => {
             }}
           >
             {({ setFieldValue, isValid, dirty }) => (
-              <Form className="space-y-4">
+              <Form className="space-y-4 py-1">
                 {/* Drag-and-Drop Thumbnail Selection */}
+                <p className="text-black text-text_title_20 font-bold text-center dark:text-text_color_dark ">
+                  {" "}
+                  Create Blog{" "}
+                </p>
                 <div
                   className="file-upload-design mt-4 p-4 rounded border-dashed border-2"
                   onDragOver={handleDragOver}
@@ -186,7 +198,8 @@ const CreateBlogComponent = () => {
                   <span
                     className="browse-button cursor-pointer text-blue-500 font-bold"
                     onClick={() => {
-                      const thumbnailInput = document.getElementById('thumbnail');
+                      const thumbnailInput =
+                        document.getElementById("thumbnail");
                       if (thumbnailInput) thumbnailInput.click();
                     }}
                   >
@@ -242,7 +255,7 @@ const CreateBlogComponent = () => {
                   />
                 </div>
 
-                <div>
+                {/* <div>
                   <Label htmlFor="description">Description</Label>
                   <Field
                     as={Textarea}
@@ -257,13 +270,38 @@ const CreateBlogComponent = () => {
                     component="p"
                     className="text-red-500 text-sm mt-1"
                   />
+                </div> */}
+
+                {/* new text editor plugin with description filed */}
+                <div className="col-span-full">
+                  <div className="md:col-span-4 col-span-6">
+                    <div className="sm:col-span-6 h-full">
+                      <div className="mt-2">
+                        <Label htmlFor="description">Description</Label>
+                        <Field name="description">
+                          {({ field }: any) => (
+                            <TextEditor
+                              value={field.value}
+                              onChange={(value) =>
+                                setFieldValue("description", value)
+                              }
+                            />
+                          )}
+                        </Field>
+                        <ErrorMessage
+                          name="description"
+                          component="div"
+                          className="text-red-600 text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div>
                   <Label htmlFor="topic">Blog Topic</Label>
                   <Field name="topic">
                     {({ field, form }: any) => (
-
                       <Select
                         {...field}
                         id="topic"
@@ -288,7 +326,6 @@ const CreateBlogComponent = () => {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-
                     )}
                   </Field>
                   <ErrorMessage
@@ -312,7 +349,8 @@ const CreateBlogComponent = () => {
                     <ErrorMessage
                       name="customTopic"
                       component="p"
-                      className="text-red-500 text-sm mt-1" />
+                      className="text-red-500 text-sm mt-1"
+                    />
                   </div>
                 )}
 
@@ -336,12 +374,13 @@ const CreateBlogComponent = () => {
           <div className="text-center">
             <p className="font-bold text-text_header_34">Create Success</p>
             <p className="text-lg dark:text-text_color_desc_dark text-left">
-              Thank you for submitting your blog! <br /><br /> Your post is currently under
-              review by our admin team. Once it has been approved, you will
-              receive a confirmation email notifying you of its successful
-              publication. <br /><br />
-              We appreciate your contribution and look forward to
-              sharing your insights with our community.
+              Thank you for submitting your blog! <br />
+              <br /> Your post is currently under review by our admin team. Once
+              it has been approved, you will receive a confirmation email
+              notifying you of its successful publication. <br />
+              <br />
+              We appreciate your contribution and look forward to sharing your
+              insights with our community.
             </p>
           </div>
           <Button
@@ -352,6 +391,7 @@ const CreateBlogComponent = () => {
           </Button>
         </DialogContent>
       </Dialog>
+
     </div>
   );
 };
