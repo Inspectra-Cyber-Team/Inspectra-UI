@@ -36,9 +36,10 @@ export async function POST(req: NextRequest) {
   const cookieName = process.env?.COOKIE_REFRESH_TOKEN_NAME || "refresh_token";
   const serialized = serialize(cookieName, refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    // secure: process.env.NODE_ENV === "production",
+    secure: false,
     sameSite: "lax",
-    path: "/",
+    path: "/", 
   });
 
   return NextResponse.json(
