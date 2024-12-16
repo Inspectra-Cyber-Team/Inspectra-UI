@@ -1,7 +1,5 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -9,26 +7,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { IoSearchSharp } from "react-icons/io5";
+import { getCoverageData, getDuplicationData, timeSince } from "@/lib/utils";
 import { useGetProjectOverViewUserQuery } from "@/redux/service/project";
-import { timeSince, getCoverageData, getDuplicationData } from "@/lib/utils";
 import {
   Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
   DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
 } from "@radix-ui/react-dialog";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { CgDanger } from "react-icons/cg";
 import { FaCheck } from "react-icons/fa";
+import { IoSearchSharp } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
+import LoadProjectComponent from "../Project/LoadingProjectComponent/LoadProjectComponent";
 import { Button } from "../ui/button";
 import { DialogHeader } from "../ui/dialog";
-import Image from "next/image";
-import LoadProjectComponent from "../Project/LoadingProjectComponent/LoadProjectComponent";
 export default function ScanHistoryComponent() {
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [userUUID, setUserUUID] = useState("");
 
@@ -39,7 +38,6 @@ export default function ScanHistoryComponent() {
   const {
     data: projectScanByUser,
     isError,
-    isFetching: isFetchDataProjectScan,
   } = useGetProjectOverViewUserQuery({ uuid: userUUID });
   return (
     <section>
@@ -167,7 +165,7 @@ export default function ScanHistoryComponent() {
                                   </DialogHeader>
                                   <div className="w-full flex justify-center gap-5 ">
                                     <Button
-                                      disabled={isLoading}
+                                     // disabled={isLoading}
                                       type="button"
                                       className="px-5 hover:bg-custom_red "
                                       variant="secondary"
@@ -177,15 +175,16 @@ export default function ScanHistoryComponent() {
                                       //     )
                                       //   }
                                     >
-                                      {isLoading ? (
+                                      {/* {isLoading ? (
                                         <div className="spinner-border animate-spin  inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_dark border-t-transparent"></div>
                                       ) : (
                                         "Yes"
-                                      )}
+                                      )} */}
+                                      Yes
                                     </Button>
                                     <DialogClose asChild>
                                       <Button
-                                        disabled={isLoading}
+                                        //disabled={isLoading}
                                         type="button"
                                         variant="secondary"
                                         className=" hover:bg-custom_red"
