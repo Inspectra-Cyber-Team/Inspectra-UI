@@ -293,3 +293,20 @@ pre[class*="language-"], code[class*="language-"] {
 .token.class-name { color: #66d9ef; }
 .token.constant { color: #bd93f9; }
 .token.builtin { color: #50fa7b; }
+
+
+
+/* Default behavior for smaller screens */
+.ql-editor img {
+  max-width: 100%; /* Fits within the screen/container */
+  height: auto;    /* Maintains aspect ratio */
+}
+
+/* Enforce max dimensions on large screens (e.g., width >= 1024px) */
+@media (min-width: 1024px) {
+  .ql-editor img {
+      max-width: 500px; /* Fixed width for large screens */
+      height: 500px;    /* Fixed height for large screens */
+      object-fit: cover; /* Ensures proper cropping for fixed dimensions */
+  }
+}
