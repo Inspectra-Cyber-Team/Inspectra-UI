@@ -55,7 +55,7 @@ import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponen
 
 export default function ProjectCardNameComponent() {
   const [userUUID, setUserUUID] = useState("");
-
+  const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
@@ -79,6 +79,7 @@ export default function ProjectCardNameComponent() {
   const [gitUrlResult, setGitUrl] = useState<string>(""); // Store the input value
   const [gitResult, setGitResult] = useState([]); // result get from git url
 
+  // for scan project
   const handleScanProject = (index: number) => {
     setSelectedIndex(index);
     setIsLoading(true);
@@ -87,6 +88,7 @@ export default function ProjectCardNameComponent() {
         description: "Please Provide Git UR and Branch",
         variant: "error",
       });
+      setIsOpen(false);
       setIsLoading(false);
     } else {
       createScanProject({
@@ -277,16 +279,16 @@ export default function ProjectCardNameComponent() {
             return (
               <section
                 key={index}
-                className="w-full cursor-pointer my-5 h-full  p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
+                className="w-full  my-5 h-full  p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
               >
-                <div className="flex justify-between w-full">
+                <div className="flex  justify-between w-full">
                   <p
                     onClick={() =>
                       router.push(
                         `project/${projectResult?.component.component.name}`
                       )
                     }
-                    className="text-text_body_16 text-text_color_light dark:text-text_color_dark hover:text-ascend_color hover:underline "
+                    className="text-text_body_16 cursor-pointer text-text_color_light dark:text-text_color_dark hover:text-ascend_color hover:underline "
                   >
                     {projectResult?.component.component.name}
                   </p>
@@ -1004,7 +1006,7 @@ export default function ProjectCardNameComponent() {
                     </span>{" "}
                     is not analyzed yet.{" "}
                   </p>
-                  <AlertDialog>
+                  <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
                     <AlertDialogTrigger asChild>
                       <p className=" md:pl-2 text-link_color dark:text-blue-500 underline cursor-pointer">
                         Configure Project
@@ -1014,14 +1016,28 @@ export default function ProjectCardNameComponent() {
                       <AlertDialogHeader>
                         <AlertDialogTitle className="flex justify-between text-center items-center">
                           <p className="text-text_title_24 text-text_color_light">
-                            {projectResult?.component?.component.name}
+                            {isLoading ? (
+                              <p>
+                                Scanning On Project{" "}
+                                {projectResult?.component?.component.name} ...
+                              </p>
+                            ) : (
+                              <p> {projectResult?.component?.component.name}</p>
+                            )}
                           </p>
                           <AlertDialogCancel className="flex text-center items-center">
                             <button disabled={isLoading}>
-                              <RxCross2
-                                className="text-text_color_light  text-text_header_34"
-                                style={{ height: "1em", width: "0.7em" }}
-                              />
+                              {isLoading ? (
+                                <RxCross2
+                                  className="text-text_color_light cursor-not-allowed  text-text_header_34"
+                                  style={{ height: "1em", width: "0.7em" }}
+                                />
+                              ) : (
+                                <RxCross2
+                                  className="text-text_color_light  text-text_header_34"
+                                  style={{ height: "1em", width: "0.7em" }}
+                                />
+                              )}
                             </button>
                           </AlertDialogCancel>
                         </AlertDialogTitle>
@@ -1129,14 +1145,14 @@ export default function ProjectCardNameComponent() {
             return (
               <section
                 key={index}
-                className="w-full cursor-pointer my-5 h-full  p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
+                className="w-full  my-5 h-full  p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
               >
                 <div className="flex  justify-between w-full">
                   <p
                     onClick={() =>
                       router.push(`project/${item?.component.component.name}`)
                     }
-                    className="text-text_body_16 text-text_color_light dark:text-text_color_dark hover:underline hover:text-ascend_color "
+                    className="text-text_body_16 cursor-pointer text-text_color_light dark:text-text_color_dark hover:underline hover:text-ascend_color "
                   >
                     {item?.component.component.name}
                   </p>
@@ -1848,7 +1864,7 @@ export default function ProjectCardNameComponent() {
                     </span>
                     is not analyzed yet.{" "}
                   </p>
-                  <AlertDialog>
+                  <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
                     <AlertDialogTrigger asChild>
                       <p className="text-link_color md:pl-2 cursor-pointer dark:text-blue-500 underline">
                         Configure Project

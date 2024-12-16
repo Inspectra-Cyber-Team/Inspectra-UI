@@ -126,7 +126,7 @@ export default function NavbarComponent() {
                             alt="Profile"
                             width={50}
                             height={50}
-                            className="object-cover w-full h-full"
+                            className="object-cover w-full h-full cursor-pointer"
                             onError={(e) =>
                               (e.currentTarget.src =
                                 "/images/default-profile.jpg")

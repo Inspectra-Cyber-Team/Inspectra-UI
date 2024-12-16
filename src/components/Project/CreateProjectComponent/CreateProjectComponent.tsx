@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 export default function CreateProjectComponent() {
   const [isLoading, setIsLoading] = useState(false);
   const [projectName, setProjectName] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const [createProjectName, { isSuccess, isError }] =
     useCreateProjectNameMutation();
   type ProjectNameType = {
@@ -39,6 +40,7 @@ export default function CreateProjectComponent() {
         description: "Project created successfully",
         variant: "success",
       });
+      setIsOpen(false);
       setIsLoading(false);
     }
     if (isError) {
@@ -61,7 +63,7 @@ export default function CreateProjectComponent() {
   }, [isSuccess, isError]);
 
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         <div className="px-4 py-2 cursor-pointer rounded-2xl inline-flex w-auto md:w-[170px]  items-center text-text_color_light md:flex md:justify-around bg-text_color_dark">
           <p className="hidden md:block">Create Project</p>
