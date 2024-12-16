@@ -27,40 +27,37 @@ type DocumentCategory = {
 export default function Document() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [breadcrumb, setBreadcrumb] = useState<(string | JSX.Element)[]>([<GoHomeFill key="home" />]);
+  
   const [selectedCategory, setSelectedCategory] = useState<DocumentCategory | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  
+  // Dynamically calculate breadcrumb
+  const breadcrumbDisplay = [
+    <GoHomeFill key="home" />,
+    ...(selectedCategory ? [selectedCategory.name] : []),
+    ...(selectedDocument ? [selectedDocument.title] : []),
+  ];
 
-  // Function to update breadcrumb
+  // Function to handle menu clicks
   const handleMenuClick = (category: DocumentCategory, document?: Document) => {
-    if (category && document) {
-      setBreadcrumb([<GoHomeFill key="home" />, category.name, document.title]);
-      setSelectedCategory(category);
-      setSelectedDocument(document);
-    } else {
-      setBreadcrumb([<GoHomeFill key="home" />, category.name]);
-      setSelectedCategory(category);
-      setSelectedDocument(null);
-    }
+    setSelectedCategory(category);
+    setSelectedDocument(document || null);
   };
 
   // Handle breadcrumb clicks
   const handleBreadcrumbClick = (index: number) => {
-    const newBreadcrumb = breadcrumb.slice(0, index + 1);
-    setBreadcrumb(newBreadcrumb);
-
-    if (newBreadcrumb.length === 1) {
+    if (index === 0) {
       setSelectedCategory(null);
       setSelectedDocument(null);
-    } else if (newBreadcrumb.length === 2) {
+    } else if (index === 1) {
       setSelectedDocument(null);
     }
   };
 
   return (
     <main className="w-[90%] m-auto flex flex-col lg:flex-row">
-      
+
       {/* Toggle Button for Small and Medium Screens */}
       <button
         className="lg:hidden fixed top-15 left-5 bg-blue-500 text-white p-2 rounded-full shadow-md z-50"
@@ -129,7 +126,7 @@ export default function Document() {
       >
         {/* handle breadcrumb in the main content */}
         <nav className="mb-5 text-sm text-text_color_desc_light">
-          {breadcrumb.map((crumb, index) => (
+          {breadcrumbDisplay.map((crumb, index) => (
             <span key={index}>
               {index > 0 && " > "}
               <button
@@ -182,7 +179,7 @@ export default function Document() {
                     <div className="w-[100%] mt-5 mb-5">
                       {doc.documentImages && doc.documentImages.length > 0 ? (
                         doc.documentImages.map((imageUrl, index) => (
-                          <Image 
+                          <Image
                             unoptimized
                             height={100}
                             width={100}

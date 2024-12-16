@@ -1,11 +1,10 @@
-import { useGetProjectDetailQuery, useGetQualityGateQuery } from '@/redux/service/overview';
+import { useGetProjectByUserUuidQuery, useGetProjectDetailQuery } from '@/redux/service/overview';
 import { Metadata } from "next";
 import React, { useRef } from 'react';
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 import { LuDot } from 'react-icons/lu';
 import { SiTicktick } from 'react-icons/si';
-import { format, max } from 'date-fns';
+import { FaCodeBranch } from 'react-icons/fa';
+
 
 type OverviewProps = {
     projectName: string;
@@ -25,74 +24,91 @@ export const metadata: Metadata = {
 
 export default function PageOverviewProjectDetail({ projectName }: OverviewProps) {
     const nameOfProject = projectName;
+    const uuidOfUser = typeof window !== "undefined" ? localStorage.getItem("userUUID") : null;
 
     const { data } = useGetProjectDetailQuery({
         projectName: nameOfProject,
     });
+
+
     const metrics = data?.[0]?.component?.measures || [];
+
+    const ncLock = data?.[0]?.component?.measures?.find((metric: any) => metric.metric === 'ncloc')?.value || 0;
 
     const contentRef = useRef<HTMLDivElement>(null);
 
     // handleExportPDF function
-    const handleExportPDF = async () => {
-        if (contentRef.current) {
-            // Capture the content as a canvas
-            const canvas = await html2canvas(contentRef.current, {
-                scale: 2, // Higher quality
-                useCORS: true, // Handles cross-origin images
-            });
+    const handleExportPDF = async (projectName:string) => {
+        const endpoint = `http://136.228.158.126:4011/api/v1/pdf/${projectName}`;
+        const response = await fetch(endpoint);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
 
-            // Convert canvas to an image
-            const imgData = canvas.toDataURL("image/jpeg", 1.0);
-
-            // Create a PDF
-            const pdf = new jsPDF("portrait", "pt", "a4");
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-            pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
-            pdf.save("ProjectOverview.pdf");
-        }
+        // Set download attributes
+        link.href = url;
+        link.download = `${projectName}.pdf`; // Set the filename as `pName.pdf`
+        document.body.appendChild(link);
+        link.click();  // Trigger the download
+        document.body.removeChild(link); // Cleanup
     };
 
-    const { data: qualitiesGate } = useGetQualityGateQuery({
-        projectName: nameOfProject,
-    })
+    // get project by user uuid
+    const { data: projectUuid } = useGetProjectByUserUuidQuery({ uuid: uuidOfUser ?? '' });
+    const getProjectByUserUuid = projectUuid?.[0]?.branch?.[0]?.branches?.[0];
 
-    const qualitiesGateData = qualitiesGate?.data?.projectStatus;
-    const date = new Date();
-    const formattedDate = format(date, 'MMMM do, yyyy');
+    // check data and time
+    const formatDate = (dateString: string) => {
+        if (!dateString) return ""; 
+        // Fix the date format by replacing "+0000" with "Z"
+        const fixedDateString = dateString.replace("+0000", "Z");
+        const date = new Date(fixedDateString);
+        // Get individual parts of the date
+        const options: Intl.DateTimeFormatOptions = { month: "long", day: "numeric", year: "numeric" };
+        const datePart = new Intl.DateTimeFormat("en-US", options).format(date);
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        return `${datePart} ${hours}:${minutes}`;
+    };
+
+    const formattedDate = formatDate(getProjectByUserUuid?.analysisDate);
 
     // Find the highest total issues dynamically across all metrics
-    const maxIssues = metrics.reduce((m: any) => {
+    const maxIssues = metrics.reduce((max: any, metric: any) => {
         try {
-            if (["maintainability_issues", "reliability_issues", "security_issues"].includes(m.metric)) {
-                const value = JSON.parse(m.value)?.total || 0;
-                return Math.max(value);
-            }
-            else {
-                const value = parseFloat(m.value) || 0;
-                return Math.max(value);
-            }
+            const value = metric.value.startsWith('{') && metric.value.endsWith('}')
+                ? JSON.parse(metric.value)?.total || 0
+                : parseFloat(metric.value) || 0;
+            // console.log("Hel",metric,value)
+            return Math.max(max, value);
         } catch (err) {
-            console.error("Error parsing metric:", m.metric, err);
+            console.error(`Error parsing metric: ${metric.metric}`, err);
+            return max;
         }
-        return max;
     }, 0); // Default to 0 if no issues found
 
     return (
         <section className="px-4 md:px-8 lg:px-12" ref={contentRef}>
             {/* First Section of Page */}
             <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4">
-                <div className="text-text_color_light">
-                    <h2 className="text-xl md:text-2xl font-bold">Project Details</h2>
+
+                <div className="text-text_color_light flex items-center gap-3">
+                    <h2 className=" text-text_color_light dark:text-text_color_dark text-md">
+                        <FaCodeBranch />
+                    </h2>
+                    <div>
+                        <p className="text-xs md:text-sm dark:text-white">{getProjectByUserUuid?.name}</p>
+                    </div>
                 </div>
+
                 <div>
-                    <ul className="flex flex-wrap items-center gap-3 p-3 text-text_color_light">
-                        <li className="text-sm md:text-base">13K Lines of Code</li> <LuDot />
+                    <ul className="flex flex-wrap items-center gap-3 p-3 text-text_color_light dark:text-text_color_dark">
+                        <li className="text-sm md:text-base ">{ncLock} Lines of Code</li> <LuDot />
                         <li className="text-sm md:text-base">Version not Provided</li> <LuDot />
                         <li >
-                            <button className="bg-primary_color text-black px-4 py-2 rounded-full w-full md:w-[100px]" onClick={handleExportPDF}>
+                            <button className="bg-primary_color text-black px-4 py-2 rounded-full w-full md:w-[100px]" onClick={()=>{
+                                handleExportPDF(nameOfProject)
+                            }}>
                                 Export
                             </button>
                         </li>
@@ -111,12 +127,12 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
                     <div>
                         <p className="text-xs md:text-sm dark:text-white">Quality Gate</p>
                         <p className="font-bold text-base md:text-lg dark:text-white">
-                            {qualitiesGateData?.status === "OK" ? "Passed" : "Failed"}
+                            {getProjectByUserUuid?.status.qualityGateStatus === "OK" ? "Passed" : "Failed"}
                         </p>
                     </div>
                 </div>
                 <div className="text-sm md:text-base">
-                    Last Analysis <b className='text-secondary_color'>{qualitiesGateData?.timestamp || formattedDate}</b>
+                    Last Analysis <b className='text-secondary_color'>{formattedDate}</b>
                 </div>
             </div>
 
@@ -168,7 +184,7 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
                         return (
                             <div
                                 key={index}
-                                className="text-text_color_light flex flex-col gap-3 border-r border-primary_color p-3 dark:text-white"
+                                className="text-text_color_light flex flex-col gap-3 border-r border-gray-200 p-3 dark:text-white"
                             >
                                 {/* Render formatted metric */}
                                 <p className="text-sm md:text-base lg:text-lg mb-3 font-bold text-ascend_color">
@@ -194,7 +210,7 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
                                     ) : (
                                         <>
                                             <p className="font-bold">
-                                                {parsedValue?.total || 0} <span className="font-normal">Open Issues</span>
+                                                {parsedValue?.total || 0} <span className="font-normal">{metric.metric === 'ncloc' ? 'Lines of Code' : 'Open Issues'}</span>
                                             </p>
                                             <div className='text-text_body_16 flex justify-between items-center mb-3'>
                                                 <div className="relative w-12 h-12">
@@ -202,7 +218,7 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
                                                         className="absolute w-full h-full rounded-full bg-transparent"
                                                         style={{ background: gradient }}>
                                                     </div>
-                                                    <div className="absolute w-1/2 h-1/2 bg-white dark:bg-current rounded-full top-3 left-3">
+                                                    <div className="absolute w-1/2 h-1/2  bg-white dark:bg-black dark:opacity-80 rounded-full top-3 left-3">
                                                     </div>
                                                 </div>
                                             </div>
@@ -213,30 +229,29 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
                                 {/* Render HIGH, MEDIUM, LOW issues */}
                                 {parsedValue ? (
                                     <div className="flex space-x-4 justify-between">
-                                        <p className="px-4 py-2 bg-red-400 text-white rounded-md text-sm font-medium shadow-sm">
+                                        <p className="px-4 py-2 bg-gray-100 rounded-md text-sm font-medium shadow-sm text-red-500 dark:bg-transparent">
                                             {parsedValue.HIGH || 0} H
                                         </p>
-                                        <p className="px-4 py-2 bg-yellow-300 text-white rounded-md text-sm font-medium shadow-sm ">
+                                        <p className="px-4 py-2 bg-gray-100 text-yellow-500 rounded-md text-sm font-medium shadow-sm dark:bg-transparent">
                                             {parsedValue.MEDIUM || 0} M
                                         </p>
-                                        <p className="px-4 py-2 bg-green-500 text-white rounded-md text-sm font-medium shadow-sm">
+                                        <p className="px-4 py-2 bg-gray-100 dark:bg-transparent
+                                         text-green-500 rounded-md text-sm font-medium shadow-sm">
                                             {parsedValue.LOW || 0} L
                                         </p>
                                     </div>
                                 ) : (
                                     <div className="flex space-x-4 justify-between">
-                                        <p className="px-4 py-2 bg-red-400 text-white rounded-md text-sm font-medium shadow-sm">
-                                            0 H
-                                        </p>
-                                        <p className="px-4 py-2 bg-yellow-300 text-white rounded-md text-sm font-medium shadow-sm">
-                                            0 M
-                                        </p>
-                                        <p className="px-4 py-2 bg-green-500 text-white rounded-md text-sm font-medium shadow-sm">
-                                            0 L
+                                        <p className="px-3 py-2 rounded-md shadow-sm">
+                                            {metric.bestValue === true ? (
+                                                <span className="text-green-500 font-bold">Best Value</span>
+                                            ) : (
+                                                <span className="text-red-500 font-medium">No Best Value</span>
+                                            )}
                                         </p>
                                     </div>
                                 )}
-                                <div className="border-b border-primary_color mt-3"></div>
+                                <div className="border-b border-gray-200 mt-3"></div>
                             </div>
                         );
                     })}
@@ -245,5 +260,4 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
         </section>
     );
 }
-// Remove the incorrect function definition
 
