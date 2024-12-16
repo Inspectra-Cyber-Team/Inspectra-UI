@@ -15,7 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { MdReport, MdClear } from "react-icons/md";
+import { MdReport, MdClear, MdCheckCircle  } from "react-icons/md";
 import { FaCalendarAlt, FaCommentDots, FaEye } from "react-icons/fa";
 import { convertToDayMonthYear } from "@/lib/utils";
 import { FaHandsClapping } from "react-icons/fa6";
@@ -25,6 +25,7 @@ import { Blog } from "@/types/Blog";
 import { useGetUserLikeBlogQuery } from "@/redux/service/userlikeblog";
 import HoverModal from "./ModalHoverComponent";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/hooks/use-toast";
 
 
 
@@ -39,7 +40,13 @@ type ReportProps = {
 
 export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
+  const {toast} = useToast();
+
   const router = useRouter();
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const [showModalReport, setShowModalReport] = useState(false);
 
   const [userUUID, setUserUUID] = useState("");
 
@@ -102,9 +109,20 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     try {
       const res = await createReport({ report: { blogUuid, message } });
       setReport("");
-      console.log("Report response:", res);
+      if (res.data) {
+        toast({
+          description: "Blog Created Successfully",
+          variant: "success",
+        });
+        setShowModalReport(false);
+        setModalOpen(true);
+      }
     } catch (error) {
       console.error("Error reporting the blog:", error);
+      toast({
+        description: "Error reporting the blog",
+        variant: "error",
+      });
     }
   };
 
@@ -214,7 +232,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
                 </Button>
               )}
 
-              <Dialog>
+              <Dialog open={showModalReport} onOpenChange={setShowModalReport}>
                 <DialogTrigger asChild>
                   <div className="rounded-[16px]">
                     <MdReport className="text-custom_red text-[40px] cursor-pointer" />
@@ -228,7 +246,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
                     placeholder="Write your concern here..."
                     value={report}
                     onChange={(e) => setReport(e.target.value)}
-                    className="mt-4"
+                      className="mt-4 focus:outline-none focus:ring-0 focus:border-none !border-none"
                   />
                   <div className="flex justify-end">
                     <Button
@@ -284,6 +302,21 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
       {showModal && userLike && (
         <HoverModal likes={userLike?.data} position={modalPosition} isloading={isLoading} />
       )}
+
+      {/* model show info after report */}
+      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+             <DialogContent className="bg-white dark:bg-background_dark_mode max-w-md  p-[50px]  w-full mx-auto">
+               <MdCheckCircle size={100} className="text-primary_color mx-auto" />
+               <div className="text-center">
+                 <p className="font-bold text-[24px]">Thanks for letting us know</p>
+                 <p className="text-base mt-1 dark:text-text_color_desc_dark ">
+                 We use your feedback to help our systems learn when something's not right.
+                 </p>
+               </div>
+         
+             </DialogContent>
+           </Dialog>
+
     </section>
   );
 }

@@ -5,3 +5,10 @@ export type Params={
     },
     searchParams: { [key: string]: string | string[] | undefined }
 }
+
+export type componentParams={
+    params:{
+        componentKey:string
+    },
+    searchParams: { [key: string]: string | string[] | undefined }
+}
