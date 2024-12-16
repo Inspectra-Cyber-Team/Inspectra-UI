@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     // secure: process.env.NODE_ENV === "production",
     secure: false,
     sameSite: "lax",
-    path: "/",
+    path: "/", 
   });
 
   return NextResponse.json(

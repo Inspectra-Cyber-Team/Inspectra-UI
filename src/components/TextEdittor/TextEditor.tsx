@@ -3,19 +3,22 @@ import dynamic from "next/dynamic";
 import {useState, useEffect} from "react";
 
 const QuillEditor = dynamic(() => import("react-quill"), {ssr: false});
-
+// Quill toolbar configuration
 const quillModules = {
     toolbar: [
-        [{header: [1, 2, 3, false]}],
+        [{ header: [1, 2, 3, false] }],
         ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{list: 'ordered'}, {list: 'bullet'}],
+        [{ list: 'ordered' }, { list: 'bullet' }],
         ['link'],
-        [{align: []}],
+        [{ align: [] }],
         ['code-block'],
         ['clean'],
+        ['image'], // image upload
+        ['file'] // add file upload button
     ],
 };
 
+// Define the formats that Quill will support
 const quillFormats = [
     'header',
     'bold',
@@ -29,6 +32,8 @@ const quillFormats = [
     'align',
     'color',
     'code-block',
+    'image', // image upload
+    'file', // custom format for file uploads
 ];
 
 interface TextEditorProps {
