@@ -27,8 +27,11 @@ import {
 import HowToFix from "./HowToFix";
 import WhereIssue from "./WhereIssue";
 import WhyIssue from "./WhyIssue";
+import { useRouter } from "next/navigation";
 
 export default function IusseComponent({ ...props }) {
+
+  const router = useRouter();
   //   state for store filter
   const [fileStore, setFileStore] = useState<string>("");
   const [directoriesStore, setDirectoriesStore] = useState<string>("");
@@ -113,7 +116,7 @@ export default function IusseComponent({ ...props }) {
                 className="text-text_body_16 w-full  mt-5  text-text_color_light dark:text-text_color_dark"
               >
                 {item?.message}
-                <span className=" inline-block mx-2 text-[14px] underline cursor-pointer text-link_color dark:text-blue-600">
+                <span onClick={()=>router.push(`/rule/${item?.rule}`)}  className=" inline-block mx-2 text-[14px] underline cursor-pointer text-link_color dark:text-blue-600">
                   {item?.rule}
                 </span>
               </p>
