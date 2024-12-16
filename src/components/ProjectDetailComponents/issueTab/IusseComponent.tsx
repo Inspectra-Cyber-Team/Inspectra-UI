@@ -18,14 +18,13 @@ import { IoIosMore } from "react-icons/io";
 
 import Prism from "prismjs";
 
-import "prismjs/themes/prism.css";
-
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../ui/accordion";
+} from "../../ui/accordion";
+import HowToFix from "./HowToFix";
 import WhereIssue from "./WhereIssue";
 import WhyIssue from "./WhyIssue";
 
@@ -44,14 +43,11 @@ export default function IusseComponent({ ...props }) {
   const [activeContent, setActiveContent] = useState(false);
   // store project key
   const [projectKey, setProjectKey] = useState("");
-  // store component
-  const [componentProject, setComponentProject] = useState("");
+
   // store rule key
   const [ruleKey, setRuleKey] = useState("");
 
   const [size, setSize] = useState();
-
-  console.log("component in parent ", componentProject);
 
   //   fetch all isssue from api
   const { data: issueData } = useGetAllIssueQuery({
@@ -80,7 +76,6 @@ export default function IusseComponent({ ...props }) {
   const resultIssueDetail = issueDetail?.data;
 
   useEffect(() => setSize(issueData?.data?.total), [issueData]);
-
   useEffect(() => {
     Prism.highlightAll();
   });
@@ -99,7 +94,7 @@ export default function IusseComponent({ ...props }) {
                 <div
                   onClick={() => {
                     setProjectKey(item.key);
-                    setComponentProject(item.component);
+
                     setRuleKey(item.rule);
                   }}
                   key={index}
@@ -144,28 +139,38 @@ export default function IusseComponent({ ...props }) {
             {/* tab inside issue  */}
             <Tabs defaultValue="Where is the issue?">
               {/* for trigger different tab */}
-              <TabsList className="grid grid-cols-4 ">
+              <TabsList className="flex   justify-between !bg-transparent overflow-x-auto scrollbar-hide overflow-y-hidden">
                 <TabsTrigger
                   value="Where is the issue?"
-                  className="border-b-2 border-transparent data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   Where is the issue?
                 </TabsTrigger>
+                <p className="mx-2">|</p>
                 <TabsTrigger
                   value="Why is this an issue?"
-                  className="border-b-2 border-transparent data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   Why is this an issue?
                 </TabsTrigger>
+                <p className="mx-2">|</p>
+                <TabsTrigger
+                  value="How Can I fix it?"
+                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                >
+                  How Can I fix it?
+                </TabsTrigger>
+                <p className="mx-2">|</p>
                 <TabsTrigger
                   value="Activity"
-                  className="border-b-2 border-transparent data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   Activity
                 </TabsTrigger>
+                <p className="mx-2">|</p>
                 <TabsTrigger
                   value="More info"
-                  className="border-b-2 border-transparent data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   More info
                 </TabsTrigger>
@@ -176,6 +181,20 @@ export default function IusseComponent({ ...props }) {
               </TabsContent>
               <TabsContent value="Why is this an issue?">
                 <WhyIssue ruleKey={ruleKey} />
+              </TabsContent>
+              <TabsContent value="How Can I fix it?">
+                {ruleIssue?.map((rule: any) =>
+                  rule?.descriptionSections?.map(
+                    (itemDes: any, descIndex: number) =>
+                      itemDes?.key === "how_to_fix" ? (
+                        <HowToFix key={descIndex} ruleKey={ruleKey} />
+                      ) : (
+                        <div key={descIndex}></div>
+                      )
+                  )
+                )}
+
+                {/* <HowToFix ruleKey={ruleKey} /> */}
               </TabsContent>
               <TabsContent value="Activity">
                 <div className="w-full  text-text_color_light dark:text-text_color_dark m-7">
@@ -347,7 +366,7 @@ export default function IusseComponent({ ...props }) {
                       onClick={() => {
                         setActiveContent(true);
                         setProjectKey(issue?.key);
-                        setComponentProject(issue.component);
+
                         setRuleKey(issue.rule);
                       }}
                       className=" text-text_body_16 cursor-pointer truncate  w-[60%] md:w-[75%] xl:w-[80%] text-ascend_color underline"

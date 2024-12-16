@@ -2,7 +2,7 @@ import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 import React, { useEffect } from "react";
 
 import Prism from "prismjs";
-
+import "prismjs/themes/prism.css";
 export default function WhyIssue({ ruleKey }: any) {
   const { data: ruleIssue } = useGetRulesByRuleNameQuery({ ruleName: ruleKey });
 
@@ -20,16 +20,15 @@ export default function WhyIssue({ ruleKey }: any) {
               key={descIndex}
               style={{
                 background: "transparent",
-                paddingLeft: "30px", // Add this line
+                paddingLeft: "0", // Add this line
                 paddingTop: "0",
                 margin: 0,
                 width: "100%",
                 height: "100%",
-                overflow: "auto",
               }}
             >
               <code
-                className="language-javascript"
+                className="language-javascript break-words whitespace-normal "
                 dangerouslySetInnerHTML={{ __html: ruleDes.content }}
               ></code>
             </pre>

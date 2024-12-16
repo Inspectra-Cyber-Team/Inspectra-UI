@@ -2,8 +2,10 @@
 import React from "react";
 import { useTheme } from "next-themes";
 import { FaArrowRight } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 export default function HeroComponent() {
   const { theme } = useTheme();
+  const router = useRouter();
   return (
     <section className="xl:flex my-[60px] justify-center items-center">
       {/* Content Section */}
@@ -20,7 +22,7 @@ export default function HeroComponent() {
         </p>
         {/* Centering Button */}
         <section className="flex justify-center lg:justify-center xl:justify-start">
-          <button className="flex justify-between items-center hover:bg-primary_color dark:hover:bg-primary_color hover:text-text_color_light px-5 text-text_color_dark bg-background_dark_mode dark:bg-background_light_mode dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[160px] h-[50px] text-text_body_16">
+          <button onClick={() => router.push("/project")} className="flex justify-between items-center hover:bg-primary_color dark:hover:bg-primary_color hover:text-text_color_light px-5 text-text_color_dark bg-background_dark_mode dark:bg-background_light_mode dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[160px] h-[50px] text-text_body_16">
             Try Now
             <FaArrowRight />
           </button>

@@ -15,13 +15,11 @@ import SecurityComponent from "@/components/securityComponent/SecurityComponent"
 
 import PageOverviewProjectDetail from "@/components/ProjectDetailComponents/PageOverviewProjectDetail";
 import CodeComponent from "@/components/codeComponent/CodeComponent";
-import IusseComponent from "@/components/ProjectDetailComponents/IusseComponent";
+import IusseComponent from "@/components/ProjectDetailComponents/issueTab/IusseComponent";
 
 export default function page({ params }: ParamProps) {
   
   const projectName = params.projectName;
-
-  console.log(projectName);
 
   return (
     <main className="w-[90%] m-auto bg-card_color_light rounded h-auto p-5 my-10 dark:bg-card_color_dark">

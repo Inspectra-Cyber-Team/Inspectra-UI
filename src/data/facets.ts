@@ -71,10 +71,10 @@ export const facetsData: FacetsData = {
   ],
   duplication: [
     { percent: "< 3%", image: "/images/3percent.png" },
-    { percent: "3% - 5%", image: "/images/3to5percent.png" },
-    { percent: "5% - 10%", image: "/images/5to10percent.png" },
-    { percent: "10% - 20%", image: "/images/10to20percent.png" },
-    { percent: "> 20%", image: "/images/over20percent.png" },
+    { percent: "3% - 5%", image: "/images/5percent.png" },
+    { percent: "5% - 10%", image: "/images/10percent.png" },
+    { percent: "10% - 20%", image: "/images/15percent.png" },
+    { percent: "> 20%", image: "/images/20percentUp.png" },
     { percent: "No Data", image: "" },
   ],
 };

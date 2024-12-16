@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 
 import Prism from "prismjs";
+import "prismjs/themes/prism.css";
 import { useRouter } from "next/navigation";
 import { sliceString } from "@/lib/utils";
 import {
@@ -19,9 +20,10 @@ export default function WhereIssue({ projectKey }: any) {
   const router = useRouter();
   const resultIssueDetail = issueDetail?.data;
 
-  const component = resultIssueDetail?.components[1]?.key;
+  const component = resultIssueDetail?.components[0]?.key;
+  console.log(component)
   const issueSourceResult = issueSource?.data?.[component];
-
+  console.log(issueSourceResult)
   useEffect(() => {
     // Run Prism's highlightAll function when ruleIssue changes or component mounts
     Prism.highlightAll();
@@ -45,28 +47,33 @@ export default function WhereIssue({ projectKey }: any) {
       {/* code content */}
       <div className="w-full h-full  p-5 ">
         {issueSourceResult?.sources.map((item: any, index: number) => (
-          <div key={index} className="flex w-full ">
+          <div key={index} className="flex flex-row w-full ">
             <p>{item.line}</p>
             <pre
               style={{
                 background: "transparent",
                 paddingLeft: "30px", // Add this line
                 paddingTop: "0",
+
                 margin: 0,
                 width: "100%",
                 height: "100%",
+                overflow: "auto",
               }}
             >
               <code
-                className="language-javascript"
+                className="language-javascript   "
                 dangerouslySetInnerHTML={{ __html: item.code }}
+                style={{
+                  width: "100%",
+                  wordBreak: "break-word",
+                  whiteSpace: "normal",
+                }}
               ></code>
-
               {resultIssueDetail?.issues?.map((issue: any, index: number) => (
-                <div key={index} className="w-full mx-auto">
-                  {issue?.textRange?.startLine === item.line &&
-                  issue?.textRange?.endLine === item.line ? (
-                    <p className="my-3 p-3 rounded-md border-2 border-custom_red ">
+                <div key={index} className="w-full flex">
+                  {issue?.textRange?.endLine === item.line ? (
+                    <p className="my-3 p-3 rounded-md border-2 border-custom_red break-words whitespace-normal">
                       {issue?.message}
                     </p>
                   ) : null}
