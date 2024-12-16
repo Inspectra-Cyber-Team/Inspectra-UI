@@ -16,7 +16,7 @@ import {
   DialogDescription,
   DialogTitle,
   DialogTrigger,
-} from "@radix-ui/react-dialog";
+} from "@/components/ui/dialog";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -35,10 +35,10 @@ export default function ScanHistoryComponent() {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
 
-  const {
-    data: projectScanByUser,
-    isError,
-  } = useGetProjectOverViewUserQuery({ uuid: userUUID });
+  const { data: projectScanByUser, isError } = useGetProjectOverViewUserQuery({
+    uuid: userUUID,
+  });
+
   return (
     <section>
       {/* header */}
@@ -98,14 +98,15 @@ export default function ScanHistoryComponent() {
             </Select>
           </div>
         </div>
+
         {/* project card */}
-        <div className="w-full h-full">
+        <div className=" my-5">
           {projectScanByUser?.map((projectResult: any, index: number) => {
             return projectResult?.component.component.measures.length !== 0 ||
               isError ? (
               <div
                 key={index}
-                className="w-full cursor-pointer my-5 h-full  p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
+                className="w-full  my-5 h-full  p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "
               >
                 <div className="flex justify-between w-full">
                   <p
@@ -125,7 +126,7 @@ export default function ScanHistoryComponent() {
                           return (
                             <div
                               key={`${branchIndex}-${index}`}
-                              className="flex text-center items-center"
+                              className="flex text-center items-center "
                             >
                               <div
                                 className={`w-[25px] h-[25px] flex items-center justify-center rounded-[5px] ${
@@ -151,7 +152,7 @@ export default function ScanHistoryComponent() {
                                 <DialogTrigger asChild>
                                   <RxCross2 className="h-6 w-6 text-custom_red cursor-pointer" />
                                 </DialogTrigger>
-                                <DialogContent className="sm:max-w-md">
+                                <DialogContent className="sm:max-w-md ">
                                   <DialogHeader className="my-2">
                                     <DialogTitle className="w-full flex justify-center items-center ">
                                       <div>
@@ -165,15 +166,13 @@ export default function ScanHistoryComponent() {
                                   </DialogHeader>
                                   <div className="w-full flex justify-center gap-5 ">
                                     <Button
-                                     // disabled={isLoading}
+                                      //disabled={isLoading}
                                       type="button"
                                       className="px-5 hover:bg-custom_red "
                                       variant="secondary"
-                                      //   onClick={() =>
-                                      //     handleDeleteProject(
-                                      //       projectResult?.component?.component.name
-                                      //     )
-                                      //   }
+                                      // onClick={() =>
+
+                                      // }
                                     >
                                       {/* {isLoading ? (
                                         <div className="spinner-border animate-spin  inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_dark border-t-transparent"></div>
@@ -242,7 +241,7 @@ export default function ScanHistoryComponent() {
                 </p>
 
                 <hr className="my-5 dark:border-primary_color" />
-
+                {/* result section */}
                 <div className="grid grid-cols-2 gap-5 md:gap-0 md:flex md:flex-row justify-center items-center">
                   {/* security */}
                   <div className="w-full h-full ">

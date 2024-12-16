@@ -609,7 +609,7 @@ export default function ProjectCardNameComponent() {
                                   key={index}
                                   className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
                                 >
-                                  No Data
+                                  F
                                 </div>
                               );
                             }
@@ -718,7 +718,7 @@ export default function ProjectCardNameComponent() {
                                   key={index}
                                   className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
                                 >
-                                  No Data
+                                  F
                                 </div>
                               );
                             }
@@ -827,7 +827,7 @@ export default function ProjectCardNameComponent() {
                                   key={index}
                                   className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
                                 >
-                                  No Data
+                                  F
                                 </div>
                               );
                             }
@@ -1454,7 +1454,7 @@ export default function ProjectCardNameComponent() {
                                   key={index}
                                   className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
                                 >
-                                  No Data
+                                  F
                                 </div>
                               );
                             }
@@ -1563,7 +1563,7 @@ export default function ProjectCardNameComponent() {
                                   key={index}
                                   className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
                                 >
-                                  No Data
+                                  F
                                 </div>
                               );
                             }
@@ -1672,7 +1672,7 @@ export default function ProjectCardNameComponent() {
                                   key={index}
                                   className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
                                 >
-                                  No Data
+                                  F
                                 </div>
                               );
                             }

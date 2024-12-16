@@ -61,7 +61,8 @@ export default function NavbarComponent() {
     pathname === "/forget-password" ||
     pathname === "/newpassword" ||
     pathname === "/newpassword" ||
-    pathname === "/verify";
+    pathname === "/verify" ||
+    pathname === "/change-password";
 
   return (
     <nav className="w-full mx-auto z-40 backdrop-blur-2xl sticky top-0">
@@ -75,7 +76,7 @@ export default function NavbarComponent() {
                 alt="Logo"
                 width={50}
                 height={50}
-                onClick={()=> router.push("/")}
+                onClick={() => router.push("/")}
                 className="object-cover w-full h-full cursor-pointer"
               />
             </div>
@@ -119,11 +120,9 @@ export default function NavbarComponent() {
                   <Menubar className="hidden md:block md:w-full md:h-full">
                     <MenubarMenu>
                       <MenubarTrigger>
-                        <div
-                          className="  w-[40px] h-[40px] overflow-hidden rounded-full "
-                        >
+                        <div className="  w-[40px] h-[40px] overflow-hidden rounded-full ">
                           <img
-                            src={`${userData?.data?.profile}`}
+                            src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}${userData?.data?.profile}`}
                             alt="Profile"
                             width={50}
                             height={50}
