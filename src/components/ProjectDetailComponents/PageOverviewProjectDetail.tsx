@@ -165,7 +165,7 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
                         return (
                             <div
                                 key={index}
-                                className="text-text_color_light flex flex-col gap-3 border-r border-primary_color p-3 dark:text-white"
+                                className="text-text_color_light flex flex-col gap-3 border-r border-gray-200 p-3 dark:text-white"
                             >
                                 {/* Render formatted metric */}
                                 <p className="text-sm md:text-base lg:text-lg mb-3 font-bold text-ascend_color">
@@ -199,7 +199,7 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
                                                         className="absolute w-full h-full rounded-full bg-transparent"
                                                         style={{ background: gradient }}>
                                                     </div>
-                                                    <div className="absolute w-1/2 h-1/2 bg-white dark:bg-current rounded-full top-3 left-3">
+                                                    <div className="absolute w-1/2 h-1/2  bg-white dark:bg-black dark:opacity-80 rounded-full top-3 left-3">
                                                     </div>
                                                 </div>
                                             </div>
@@ -210,13 +210,14 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
                                 {/* Render HIGH, MEDIUM, LOW issues */}
                                 {parsedValue ? (
                                     <div className="flex space-x-4 justify-between">
-                                        <p className="px-4 py-2 bg-red-400 text-white rounded-md text-sm font-medium shadow-sm">
+                                        <p className="px-4 py-2 bg-gray-100 rounded-md text-sm font-medium shadow-sm text-red-500 dark:bg-transparent">
                                             {parsedValue.HIGH || 0} H
                                         </p>
-                                        <p className="px-4 py-2 bg-yellow-300 text-white rounded-md text-sm font-medium shadow-sm ">
+                                        <p className="px-4 py-2 bg-gray-100 text-yellow-500 rounded-md text-sm font-medium shadow-sm dark:bg-transparent">
                                             {parsedValue.MEDIUM || 0} M
                                         </p>
-                                        <p className="px-4 py-2 bg-green-500 text-white rounded-md text-sm font-medium shadow-sm">
+                                        <p className="px-4 py-2 bg-gray-100 dark:bg-transparent
+                                         text-green-500 rounded-md text-sm font-medium shadow-sm">
                                             {parsedValue.LOW || 0} L
                                         </p>
                                     </div>
@@ -231,7 +232,7 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
                                         </p>
                                     </div>
                                 )}
-                                <div className="border-b border-primary_color mt-3"></div>
+                                <div className="border-b border-gray-200 mt-3"></div>
                             </div>
                         );
                     })}
@@ -240,5 +241,4 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
         </section>
     );
 }
-// Remove the incorrect function definition
 
