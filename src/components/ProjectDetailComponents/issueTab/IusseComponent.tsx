@@ -87,7 +87,7 @@ export default function IusseComponent({ ...props }) {
         <div className="w-full h-full  flex justify-between">
           {/* filter side bar */}
           <div className="w-[35%] h-[1000px] overflow-y-auto scrollbar-hide hidden lg:block  border border-opacity-30 dark:border-none border-text_color_desc_light dark:bg-background_dark_mode p-5 rounded-[20px]  ">
-            <div className="w-full text-text_body_16 text-text_color_light dark:text-text_color_dark text-end">
+            <div className="w-full cursor-pointer text-text_body_16 text-text_color_light dark:text-text_color_dark text-end">
               <p> {issueData?.data?.total} issues</p>
               <hr className="text-text_color_desc_light mt-2" />
               {issueCardResult.map((item: any, index: number) => (

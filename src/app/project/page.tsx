@@ -1,4 +1,4 @@
-import ProjectCardNameComponent from "@/components/Project/CardProjectComponent/ProjectCardNameComponent";
+import ProjectCardNameComponent from "@/components/Project/CardProjectComponent/ProjectCardComponent";
 import QualityCardComponent from "@/components/Project/CardResultComponent/QualityGateCardComponent";
 import ResultCardComponent from "@/components/Project/CardResultComponent/ResultCardComponent";
 import CreateProjectComponent from "@/components/Project/CreateProjectComponent/CreateProjectComponent";

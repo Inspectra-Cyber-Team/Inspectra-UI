@@ -3,8 +3,8 @@ import ScanHistoryComponent from '@/components/MyProfileComponent/ScanHistoryCom
 
 export default function page() {
   return (
-    <div className='w-[90%] mx-auto my-[60px]'>
+    <main className='w-[90%] mx-auto my-[60px]'>
       <ScanHistoryComponent/>
-    </div>
+    </main>
   )
 }

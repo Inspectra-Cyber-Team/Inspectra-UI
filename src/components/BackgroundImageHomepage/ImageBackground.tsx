@@ -20,7 +20,12 @@ export default function ImageBackground() {
     pathname === "/forgetpassword" ||
     pathname === "/newpassword" ||
     pathname === "/newpassword" ||
-    pathname === "/verify";
+    pathname === "/verify" ||
+    pathname === "/scanHistory" ||
+    pathname === "/blogHistory" ||
+    pathname === "/change-password" ||
+    pathname === "/forget-password" ||
+    pathname === "/myProfile";
 
   return (
     <>

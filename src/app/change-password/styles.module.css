@@ -1,0 +1,31 @@
+@keyframes popoverAnimation {
+	0% {
+		transform: translateY(-10px);
+		opacity: 0;
+	}
+	100% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+.popoverAnimation {
+	animation: popoverAnimation 0.3s ease-out forwards;
+}
+
+.popoverContainer {
+	background-color: #fff; /* White background */
+	border: 1px solid #e5e7eb; /* Light gray border */
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+	padding: 4px 12px; /* Padding */
+	border-radius: 4px; /* Rounded corners */
+	width: auto; /* Width */
+	height: auto; /* Height */
+	display: flex; /* Flexbox */
+	align-items: center; /* Center vertically */
+	justify-content: center; /* Center horizontally */
+}
+
+.popoverText {
+	color: #EA4335; /* Red text color */
+}

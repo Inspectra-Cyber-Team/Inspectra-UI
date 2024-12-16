@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import Prism from "prismjs";
 import "prismjs/themes/prism.css";
 import { useRouter } from "next/navigation";
+import { IoIosArrowRoundUp } from "react-icons/io";
 import { sliceString } from "@/lib/utils";
 import {
   useGetSourcesIssueQuery,
@@ -21,9 +22,9 @@ export default function WhereIssue({ projectKey }: any) {
   const resultIssueDetail = issueDetail?.data;
 
   const component = resultIssueDetail?.components[0]?.key;
-  console.log(component)
+
   const issueSourceResult = issueSource?.data?.[component];
-  console.log(issueSourceResult)
+
   useEffect(() => {
     // Run Prism's highlightAll function when ruleIssue changes or component mounts
     Prism.highlightAll();
@@ -66,16 +67,18 @@ export default function WhereIssue({ projectKey }: any) {
                 dangerouslySetInnerHTML={{ __html: item.code }}
                 style={{
                   width: "100%",
-                  wordBreak: "break-word",
-                  whiteSpace: "normal",
                 }}
               ></code>
+
               {resultIssueDetail?.issues?.map((issue: any, index: number) => (
                 <div key={index} className="w-full flex">
                   {issue?.textRange?.endLine === item.line ? (
-                    <p className="my-3 p-3 rounded-md border-2 border-custom_red break-words whitespace-normal">
-                      {issue?.message}
-                    </p>
+                    <div>
+                      <IoIosArrowRoundUp className="h-8 w-8 mx-auto text-custom_red" />
+                      <p className="my-3 p-3 rounded-md border-2 border-custom_red break-words whitespace-normal">
+                        {issue?.message}
+                      </p>
+                    </div>
                   ) : null}
                 </div>
               ))}

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useTheme } from "next-themes";
-export default function LoadProjectComponent() {
+export default function LoadProjectComponent({ textDisplay }: any) {
   const { theme } = useTheme();
   return (
     <section>
@@ -20,8 +20,8 @@ export default function LoadProjectComponent() {
           />
         )}
       </div>
-      <p className="my-5 text-text_color_light dark:text-text_color_dark xl:text-text_title_24">
-        Once you analyze projects, they will show up here.
+      <p className="my-5 text-center text-text_color_light dark:text-text_color_dark xl:text-text_title_24">
+       {textDisplay}
       </p>
     </section>
   );
