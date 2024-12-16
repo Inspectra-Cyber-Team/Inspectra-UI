@@ -6,11 +6,14 @@ import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
+import { useAppDispatch } from "@/redux/hooks";
+
 import * as Yup from "yup";
 export default function FormLoginComponent() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email format")
@@ -48,6 +51,7 @@ export default function FormLoginComponent() {
         setIsLoading(false);
         const userUUID = data?.user?.data?.uuid;
         localStorage.setItem("userUUID", userUUID);
+        console.log(userUUID)
         router.push("/");
       } else {
         setIsLoading(false);
