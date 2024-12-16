@@ -4,7 +4,8 @@ import React from "react";
 import { RxCross2 } from "react-icons/rx";
 import FormLoginComponent from "@/components/FromLoginComponent/FormLoginComponent";
 import Link from "next/link";
-import {LoginAuth} from "@/components/FormLoginWithAuthComponent/login-auth";
+import { LoginAuth } from "@/components/FormLoginWithAuthComponent/login-auth";
+// import {LoginAuth} from "@/components/FormLoginWithAuthComponent/login-auth";
 
 // export const metadata: Metadata = {
 //   title: "Login - Inspectra",

@@ -14,8 +14,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useRouter } from "next/navigation";
-import { Skeleton } from "@/components/ui/skeleton"
-
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function BlogComponent() {
   const router = useRouter();
@@ -23,25 +22,20 @@ export default function BlogComponent() {
   const [currentPage, setCurrentPage] = useState(1); // Track current page state
   const [totalPages, setTotalPages] = useState(1); // Track total pages based on API response
 
-  const { data: blogData, isLoading} = useGetAllBlogQuery({
+  const { data: blogData, isLoading } = useGetAllBlogQuery({
     page: currentPage - 1,
     pageSize: 4,
   });
 
+  // Adjust for zero-based page indexing
+  const blogList = blogData?.content;
 
-    // Adjust for zero-based page indexing
-    const blogList = blogData?.content;
-
-    // Set total pages from the API response
-    useEffect(() => {
-      if (blogData) {
-        setTotalPages(blogData?.totalPages);
-      }
-    }, [blogData]);
-  
-
-
-
+  // Set total pages from the API response
+  useEffect(() => {
+    if (blogData) {
+      setTotalPages(blogData?.totalPages);
+    }
+  }, [blogData]);
 
   // Function to handle page change
   const handlePageChange = (page: number) => {
@@ -65,18 +59,15 @@ export default function BlogComponent() {
     }
   };
 
-
   if (isLoading) {
     return (
       <div className="w-full max-w-7xl mx-auto p-4">
-   
         {/* Main Content */}
         <div className="space-y-8 ">
           {/* Blog Post Skeleton */}
           {[1, 2, 3].map((i) => (
             <div key={i} className="flex w-full gap-4 ">
               <div className="flex-1 space-y-4">
-            
                 <Skeleton className="h-6 w-3/4" />
                 <Skeleton className="h-4 w-full" />
                 <div className="flex items-center gap-4">
@@ -90,11 +81,9 @@ export default function BlogComponent() {
             </div>
           ))}
         </div>
-    
-    </div>
-    )
+      </div>
+    );
   }
-
 
   return (
     <div>
@@ -127,9 +116,10 @@ export default function BlogComponent() {
               </p>
 
               {/* description */}
-              <p className="text-text_body_16  cursor-pointer  text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-1">
-                {blog?.description}
-              </p>
+              <p
+                className="text-text_body_16  cursor-pointer  text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-1"
+                dangerouslySetInnerHTML={{ __html: blog?.description || "" }}
+              ></p>
 
               {/* created at */}
               <div className="flex gap-5 mb-5">
@@ -170,9 +160,11 @@ export default function BlogComponent() {
             </div>
 
             {/* thumbnail */}
-            <div className={"w-[200px] h-[150px] hidden lg:block"}>
+            <div
+              className={"w-[200px] h-[150px] hidden lg:block overflow-hidden"}
+            >
               <img
-                className="w-full h-full object-cover rounded-xl"
+                className="w-full h-full object-cover rounded-xl transition-transform duration-300 hover:scale-110"
                 src={blog?.thumbnail[0]}
                 alt="thumbnail"
               />
