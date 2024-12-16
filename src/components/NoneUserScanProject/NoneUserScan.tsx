@@ -36,16 +36,13 @@ export default function NoneUserScan() {
         variant: "error",
       });
     }
-
     projectScanNonUser({
       project: {
         gitUrl: gitUrlResult,
         branch: selectedBranch,
         countScan: countScan,
       },
-    }).then((respone) => {
-      console.log(respone?.data?.data?.data);
-    });
+    }).then((respone) => router.push(`project/${respone?.data?.data}`));
   };
 
   const [gitUrlResult, setGitUrl] = useState<string>(""); // Store the input value
@@ -99,7 +96,7 @@ export default function NoneUserScan() {
         {gitResult.length != 0 ? (
           <DropdownMenuTrigger asChild>
             <div className="">
-              <p className="text-text_body_16 text-text_color_light my-2">
+              <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-5">
                 Branch
               </p>
               <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-text_color_dark">
@@ -113,7 +110,7 @@ export default function NoneUserScan() {
         ) : (
           <DropdownMenuTrigger disabled asChild>
             <div className="">
-              <p className="text-text_body_16 text-text_color_light my-2">
+              <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-5">
                 Branch
               </p>
               <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
@@ -145,7 +142,7 @@ export default function NoneUserScan() {
       <button
         //disabled={isLoading}
         onClick={() => handleSubmit()}
-        className="w-full mt-5 py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
+        className="w-full mt-10 py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
       >
         {isLoading ? (
           <div className="spinner-border  animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
