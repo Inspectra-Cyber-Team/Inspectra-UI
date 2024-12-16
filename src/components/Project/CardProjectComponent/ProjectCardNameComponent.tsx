@@ -265,7 +265,9 @@ export default function ProjectCardNameComponent() {
       </div>
       {isError ? (
         // no project show waiting image
-        <LoadProjectComponent />
+        <LoadProjectComponent
+          textDisplay={" Once you analyze projects, they will show up here."}
+        />
       ) : isFetchDataProjectScan ? (
         // while fetch data
         <ProjectScanSkeleton />
