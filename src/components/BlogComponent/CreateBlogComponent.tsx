@@ -24,7 +24,6 @@ import { useRouter } from "next/navigation";
 import { useGetAllTopicQuery } from "@/redux/service/topic";
 import TextEditor from "../TextEdittor/TextEditor";
 
-
 const FILE_SIZE = 1024 * 1024 * 5; // 5MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
 
@@ -86,6 +85,7 @@ const CreateBlogComponent = () => {
   const { toast } = useToast();
 
   const [uploadFile] = useUploadFileMutation();
+
   const [createBlog] = useCreateBlogMutation();
 
   const handleFileUpload = async (files: File[]) => {
@@ -170,7 +170,6 @@ const CreateBlogComponent = () => {
                         ? values.customTopic
                         : selectedTopic,
                   };
-
                   await handleCreateBlog(updatedValues);
                 } else {
                   console.error("No files uploaded");
@@ -279,13 +278,16 @@ const CreateBlogComponent = () => {
                       <div className="mt-2">
                         <Label htmlFor="description">Description</Label>
                         <Field name="description">
-                          {({ field }: any) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) =>
-                                setFieldValue("description", value)
-                              }
-                            />
+                          {({ field, form }: any) => (
+                            <div>
+                              {/* Ensure onChange is properly called with setFieldValue */}
+                              <TextEditor
+                                value={field.value}
+                                onChange={(value: any) =>
+                                  form.setFieldValue("description", value)
+                                }
+                              />
+                            </div>
                           )}
                         </Field>
                         <ErrorMessage
@@ -318,11 +320,21 @@ const CreateBlogComponent = () => {
                         <SelectContent className="SelectContent">
                           <SelectGroup>
                             <SelectLabel>Topics</SelectLabel>
-                            {topics?.content.map((topic: any) => (
-                              <SelectItem key={topic.uuid} value={topic.name}>
-                                {topic.name}
-                              </SelectItem>
-                            ))}
+                            {topics?.content
+                              .filter((topic: any) => topic.name !== "other")
+                              .map((topic: any) => (
+                                <SelectItem key={topic.uuid} value={topic.name}>
+                                  {topic.name}
+                                </SelectItem>
+                              ))}
+                            {/* Append "Other" at the end */}
+                            {topics?.content
+                              .filter((topic: any) => topic.name === "other")
+                              .map((topic: any) => (
+                                <SelectItem key={topic.uuid} value={topic.name}>
+                                  {topic.name}
+                                </SelectItem>
+                              ))}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -391,7 +403,6 @@ const CreateBlogComponent = () => {
           </Button>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 };

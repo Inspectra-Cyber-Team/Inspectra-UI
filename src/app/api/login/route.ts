@@ -32,6 +32,8 @@ export async function POST(req: NextRequest) {
   const refreshToken = data?.data?.refreshToken || null;
   const accessToken = data?.data?.accessToken || null;
   const user = data || null;
+  const uuid = user?.data?.uuid || null;
+  console.log(uuid)
 
   const cookieName = process.env?.COOKIE_REFRESH_TOKEN_NAME || "refresh_token";
   const serialized = serialize(cookieName, refreshToken, {
@@ -47,6 +49,7 @@ export async function POST(req: NextRequest) {
       user: user,
       accessToken: accessToken,
       refreshToken: refreshToken,
+      uuid: uuid,
     },
     {
       status: response.status,

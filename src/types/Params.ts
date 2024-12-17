@@ -12,3 +12,10 @@ export type componentParams={
     },
     searchParams: { [key: string]: string | string[] | undefined }
 }
+
+export type  ruleName= {
+    params:{
+        ruleName:string
+    },
+    searchParams: { [key: string]: string | string[] | undefined }
+}

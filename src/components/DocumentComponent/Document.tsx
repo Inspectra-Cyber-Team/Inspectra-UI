@@ -1,7 +1,7 @@
 "use client"
 
 import DropdownMenu from "@/components/DropDownDocs/DropDownComponent";
-import React, { use, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { HiDocumentSearch } from "react-icons/hi";
 import { AiOutlineMenu } from "react-icons/ai";
 import { GoHomeFill } from "react-icons/go";
@@ -27,7 +27,7 @@ type DocumentCategory = {
 export default function Document() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [breadcrumb, setBreadcrumb] = useState<(string | JSX.Element)[]>([<GoHomeFill key="home" />]);
+  
   const [selectedCategory, setSelectedCategory] = useState<DocumentCategory | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [searchTerm, setSearchTerm] = useState("");

@@ -42,6 +42,7 @@ interface TextEditorProps {
 }
 
 const TextEditor: React.FC<TextEditorProps> = ({ value, onChange }) => {
+
     const [editorContent, setEditorContent] = useState(value);
 
     useEffect(() => {
@@ -59,7 +60,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ value, onChange }) => {
                 theme="snow"
                 modules={quillModules}
                 formats={quillFormats}
-                defaultValue={editorContent}
+                value={editorContent}
                 onChange={handleEditorChange}
                 placeholder="Write something amazing..."
                 className="block w-full mt-1 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:text-text_color_dark"
