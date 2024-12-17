@@ -21,11 +21,15 @@ import ToggleTheme from "../ToggleTheme/ToggleTheme";
 
 export default function NavbarComponent() {
   const router = useRouter();
-
+  const [isOpen, setIsOpen] = useState(false);
   const [userUUID, setUserUUID] = useState("");
   const { data: userData } = useGetUserDetailQuery({ uuid: userUUID });
   const pathname = usePathname();
-
+  const handleClick = () => {
+    if (setIsOpen) {
+      setIsOpen(false); // Close menu if this prop is passed
+    }
+  };
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
@@ -55,13 +59,13 @@ export default function NavbarComponent() {
     pathname === "/signup" ||
     pathname === "/forget-password" ||
     pathname === "/newpassword" ||
-    pathname === "/newpassword" ||  
+    pathname === "/newpassword" ||
     pathname === "/verify" ||
     pathname === "/change-password";
 
   return (
     <nav className="w-full mx-auto z-40 backdrop-blur-2xl sticky top-0">
-      <section className="w-[90%] mx-auto ">
+      <div className="w-[90%] mx-auto ">
         {!isRender && (
           <div className="flex text-text_color_light dark:text-text_color_dark justify-between items-center p-4">
             {/* logo */}
@@ -225,7 +229,7 @@ export default function NavbarComponent() {
                       </SheetContent>
                     </Sheet>
                   ) : (
-                    <Sheet>
+                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
                       <SheetTrigger asChild>
                         <IoMenu />
                       </SheetTrigger>
@@ -256,7 +260,11 @@ export default function NavbarComponent() {
                           </div>
                           <hr className="text-text_color_light" />
                           {navbarData.map((item, index: number) => (
-                            <Link key={index} href={item.link}>
+                            <Link
+                              key={index}
+                              href={item.link}
+                              onClick={handleClick}
+                            >
                               {pathname === item.link ? (
                                 <p className="text-secondary_color">
                                   {item?.name}
@@ -292,7 +300,7 @@ export default function NavbarComponent() {
             </div>
           </div>
         )}
-      </section>
+      </div>
     </nav>
   );
 }

@@ -4,9 +4,9 @@ import FeedbackCard from "@/components/FeedbackCardComponent/FeedbackCard";
 import HeroComponent from "@/components/HeroComponent/HeroComponent";
 import LogoSliderComponent from "@/components/LogoSliderComponent/LogoSliderComponent";
 import WorkingProcessCard from "@/components/WorkingProcessCard/WorkingProcessCard";
-
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa6";
+
 export default function Home() {
   return (
     <main className="w-[90%] mx-auto relative z-10">

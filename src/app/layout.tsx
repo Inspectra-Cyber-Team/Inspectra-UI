@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -10,6 +10,7 @@ import { Suspense } from "react";
 import StoreProvider from "./StoreProvider";
 import ImageBackground from "@/components/BackgroundImageHomepage/ImageBackground";
 import SessionWrapper from "@/app/SessionProvider";
+import { Metadata } from "next";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600"],
@@ -29,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${poppins.className} bg-background_light_mode relative   overflow-y-auto scrollbar-hide   overflow-x-hidden dark:bg-background_dark_mode flex flex-col justify-between  `}
+        className={`${poppins.className}  relative   overflow-y-auto scrollbar-hide   overflow-x-hidden bg-background_light_mode  dark:bg-background_dark_mode flex flex-col justify-between  `}
       >
         <SessionWrapper>
           <StoreProvider>

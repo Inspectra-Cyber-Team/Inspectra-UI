@@ -1,9 +1,8 @@
 "use client";
-import React from "react";
 import { useTheme } from "next-themes";
-import { FaArrowRight } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
-import HeroSectionSkeletion from "../Skeleton/HeroSectionSkeletion";
+import React from "react";
+import { FaArrowRight } from "react-icons/fa6";
 export default function HeroComponent() {
   const { theme } = useTheme();
   const [mounted, setMounted] = React.useState(false);

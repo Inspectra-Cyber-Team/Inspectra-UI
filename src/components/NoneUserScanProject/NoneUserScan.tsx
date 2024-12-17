@@ -1,22 +1,21 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { FaGithub } from "react-icons/fa6";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { IoIosArrowDown } from "react-icons/io";
-import { toast } from "../hooks/use-toast";
 import { GitUrlType } from "@/data/GitUrl";
-import { FaGitlab } from "react-icons/fa6";
 import { useCreateProjectScanNonUserMutation } from "@/redux/service/project";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { FaGithub, FaGitlab } from "react-icons/fa6";
+import { IoIosArrowDown } from "react-icons/io";
+import { toast } from "../hooks/use-toast";
 export default function NoneUserScan() {
   const router = useRouter();
   const [countScan, setCountScan] = useState(0);
-  const [projectScanNonUser, { isSuccess }] =
+  const [projectScanNonUser] =
     useCreateProjectScanNonUserMutation();
 
   useEffect(() => {
@@ -48,25 +47,31 @@ export default function NoneUserScan() {
   const [gitUrlResult, setGitUrl] = useState<string>(""); // Store the input value
   const [gitResult, setGitResult] = useState([]); // result get from git url
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
-  const [isLoading, setIsLoading] = useState(false);
   // handle for git input from user and fetch api
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      const fetchGitbranch = async () => {
-        const data = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}gits/branches?gitUrl=${gitUrlResult}`
-        );
-        if (data.ok) {
-          toast({
-            description: "Get All Branches Successfully",
-            variant: "success",
-          });
-        }
-        const result = await data.json();
-        setGitResult(result);
-      };
-      fetchGitbranch();
+      if (gitUrlResult.includes(".git")) {
+        const fetchGitbranch = async () => {
+          const data = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}gits/branches?gitUrl=${gitUrlResult}`
+          );
+          if (data.ok) {
+            toast({
+              description: "Get All Branches Successfully",
+              variant: "success",
+            });
+          }
+          const result = await data.json();
+          setGitResult(result);
+        };
+        fetchGitbranch();
+      } else {
+        toast({
+          description: "Invalid URL",
+          variant: "error",
+        });
+      }
     }
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +80,9 @@ export default function NoneUserScan() {
 
   return (
     <section className="h-full flex text-start flex-col justify-between">
+      <p className="text-center text-text_color_light dark:text-text_color_dark text-text_title_24 mb-5">
+        See the Unseen, Secure the Unknown.
+      </p>
       {/* git url */}
       <div className="relative">
         <FaGithub className="absolute top-1/2 left-3 text-text_title_24 transform -translate-y-1/2 text-text_color_desc_light" />
@@ -144,11 +152,12 @@ export default function NoneUserScan() {
         onClick={() => handleSubmit()}
         className="w-full mt-10 py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
       >
-        {isLoading ? (
+        {/* {isLoading ? (
           <div className="spinner-border  animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
         ) : (
           "Submit"
-        )}
+        )} */}
+        Submit
       </button>
     </section>
   );
