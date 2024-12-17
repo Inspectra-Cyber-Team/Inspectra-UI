@@ -52,6 +52,7 @@ export default function RuleComponent({ ruleKey }: RuleComponentProps) {
           </p>
         </div>
 
+
         <div className="flex flex-wrap sm:items-center gap-4 text-sm text-gray-700 dark:text-text_color_dark ">
           <p>
             <span className="font-semibold">Type:</span>{" "}
