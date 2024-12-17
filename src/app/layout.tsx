@@ -4,8 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import NavbarComponent from "@/components/NavbarComponent/NavbarComponent";
 import FooterComponent from "@/components/FooterComponent/FooterComponent";
-import { Toaster } from "@/components/ui/toaster"
-  
+import { Toaster } from "@/components/ui/toaster";
+
 import { Suspense } from "react";
 import StoreProvider from "./StoreProvider";
 import ImageBackground from "@/components/BackgroundImageHomepage/ImageBackground";
@@ -27,31 +27,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${poppins.className} bg-background_light_mode relative   overflow-y-auto scrollbar-hide   overflow-x-hidden dark:bg-background_dark_mode flex flex-col justify-between  `}
       >
-      <SessionWrapper>
-        <StoreProvider >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {/* <BannerComponent /> */}
-            <NavbarComponent />
-            <Suspense  fallback={""}>
-              {children}
-              <Toaster />
-            </Suspense>
+        <SessionWrapper>
+          <StoreProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {/* <BannerComponent /> */}
 
-            <ImageBackground  />
-           
-            <FooterComponent />
-          </ThemeProvider>
-        </StoreProvider>
-      </SessionWrapper>
+              <NavbarComponent />
+              <Suspense fallback={""}>
+                {children}
+                <Toaster />
+              </Suspense>
+              <ImageBackground />
+              <FooterComponent />
+            </ThemeProvider>
+          </StoreProvider>
+        </SessionWrapper>
       </body>
     </html>
   );

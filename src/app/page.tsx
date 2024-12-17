@@ -33,7 +33,10 @@ export default function Home() {
                 Inspect, Improve, Innovative
               </p>
               <section className="my-10 md:w-[500px] flex justify-center items-center xl:justify-start">
-                <Link href={"/project"} className="flex justify-between items-center bg-primary_color px-5 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[180px] h-[50px] text-text_body_16">
+                <Link
+                  href={"/project"}
+                  className="flex justify-between items-center bg-primary_color px-5 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[180px] h-[50px] text-text_body_16"
+                >
                   Try Now
                   <FaArrowRight />
                 </Link>

@@ -21,7 +21,7 @@ export default function WhereIssue({ projectKey }: any) {
   const router = useRouter();
   const resultIssueDetail = issueDetail?.data;
 
-  const component = resultIssueDetail?.components[0]?.key;
+  const component = resultIssueDetail?.components[1]?.key;
 
   const issueSourceResult = issueSource?.data?.[component];
 
@@ -34,7 +34,7 @@ export default function WhereIssue({ projectKey }: any) {
     <div className="w-full h-full my-5  border border-1 border-opacity-30 border-text_color_desc_light  rounded-[20px] text-text_color_light dark:text-text_color_desc_dark ">
       {/* header content */}
       <div className=" w-full border-b border-opacity-30 border-text_color_desc_light  p-5">
-        <div className="w-full md:w-[75%] lg:w-[95%] xl:w-[70%]  flex justify-between">
+        <div className="w-full   md:w-[60%] lg:w-[80%] xl:w-[60%] flex justify-between">
           <p
             onClick={() => router.push(`/project`)}
             className=" hidden md:block hover:underline hover:cursor-pointer hover:text-blue-500"
@@ -42,7 +42,7 @@ export default function WhereIssue({ projectKey }: any) {
             {issueSourceResult?.component?.projectName}
           </p>
           <p className="hidden md:block">{"|"}</p>
-          <p>{sliceString(issueSourceResult?.component?.longName)}</p>
+          <p className="truncate ">{sliceString(issueSourceResult?.component?.longName)}</p>
         </div>
       </div>
       {/* code content */}

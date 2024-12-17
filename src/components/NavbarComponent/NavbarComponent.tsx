@@ -1,19 +1,15 @@
 "use client";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { navbarData, navbarDataWithProfile } from "@/data/navbar";
-import { useTheme } from "next-themes";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { IoMenu } from "react-icons/io5";
 import { useGetUserDetailQuery } from "@/redux/service/user";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { IoIosArrowUp } from "react-icons/io";
+import { IoLogOutSharp, IoMenu } from "react-icons/io5";
 import { SiMicrodotblog } from "react-icons/si";
 import { TbScan } from "react-icons/tb";
-import { IoLogOutSharp } from "react-icons/io5";
-import { useRouter } from "next/navigation";
-import { IoSunny, IoMoon } from "react-icons/io5";
 
 import {
   Menubar,
@@ -21,19 +17,18 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
+import ToggleTheme from "../ToggleTheme/ToggleTheme";
 
 export default function NavbarComponent() {
   const router = useRouter();
 
   const [userUUID, setUserUUID] = useState("");
+  const { data: userData } = useGetUserDetailQuery({ uuid: userUUID });
+  const pathname = usePathname();
 
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
-
-  const { data: userData } = useGetUserDetailQuery({ uuid: userUUID });
-  const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
 
   const handleSignOut = () => {
     fetch(process.env.NEXT_PUBLIC_BASE_URL_LOCALHOST + "/logout", {
@@ -60,15 +55,15 @@ export default function NavbarComponent() {
     pathname === "/signup" ||
     pathname === "/forget-password" ||
     pathname === "/newpassword" ||
-    pathname === "/newpassword" ||
+    pathname === "/newpassword" ||  
     pathname === "/verify" ||
     pathname === "/change-password";
 
   return (
     <nav className="w-full mx-auto z-40 backdrop-blur-2xl sticky top-0">
-      <div className="w-[90%] mx-auto ">
+      <section className="w-[90%] mx-auto ">
         {!isRender && (
-          <section className="flex text-text_color_light dark:text-text_color_dark justify-between items-center p-4">
+          <div className="flex text-text_color_light dark:text-text_color_dark justify-between items-center p-4">
             {/* logo */}
             <div className="w-[40px] h-[40px] overflow-hidden rounded-full">
               <img
@@ -98,16 +93,9 @@ export default function NavbarComponent() {
             <div className="flex justify-center h-full items-center">
               <div className="flex items-center space-x-4">
                 {/* Icon to change theme */}
-                <button
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="flex items-center justify-center px-2 rounded-md transition-colors"
-                >
-                  {theme === "dark" ? (
-                    <IoSunny className="h-5 w-5 text-text_color_dark" />
-                  ) : (
-                    <IoMoon className="h-5 w-5 " />
-                  )}
-                </button>
+
+                <ToggleTheme />
+
                 {/* Sign in button */}
                 {userUUID === "" ? (
                   <Link
@@ -302,9 +290,9 @@ export default function NavbarComponent() {
                 </div>
               </div>
             </div>
-          </section>
+          </div>
         )}
-      </div>
+      </section>
     </nav>
   );
 }

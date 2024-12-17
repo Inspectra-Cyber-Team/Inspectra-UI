@@ -57,6 +57,7 @@ import NoneUserScan from "@/components/NoneUserScanProject/NoneUserScan";
 export default function ProjectCardNameComponent() {
   const [userUUID, setUserUUID] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
@@ -160,6 +161,7 @@ export default function ProjectCardNameComponent() {
         description: "Project Delete Successully",
         variant: "success",
       });
+      setIsDeleteOpen(false);
       setIsLoading(false);
     }
     if (isScanError) {
@@ -334,7 +336,10 @@ export default function ProjectCardNameComponent() {
                                   </p>
                                   <p className="mx-2">|</p>
 
-                                  <Dialog>
+                                  <Dialog
+                                    open={isDeleteOpen}
+                                    onOpenChange={setIsDeleteOpen}
+                                  >
                                     <DialogTrigger asChild>
                                       <RxCross2 className="h-6 w-6 text-custom_red cursor-pointer" />
                                     </DialogTrigger>
@@ -966,7 +971,10 @@ export default function ProjectCardNameComponent() {
                       <p className="text-text_body_16 text-secondary_color dark:text-text_color_dark ">
                         {projectResult?.component?.component.name}
                       </p>
-                      <Dialog>
+                      <Dialog
+                        open={isDeleteOpen}
+                        onOpenChange={setIsDeleteOpen}
+                      >
                         <DialogTrigger asChild>
                           <RxCross2 className="h-6 w-6 text-custom_red cursor-pointer" />
                         </DialogTrigger>
@@ -1904,7 +1912,7 @@ export default function ProjectCardNameComponent() {
                         </span>
                         is not analyzed yet.{" "}
                       </p>
-                      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+                      <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <p className="text-link_color md:pl-2 cursor-pointer dark:text-blue-500 underline">
                             Configure Project
