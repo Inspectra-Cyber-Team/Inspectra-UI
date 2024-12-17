@@ -1,4 +1,4 @@
-# iFinder
+# Inspectra
 
 <a name="readme-top"></a>
 
