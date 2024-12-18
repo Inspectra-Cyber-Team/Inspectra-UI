@@ -29,7 +29,7 @@ export const navbarData = [
 export const navbarDataWithProfile = [
   {
     name: "My Profile",
-    link: "/profile",
+    link: "/myProfile",
   },
   {
     name: "Blog History",

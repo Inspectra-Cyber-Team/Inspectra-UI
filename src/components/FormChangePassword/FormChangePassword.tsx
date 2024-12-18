@@ -1,6 +1,5 @@
 "use client";
 import { Field, Form, Formik } from "formik";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
@@ -8,7 +7,7 @@ import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
 import * as Yup from "yup";
 import styles from "@/components/FromLoginComponent/styles.module.css";
 
-export default function FormUpdatePassowrd() {
+export default function FormChangePassowrd() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showconfirmPassword, setShowconfirmPassword] = useState(false);
@@ -61,17 +60,15 @@ export default function FormUpdatePassowrd() {
           </p>
         </div>
 
-        <div className="w-full h-[500px] items-end flex justify-center">
-          <Image
-            width={600}
-            height={600}
-            className="object-cover"
+        <div className="w-full h-[400px] items-end flex justify-center">
+          <img
+            className="object-contain w-full h-full"
             alt="image login"
             src="/images/Login_page_image.png"
           />
         </div>
       </section>
-      <section className="h-full  my-auto w-[40%] bg-text_color_dark  p-[40px] flex flex-col ">
+      <section className="h-full  my-auto w-full xl:w-[40%] bg-text_color_dark  p-[40px] flex flex-col ">
         <div className="w-full flex justify-between">
           {/* Logo and name */}
           <div className="w-full flex items-center">
