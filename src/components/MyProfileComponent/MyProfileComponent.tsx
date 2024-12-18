@@ -5,6 +5,8 @@ import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { useGetUserDetailQuery } from "@/redux/service/user";
 import { useUpdateUserProfileMutation } from "@/redux/service/user";
+import { FaEdit } from "react-icons/fa";
+
 export default function MyProfileComponent() {
   const router = useRouter();
   const [userUUID, setUserUUID] = useState("");
@@ -60,27 +62,34 @@ export default function MyProfileComponent() {
 
       {/* section */}
       <section>
-        <div className="relative mt-[30px] bg-card_color_light dark:bg-background_dark_mode rounded-3xl">
+        <div className="relative mt-[30px] bg-card_color_light dark:bg-card_color_dark rounded-3xl">
           {/* Particle Container */}
           <div className="h-44 rounded-t-3xl overflow-hidden relative bg-black">
             {/* <ParticlesComponent id="particles" /> */}
           </div>
           <div className="absolute top-24 left-1/2 -translate-x-1/2 flex flex-col items-center">
-            <div className="w-36 h-36 rounded-full overflow-hidden border-4 border-white">
+            {/* Profile Image Container */}
+            <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-white group">
               <img
                 className="w-full h-full object-cover"
                 src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}${userData?.data?.profile}`}
                 alt="profile"
-                onError={(e) =>
-                  (e.currentTarget.src = "/images/default-profile.jpg")
-                }
+                onError={(e) => (e.currentTarget.src = "/images/default-profile.jpg")}
               />
+              {/* Edit Overlay */}
+              <button className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full">
+                <div className="text-white font-medium flex gap-3 items-center">
+                  <FaEdit />
+                  <p>Edit</p>
+                </div>
+              </button>
             </div>
             <div className="text-center pt-3">
               <p>{userData?.data?.name}</p>
               <p>{userData?.data?.email}</p>
             </div>
           </div>
+
 
           <form
             onSubmit={formik.handleSubmit}

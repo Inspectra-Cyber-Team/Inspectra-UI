@@ -39,7 +39,7 @@ export default function VerifyComponent() {
     const otp = Object.values(values).join("");
     verifyUserAccount({ data: { email, otp } });
   };
-
+ 
   const handleResend = async () => {
     setTimerKey((prevKey) => prevKey + 1);
     try {

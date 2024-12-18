@@ -1,15 +1,10 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  convertApiResponseToHtml,
-  formatTimestamp,
-  timeSince,
-} from "@/lib/utils";
+import { formatTimestamp, timeSince } from "@/lib/utils";
 import {
   useGetAllIssueQuery,
   useGetIssueDetailQuery,
 } from "@/redux/service/issue";
-import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 import { IusseSideBarType } from "@/types/IssueType";
 import { useEffect, useState } from "react";
 import { FaFile } from "react-icons/fa";
@@ -18,6 +13,7 @@ import { IoIosMore } from "react-icons/io";
 
 import Prism from "prismjs";
 
+import { useRouter } from "next/navigation";
 import {
   Accordion,
   AccordionContent,
@@ -27,10 +23,8 @@ import {
 import HowToFix from "./HowToFix";
 import WhereIssue from "./WhereIssue";
 import WhyIssue from "./WhyIssue";
-import { useRouter } from "next/navigation";
 
 export default function IusseComponent({ ...props }) {
-
   const router = useRouter();
   //   state for store filter
   const [fileStore, setFileStore] = useState<string>("");
@@ -46,10 +40,9 @@ export default function IusseComponent({ ...props }) {
   const [activeContent, setActiveContent] = useState(false);
   // store project key
   const [projectKey, setProjectKey] = useState("");
-
+ 
   // store rule key
   const [ruleKey, setRuleKey] = useState("");
-
   const [size, setSize] = useState();
 
   //   fetch all isssue from api
@@ -72,11 +65,11 @@ export default function IusseComponent({ ...props }) {
   });
 
   // fetch rule detail for issue tab
-  const { data: ruleIssue } = useGetRulesByRuleNameQuery({ ruleName: ruleKey });
-
   const issueCardResult = issueData?.data?.issues;
   const issueSideBarResult = issueData?.data.facets;
   const resultIssueDetail = issueDetail?.data;
+
+
 
   useEffect(() => setSize(issueData?.data?.total), [issueData]);
   useEffect(() => {
@@ -97,7 +90,6 @@ export default function IusseComponent({ ...props }) {
                 <div
                   onClick={() => {
                     setProjectKey(item.key);
-
                     setRuleKey(item.rule);
                   }}
                   key={index}
@@ -116,7 +108,10 @@ export default function IusseComponent({ ...props }) {
                 className="text-text_body_16 w-full  mt-5  text-text_color_light dark:text-text_color_dark"
               >
                 {item?.message}
-                <span onClick={()=>router.push(`/rule/${item?.rule}`)}  className=" inline-block mx-2 text-[14px] underline cursor-pointer text-link_color dark:text-blue-600">
+                <span
+                  onClick={() => router.push(`/rule/${item?.rule}`)}
+                  className=" inline-block mx-2 text-[14px] underline cursor-pointer text-link_color dark:text-blue-600"
+                >
                   {item?.rule}
                 </span>
               </p>
@@ -142,62 +137,51 @@ export default function IusseComponent({ ...props }) {
             {/* tab inside issue  */}
             <Tabs defaultValue="Where is the issue?">
               {/* for trigger different tab */}
-              <TabsList className="flex   justify-between !bg-transparent overflow-x-auto scrollbar-hide overflow-y-hidden">
+              <TabsList className="flex  justify-between !bg-transparent overflow-x-auto scrollbar-hide overflow-y-hidden">
                 <TabsTrigger
                   value="Where is the issue?"
-                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   Where is the issue?
                 </TabsTrigger>
                 <p className="mx-2">|</p>
                 <TabsTrigger
                   value="Why is this an issue?"
-                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   Why is this an issue?
                 </TabsTrigger>
                 <p className="mx-2">|</p>
                 <TabsTrigger
                   value="How Can I fix it?"
-                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   How Can I fix it?
                 </TabsTrigger>
                 <p className="mx-2">|</p>
                 <TabsTrigger
                   value="Activity"
-                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none  dark:data-[state=active]:bg-transparent data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   Activity
                 </TabsTrigger>
                 <p className="mx-2">|</p>
                 <TabsTrigger
                   value="More info"
-                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   More info
                 </TabsTrigger>
               </TabsList>
               {/* tab for each content */}
               <TabsContent value="Where is the issue?">
-                <WhereIssue projectKey={projectKey} />
+                <WhereIssue issueKey={projectKey} />
               </TabsContent>
               <TabsContent value="Why is this an issue?">
                 <WhyIssue ruleKey={ruleKey} />
               </TabsContent>
               <TabsContent value="How Can I fix it?">
-                {ruleIssue?.map((rule: any) =>
-                  rule?.descriptionSections?.map(
-                    (itemDes: any, descIndex: number) =>
-                      itemDes?.key === "how_to_fix" ? (
-                        <HowToFix key={descIndex} ruleKey={ruleKey} />
-                      ) : (
-                        <div key={descIndex}></div>
-                      )
-                  )
-                )}
-
-                {/* <HowToFix ruleKey={ruleKey} /> */}
+                <HowToFix ruleKey={ruleKey} />
               </TabsContent>
               <TabsContent value="Activity">
                 <div className="w-full  text-text_color_light dark:text-text_color_dark m-7">
@@ -219,22 +203,7 @@ export default function IusseComponent({ ...props }) {
               <TabsContent value="More info">
                 <div className="w-full  text-text_color_light dark:text-text_color_dark my-5">
                   <div>
-                    {ruleIssue?.map((rule: any) =>
-                      rule?.descriptionSections?.map(
-                        (ruleDes: any, descIndex: number) => {
-                          return ruleDes?.key === "resources" ? (
-                            <p
-                              key={descIndex} // Added a key prop for list item elements
-                              dangerouslySetInnerHTML={{
-                                __html: convertApiResponseToHtml(
-                                  ruleDes?.content
-                                ), // Insert HTML content
-                              }}
-                            ></p>
-                          ) : null; // Return null for non-matching cases
-                        }
-                      )
-                    )}
+                    <HowToFix ruleKey={ruleKey} />
                   </div>
                 </div>
               </TabsContent>
@@ -245,7 +214,7 @@ export default function IusseComponent({ ...props }) {
         // default card issue and filter
         <section className="w-full h-full  flex justify-between">
           {/* filter side bar */}
-          <div className="w-[35%] hidden lg:block h-full bg-background_light_mode dark:bg-background_dark_mode p-5 rounded-[20px]  ">
+          <div className="w-[35%] hidden lg:block h-full border-2 border-background_light_mode dark:border-none dark:bg-card_color_dark p-5 rounded-[20px]  ">
             <p className="text-text_title_24 text-text_color_light dark:text-text_color_dark ">
               Filter
             </p>
@@ -361,7 +330,7 @@ export default function IusseComponent({ ...props }) {
               {issueCardResult?.map((issue: any, index: number) => (
                 <div
                   key={index}
-                  className="w-full mb-5 bg-background_light_mode dark:bg-background_dark_mode p-5 rounded-[20px]"
+                  className="w-full mb-5 border-2 border-background_light_mode dark:border-none  dark:bg-card_color_dark p-5 rounded-[20px]"
                 >
                   {/* first section*/}
                   <div className="w-full flex justify-between">

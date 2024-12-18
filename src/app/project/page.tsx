@@ -1,6 +1,4 @@
-import ProjectCardComponent from "@/components/Project/CardProjectComponent/ProjectCardComponent";
-import QualityCardComponent from "@/components/Project/CardResultComponent/QualityGateCardComponent";
-import ResultCardComponent from "@/components/Project/CardResultComponent/ResultCardComponent";
+import ProjectContent from "@/components/Project/CardResultComponent/ProjectContentComponent";
 import CreateProjectComponent from "@/components/Project/CreateProjectComponent/CreateProjectComponent";
 import { Metadata } from "next";
 
@@ -23,15 +21,7 @@ export default function page() {
           <CreateProjectComponent />
         </div>
       </section>
-      <section className="w-full h-full flex justify-between mb-[60px] md:my-[60px]">
-        <div className="w-[30%] hidden lg:block">
-          <QualityCardComponent />
-          <ResultCardComponent />
-        </div>
-        <div className="w-full h-full text-center lg:w-[65%] p-10 rounded-[20px] bg-text_color_dark dark:bg-card_color_dark">
-          <ProjectCardComponent />
-        </div>
-      </section>
+      <ProjectContent />
     </main>
   );
 }

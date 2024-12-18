@@ -1,6 +1,5 @@
 "use client";
 import { Field, Form, Formik } from "formik";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
@@ -29,9 +28,9 @@ export default function FormForgetPassowrd() {
   };
 
   return (
-    <main className="h-screen  w-full mx-auto flex ">
-      {/* secontion welcome */}
-      <section className=" hidden  h-full xl:flex flex-col items-center justify-between w-[60%] bg-primary_color py-[40px] ">
+    <main className="h-screen w-full mx-auto flex ">
+      {/* section welcome */}
+      <section className=" hidden h-full xl:flex flex-col items-center justify-between w-[60%] bg-primary_color py-[40px] ">
         <div className="w-full px-[100px]">
           <p className="text-[60px] text-text_color_light font-semibold leading-[1.2]">
             Forget Password <br />
@@ -43,17 +42,15 @@ export default function FormForgetPassowrd() {
           </p>
         </div>
 
-        <div className="w-full h-[500px] items-end flex justify-center">
-          <Image
-            width={600}
-            height={600}
-            className="object-cover"
+        <div className="w-full h-[400px] items-end flex justify-center">
+          <img
+            className="object-contain w-full h-full"
             alt="image login"
             src="/images/Login_page_image.png"
           />
         </div>
       </section>
-      <section className="h-full  my-auto w-[40%] bg-text_color_dark  p-[40px] flex flex-col ">
+      <section className="h-full  my-auto w-full xl:w-[40%] bg-text_color_dark  p-[40px] flex flex-col ">
         <div className="w-full flex justify-between">
           {/* Logo and name */}
           <div className="w-full flex items-center">
