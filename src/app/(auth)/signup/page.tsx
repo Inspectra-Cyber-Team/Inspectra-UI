@@ -6,7 +6,6 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 import { VscGithub } from "react-icons/vsc";
@@ -33,11 +32,9 @@ export default function page() {
           </p>
         </div>
 
-        <div className="w-full h-[500px] items-end flex justify-center">
-          <Image
-            width={600}
-            height={600}
-            className="object-cover"
+        <div className="w-full h-[400px] items-end flex justify-center">
+          <img
+            className="object-contain w-full h-full"
             alt="image login"
             src="/images/Login_page_image.png"
           />

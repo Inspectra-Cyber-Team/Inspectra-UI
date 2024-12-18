@@ -1,5 +1,5 @@
-"use client";
-import FormUpdatePassowrd from "@/components/FormUpdatePassword/FormUpdatePassword";
+import FormUpdatePassowrd from "@/components/FormChangePassword/FormChangePassword";
+
 export default function page() {
   return <FormUpdatePassowrd />;
 }

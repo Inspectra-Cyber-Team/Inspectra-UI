@@ -4,9 +4,9 @@ import FeedbackCard from "@/components/FeedbackCardComponent/FeedbackCard";
 import HeroComponent from "@/components/HeroComponent/HeroComponent";
 import LogoSliderComponent from "@/components/LogoSliderComponent/LogoSliderComponent";
 import WorkingProcessCard from "@/components/WorkingProcessCard/WorkingProcessCard";
+
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa6";
-
 export default function Home() {
   return (
     <main className="w-[90%] mx-auto relative z-10">
@@ -20,7 +20,7 @@ export default function Home() {
           </p>
           <section className="w-full h-full flex flex-col-reverse xl:flex-row">
             {/* First Content */}
-            <section className="w-full md:w-[60%]  md:absolute md:bottom-[130px] md:right-[200px] lg:absolute lg:bottom-20 lg:right-[232px] xl:relative xl:bottom-auto xl:right-auto">
+            <section className="w-full md:w-[60%] md:absolute md:bottom-[130px] md:right-[200px] lg:absolute lg:bottom-20 lg:right-[232px] xl:relative xl:bottom-auto xl:right-auto">
               <WorkingProcessCard />
             </section>
 
@@ -29,14 +29,11 @@ export default function Home() {
               <p className=" md:w-[500px] text-center xl:text-start text-text_body_16 text-secondary_color ">
                 Steps into getting your work started
               </p>
-              <p className=" w-full text-center text-text_title_24 md:w-[500px] xl:w-[300px] md:text-left text-text_color_dark md:text-text_header_34">
+              <p className=" w-full text-center text-text_title_20 md:w-[500px] xl:w-[300px] md:text-left text-text_color_dark md:text-text_header_34">
                 Inspect, Improve, Innovative
               </p>
-              <section className="my-10 md:w-[500px] flex justify-center items-center xl:justify-start">
-                <Link
-                  href={"/project"}
-                  className="flex justify-between items-center bg-primary_color px-5 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[180px] h-[50px] text-text_body_16"
-                >
+              <section className="my-10 flex justify-center items-center xl:justify-start">
+                <Link href={"/project"} className="flex justify-between items-center bg-primary_color px-5 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[160px] hover:bg-ascend_color hover:text-white h-[50px] text-text_body_16">
                   Try Now
                   <FaArrowRight />
                 </Link>
