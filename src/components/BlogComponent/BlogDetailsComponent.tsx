@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import {
+  useDeleteBlogMutation,
   useGetBlogDetailsQuery,
   useLikeBlogMutation,
 } from "@/redux/service/blog";
@@ -11,6 +12,8 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -28,6 +31,14 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/hooks/use-toast";
 // import "prismjs/themes/prism.css";
 // import Prism from "prismjs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Edit, MoreVertical, Trash2 } from "lucide-react";
 
 type BlogDetailsProps = Readonly<{
   uuid: string;
@@ -39,11 +50,14 @@ type ReportProps = {
 };
 
 export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
+
   const { toast } = useToast();
 
   const router = useRouter();
 
   const [modalOpen, setModalOpen] = useState(false);
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const [showModalReport, setShowModalReport] = useState(false);
 
@@ -190,11 +204,10 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     setTimeout(() => setShowModal(false), 200);
   };
 
-  const modifiedDescription = blogData?.description
-    .replace(
-      /<img /g,
-      '<img style="max-width: 100%; height: auto; display: block; margin: 0 auto; object-fit: contain;" '
-    )
+  const modifiedDescription = blogData?.description.replace(
+    /<img /g,
+    '<img style="max-width: 100%; height: auto; display: block; margin: 0 auto; object-fit: contain;" '
+  );
   //   ?.replace(/<pre class="ql-syntax"/g, '<pre class="language-js"')
   //   ?.replace(/&nbsp;/g, " ")
   //   ?.replace(/&lt;/g, "<")
@@ -213,6 +226,34 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
   //   // Highlight all code blocks after the component mounts
   //   Prism.highlightAll();
   // }, [modifiedDescription]);
+
+  // handle delete blog
+  const [deleteBlog] = useDeleteBlogMutation();
+
+  const handleDeleteBlog = async (uuid: string) => {
+    try {
+      const res = await deleteBlog({ uuid });
+      if (res.data == null) {
+        toast({
+          description: "Blog deleted successfully",
+          variant: "success",
+        });
+        setDeleteModalOpen(false);
+        router.push("/blog");
+      } else {
+        toast({
+          description: "Error deleting the blog",
+          variant: "error",
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting the blog:", error);
+      toast({
+        description: "Error deleting the blog",
+        variant: "error",
+      });
+    }
+  }
 
   return (
     <section className="w-[90%] mx-auto my-[20px] md:my-[60px]">
@@ -238,7 +279,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
             <FaCalendarAlt className="text-text_color_desc_light text-[24px]" />
             <p>{convertToDayMonthYear(blogData?.createdAt || "")}</p>
           </div>
-          <div className="flex gap-[35px]">
+          <div className="flex  gap-[20px] sm:gap-[35px]">
             {/* Views */}
             <div className="flex gap-2 items-center">
               <FaEye className="text-text_color_desc_light text-[24px]" />
@@ -267,44 +308,71 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
               <p>{blogData?.countComments}</p>
             </div>
             {/* Action Buttons */}
-            <div className="flex items-end justify-end gap-3">
+            <div className="flex items-center justify-center">
               {userUUID === blogData?.user?.uuid && (
-                <Button
-                  onClick={() => router.push(`/blog/${uuid}/update`)}
-                  className="bg-[#B9FF66] text-black rounded-[16px]"
-                >
-                  Update Blog
-                </Button>
+                // <Button
+                //   onClick={() => router.push(`/blog/${uuid}/update`)}
+                //   className="bg-[#B9FF66] text-black rounded-[16px]"
+                // >
+                //   Update Blog
+                // </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-6 w-6 p-0 ml-1">
+                      <span className="sr-only">Open menu</span>
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => router.push(`/blog/${uuid}/update`)} className="text-yellow-600 hover:cursor-pointer hover:bg-[#f5f5f5]">
+                      <Edit className="mr-2 h-4 w-4" /> Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={()=>setDeleteModalOpen(true)} className="text-destructive  hover:cursor-pointer hover:bg-[#f5f5f5]">
+                      <Trash2 className="mr-2 h-4 w-4" /> Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               )}
 
-              <Dialog open={showModalReport} onOpenChange={setShowModalReport}>
-                <DialogTrigger asChild>
-                  <div className="rounded-[16px]">
-                    <MdReport className="text-custom_red text-[40px] cursor-pointer" />
-                  </div>
-                </DialogTrigger>
-                <DialogContent className="bg-background_light_mode dark:bg-background_dark_mode max-w-md text-text_color_light dark:text-text_color_dark">
-                  <DialogHeader>
-                    <DialogTitle>Report</DialogTitle>
-                  </DialogHeader>
-                  <Textarea
-                    placeholder="Write your concern here..."
-                    value={report}
-                    onChange={(e) => setReport(e.target.value)}
-                    className="mt-4 focus:outline-none focus:ring-0 focus:border-none !border-none"
-                  />
-                  <div className="flex justify-end">
-                    <Button
-                      onClick={() =>
-                        handleSubmitReport({ blogUuid: uuid, message: report })
-                      }
-                      className="bg-primary_color px-3 text-text_color_light dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
-                    >
-                      Submit
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+              {/*  doesn't allow own blog report to thier blog */}
+              {userUUID !== blogData?.user?.uuid && (
+                <Dialog
+                  open={showModalReport}
+                  onOpenChange={setShowModalReport}
+                >
+                  <DialogTrigger asChild>
+                    <div className="rounded-[16px]">
+                      <MdReport className="text-custom_red text-[40px] cursor-pointer" />
+                    </div>
+                  </DialogTrigger>
+                  <DialogContent className="bg-background_light_mode dark:bg-background_dark_mode max-w-md text-text_color_light dark:text-text_color_dark">
+                    <DialogHeader>
+                      <DialogTitle>Report</DialogTitle>
+                    </DialogHeader>
+                    <Textarea
+                      placeholder="Write your concern here..."
+                      value={report}
+                      onChange={(e) => setReport(e.target.value)}
+                      className="mt-4 focus:outline-none focus:ring-0 focus:border-none !border-none"
+                    />
+                    <div className="flex justify-end">
+                      <Button
+                        onClick={() =>
+                          handleSubmitReport({
+                            blogUuid: uuid,
+                            message: report,
+                          })
+                        }
+                        className="bg-primary_color px-3 text-text_color_light dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
+                      >
+                        Submit
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
           </div>
         </div>
@@ -332,7 +400,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
       {/* Sidebar */}
       {showSidebar && (
-        <div className="fixed px-5 hidden md:block lg:block xl:block overflow-y-auto scrollbar-hide right-0 top-0 h-full w-[30%] bg-white dark:bg-background_dark_mode shadow-lg z-50 transform translate-x-0">
+        <div className="fixed px-5  md:block lg:block xl:block overflow-y-auto scrollbar-hide right-0 top-0 h-full w-[60%] sm:w-[50%] md:w-[30%] bg-white dark:bg-background_dark_mode shadow-lg z-50 transform translate-x-0">
           <p className="font-bold mt-3">User Response</p>
           <button
             className="absolute top-4 right-4 text-gray-600 dark:text-text_color_dark"
@@ -366,6 +434,33 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
           </div>
         </DialogContent>
       </Dialog>
+
+
+       {/* delete modal */}
+       <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+        <DialogContent className="bg-card w-full max-w-[90%] md:max-w-md lg:max-w-lg mx-auto h-fit p-6 md:p-10 rounded-xl">
+          <DialogHeader>
+            <DialogTitle>Delete Blog</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>
+            Are you sure you want to delete this blog?
+          </DialogDescription>
+
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDeleteModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => handleDeleteBlog(uuid)}
+            >
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+
     </section>
   );
 }

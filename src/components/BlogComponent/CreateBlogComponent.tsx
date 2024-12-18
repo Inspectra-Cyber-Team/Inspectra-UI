@@ -46,7 +46,7 @@ const validationSchema = Yup.object().shape({
           return value.size <= FILE_SIZE;
         })
     )
-    .min(1, "Please select at least one image."),
+    .min(1, "Please select for blog thumbnail."),
 });
 
 const CreateBlogComponent = () => {
@@ -189,12 +189,12 @@ const CreateBlogComponent = () => {
                   Create Blog
                 </p>
                 <div
-                  className="file-upload-design mt-4 p-6 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition-all duration-300 ease-in-out hover:border-blue-400 hover:bg-blue-50"
+                  className="file-upload-design mt-4 p-6 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition-all duration-300 ease-in-out hover:border-blue-400 hover:bg-blue-50 dark:bg-background_dark_mode"
                   onDragOver={handleDragOver}
                   onDrop={handleDrop}
                 >
                   <div className="flex flex-col items-center justify-center space-y-2 text-center">
-                    <p className="text-sm font-medium text-gray-700">
+                    <p className="text-sm font-medium text-gray-700 dark:text-text_color_dark">
                       Drag and Drop Thumbnail Here
                     </p>
                     {/* <p className="text-sm text-gray-500">or</p> */}
@@ -207,7 +207,7 @@ const CreateBlogComponent = () => {
                         if (thumbnailInput) thumbnailInput.click();
                       }}
                     >
-                      <Plus className="h-6 w-6" />
+                      <Plus className="h-6 w-6 dark:text-text_color_dark" />
                       <span className="sr-only">Browse Files</span>
                     </button>
                   </div>

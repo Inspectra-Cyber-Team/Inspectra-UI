@@ -45,6 +45,12 @@ const CommentSection = ({ uuid }: commentProp) => {
   //calling toast function
   const { toast } = useToast();
 
+  const [userUUID, setUserUUID] = useState("");
+
+  useEffect(() => {
+    setUserUUID(localStorage.getItem("userUUID") ?? "");
+  });
+
   //handle create comment
   const [createComment] = useCreateCommentMutation();
   const [content, setContent] = useState("");
@@ -122,6 +128,7 @@ const CommentSection = ({ uuid }: commentProp) => {
     page: 0,
     size: 25,
   });
+
 
   const [dataComment, setDataComment] = useState<Content[]>([]);
 
@@ -305,13 +312,10 @@ const CommentSection = ({ uuid }: commentProp) => {
     }
   };
 
-  
-// handle delete reply
+  // handle delete reply
   const handleDeleteReply = async (uuid: string) => {
     try {
       const res = await deleteReply({ uuid });
-
-      console.log("this is ",res.data);
 
       if (res.data == null) {
         toast({
@@ -331,9 +335,9 @@ const CommentSection = ({ uuid }: commentProp) => {
       });
       console.error("Error deleting the reply:", error);
     }
-  }
+  };
 
-  const openModal = (type:any, replyUuid:any, currentContent = "") => {
+  const openModal = (type: any, replyUuid: any, currentContent = "") => {
     setModalType(type);
     setReplyUuid(replyUuid);
     setContent(currentContent);
@@ -465,37 +469,39 @@ const CommentSection = ({ uuid }: commentProp) => {
                   <button onClick={() => toggleReplyInput(comment.uuid)}>
                     Reply
                   </button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-6 w-6 p-0 ml-1">
-                        <span className="sr-only">Open menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setContent(comment?.content);
-                          setCommentUuid(comment?.uuid);
-                          setEditModalOpen(true);
-                        }}
-                        className="text-yellow-600 hover:cursor-pointer hover:bg-[#f5f5f5]"
-                      >
-                        <Edit className="mr-2 h-4 w-4" /> Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setCommentUuid(comment?.uuid);
-                          setDeleteModalOpen(true);
-                        }}
-                        className="text-destructive  hover:cursor-pointer hover:bg-[#f5f5f5]"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" /> Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  {userUUID === comment.user.uuid && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-6 w-6 p-0 ml-1">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setContent(comment?.content);
+                            setCommentUuid(comment?.uuid);
+                            setEditModalOpen(true);
+                          }}
+                          className="text-yellow-600 hover:cursor-pointer hover:bg-[#f5f5f5]"
+                        >
+                          <Edit className="mr-2 h-4 w-4" /> Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setCommentUuid(comment?.uuid);
+                            setDeleteModalOpen(true);
+                          }}
+                          className="text-destructive  hover:cursor-pointer hover:bg-[#f5f5f5]"
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" /> Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </div>
               </div>
 
@@ -510,7 +516,7 @@ const CommentSection = ({ uuid }: commentProp) => {
                         [comment.uuid]: e.target.value,
                       }))
                     }
-                    className="mt-2 px-3 rounded-[20px] border-0 bg-[#f5f5f5] dark:border-b-background_dark_mode"
+                    className="mt-2 px-3 rounded-[20px] border-0 bg-[#f5f5f5] dark:bg-card_color_dark dark:border-b-background_dark_mode"
                   />
                   <div className="flex justify-end">
                     <Button
@@ -574,41 +580,43 @@ const CommentSection = ({ uuid }: commentProp) => {
                             >
                               Reply
                             </button>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  className="h-6 w-6 p-0 ml-1"
-                                >
-                                  <span className="sr-only">Open menu</span>
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    openModal(
-                                      "editReply",
-                                      reply?.uuid,
-                                      reply?.content
-                                    )
-                                  }
-                                  className="text-yellow-600 hover:cursor-pointer hover:bg-[#f5f5f5]"
-                                >
-                                  <Edit className="mr-2 h-4 w-4" /> Edit
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    openModal("deleteReply", reply?.uuid)
-                                  }
-                                  className="text-destructive  hover:cursor-pointer hover:bg-[#f5f5f5]"
-                                >
-                                  <Trash2 className="mr-2 h-4 w-4" /> Delete
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                            {userUUID === reply.user.uuid && (
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    className="h-6 w-6 p-0 ml-1"
+                                  >
+                                    <span className="sr-only">Open menu</span>
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      openModal(
+                                        "editReply",
+                                        reply?.uuid,
+                                        reply?.content
+                                      )
+                                    }
+                                    className="text-yellow-600 hover:cursor-pointer hover:bg-[#f5f5f5]"
+                                  >
+                                    <Edit className="mr-2 h-4 w-4" /> Edit
+                                  </DropdownMenuItem>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      openModal("deleteReply", reply?.uuid)
+                                    }
+                                    className="text-destructive  hover:cursor-pointer hover:bg-[#f5f5f5]"
+                                  >
+                                    <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -625,7 +633,7 @@ const CommentSection = ({ uuid }: commentProp) => {
                                   [comment.uuid]: e.target.value,
                                 }))
                               }
-                              className="mt-2 px-3 rounded-[20px] border-0 bg-[#f5f5f5] "
+                              className="mt-2 px-3 rounded-[20px] border-0 bg-[#f5f5f5] dark:bg-card_color_dark dark:border-b-background_dark_mode"
                             />
                             <div className="flex justify-end">
                               <Button
@@ -654,7 +662,7 @@ const CommentSection = ({ uuid }: commentProp) => {
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div>
-              <h2 className="text-sm font-medium mb-2 block">Comment</h2>
+              <h2 className="text-sm font-medium mb-2 block">Your Comment</h2>
               <Input
                 id="Question"
                 value={content}
@@ -711,22 +719,20 @@ const CommentSection = ({ uuid }: commentProp) => {
           </DialogHeader>
           <DialogDescription>
             {modalType === "deleteReply" &&
-              "Are you sure you want to delete this reply?"
-              }
+              "Are you sure you want to delete this reply?"}
           </DialogDescription>
-          <div className="grid gap-4 py-4">
-            {modalType === "editReply" && (
-              <div>
-                <h2 className="text-sm font-medium mb-2 block">Your Reply</h2>
-                <Input
-                  id="content"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                />
-              </div>
-            )}
-          </div>
-      
+
+          {modalType === "editReply" && (
+            <div>
+              <h2 className="text-sm font-medium mb-2 block">Your Reply</h2>
+              <Input
+                id="content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+              />
+            </div>
+          )}
+
           <DialogFooter>
             <Button variant="ghost" onClick={() => setModalOpen(false)}>
               Cancel

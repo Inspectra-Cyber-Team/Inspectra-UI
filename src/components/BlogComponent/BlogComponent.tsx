@@ -27,6 +27,7 @@ export default function BlogComponent() {
     pageSize: 4,
   });
 
+
   // Adjust for zero-based page indexing
   const blogList = blogData?.content;
 
@@ -36,6 +37,8 @@ export default function BlogComponent() {
       setTotalPages(blogData?.totalPages);
     }
   }, [blogData]);
+
+
 
   // Function to handle page change
   const handlePageChange = (page: number) => {
@@ -81,6 +84,14 @@ export default function BlogComponent() {
             </div>
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (blogData?.content.length === 0) {
+    return (
+      <div className="w-full max-w-7xl mx-auto p-4">
+       <img src="/images/error1.png" alt="empty" className="w-1/2 mx-auto" />
       </div>
     );
   }

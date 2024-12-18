@@ -66,8 +66,8 @@ export default function BlogUserCardComponent({
   return (
     <section>
       {/* Header section below card */}
-      <section className="flex justify-between items-center mx-5 ">
-        <section className={"flex justify-between mt-5 mx-5"}>
+      <section className="flex justify-between items-center mx-5 mt-4">
+        <section className={"flex items-center justify-between  mx-5"}>
           <p className={"font-bold text-[20px]"}>
             More from {data?.content?.[0]?.user?.firstName}{" "}
             {data?.content?.[0]?.user?.lastName}
@@ -98,6 +98,7 @@ export default function BlogUserCardComponent({
                 alt={blog.title}
                 layout="fill"
                 objectFit="cover"
+                className="transition-transform duration-300 hover:scale-110"
               />
             </div>
 
