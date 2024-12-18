@@ -9,13 +9,13 @@ export const overviewApi = cyberApi.injectEndpoints({
         url: `projects/details?projectName=${projectName}`,
       }),
     }),
-
+    
     getExportPdf: builder.query<any,{projectName: string}>({
       query: ({projectName}) => ({
-        url: `pdf/${projectName}`,
+      url: `pdf/${projectName}`,
       }),
     }),
-
+    
     // get project by user uuid
     getProjectByUserUuid: builder.query<any,{uuid: string}>({
       query: ({uuid}) => ({
