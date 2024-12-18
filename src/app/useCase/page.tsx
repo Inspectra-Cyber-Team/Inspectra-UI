@@ -28,7 +28,8 @@ export default function page() {
           areas of technical debt.
         </p>
         <Link href="/project">
-          <Button className="bg-background_dark_mode dark:bg-card_color_dark hover:bg-gray-800 dark:hover:bg-gray-600 text-white rounded-tl-[20px] rounded-br-[20px] px-4 py-2 mt-6">
+          <Button className="bg-background_dark_mode dark:bg-card_color_dark hover:bg-gray-800 dark:hover:bg-gray-600 text-white rounded-tl-[20px] rounded-br-[20px] px-5 py-2 mt-6 w-[180px] h-[50px]"
+          >
             Get Started
             <ArrowRight className="ml-2 h-5 w-5 sm:h-6 sm:w-6" />
           </Button>

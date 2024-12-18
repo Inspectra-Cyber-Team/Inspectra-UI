@@ -20,7 +20,7 @@ export default function Home() {
           </p>
           <section className="w-full h-full flex flex-col-reverse xl:flex-row">
             {/* First Content */}
-            <section className="w-full md:w-[60%]  md:absolute md:bottom-[130px] md:right-[200px] lg:absolute lg:bottom-20 lg:right-[232px] xl:relative xl:bottom-auto xl:right-auto">
+            <section className="w-full md:w-[60%] md:absolute md:bottom-[130px] md:right-[200px] lg:absolute lg:bottom-20 lg:right-[232px] xl:relative xl:bottom-auto xl:right-auto">
               <WorkingProcessCard />
             </section>
 
@@ -71,7 +71,7 @@ export default function Home() {
 
       {/* benefit section */}
       <section className="w-full text-center lg:my-[60px]">
-        <p className=" text-text_header_34 px-2 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold">
+        <p className=" text-text_header_34 px-5 py-1 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold">
           Benefit
         </p>
         <BenefitComponentCard />
@@ -79,7 +79,7 @@ export default function Home() {
 
       {/* feedback section */}
       <section className="w-full text-center lg:my-[60px]">
-        <p className="  text-text_header_34 px-2 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold">
+        <p className="text-text_header_34 px-5 py-1 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold">
           User Feedback
         </p>
         <FeedbackCard />
@@ -89,7 +89,7 @@ export default function Home() {
       <section className="w-full text-center my-[60px]">
         <Link href="/faq">
           {" "}
-          <p className="text-text_header_34 px-2 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold">
+          <p className="text-text_header_34 px-5 py-1 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold">
             FAQs
           </p>{" "}
         </Link>

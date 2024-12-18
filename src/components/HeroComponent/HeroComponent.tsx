@@ -17,11 +17,11 @@ export default function HeroComponent() {
     return (
       <section className="xl:flex my-[60px] justify-center items-center">
         {/* Content Section */}
-        <section className="text-center  xl:text-left space-y-5">
-          <p className="text-[30px] md:text-[40px] xl:text-[60px] px-2 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold">
+        <section className="text-center xl:text-left space-y-5">
+          <p className="text-[30px] md:text-[40px] xl:text-[60px] px-5 py-1 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold">
             Inspectra
           </p>
-          <p className="lg:w-full  xl:w-[80%] text-text_body_16 md:text-text_title_24 text-text_color_light font-medium dark:text-text_color_dark">
+          <p className="lg:w-full xl:w-[80%] text-text_body_16 md:text-text_title_24 text-text_color_light font-medium dark:text-text_color_dark">
             Through deep, intelligent scanning and proactive insights empowers
             you to uncover hidden risks with precision
             <span className="block lg:my-5 xl:mt-10">
