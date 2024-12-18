@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import Prism from "prismjs";
 import "prismjs/themes/prism.css";
@@ -10,20 +10,36 @@ import {
   useGetSourcesIssueQuery,
   useGetIssueDetailQuery,
 } from "@/redux/service/issue";
-export default function WhereIssue({ projectKey }: any) {
+export default function WhereIssue({ issueKey }: any) {
+
+   // store component key
+   const [componentKey, setComponentKey] = useState("");
+
   const { data: issueDetail } = useGetIssueDetailQuery({
-    projectKey: projectKey,
+    projectKey: issueKey,
   });
 
   const { data: issueSource } = useGetSourcesIssueQuery({
-    projectKey: projectKey,
+    projectKey: issueKey,
   });
+
   const router = useRouter();
   const resultIssueDetail = issueDetail?.data;
 
-  const component = resultIssueDetail?.components[1]?.key;
 
-  const issueSourceResult = issueSource?.data?.[component];
+  useEffect(() => {
+    const matchingItem = resultIssueDetail?.components?.find((item: any) =>
+      item?.key?.includes(":clone_repos")
+    );
+
+    if (matchingItem) {
+      setComponentKey(matchingItem.key);
+    }
+  }, [resultIssueDetail]);
+
+
+  const issueSourceResult = issueSource?.data?.[componentKey];
+
   useEffect(() => {
     // Run Prism's highlightAll function when ruleIssue changes or component mounts
     Prism.highlightAll();
@@ -42,21 +58,22 @@ export default function WhereIssue({ projectKey }: any) {
           </p>
           <p className="hidden md:block">{"|"}</p>
           <p className="truncate ">
-            {sliceString(issueSourceResult?.component?.longName)}
+            {issueSourceResult?.component?.longName
+              ? sliceString(issueSourceResult?.component?.longName)
+              : "No Data"}
           </p>
         </div>
       </div>
       {/* code content */}
       <div className="w-full h-full  p-5 ">
         {issueSourceResult?.sources.map((item: any, index: number) => (
-          <div key={index} className="flex flex-row w-full ">
+          <div key={index} className="flex flex-row w-full">
             <p>{item.line}</p>
             <pre
               style={{
                 background: "transparent",
-                paddingLeft: "30px", // Add this line
+                paddingLeft: "30px",
                 paddingTop: "0",
-
                 margin: 0,
                 width: "100%",
                 height: "100%",
@@ -64,25 +81,27 @@ export default function WhereIssue({ projectKey }: any) {
               }}
             >
               <code
-                className="language-javascript   "
+                className="language-javascript"
                 dangerouslySetInnerHTML={{ __html: item.code }}
                 style={{
                   width: "100%",
                 }}
               ></code>
 
-              {resultIssueDetail?.issues?.map((issue: any, index: number) => (
-                <div key={index} className="w-full flex">
-                  {issue?.textRange?.endLine === item.line ? (
-                    <div>
-                      <IoIosArrowRoundUp className="h-8 w-8 mx-auto text-custom_red" />
-                      <p className="my-3 p-3 rounded-md border-2 border-custom_red break-words whitespace-normal">
-                        {issue?.message}
-                      </p>
-                    </div>
-                  ) : null}
-                </div>
-              ))}
+              {resultIssueDetail?.issues?.map(
+                (issue: any, issueIndex: number) => (
+                  <div key={issueIndex} className="w-full flex">
+                    {issue?.textRange?.endLine === item.line ? (
+                      <div>
+                        <IoIosArrowRoundUp className="h-8 w-8 mx-auto text-custom_red" />
+                        <p className="my-3 p-3 rounded-md border-2 border-custom_red break-words whitespace-normal">
+                          {issue?.message}
+                        </p>
+                      </div>
+                    ) : null}
+                  </div>
+                )
+              )}
             </pre>
           </div>
         ))}

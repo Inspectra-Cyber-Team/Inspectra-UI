@@ -33,7 +33,7 @@ export const projectAPI = cyberApi.injectEndpoints({
         method: "POST",
         body: project,
       }),
-      invalidatesTags: ["Projects"],
+      invalidatesTags: [{ type: "Projects", id: "PRJECTLIST" }],
     }),
 
     // get user Project

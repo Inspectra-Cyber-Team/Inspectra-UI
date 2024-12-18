@@ -23,6 +23,16 @@ export default function NavbarComponent() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [userUUID, setUserUUID] = useState("");
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleMenuToggle = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
+
+  const handleMenuClose = () => {
+    setIsMenuOpen(false);
+  };
   const { data: userData } = useGetUserDetailQuery({ uuid: userUUID });
   const pathname = usePathname();
   const handleClick = () => {
@@ -111,8 +121,8 @@ export default function NavbarComponent() {
                 ) : (
                   <Menubar className="hidden md:block md:w-full md:h-full">
                     <MenubarMenu>
-                      <MenubarTrigger>
-                        <div className="  w-[40px] h-[40px] overflow-hidden rounded-full ">
+                      <MenubarTrigger onClick={handleMenuToggle}>
+                        <div className="w-[40px] h-[40px] overflow-hidden rounded-full">
                           <img
                             src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}${userData?.data?.profile}`}
                             alt="Profile"
@@ -126,79 +136,95 @@ export default function NavbarComponent() {
                           />
                         </div>
                       </MenubarTrigger>
-                      <MenubarContent className="absolute -left-[295px]  w-[350px] p-5 rounded-[10px] border-none  bg-card_color_light dark:bg-background_dark_mode">
-                        <p className="text-text_color_light text-text_body_16 dark:text-text_color_dark">
-                          {userData?.data?.name}
-                        </p>
-                        <p className="text-text_color_desc_light text-[14px] dark:text-text_color_dark">
-                          {userData?.data?.email}
-                        </p>
-                        <hr className="my-5" />
-                        {/* Profile */}
-                        <button
-                          onClick={() => router.push("/myProfile")}
-                          className="p-3 my-3 flex w-full justify-between items-center text-center "
-                        >
-                          <div className="flex items-center">
-                            <div className="flex items-center justify-center w-6 h-6">
-                              <FaUser className="w-full h-full text-text_title_20" />
+                      {isMenuOpen && (
+                        <MenubarContent className="absolute -left-[295px] w-[350px] p-5 rounded-[10px] border-none bg-card_color_light dark:bg-background_dark_mode">
+                          <p className="text-text_color_light text-text_body_16 dark:text-text_color_dark">
+                            {userData?.data?.name}
+                          </p>
+                          <p className="text-text_color_desc_light text-[14px] dark:text-text_color_dark">
+                            {userData?.data?.email}
+                          </p>
+                          <hr className="my-5" />
+                          {/* Profile */}
+                          <button
+                            onClick={() => {
+                              router.push("/myProfile");
+                              handleMenuClose();
+                            }}
+                            className="p-3 my-3 flex w-full justify-between items-center text-center"
+                          >
+                            <div className="flex items-center">
+                              <div className="flex items-center justify-center w-6 h-6">
+                                <FaUser className="w-full h-full text-text_title_20" />
+                              </div>
+                              <p className="mx-5 text-text_body_16">
+                                My Profile
+                              </p>
                             </div>
-                            <p className="mx-5 text-text_body_16">My Profile</p>
-                          </div>
-                          <div>
-                            <IoIosArrowUp className="rotate-90" />
-                          </div>
-                        </button>
+                            <div>
+                              <IoIosArrowUp className="rotate-90" />
+                            </div>
+                          </button>
 
-                        {/* Blog History */}
-                        <button
-                          onClick={() => router.push("/blogHistory")}
-                          className="p-3 my-3    flex w-full justify-between items-center text-center"
-                        >
-                          <div className="flex items-center">
-                            <div className="flex items-center justify-center w-6 h-6">
-                              <SiMicrodotblog className="w-full h-full text-text_title_20" />
+                          {/* Blog History */}
+                          <button
+                            onClick={() => {
+                              router.push("/blogHistory");
+                              handleMenuClose();
+                            }}
+                            className="p-3 my-3 flex w-full justify-between items-center text-center"
+                          >
+                            <div className="flex items-center">
+                              <div className="flex items-center justify-center w-6 h-6">
+                                <SiMicrodotblog className="w-full h-full text-text_title_20" />
+                              </div>
+                              <p className="mx-5 text-text_body_16">
+                                Blog History
+                              </p>
                             </div>
-                            <p className="mx-5 text-text_body_16">
-                              Blog History
-                            </p>
-                          </div>
-                          <div>
-                            <IoIosArrowUp className="rotate-90" />
-                          </div>
-                        </button>
+                            <div>
+                              <IoIosArrowUp className="rotate-90" />
+                            </div>
+                          </button>
 
-                        {/* Scan History */}
-                        <button
-                          onClick={() => router.push("/scanHistory")}
-                          className="p-3 my-3 flex w-full justify-between items-center text-center"
-                        >
-                          <div className="flex items-center">
-                            <div className="flex items-center justify-center w-6 h-6">
-                              <TbScan className="w-full h-full text-text_title_20" />
+                          {/* Scan History */}
+                          <button
+                            onClick={() => {
+                              router.push("/scanHistory");
+                              handleMenuClose();
+                            }}
+                            className="p-3 my-3 flex w-full justify-between items-center text-center"
+                          >
+                            <div className="flex items-center">
+                              <div className="flex items-center justify-center w-6 h-6">
+                                <TbScan className="w-full h-full text-text_title_20" />
+                              </div>
+                              <p className="mx-5 text-text_body_16">
+                                Scan History
+                              </p>
                             </div>
-                            <p className="mx-5 text-text_body_16">
-                              Scan History
-                            </p>
-                          </div>
-                          <div>
-                            <IoIosArrowUp className="rotate-90" />
-                          </div>
-                        </button>
+                            <div>
+                              <IoIosArrowUp className="rotate-90" />
+                            </div>
+                          </button>
 
-                        {/* Log Out */}
-                        <button
-                          onClick={() => handleSignOut()}
-                          className="p-3 my-3    flex w-full justify-between items-center text-center"
-                        >
-                          <div className="flex items-center">
-                            <div className="flex items-center justify-center w-6 h-6">
-                              <IoLogOutSharp className="w-full h-full " />
+                          {/* Log Out */}
+                          <button
+                            onClick={() => {
+                              handleSignOut();
+                              handleMenuClose();
+                            }}
+                            className="p-3 my-3 flex w-full justify-between items-center text-center"
+                          >
+                            <div className="flex items-center">
+                              <div className="flex items-center justify-center w-6 h-6">
+                                <IoLogOutSharp className="w-full h-full" />
+                              </div>
+                              <p className="mx-5 text-text_body_16">Log Out</p>
                             </div>
-                            <p className="mx-5 text-text_body_16">Log Out</p>
-                          </div>
-                        </button>
-                      </MenubarContent>
+                          </button>
+                        </MenubarContent>
+                      )}
                     </MenubarMenu>
                   </Menubar>
                 )}

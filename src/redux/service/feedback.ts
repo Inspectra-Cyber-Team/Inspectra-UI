@@ -11,15 +11,17 @@ export const feedbackApi = cyberApi.injectEndpoints({
         method: "POST",
         body: message,
       }),
+      invalidatesTags: [{ type: "Feedbacks", id: "FEEDBACKLIST" }],
     }),
     // get user feedback
     getAllUserFeedback: builder.query({
       query: () => ({
         url: `feedbacks`,
-        providesTags: ["Feedback"],
       }),
+      providesTags: [{ type: "Feedbacks", id: "FEEDBACKLIST" }],
     }),
   }),
 });
 
-export const { useCreateUserFeedbackMutation, useGetAllUserFeedbackQuery } = feedbackApi;
+export const { useCreateUserFeedbackMutation, useGetAllUserFeedbackQuery } =
+  feedbackApi;
