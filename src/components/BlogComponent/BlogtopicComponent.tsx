@@ -43,8 +43,6 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
     }
   }, [blogData]);
 
-  console.log("Blog list", blogList);
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -57,7 +55,7 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
       if (res?.data?.success) {
         setLikedBlogs((prev) => [...prev, uuid]); // Add liked blog UUID to state
       }
-      console.log("Like blog response:", res);
+      
     } catch (error) {
       console.error("Error liking the blog:", error);
     }
@@ -68,7 +66,7 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
       {/* blog card */}
       <section>
         {blogList.length === 0 ? (
-          <div>No data</div>
+          <div className="flex justify-center items-center">No data</div>
         ) : (
           blogList?.map((blog: Blog) => (
             <button
@@ -92,14 +90,14 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
                 </div>
 
                 {/* title */}
-                <p className="text-text_title_20 cursor-pointer line-clamp-2 text-text_color_light dark:text-text_color_dark">
+                <p className="text-text_title_20 text-start cursor-pointer line-clamp-1 text-text_color_light dark:text-text_color_dark">
                   {blog?.title}
                 </p>
 
                 {/* description */}
-                <p className="text-text_body_16 cursor-pointer text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-2">
-                  {blog?.description}
-                </p>
+                <div className="text-text_body_16 cursor-pointer text-start text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-2" dangerouslySetInnerHTML={{ __html: blog?.description || "" }}>
+                 
+                </div>
 
                 {/* created at */}
                 <div className="flex gap-5 mb-5">

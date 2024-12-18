@@ -55,7 +55,7 @@ export default function RecentPostComponent() {
       {/* Image Section */}
       <div className="w-[100px] h-full flex-shrink-0">
         <img
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
           src={blog?.thumbnail[0]}
           alt="thumbnail"
         />

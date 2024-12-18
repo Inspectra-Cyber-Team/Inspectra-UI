@@ -27,8 +27,11 @@ import {
 import HowToFix from "./HowToFix";
 import WhereIssue from "./WhereIssue";
 import WhyIssue from "./WhyIssue";
+import { useRouter } from "next/navigation";
 
 export default function IusseComponent({ ...props }) {
+
+  const router = useRouter();
   //   state for store filter
   const [fileStore, setFileStore] = useState<string>("");
   const [directoriesStore, setDirectoriesStore] = useState<string>("");
@@ -87,7 +90,7 @@ export default function IusseComponent({ ...props }) {
         <div className="w-full h-full  flex justify-between">
           {/* filter side bar */}
           <div className="w-[35%] h-[1000px] overflow-y-auto scrollbar-hide hidden lg:block  border border-opacity-30 dark:border-none border-text_color_desc_light dark:bg-background_dark_mode p-5 rounded-[20px]  ">
-            <div className="w-full text-text_body_16 text-text_color_light dark:text-text_color_dark text-end">
+            <div className="w-full cursor-pointer text-text_body_16 text-text_color_light dark:text-text_color_dark text-end">
               <p> {issueData?.data?.total} issues</p>
               <hr className="text-text_color_desc_light mt-2" />
               {issueCardResult.map((item: any, index: number) => (
@@ -113,7 +116,7 @@ export default function IusseComponent({ ...props }) {
                 className="text-text_body_16 w-full  mt-5  text-text_color_light dark:text-text_color_dark"
               >
                 {item?.message}
-                <span className=" inline-block mx-2 text-[14px] underline cursor-pointer text-link_color dark:text-blue-600">
+                <span onClick={()=>router.push(`/rule/${item?.rule}`)}  className=" inline-block mx-2 text-[14px] underline cursor-pointer text-link_color dark:text-blue-600">
                   {item?.rule}
                 </span>
               </p>

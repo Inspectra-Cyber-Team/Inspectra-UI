@@ -16,7 +16,8 @@ export default function FooterComponent() {
     pathname === "/signup" ||
     pathname === "/forget-password" ||
     pathname === "/newpassword" ||
-    pathname === "/verify";
+    pathname === "/verify" ||
+    pathname === "/change-password";
 
   return (
     <footer>
@@ -43,16 +44,20 @@ export default function FooterComponent() {
                 {/* Content */}
                 <div className="text-text_body_16 lg:text-text_title_24 text-text_color_light dark:text-text_color_dark mt-5">
                   <div className="flex md:block lg:flex">
-                    <p className="mr-2">See the <span className="md:text-text_body_16 lg:text-text_title_24 text-secondary_color">
-                      Unseen
-                    </span></p>
-                    
+                    <p className="mr-2">
+                      See the{" "}
+                      <span className="md:text-text_body_16 lg:text-text_title_24 text-secondary_color">
+                        Unseen
+                      </span>
+                    </p>
                   </div>
                   <div className="md:block lg:flex">
-                    <p className="mr-2">Secure the <span className="md:text-text_body_16 lg:text-text_title_24 text-secondary_color">
-                      Unknown
-                    </span></p>
-                    
+                    <p className="mr-2">
+                      Secure the{" "}
+                      <span className="md:text-text_body_16 lg:text-text_title_24 text-secondary_color">
+                        Unknown
+                      </span>
+                    </p>
                   </div>
                 </div>
               </div>

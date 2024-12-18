@@ -13,19 +13,23 @@ export const projectAPI = cyberApi.injectEndpoints({
         invalidatesTags: ["Projects"],
       }),
     }),
-    // get user Project
-    getAllProjectsName: builder.query({
-      query: () => ({
-        url: `projects`,
-        providesTags: ["Projects"],
-      }),
-    }),
 
     // scan project
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createProjectScan: builder.mutation<any, { project: object }>({
       query: ({ project }) => ({
-        url: `scans/next`,
+        url: `scan`,
+        method: "POST",
+        body: project,
+        invalidatesTags: ["Projects"],
+      }),
+    }),
+
+    // scan project for none user
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    createProjectScanNonUser: builder.mutation<any, { project: object }>({
+      query: ({ project }) => ({
+        url: `scan/non-user`,
         method: "POST",
         body: project,
         invalidatesTags: ["Projects"],
@@ -54,8 +58,9 @@ export const projectAPI = cyberApi.injectEndpoints({
 
 export const {
   useCreateProjectNameMutation,
-  useGetAllProjectsNameQuery,
+
   useCreateProjectScanMutation,
   useGetProjectOverViewUserQuery,
   useDeleteProjectMutation,
+  useCreateProjectScanNonUserMutation,
 } = projectAPI;

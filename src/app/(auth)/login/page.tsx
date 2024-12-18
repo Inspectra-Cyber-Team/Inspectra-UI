@@ -4,7 +4,8 @@ import React from "react";
 import { RxCross2 } from "react-icons/rx";
 import FormLoginComponent from "@/components/FromLoginComponent/FormLoginComponent";
 import Link from "next/link";
-import {LoginAuth} from "@/components/FormLoginWithAuthComponent/login-auth";
+import { LoginAuth } from "@/components/FormLoginWithAuthComponent/login-auth";
+// import {LoginAuth} from "@/components/FormLoginWithAuthComponent/login-auth";
 
 // export const metadata: Metadata = {
 //   title: "Login - Inspectra",
@@ -86,9 +87,8 @@ export default function page() {
       </section>
 
       {/* login section */}
-      <section className="h-full w-full my-auto xl:w-[40%] bg-text_color_dark  xl:py-[40px] flex flex-col ">
-        {/* welcome title */}
-
+      <section className="h-screen w-full my-auto xl:w-[40%] bg-text_color_dark   flex flex-col ">
+        {/* welcome title for small screen */}
         <div className="w-full hidden md:block md:text-center  md:h-[10%] md:mt-[50px] lg:h-[10%] lg:mt-[150px]    xl:hidden">
           <p className="text-[60px] text-text_color_light font-semibold leading-[1.2]">
             Welcome to <br />

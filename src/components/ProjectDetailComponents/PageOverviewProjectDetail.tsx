@@ -1,8 +1,6 @@
-import { useGetExportPdfQuery, useGetProjectByUserUuidQuery, useGetProjectDetailQuery } from '@/redux/service/overview';
+import { useGetProjectByUserUuidQuery, useGetProjectDetailQuery } from '@/redux/service/overview';
 import { Metadata } from "next";
 import React, { useRef } from 'react';
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 import { LuDot } from 'react-icons/lu';
 import { SiTicktick } from 'react-icons/si';
 import { FaCodeBranch } from 'react-icons/fa';

@@ -6,7 +6,7 @@ import { Field, Form, Formik } from "formik";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
-import { useAppDispatch } from "@/redux/hooks";
+
 
 import * as Yup from "yup";
 export default function FormLoginComponent() {
@@ -32,7 +32,6 @@ export default function FormLoginComponent() {
   };
 
   const handleSubmit = async (values: FormValues) => {
-
     console.log(values);
     setIsLoading(true);
     try {
@@ -154,7 +153,10 @@ export default function FormLoginComponent() {
           </div>
           {/* Forget Password */}
           <div className="text-end pb-5">
-            <p className="text-link_color text-[14px] underline font-medium">
+            <p
+              onClick={() => router.push("/forget-password")}
+              className="text-link_color cursor-pointer text-[14px] underline font-medium"
+            >
               Forget Password?
             </p>
           </div>

@@ -10,12 +10,12 @@ export default function HowToFix({ ruleKey }: any) {
     // Run Prism's highlightAll function when ruleIssue changes or component mounts
     Prism.highlightAll();
   }, [ruleIssue]); // Only run when ruleIssue data changes
-
+  if(ruleIssue === undefined) console.log("No data");
   return (
     <div>
       {ruleIssue?.map((rule: any) =>
         rule?.descriptionSections?.map((ruleDes: any, descIndex: number) => {
-          return ruleDes?.key === "how_to_fix" ? (
+          return (
             <pre
               key={descIndex}
               style={{
@@ -32,7 +32,7 @@ export default function HowToFix({ ruleKey }: any) {
                 dangerouslySetInnerHTML={{ __html: ruleDes.content }}
               ></code>
             </pre>
-          ) : null; // Return null for non-matching cases
+          );
         })
       )}
     </div>

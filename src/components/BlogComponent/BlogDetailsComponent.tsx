@@ -15,7 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { MdReport, MdClear, MdCheckCircle  } from "react-icons/md";
+import { MdReport, MdClear, MdCheckCircle } from "react-icons/md";
 import { FaCalendarAlt, FaCommentDots, FaEye } from "react-icons/fa";
 import { convertToDayMonthYear } from "@/lib/utils";
 import { FaHandsClapping } from "react-icons/fa6";
@@ -28,7 +28,6 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/hooks/use-toast";
 
 
-
 type BlogDetailsProps = Readonly<{
   uuid: string;
 }>;
@@ -39,8 +38,7 @@ type ReportProps = {
 };
 
 export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
-
-  const {toast} = useToast();
+  const { toast } = useToast();
 
   const router = useRouter();
 
@@ -57,10 +55,11 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
   //calling user like blog
   const { data: userLike, isLoading } = useGetUserLikeBlogQuery({ uuid });
 
-
   const [report, setReport] = useState("");
   const [showSidebar, setShowSidebar] = useState(false);
+
   const [likeColor, setLikeColor] = useState(false);
+
   const [blogData, setBlogData] = useState<Blog | undefined>();
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
@@ -72,6 +71,9 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
   useEffect(() => {
     if (data) setBlogData(data.data);
+
+    const likedBlogs = JSON.parse(localStorage.getItem("likedBlogs") || "{}");
+    setLikeColor(!!likedBlogs[data?.data?.uuid]);
   }, [data]);
 
   useEffect(() => {
@@ -111,7 +113,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
       setReport("");
       if (res.data) {
         toast({
-          description: "Blog Created Successfully",
+          description: "Blog Report Successfully",
           variant: "success",
         });
         setShowModalReport(false);
@@ -133,20 +135,37 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     }
 
     try {
+      // Call the API to toggle like/unlike
       const res = await likeBlog({ uuid: blogUuid });
-      setLikeColor(true);
+      const message = res?.data?.data; // Extract the message from the API response
 
+      const likedBlogs = JSON.parse(localStorage.getItem("likedBlogs") || "{}");
+
+      if (message === "Blog liked successfully") {
+        // Blog has been liked
+        setLikeColor(true);
+        likedBlogs[blogUuid] = true; // Add blogUuid to local storage
+      } else if (message === "Blog unliked successfully") {
+        // Blog has been unliked
+        setLikeColor(false);
+        delete likedBlogs[blogUuid]; // Remove blogUuid from local storage
+      }
+
+      // Update local storage
+      localStorage.setItem("likedBlogs", JSON.stringify(likedBlogs));
+
+      // Notify via WebSocket
       socket?.send(
         JSON.stringify({
-          type: "like",
+          type: message === "Blog liked successfully" ? "like" : "unlike",
           blogUuid,
           userUuid: blogData?.user?.uuid,
         })
       );
 
-      console.log("Like blog response:", res);
+      console.log(message);
     } catch (error) {
-      console.error("Error liking the blog:", error);
+      console.error("Error toggling like status:", error);
     }
   };
 
@@ -172,9 +191,13 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     setTimeout(() => setShowModal(false), 200);
   };
 
+  const modifiedDescription = blogData?.description.replace(
+    /<img /g, 
+    '<img style="max-width: 100%; height: auto; display: block; margin: 0 auto; object-fit: contain;" '
+  );
+
   return (
     <section className="w-[90%] mx-auto my-[20px] md:my-[60px]">
-
       {/* Blog Details */}
       <div className="w-[90%] mx-auto">
         <h1 className="lg:text-[34px] md:text-[20px] font-bold">
@@ -197,37 +220,41 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
             <FaCalendarAlt className="text-text_color_desc_light text-[24px]" />
             <p>{convertToDayMonthYear(blogData?.createdAt || "")}</p>
           </div>
-            <div className="flex gap-[35px]">
-              {/* Views */}
-              <div className="flex gap-2 items-center">
-                <FaEye className="text-text_color_desc_light text-[24px]" />
-                <p>{blogData?.viewsCount}</p>
-              </div>
-              {/* Likes */}
-              <div
-                className="flex gap-2 items-center "
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                <FaHandsClapping
-                  className={`text-[24px] cursor-pointer ${likeColor ? "text-orange-400" : "text-text_color_desc_light"
-                    }`}
-                  onClick={() => handleLike(blogData?.uuid)}
-                />
-                <p>{blogData?.likesCount}</p>
-              </div>
-              {/* Comments */}
-              <div className="flex gap-2 items-center">
-                <FaCommentDots
-                  className="text-text_color_desc_light text-[24px] cursor-pointer"
-                  onClick={() => setShowSidebar(!showSidebar)}
-                />
-                <p>{blogData?.countComments}</p>
-              </div>
-              {/* Action Buttons */}
+          <div className="flex gap-[35px]">
+            {/* Views */}
+            <div className="flex gap-2 items-center">
+              <FaEye className="text-text_color_desc_light text-[24px]" />
+              <p>{blogData?.viewsCount}</p>
+            </div>
+            {/* Likes */}
+            <div
+              className="flex gap-2 items-center "
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <FaHandsClapping
+                className={`text-[24px] cursor-pointer ${
+                  likeColor ? "text-orange-400" : "text-text_color_desc_light"
+                }`}
+                onClick={() => handleLike(blogData?.uuid)}
+              />
+              <p>{blogData?.likesCount}</p>
+            </div>
+            {/* Comments */}
+            <div className="flex gap-2 items-center">
+              <FaCommentDots
+                className="text-text_color_desc_light text-[24px] cursor-pointer"
+                onClick={() => setShowSidebar(!showSidebar)}
+              />
+              <p>{blogData?.countComments}</p>
+            </div>
+            {/* Action Buttons */}
             <div className="flex items-end justify-end gap-3">
               {userUUID === blogData?.user?.uuid && (
-                <Button onClick={() => router.push(`/blog/${uuid}/update`)} className="bg-[#B9FF66] text-black rounded-[16px]">
+                <Button
+                  onClick={() => router.push(`/blog/${uuid}/update`)}
+                  className="bg-[#B9FF66] text-black rounded-[16px]"
+                >
                   Update Blog
                 </Button>
               )}
@@ -246,7 +273,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
                     placeholder="Write your concern here..."
                     value={report}
                     onChange={(e) => setReport(e.target.value)}
-                      className="mt-4 focus:outline-none focus:ring-0 focus:border-none !border-none"
+                    className="mt-4 focus:outline-none focus:ring-0 focus:border-none !border-none"
                   />
                   <div className="flex justify-end">
                     <Button
@@ -261,8 +288,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
                 </DialogContent>
               </Dialog>
             </div>
-            </div>
-            
+          </div>
         </div>
         {/* Thumbnail */}
         {blogData?.thumbnail?.[0] && (
@@ -275,7 +301,10 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
           </div>
         )}
         {/* Description */}
-        <p className="my-10">{blogData?.description}</p>
+        <div
+          dangerouslySetInnerHTML={{ __html: modifiedDescription || "" }}
+        ></div>
+        
       </div>
 
       {/* User Card */}
@@ -300,23 +329,26 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
       {/* Hover Modal */}
       {showModal && userLike && (
-        <HoverModal likes={userLike?.data} position={modalPosition} isloading={isLoading} />
+        <HoverModal
+          likes={userLike?.data}
+          position={modalPosition}
+          isloading={isLoading}
+        />
       )}
 
       {/* model show info after report */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-             <DialogContent className="bg-white dark:bg-background_dark_mode max-w-md  p-[50px]  w-full mx-auto">
-               <MdCheckCircle size={100} className="text-primary_color mx-auto" />
-               <div className="text-center">
-                 <p className="font-bold text-[24px]">Thanks for letting us know</p>
-                 <p className="text-base mt-1 dark:text-text_color_desc_dark ">
-                 We use your feedback to help our systems learn when something's not right.
-                 </p>
-               </div>
-         
-             </DialogContent>
-           </Dialog>
-
+        <DialogContent className="bg-white dark:bg-background_dark_mode max-w-md  p-[50px]  w-full mx-auto">
+          <MdCheckCircle size={100} className="text-primary_color mx-auto" />
+          <div className="text-center">
+            <p className="font-bold text-[24px]">Thanks for letting us know</p>
+            <p className="text-base mt-1 dark:text-text_color_desc_dark ">
+              We use your feedback to help our systems learn when something's
+              not right.
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

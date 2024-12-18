@@ -29,14 +29,6 @@ export const navbarData = [
 export const navbarDataWithProfile = [
   {
     name: "My Profile",
-    link: "/profile",
-  },
-  {
-    name: "Blog History",
-    link: "/",
-  },
-  {
-    name: "Scan History",
-    link: "/",
+    link: "/myProfile",
   },
 ];
