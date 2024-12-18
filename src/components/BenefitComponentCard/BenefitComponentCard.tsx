@@ -6,11 +6,12 @@ import { useTheme } from "next-themes";
 export default function BenefitComponentCard() {
   const { theme } = useTheme();
   return (
-    <div className="w-full my-5 flex flex-col items-center xl:flex-row xl:justify-between">
+    <div className="w-full mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-x-5 gap-y-5">
+      {/* w-full my-5 flex flex-col items-center xl:flex-row xl:justify-between */}
       {benefitData.map((item: benefitType, index) => (
         <div
           key={index}
-          className="rounded-[20px] bg-card_color_light dark:bg-card_color_dark py-5 my-5  w-full h-full xl:w-[350px] xl:h-[300px] items-center text-center flex flex-col justify-center"
+          className="rounded-[20px] bg-card_color_light dark:bg-card_color_dark py-5 my-5 w-full h-full items-center text-center flex flex-col justify-center"
         >
           {theme === "dark" ? (
             <img

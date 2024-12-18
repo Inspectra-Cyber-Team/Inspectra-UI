@@ -70,7 +70,7 @@ export default function Home() {
       </section>
 
       {/* benefit section */}
-      <section className="w-full text-center lg:my-[60px]">
+      <section className="w-full text-center lg:mt-[60px] lg:mb-[60px]">
         <p className=" text-text_header_34 px-5 py-1 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold">
           Benefit
         </p>
@@ -78,7 +78,7 @@ export default function Home() {
       </section>
 
       {/* feedback section */}
-      <section className="w-full text-center lg:my-[60px]">
+      <section className="w-full text-center mt-[60px] lg:mt-[60px]">
         <p className="text-text_header_34 px-5 py-1 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold">
           User Feedback
         </p>
