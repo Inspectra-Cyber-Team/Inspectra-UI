@@ -5,6 +5,8 @@ import * as Yup from "yup";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
+
+
 import {
   Select,
   SelectContent,
@@ -23,6 +25,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import { useGetAllTopicQuery } from "@/redux/service/topic";
 import TextEditor from "../TextEdittor/TextEditor";
+import { Plus } from "lucide-react";
 
 const FILE_SIZE = 1024 * 1024 * 5; // 5MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
@@ -179,39 +182,47 @@ const CreateBlogComponent = () => {
               }
             }}
           >
-            {({ setFieldValue, isValid, dirty }) => (
+            {({ setFieldValue }) => (
               <Form className="space-y-4 py-1">
                 {/* Drag-and-Drop Thumbnail Selection */}
-                <p className="text-black text-text_title_20 font-bold text-center dark:text-text_color_dark ">
-                  {" "}
-                  Create Blog{" "}
+                <p className="text-black text-text_title_20 font-bold text-center mt-1 dark:text-text_color_dark ">
+                  Create Blog
                 </p>
                 <div
-                  className="file-upload-design mt-4 p-4 rounded border-dashed border-2"
+                  className="file-upload-design mt-4 p-6 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition-all duration-300 ease-in-out hover:border-blue-400 hover:bg-blue-50"
                   onDragOver={handleDragOver}
                   onDrop={handleDrop}
                 >
-                  <p>Drag and Drop Images Here</p>
-                  <p>or</p>
-                  {/* Clicking this text opens the hidden file input */}
-                  <span
-                    className="browse-button cursor-pointer text-blue-500 font-bold"
-                    onClick={() => {
-                      const thumbnailInput =
-                        document.getElementById("thumbnail");
-                      if (thumbnailInput) thumbnailInput.click();
-                    }}
-                  >
-                    Browse Files
-                  </span>
+                  <div className="flex flex-col items-center justify-center space-y-2 text-center">
+                    <p className="text-sm font-medium text-gray-700">
+                      Drag and Drop Thumbnail Here
+                    </p>
+                    {/* <p className="text-sm text-gray-500">or</p> */}
+                    <button
+                      type="button"
+                      className="inline-flex items-center justify-center w-10 h-10 rounded-full  text-black  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                      onClick={() => {
+                        const thumbnailInput =
+                          document.getElementById("thumbnail");
+                        if (thumbnailInput) thumbnailInput.click();
+                      }}
+                    >
+                      <Plus className="h-6 w-6" />
+                      <span className="sr-only">Browse Files</span>
+                    </button>
+                  </div>
 
                   <Input
                     id="thumbnail"
                     type="file"
                     accept="image/*"
-                    multiple
                     onChange={(e) => handleFileChange(e, setFieldValue)}
                     className="hidden"
+                  />
+                  <ErrorMessage
+                    name="thumbnail"
+                    component="p"
+                    className="text-red-500 text-sm mt-2 text-center"
                   />
                 </div>
 
@@ -368,7 +379,7 @@ const CreateBlogComponent = () => {
 
                 <Button
                   type="submit"
-                  disabled={!isValid || !dirty}
+                  // disabled={!isValid || !dirty}
                   className="w-full bg-primary_color dark:text-text_color_light"
                 >
                   Create Blog

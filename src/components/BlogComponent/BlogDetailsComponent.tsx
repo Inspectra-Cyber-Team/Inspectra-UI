@@ -26,7 +26,8 @@ import { useGetUserLikeBlogQuery } from "@/redux/service/userlikeblog";
 import HoverModal from "./ModalHoverComponent";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/hooks/use-toast";
-
+// import "prismjs/themes/prism.css";
+// import Prism from "prismjs";
 
 type BlogDetailsProps = Readonly<{
   uuid: string;
@@ -66,8 +67,6 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
   const { data } = useGetBlogDetailsQuery({ uuid });
   const [createReport] = useReportMutation();
   const [likeBlog] = useLikeBlogMutation();
-
-  //set condition to show page
 
   useEffect(() => {
     if (data) setBlogData(data.data);
@@ -191,10 +190,29 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     setTimeout(() => setShowModal(false), 200);
   };
 
-  const modifiedDescription = blogData?.description.replace(
-    /<img /g, 
-    '<img style="max-width: 100%; height: auto; display: block; margin: 0 auto; object-fit: contain;" '
-  );
+  const modifiedDescription = blogData?.description
+    .replace(
+      /<img /g,
+      '<img style="max-width: 100%; height: auto; display: block; margin: 0 auto; object-fit: contain;" '
+    )
+  //   ?.replace(/<pre class="ql-syntax"/g, '<pre class="language-js"')
+  //   ?.replace(/&nbsp;/g, " ")
+  //   ?.replace(/&lt;/g, "<")
+  //   ?.replace(/&gt;/g, ">")
+  //   ?.replace(/<\/pre>/g, "</code></pre>")
+  //   ?.replace(
+  //     /<pre class="language-javascript">/g,
+  //     '<pre class="language-js"><code>'
+  //   );
+
+  // useEffect(() => {
+  //   Prism.highlightAll();
+  // }, [modifiedDescription]);
+
+  // useEffect(() => {
+  //   // Highlight all code blocks after the component mounts
+  //   Prism.highlightAll();
+  // }, [modifiedDescription]);
 
   return (
     <section className="w-[90%] mx-auto my-[20px] md:my-[60px]">
@@ -304,7 +322,6 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         <div
           dangerouslySetInnerHTML={{ __html: modifiedDescription || "" }}
         ></div>
-        
       </div>
 
       {/* User Card */}
