@@ -64,7 +64,6 @@ export default function ProjectCardComponent() {
   const {
     data: projectResult,
     isError,
-    refetch,
     isFetching: isFetchDataProjectScan,
   } = useGetProjectOverViewUserQuery({ uuid: userUUID });
   const [deleteProject, { isSuccess: isDeleteSuccess }] =

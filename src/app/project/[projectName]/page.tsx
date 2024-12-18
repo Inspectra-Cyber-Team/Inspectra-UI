@@ -1,16 +1,15 @@
 "use client";
-import { navProjectDetial } from "@/data/navProjectDetial";
+import CodeComponent from "@/components/codeComponent/CodeComponent";
+import IusseComponent from "@/components/ProjectDetailComponents/issueTab/IusseComponent";
+import PageOverviewProjectDetail from "@/components/ProjectDetailComponents/PageOverviewProjectDetail";
+import SecurityComponent from "@/components/securityComponent/SecurityComponent";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export type ParamProps = {
   params: {
     projectName: string;
   };
 };
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import SecurityComponent from "@/components/securityComponent/SecurityComponent";
-import PageOverviewProjectDetail from "@/components/ProjectDetailComponents/PageOverviewProjectDetail";
-import CodeComponent from "@/components/codeComponent/CodeComponent";
-import IusseComponent from "@/components/ProjectDetailComponents/issueTab/IusseComponent";
 
 export default function page({ params }: ParamProps) {
   const projectName = params.projectName;
