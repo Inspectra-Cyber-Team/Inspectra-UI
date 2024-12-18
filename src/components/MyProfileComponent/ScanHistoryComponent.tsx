@@ -102,8 +102,9 @@ export default function ScanHistoryComponent() {
         {/* project card */}
         <div className=" my-5">
           {projectScanByUser?.map((projectResult: any, index: number) => {
+
             return projectResult?.component.component.measures.length !== 0 ||
-              isError ? (
+              !isError ? (
               <div
                 key={index}
                 className="w-full  my-5 h-full  p-5  border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] "

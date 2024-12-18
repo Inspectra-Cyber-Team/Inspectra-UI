@@ -16,6 +16,10 @@ import {
 import { useRouter } from "next/navigation";
 import TextEditor from "../TextEdittor/TextEditor";
 
+
+
+
+
 type UpdateBlogComponentProps = {
   uuid: string;
 };
@@ -122,6 +126,8 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
       setPreviewImages(previews);
     }
   }, [blogUpdateData?.data?.thumbnail]);
+
+
 
   const initialValues = {
     title: blogUpdateData?.data?.title || "",

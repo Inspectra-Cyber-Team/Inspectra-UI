@@ -11,12 +11,15 @@ import {
 import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 import RiskComponent from "./RiskComponent";
 import { Hotspot } from "@/types/SecurityHostspot";
+import { useRouter } from "next/navigation";
 
 type SecurityComponentProps = {
   projectName: string;
 };
 
 export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
+
+  const router = useRouter();
   // calling security hotspot query
   const {
     data: securityHotspotData,
@@ -121,7 +124,7 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
               <p className="font-bold mb-5 ">{selectedHotspot.message}</p>
               <p className='mb-2'>
                 {ruleData?.[0]?.name}{" "}
-                <span className="font-bold"> {roleName}</span>
+                <button onClick={()=>router.push(`/rule/${roleName}`)}  className="font-bold cursor-pointer hover:text-primary_color"> {roleName}</button>
               </p>
               <div className="flex gap-4">
               <p className="mb-1"><strong>Category:</strong> {selectedHotspot?.securityCategory}</p>

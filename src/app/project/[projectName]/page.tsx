@@ -6,13 +6,8 @@ export type ParamProps = {
     projectName: string;
   };
 };
-
-
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import SecurityComponent from "@/components/securityComponent/SecurityComponent";
-
 import PageOverviewProjectDetail from "@/components/ProjectDetailComponents/PageOverviewProjectDetail";
 import CodeComponent from "@/components/codeComponent/CodeComponent";
 import IusseComponent from "@/components/ProjectDetailComponents/issueTab/IusseComponent";
@@ -24,7 +19,7 @@ export default function page({ params }: ParamProps) {
   return (
     <main className="w-[90%] m-auto bg-card_color_light rounded h-auto p-5 my-10 dark:bg-card_color_dark">
       <Tabs defaultValue="Overview" className="">
-        <TabsList className="grid w-full grid-cols-5 mb-5">
+        <TabsList className="grid w-full grid-cols-4 mb-5">
           {navProjectDetial.map((item) => (
             <TabsTrigger
               value={item.name}

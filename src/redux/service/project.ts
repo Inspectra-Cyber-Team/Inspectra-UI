@@ -13,13 +13,6 @@ export const projectAPI = cyberApi.injectEndpoints({
         invalidatesTags: ["Projects"],
       }),
     }),
-    // get user Project
-    getAllProjectsName: builder.query({
-      query: () => ({
-        url: `projects`,
-        providesTags: ["Projects"],
-      }),
-    }),
 
     // scan project
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,7 +58,7 @@ export const projectAPI = cyberApi.injectEndpoints({
 
 export const {
   useCreateProjectNameMutation,
-  useGetAllProjectsNameQuery,
+
   useCreateProjectScanMutation,
   useGetProjectOverViewUserQuery,
   useDeleteProjectMutation,

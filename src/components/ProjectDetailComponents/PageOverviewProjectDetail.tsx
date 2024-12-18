@@ -1,11 +1,10 @@
-import { useGetProjectDetailQuery, useGetQualityGateQuery } from '@/redux/service/overview';
+import { useGetProjectByUserUuidQuery, useGetProjectDetailQuery } from '@/redux/service/overview';
 import { Metadata } from "next";
 import React, { useRef } from 'react';
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
 import { LuDot } from 'react-icons/lu';
 import { SiTicktick } from 'react-icons/si';
-import { format, max } from 'date-fns';
+import { FaCodeBranch } from 'react-icons/fa';
+
 
 type OverviewProps = {
     projectName: string;
@@ -25,51 +24,62 @@ export const metadata: Metadata = {
 
 export default function PageOverviewProjectDetail({ projectName }: OverviewProps) {
     const nameOfProject = projectName;
+    const uuidOfUser = typeof window !== "undefined" ? localStorage.getItem("userUUID") : null;
 
     const { data } = useGetProjectDetailQuery({
         projectName: nameOfProject,
     });
+
+
     const metrics = data?.[0]?.component?.measures || [];
+
+    const ncLock = data?.[0]?.component?.measures?.find((metric: any) => metric.metric === 'ncloc')?.value || 0;
 
     const contentRef = useRef<HTMLDivElement>(null);
 
     // handleExportPDF function
-    const handleExportPDF = async () => {
-        if (contentRef.current) {
-            // Capture the content as a canvas
-            const canvas = await html2canvas(contentRef.current, {
-                scale: 2, // Higher quality
-                useCORS: true, // Handles cross-origin images
-            });
+    const handleExportPDF = async (projectName:string) => {
+        const endpoint = `http://136.228.158.126:4011/api/v1/pdf/${projectName}`;
+        const response = await fetch(endpoint);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
 
-            // Convert canvas to an image
-            const imgData = canvas.toDataURL("image/jpeg", 1.0);
-
-            // Create a PDF
-            const pdf = new jsPDF("portrait", "pt", "a4");
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-            pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
-            pdf.save("ProjectOverview.pdf");
-        }
+        // Set download attributes
+        link.href = url;
+        link.download = `${projectName}.pdf`; // Set the filename as `pName.pdf`
+        document.body.appendChild(link);
+        link.click();  // Trigger the download
+        document.body.removeChild(link); // Cleanup
     };
 
-    const { data: qualitiesGate } = useGetQualityGateQuery({
-        projectName: nameOfProject,
-    })
+    // get project by user uuid
+    const { data: projectUuid } = useGetProjectByUserUuidQuery({ uuid: uuidOfUser ?? '' });
+    const getProjectByUserUuid = projectUuid?.[0]?.branch?.[0]?.branches?.[0];
 
-    const qualitiesGateData = qualitiesGate?.data?.projectStatus;
-    const date = new Date();
-    const formattedDate = format(date, 'MMMM do, yyyy');
+    // check data and time
+    const formatDate = (dateString: string) => {
+        if (!dateString) return ""; 
+        // Fix the date format by replacing "+0000" with "Z"
+        const fixedDateString = dateString.replace("+0000", "Z");
+        const date = new Date(fixedDateString);
+        // Get individual parts of the date
+        const options: Intl.DateTimeFormatOptions = { month: "long", day: "numeric", year: "numeric" };
+        const datePart = new Intl.DateTimeFormat("en-US", options).format(date);
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        return `${datePart} ${hours}:${minutes}`;
+    };
+
+    const formattedDate = formatDate(getProjectByUserUuid?.analysisDate);
 
     // Find the highest total issues dynamically across all metrics
-    const maxIssues = metrics.reduce((max:any, metric:any) => {
+    const maxIssues = metrics.reduce((max: any, metric: any) => {
         try {
             const value = metric.value.startsWith('{') && metric.value.endsWith('}')
                 ? JSON.parse(metric.value)?.total || 0
                 : parseFloat(metric.value) || 0;
-                console.log("Hel",metric,value)
+            // console.log("Hel",metric,value)
             return Math.max(max, value);
         } catch (err) {
             console.error(`Error parsing metric: ${metric.metric}`, err);
@@ -81,15 +91,24 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
         <section className="px-4 md:px-8 lg:px-12" ref={contentRef}>
             {/* First Section of Page */}
             <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4">
-                <div className="text-text_color_light">
-                    <h2 className="text-xl md:text-2xl font-bold">Project Details</h2>
+
+                <div className="text-text_color_light flex items-center gap-3">
+                    <h2 className=" text-text_color_light dark:text-text_color_dark text-md">
+                        <FaCodeBranch />
+                    </h2>
+                    <div>
+                        <p className="text-xs md:text-sm dark:text-white">{getProjectByUserUuid?.name}</p>
+                    </div>
                 </div>
+
                 <div>
-                    <ul className="flex flex-wrap items-center gap-3 p-3 text-text_color_light">
-                        <li className="text-sm md:text-base">13K Lines of Code</li> <LuDot />
+                    <ul className="flex flex-wrap items-center gap-3 p-3 text-text_color_light dark:text-text_color_dark">
+                        <li className="text-sm md:text-base ">{ncLock} Lines of Code</li> <LuDot />
                         <li className="text-sm md:text-base">Version not Provided</li> <LuDot />
                         <li >
-                            <button className="bg-primary_color text-black px-4 py-2 rounded-full w-full md:w-[100px]" onClick={handleExportPDF}>
+                            <button className="bg-primary_color text-black px-4 py-2 rounded-full w-full md:w-[100px]" onClick={()=>{
+                                handleExportPDF(nameOfProject)
+                            }}>
                                 Export
                             </button>
                         </li>
@@ -108,12 +127,12 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
                     <div>
                         <p className="text-xs md:text-sm dark:text-white">Quality Gate</p>
                         <p className="font-bold text-base md:text-lg dark:text-white">
-                            {qualitiesGateData?.status === "OK" ? "Passed" : "Failed"}
+                            {getProjectByUserUuid?.status.qualityGateStatus === "OK" ? "Passed" : "Failed"}
                         </p>
                     </div>
                 </div>
                 <div className="text-sm md:text-base">
-                    Last Analysis <b className='text-secondary_color'>{qualitiesGateData?.timestamp || formattedDate}</b>
+                    Last Analysis <b className='text-secondary_color'>{formattedDate}</b>
                 </div>
             </div>
 
@@ -131,7 +150,7 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
 
                         try {
 
-                            if (metric.value.startsWith('{') && metric.value.endsWith('}') ) {
+                            if (metric.value.startsWith('{') && metric.value.endsWith('}')) {
                                 parsedValue = JSON.parse(metric.value);
                                 const totalIssues = parsedValue.total || 0;
                                 percentage = maxIssues > 0 ? (totalIssues / maxIssues) * 100 : 0;

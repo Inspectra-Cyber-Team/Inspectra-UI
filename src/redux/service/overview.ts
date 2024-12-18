@@ -1,5 +1,6 @@
 import { cyberApi } from "@/redux/api";
 
+
 export const overviewApi = cyberApi.injectEndpoints({
   endpoints: (builder) => ({
     // get user feedback
@@ -9,13 +10,19 @@ export const overviewApi = cyberApi.injectEndpoints({
       }),
     }),
 
-    // get qualtity gate
-    getQualityGate: builder.query<any,{projectName: string}>({
+    getExportPdf: builder.query<any,{projectName: string}>({
       query: ({projectName}) => ({
-        url: `quality-gates/${projectName}`,
+        url: `pdf/${projectName}`,
       }),
     }),
+
+    // get project by user uuid
+    getProjectByUserUuid: builder.query<any,{uuid: string}>({
+      query: ({uuid}) => ({
+        url: `projects/user/${uuid}`,
+      }),
+    })
   }),
 });
 
-export const {  useGetProjectDetailQuery, useGetQualityGateQuery } = overviewApi;
+export const { useGetProjectDetailQuery, useGetExportPdfQuery , useGetProjectByUserUuidQuery } = overviewApi;

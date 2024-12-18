@@ -31,6 +31,7 @@ type Blog = {
 export default function BlogUserCardComponent({
   uuid,
 }: Readonly<BlogCardProps>) {
+
   const router = useRouter();
 
   const [currentSize, setCurrentSize] = useState(6);
@@ -77,7 +78,7 @@ export default function BlogUserCardComponent({
             onClick={() => setCurrentSize(currentSize + 3)}
             className="bg-[#B9FF66] text-black rounded-[16px]"
           >
-            See Moore
+            See More
           </Button>
         </section>
       </section>
@@ -88,7 +89,8 @@ export default function BlogUserCardComponent({
         {data?.content?.map((blog: Blog) => (
           <div
             key={blog.uuid}
-            className=" mx-auto bg-white dark:bg-card_color_dark rounded-lg shadow-md overflow-hidden w-full"
+            className=" mx-auto bg-white cursor-pointer dark:bg-card_color_dark rounded-lg shadow-md overflow-hidden w-full"
+            onClick={() => router.push(`/blog/${blog?.uuid}`)}
           >
             <div className="relative w-full h-48">
               <Image

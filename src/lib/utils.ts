@@ -104,7 +104,7 @@ export function getCoverageData(coverageValue: any) {
 }
 
 export function sliceString(str: string) {
-  return str?.replaceAll(/next-[a-f0-9\-]+/g, "...");
+  return str?.replaceAll(/project-[a-f0-9\-]{36}/g, "...");
 }
 
 export function convertToHTML(apiResponseText: any) {

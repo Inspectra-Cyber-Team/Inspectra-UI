@@ -191,6 +191,11 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     setTimeout(() => setShowModal(false), 200);
   };
 
+  const modifiedDescription = blogData?.description.replace(
+    /<img /g, 
+    '<img style="max-width: 100%; height: auto; display: block; margin: 0 auto; object-fit: contain;" '
+  );
+
   return (
     <section className="w-[90%] mx-auto my-[20px] md:my-[60px]">
       {/* Blog Details */}
@@ -297,8 +302,9 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         )}
         {/* Description */}
         <div
-          dangerouslySetInnerHTML={{ __html: blogData?.description || "" }}
+          dangerouslySetInnerHTML={{ __html: modifiedDescription || "" }}
         ></div>
+        
       </div>
 
       {/* User Card */}

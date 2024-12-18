@@ -53,10 +53,11 @@ import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
 import NoneUserScan from "@/components/NoneUserScanProject/NoneUserScan";
-
-export default function ProjectCardNameComponent() {
+import { FaGitlab } from "react-icons/fa6";
+export default function ProjectCardComponent() {
   const [userUUID, setUserUUID] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
@@ -72,6 +73,8 @@ export default function ProjectCardNameComponent() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
+
+  
   const [
     createScanProject,
     { isSuccess: isScanSuccess, isError: isScanError },
@@ -123,20 +126,27 @@ export default function ProjectCardNameComponent() {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      const fetchGitbranch = async () => {
-        const data = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}gits/branches?gitUrl=${gitUrlResult}`
-        );
-        if (data.ok) {
-          toast({
-            description: "Get All Branches Successfully",
-            variant: "success",
-          });
-        }
-        const result = await data.json();
-        setGitResult(result);
-      };
-      fetchGitbranch();
+      if (gitUrlResult.includes(".git")) {
+        const fetchGitbranch = async () => {
+          const data = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}gits/branches?gitUrl=${gitUrlResult}`
+          );
+          if (data.ok) {
+            toast({
+              description: "Get All Branches Successfully",
+              variant: "success",
+            });
+          }
+          const result = await data.json();
+          setGitResult(result);
+        };
+        fetchGitbranch();
+      } else {
+        toast({
+          description: "Invalid URL",
+          variant: "error",
+        });
+      }
     }
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,6 +170,7 @@ export default function ProjectCardNameComponent() {
         description: "Project Delete Successully",
         variant: "success",
       });
+      setIsDeleteOpen(false);
       setIsLoading(false);
     }
     if (isScanError) {
@@ -334,7 +345,10 @@ export default function ProjectCardNameComponent() {
                                   </p>
                                   <p className="mx-2">|</p>
 
-                                  <Dialog>
+                                  <Dialog
+                                    open={isDeleteOpen}
+                                    onOpenChange={setIsDeleteOpen}
+                                  >
                                     <DialogTrigger asChild>
                                       <RxCross2 className="h-6 w-6 text-custom_red cursor-pointer" />
                                     </DialogTrigger>
@@ -966,7 +980,10 @@ export default function ProjectCardNameComponent() {
                       <p className="text-text_body_16 text-secondary_color dark:text-text_color_dark ">
                         {projectResult?.component?.component.name}
                       </p>
-                      <Dialog>
+                      <Dialog
+                        open={isDeleteOpen}
+                        onOpenChange={setIsDeleteOpen}
+                      >
                         <DialogTrigger asChild>
                           <RxCross2 className="h-6 w-6 text-custom_red cursor-pointer" />
                         </DialogTrigger>
@@ -1076,13 +1093,17 @@ export default function ProjectCardNameComponent() {
                               {/* git url */}
                               <div className="relative">
                                 <FaGithub className="absolute top-1/2 left-3 text-text_title_24 transform -translate-y-1/2 text-text_color_desc_light" />
+                                <p className="absolute top-1/2 left-10 font-light text-text_color_desc_light text-text_title_24 transform -translate-y-1/2">
+                                  |
+                                </p>
+                                <FaGitlab className="absolute top-1/2 left-[50px] text-text_title_20 transform -translate-y-1/2 text-text_color_desc_light" />
                                 <input
                                   type="text"
                                   placeholder="Enter Git URL"
                                   value={gitUrlResult}
                                   onChange={handleChange} // Update the state with the input value
                                   onKeyDown={handleKeyPress} // Trigger logic on Enter key press
-                                  className="mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light pl-12 pr-3 py-3 focus:outline-none  border-ascend_color"
+                                  className="mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light pl-[80px] pr-3 py-3 focus:outline-none  border-ascend_color"
                                 />
                               </div>
                               {/* select branch */}
@@ -1904,7 +1925,7 @@ export default function ProjectCardNameComponent() {
                         </span>
                         is not analyzed yet.{" "}
                       </p>
-                      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+                      <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <p className="text-link_color md:pl-2 cursor-pointer dark:text-blue-500 underline">
                             Configure Project
@@ -1929,13 +1950,17 @@ export default function ProjectCardNameComponent() {
                           {/* git url */}
                           <div className="relative">
                             <FaGithub className="absolute top-1/2 left-3 text-text_title_24 transform -translate-y-1/2 text-text_color_desc_light" />
+                            <p className="absolute top-1/2 left-10 font-light text-text_color_desc_light text-text_title_24 transform -translate-y-1/2">
+                              |
+                            </p>
+                            <FaGitlab className="absolute top-1/2 left-[50px] text-text_title_20 transform -translate-y-1/2 text-text_color_desc_light" />
                             <input
                               type="text"
                               placeholder="Enter Git URL"
                               value={gitUrlResult}
                               onChange={handleChange} // Update the state with the input value
                               onKeyDown={handleKeyPress} // Trigger logic on Enter key press
-                              className="mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light pl-12 pr-3 py-3 focus:outline-none  border-ascend_color"
+                              className="mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light pl-[80px] pr-3 py-3 focus:outline-none  border-ascend_color"
                             />
                           </div>
                           {/* select branch */}
