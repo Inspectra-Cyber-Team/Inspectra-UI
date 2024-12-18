@@ -37,7 +37,7 @@
 
 ## About 🔗
 
-<a href="https://ifinder.istad.co/">
+<a href="http://136.228.158.126:4012/">
   <img src="./public/images/homepage.png" alt="Website homepage" width="auto" height="auto"/>
 </a>
 

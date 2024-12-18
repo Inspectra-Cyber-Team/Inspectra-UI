@@ -30,7 +30,6 @@ import WhyIssue from "./WhyIssue";
 import { useRouter } from "next/navigation";
 
 export default function IusseComponent({ ...props }) {
-
   const router = useRouter();
   //   state for store filter
   const [fileStore, setFileStore] = useState<string>("");
@@ -116,7 +115,10 @@ export default function IusseComponent({ ...props }) {
                 className="text-text_body_16 w-full  mt-5  text-text_color_light dark:text-text_color_dark"
               >
                 {item?.message}
-                <span onClick={()=>router.push(`/rule/${item?.rule}`)}  className=" inline-block mx-2 text-[14px] underline cursor-pointer text-link_color dark:text-blue-600">
+                <span
+                  onClick={() => router.push(`/rule/${item?.rule}`)}
+                  className=" inline-block mx-2 text-[14px] underline cursor-pointer text-link_color dark:text-blue-600"
+                >
                   {item?.rule}
                 </span>
               </p>
@@ -142,38 +144,38 @@ export default function IusseComponent({ ...props }) {
             {/* tab inside issue  */}
             <Tabs defaultValue="Where is the issue?">
               {/* for trigger different tab */}
-              <TabsList className="flex   justify-between !bg-transparent overflow-x-auto scrollbar-hide overflow-y-hidden">
+              <TabsList className="flex  justify-between !bg-transparent overflow-x-auto scrollbar-hide overflow-y-hidden">
                 <TabsTrigger
                   value="Where is the issue?"
-                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   Where is the issue?
                 </TabsTrigger>
                 <p className="mx-2">|</p>
                 <TabsTrigger
                   value="Why is this an issue?"
-                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   Why is this an issue?
                 </TabsTrigger>
                 <p className="mx-2">|</p>
                 <TabsTrigger
                   value="How Can I fix it?"
-                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   How Can I fix it?
                 </TabsTrigger>
                 <p className="mx-2">|</p>
                 <TabsTrigger
                   value="Activity"
-                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none  dark:data-[state=active]:bg-transparent data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   Activity
                 </TabsTrigger>
                 <p className="mx-2">|</p>
                 <TabsTrigger
                   value="More info"
-                  className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                  className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
                 >
                   More info
                 </TabsTrigger>
@@ -245,7 +247,7 @@ export default function IusseComponent({ ...props }) {
         // default card issue and filter
         <section className="w-full h-full  flex justify-between">
           {/* filter side bar */}
-          <div className="w-[35%] hidden lg:block h-full bg-background_light_mode dark:bg-background_dark_mode p-5 rounded-[20px]  ">
+          <div className="w-[35%] hidden lg:block h-full border-2 border-background_light_mode dark:border-none dark:bg-card_color_dark p-5 rounded-[20px]  ">
             <p className="text-text_title_24 text-text_color_light dark:text-text_color_dark ">
               Filter
             </p>
@@ -361,7 +363,7 @@ export default function IusseComponent({ ...props }) {
               {issueCardResult?.map((issue: any, index: number) => (
                 <div
                   key={index}
-                  className="w-full mb-5 bg-background_light_mode dark:bg-background_dark_mode p-5 rounded-[20px]"
+                  className="w-full mb-5 border-2 border-background_light_mode dark:border-none  dark:bg-card_color_dark p-5 rounded-[20px]"
                 >
                   {/* first section*/}
                   <div className="w-full flex justify-between">

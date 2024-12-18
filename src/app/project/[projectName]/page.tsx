@@ -13,30 +13,46 @@ import CodeComponent from "@/components/codeComponent/CodeComponent";
 import IusseComponent from "@/components/ProjectDetailComponents/issueTab/IusseComponent";
 
 export default function page({ params }: ParamProps) {
-  
   const projectName = params.projectName;
 
   return (
-    <main className="w-[90%] m-auto bg-card_color_light rounded h-auto p-5 my-10 dark:bg-card_color_dark">
-      <Tabs defaultValue="Overview" className="">
-        <TabsList className="grid w-full grid-cols-4 mb-5">
-          {navProjectDetial.map((item) => (
-            <TabsTrigger
-              value={item.name}
-              key={item.name}
-              className="group relative pb-2 text-gray-500 hover:text-secondary_color transition mr-3"
-            >
-              {item.name}
-              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary_color transition-all duration-300 group-hover:w-full"></span>
-            </TabsTrigger>
-          ))}
+    <main className="w-[90%] m-auto rounded-[20px] bg-card_color_light  h-auto p-5 my-10 dark:bg-background_dark_mode">
+      <Tabs defaultValue="Overview">
+        <TabsList className="flex  w-[90%] mx-auto mb-10  justify-between text-center !bg-transparent overflow-x-auto scrollbar-hide overflow-y-hidden">
+          <TabsTrigger
+            value="Overview"
+            className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  dark:data-[state=active]:bg-transparent data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+          >
+            Overview
+          </TabsTrigger>
+          <p className="mx-2">|</p>
+          <TabsTrigger
+            value="Issue"
+            className=" data-[state=active]:shadow-none  dark:data-[state=active]:bg-transparent data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+          >
+            Issue
+          </TabsTrigger>
+          <p className="mx-2">|</p>
+          <TabsTrigger
+            value="Security Hotspot"
+            className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+          >
+            Security Hotspot
+          </TabsTrigger>
+          <p className="mx-2">|</p>
+          <TabsTrigger
+            value="Code"
+            className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+          >
+            Code
+          </TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="Overview">
-          <PageOverviewProjectDetail projectName={projectName}/>
+          <PageOverviewProjectDetail projectName={projectName} />
         </TabsContent>
         <TabsContent value="Issue">
-            <IusseComponent props={projectName}/>
+          <IusseComponent props={projectName} />
         </TabsContent>
 
         <TabsContent value="Security Hotspot">
@@ -48,9 +64,7 @@ export default function page({ params }: ParamProps) {
         {/* table code */}
         <TabsContent value="Code">
           <section className="w-full">
-
-           <CodeComponent projectName={projectName} />
-      
+            <CodeComponent projectName={projectName} />
           </section>
         </TabsContent>
       </Tabs>

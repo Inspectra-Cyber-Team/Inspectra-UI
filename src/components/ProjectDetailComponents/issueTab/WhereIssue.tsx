@@ -24,7 +24,6 @@ export default function WhereIssue({ projectKey }: any) {
   const component = resultIssueDetail?.components[1]?.key;
 
   const issueSourceResult = issueSource?.data?.[component];
-
   useEffect(() => {
     // Run Prism's highlightAll function when ruleIssue changes or component mounts
     Prism.highlightAll();
@@ -42,7 +41,9 @@ export default function WhereIssue({ projectKey }: any) {
             {issueSourceResult?.component?.projectName}
           </p>
           <p className="hidden md:block">{"|"}</p>
-          <p className="truncate ">{sliceString(issueSourceResult?.component?.longName)}</p>
+          <p className="truncate ">
+            {sliceString(issueSourceResult?.component?.longName)}
+          </p>
         </div>
       </div>
       {/* code content */}
