@@ -3,8 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
-import { useGetUserDetailQuery } from "@/redux/service/user";
-import { useUpdateUserProfileMutation } from "@/redux/service/user";
+import {
+  useGetUserDetailQuery,
+  useUpdateUserProfileMutation,
+  useUploadUserProfileImageMutation,
+} from "@/redux/service/user";
 import { FaEdit } from "react-icons/fa";
 
 export default function MyProfileComponent() {
@@ -12,6 +15,9 @@ export default function MyProfileComponent() {
   const [userUUID, setUserUUID] = useState("");
   const { data: userData } = useGetUserDetailQuery({ uuid: userUUID });
   const [updateUserProfile] = useUpdateUserProfileMutation();
+  const [uploadUserProfileImage] = useUploadUserProfileImageMutation();
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string>("");
 
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
@@ -22,10 +28,22 @@ export default function MyProfileComponent() {
       name: "",
       bio: "",
     },
-    onSubmit: (values) => {
-      // Make API call to update profile
-      // console.log('Updated values:', values);
-      updateUserProfile({ userProfile: values });
+    onSubmit: async (values) => {
+      let uploadedImageUrl = userData?.data?.profile;
+
+      if (selectedImage) {
+        // Upload the image first
+        const response = await uploadUserProfileImage({ image: selectedImage });
+        uploadedImageUrl = response.data.imageUrl; // Adjust based on API response
+      }
+
+      // Update user profile with the new image, name, and bio
+      await updateUserProfile({
+        userProfile: {
+          ...values,
+          profile: uploadedImageUrl,
+        },
+      });
     },
   });
 
@@ -35,8 +53,19 @@ export default function MyProfileComponent() {
         name: userData.data.name || "",
         bio: userData.data.bio || "",
       });
+      setPreviewImage(
+        `${process.env.NEXT_PUBLIC_IMAGE_API_URL}${userData.data.profile}`
+      );
     }
   }, [userData]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      setPreviewImage(URL.createObjectURL(file)); // Preview the selected image
+    }
+  };
 
   return (
     <div>
@@ -64,32 +93,37 @@ export default function MyProfileComponent() {
       <section>
         <div className="relative mt-[30px] bg-card_color_light dark:bg-card_color_dark rounded-3xl">
           {/* Particle Container */}
-          <div className="h-44 rounded-t-3xl overflow-hidden relative bg-black">
-            {/* <ParticlesComponent id="particles" /> */}
-          </div>
+          <div className="h-44 rounded-t-3xl overflow-hidden relative bg-black"></div>
           <div className="absolute top-24 left-1/2 -translate-x-1/2 flex flex-col items-center">
             {/* Profile Image Container */}
             <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-white group">
               <img
                 className="w-full h-full object-cover"
-                src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}${userData?.data?.profile}`}
+                src={previewImage || "/images/default-profile.jpg"}
                 alt="profile"
-                onError={(e) => (e.currentTarget.src = "/images/default-profile.jpg")}
               />
               {/* Edit Overlay */}
               <button className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full">
-                <div className="text-white font-medium flex gap-3 items-center">
-                  <FaEdit />
-                  <p>Edit</p>
-                </div>
+                <label className="cursor-pointer flex flex-col items-center justify-center gap-2 w-full h-full rounded-full">
+                  <div className="flex gap-3">
+                  <FaEdit className="text-white" />
+                  <span className="text-white">Edit</span>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                </label>
               </button>
+
             </div>
             <div className="text-center pt-3">
               <p>{userData?.data?.name}</p>
               <p>{userData?.data?.email}</p>
             </div>
           </div>
-
 
           <form
             onSubmit={formik.handleSubmit}
