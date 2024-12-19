@@ -88,7 +88,7 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
     }, 0); // Default to 0 if no issues found
 
     return (
-        <section className="px-4 md:px-8 lg:px-12" ref={contentRef}>
+        <section className="px-4 md:px-8 lg:px-12 border border-1 border-background_light_mode dark:border-ascend_color  rounded-[20px]" ref={contentRef}>
             {/* First Section of Page */}
             <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4">
 
@@ -115,7 +115,7 @@ export default function PageOverviewProjectDetail({ projectName }: OverviewProps
                     </ul>
                 </div>
             </div>
-            <div className="border-b border-primary_color mt-3 mb-5"></div>
+            <div className="border-b border-ascend_color mt-3 mb-5"></div>
 
             {/* Second Section of Page */}
             <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4">

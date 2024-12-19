@@ -79,7 +79,7 @@ export default function NoneUserScan() {
   };
 
   return (
-    <section className="h-full flex text-start flex-col justify-between">
+    <section className="h-full  flex text-start flex-col justify-between">
       <p className="text-center text-text_color_light dark:text-text_color_dark text-text_title_24 mb-5">
         See the Unseen, Secure the Unknown.
       </p>

@@ -13,9 +13,10 @@ export const replyApi = cyberApi.injectEndpoints({
                 method: "POST",
                 body: data ,
             }),
+            invalidatesTags: [{type:"Comment",id:"CommentList"}]
         }),
     }),
 }
 );
 
-export const { useReplyMutation} = replyApi;
+// export const { useReplyMutation} = replyApi;

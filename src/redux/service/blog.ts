@@ -9,6 +9,7 @@ export const blogApi = cyberApi.injectEndpoints({
         ({
             url: `/blogs/verified?page=${page}&size=${pageSize}`,
         }),
+        providesTags: [{ type: "Blog", id: "Blog" }],
       }),
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,6 +26,7 @@ export const blogApi = cyberApi.injectEndpoints({
             url: `/blogs/${uuid}`,
             method: "GET",
         }),
+      
     }),
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,6 +35,7 @@ export const blogApi = cyberApi.injectEndpoints({
             url: `/blogs/user/${uuid}?page=${page}&size=${size}`,
             method: "GET",
         }),
+        
      }),
 
 
@@ -42,6 +45,7 @@ export const blogApi = cyberApi.injectEndpoints({
             method: "POST",
             body: { title, description, topic, thumbnail },
         }),
+        invalidatesTags: [{ type: "Blog", id: "Blog" }],
     }),
 
     updateBlog: builder.mutation<any, { uuid: string, title: string, description: string, topic: string, thumbnail: string }>({
@@ -50,6 +54,7 @@ export const blogApi = cyberApi.injectEndpoints({
             method: "PUT",
             body: { title, description,thumbnail },
         }),
+        invalidatesTags: [{ type: "Blog", id: "Blog" }],
     }),
 
     getBlogByUuid: builder.query<any, { uuid: string }>({
@@ -59,8 +64,17 @@ export const blogApi = cyberApi.injectEndpoints({
         }),
     }),
 
+    deleteBlog: builder.mutation<any, { uuid: string }>({
+        query: ({ uuid }) => ({
+          url: `blogs/${uuid}`,
+          method: "DELETE",
+        }),
+  
+        invalidatesTags: [{ type: "Blog", id: "Blog" }],
+      }),
+
 
   }),
 });
 
-export const {  useGetAllBlogQuery, useLikeBlogMutation, useGetBlogDetailsQuery, useGetBlogByUserUuidQuery, useCreateBlogMutation, useUpdateBlogMutation, useGetBlogByUuidQuery } = blogApi;
+export const {  useGetAllBlogQuery, useLikeBlogMutation, useGetBlogDetailsQuery, useGetBlogByUserUuidQuery, useCreateBlogMutation, useUpdateBlogMutation, useGetBlogByUuidQuery , useDeleteBlogMutation} = blogApi;

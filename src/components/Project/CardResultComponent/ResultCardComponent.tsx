@@ -10,7 +10,7 @@ import {
 } from "@/types/ProjectType";
 export default function ResultCardComponent() {
   return (
-    <div>
+    <div className="mt-[60px]">
       {facetsData.facets.map((item: FacetItem, index: number) => {
         if (item.property === "Coverage") {
           return (
