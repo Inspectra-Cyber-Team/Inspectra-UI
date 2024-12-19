@@ -11,6 +11,7 @@ import StoreProvider from "./StoreProvider";
 import ImageBackground from "@/components/BackgroundImageHomepage/ImageBackground";
 import SessionWrapper from "@/app/SessionProvider";
 import { Metadata } from "next";
+import BannerComponent from "@/components/BannerComponent/BannerComponent";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600"],
@@ -30,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${poppins.className}  relative   overflow-y-auto scrollbar-hide   overflow-x-hidden bg-background_light_mode  dark:bg-background_dark_mode flex flex-col justify-between  `}
+        className={`${poppins.className}  relative   overflow-y-auto scrollbar  overflow-x-hidden bg-background_light_mode  dark:bg-background_dark_mode flex flex-col justify-between  `}
       >
         <SessionWrapper>
           <StoreProvider>
@@ -40,8 +41,7 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              {/* <BannerComponent /> */}
-
+              <BannerComponent />
               <NavbarComponent />
               <Suspense fallback={""}>
                 {children}

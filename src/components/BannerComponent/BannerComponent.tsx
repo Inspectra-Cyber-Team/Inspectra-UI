@@ -1,9 +1,30 @@
+"use client";
 import React from "react";
+import { usePathname } from "next/navigation";
 
 export default function BannerComponent() {
-  return (  
-    <div className="w-full h-[30px] bg-background_dark_mode dark:bg-card_color_dark flex justify-center items-center text-primary_color text-[12px]">
-      <p>Announcement : We have updated our project! Check it out !</p>
-    </div>
+  const pathname = usePathname(); // Get the current path.
+
+  const isRender =
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/forgetpassword" ||
+    pathname === "/newpassword" ||
+    pathname === "/verify" ||
+    pathname === "/change-password" ||
+    pathname === "/forget-password";
+  return (
+    <>
+      {!isRender && (
+        <div className=" h-[30px] bg-background_dark_mode dark:bg-card_color_dark flex justify-center items-center text-primary_color text-[12px]">
+          <img src="/images/Announcement.svg" className="h-5 w-5 mx-2"></img>
+          <p>Announcement : We have updated our project! Check it out !</p>
+          <img
+            src="/images/Announcement.svg"
+            className="h-5 w-5 mx-2 scale-x-[-1]"
+          ></img>
+        </div>
+      )}
+    </>
   );
 }
