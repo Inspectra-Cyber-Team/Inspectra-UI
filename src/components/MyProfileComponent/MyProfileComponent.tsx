@@ -8,6 +8,7 @@ import {
   useUpdateUserProfileMutation,
   useUploadUserProfileImageMutation,
 } from "@/redux/service/user";
+import { useUploadSingleFileMutation } from "@/redux/service/fileupload";
 import { FaEdit } from "react-icons/fa";
 
 export default function MyProfileComponent() {
@@ -16,6 +17,7 @@ export default function MyProfileComponent() {
   const { data: userData } = useGetUserDetailQuery({ uuid: userUUID });
   const [updateUserProfile] = useUpdateUserProfileMutation();
   const [uploadUserProfileImage] = useUploadUserProfileImageMutation();
+  const [uploadFile] = useUploadSingleFileMutation();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>("");
 
@@ -23,6 +25,20 @@ export default function MyProfileComponent() {
     setUserUUID(localStorage.getItem("userUUID") || "");
   }, []);
 
+  const handleFileUpload = async (files: File[]) => {
+    const formData = new FormData();
+    files.forEach((file: any) => {
+      formData.append("files", file);
+    });
+    console.log(formData)
+    // try {
+    //   const response = await uploadFile({ file: formData }).unwrap();
+    //   return response.data; // Return file URLs
+    // } catch (error) {
+    //   console.error("File Upload Error:", error);
+    //   return [];
+    // }
+  };
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -30,11 +46,9 @@ export default function MyProfileComponent() {
     },
     onSubmit: async (values) => {
       let uploadedImageUrl = userData?.data?.profile;
-
       if (selectedImage) {
-        // Upload the image first
-        const response = await uploadUserProfileImage({ image: selectedImage });
-        uploadedImageUrl = response.data.imageUrl; // Adjust based on API response
+        //Upload the image first
+        handleFileUpload([selectedImage]);
       }
 
       // Update user profile with the new image, name, and bio
@@ -106,8 +120,8 @@ export default function MyProfileComponent() {
               <button className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full">
                 <label className="cursor-pointer flex flex-col items-center justify-center gap-2 w-full h-full rounded-full">
                   <div className="flex gap-3">
-                  <FaEdit className="text-white" />
-                  <span className="text-white">Edit</span>
+                    <FaEdit className="text-white" />
+                    <span className="text-white">Edit</span>
                   </div>
                   <input
                     type="file"
@@ -117,7 +131,6 @@ export default function MyProfileComponent() {
                   />
                 </label>
               </button>
-
             </div>
             <div className="text-center pt-3">
               <p>{userData?.data?.name}</p>

@@ -16,7 +16,7 @@ export default function BannerComponent() {
   return (
     <>
       {!isRender && (
-        <div className=" h-[30px] bg-background_dark_mode dark:bg-card_color_dark flex justify-center items-center text-primary_color text-[12px]">
+        <div className="w-full mx-auto z-40 backdrop-blur-2xl sticky top-0 h-[30px] bg-background_dark_mode dark:bg-card_color_dark flex justify-center items-center text-primary_color text-[12px]">
           <img src="/images/Announcement.svg" className="h-5 w-5 mx-2"></img>
           <p>Announcement : We have updated our project! Check it out !</p>
           <img
