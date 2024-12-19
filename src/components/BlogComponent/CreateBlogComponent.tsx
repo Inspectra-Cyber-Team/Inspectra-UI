@@ -50,6 +50,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const CreateBlogComponent = () => {
+  
   const router = useRouter();
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
