@@ -10,7 +10,14 @@ export const fileApi = cyberApi.injectEndpoints({
         body: file,
       }),
     }),
+    uploadSingleFile: builder.mutation<any, { file: object }>({
+      query: ({ file }) => ({
+        url: `files`,
+        method: "POST",
+        body: file,
+      }),
+    }),
   }),
 });
 
-export const { useUploadFileMutation } = fileApi;
+export const { useUploadFileMutation , useUploadSingleFileMutation} = fileApi;

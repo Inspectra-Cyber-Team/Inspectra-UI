@@ -14,10 +14,17 @@ export const benefitData = [
       "Provides actionable insights with PDF export for easy documentation and sharing.",
   },
   {
-    imageLight: "/images/Unlimited Access.png",
-    imageDark: "/images/benefit-2.png",
-    title: "Unlimited Access",
+    imageLight: "/images/api-ntegrate-light.png",
+    imageDark: "/images/api-ntegrate-dark.png",
+    title: "API Integration",
     description:
-      "Quick setup with Git URL import, offering unlimited scans for registered users.",
+      "Enable user to integrate Inspectra api like scanning, security standard or enhancing CI/CD pipelines.",
+  },
+  {
+    imageLight: "/images/blog-com-light.png",
+    imageDark: "/images/blog-com-dark.png",
+    title: "Blog Community",
+    description:
+      "Enabling users to share experiences, solutions, and ideas while providing latest articles on cybersecurity.",
   },
 ];

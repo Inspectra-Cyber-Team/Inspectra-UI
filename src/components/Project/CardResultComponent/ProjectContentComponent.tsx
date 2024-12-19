@@ -4,17 +4,21 @@ import QualityCardComponent from "./QualityGateCardComponent";
 import ResultCardComponent from "./ResultCardComponent";
 import ProjectCardComponent from "../CardProjectComponent/ProjectCardComponent";
 import NoneUserScan from "@/components/NoneUserScanProject/NoneUserScan";
+import NoneUserScanSkeletion from "@/components/Skeleton/NoneUserScanSkeletion";
 
 export default function ProjectContent() {
   const [userUUID, setUserUUID] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
+    setIsLoading(false);
   });
   return (
     <section>
       {userUUID === "" ? (
-        <div className=" lg:w-[70%] bg-card_color_light dark:bg-card_color_dark p-10 rounded-[20px] mb-[60px] mx-auto">
-          <NoneUserScan />
+        <div className=" lg:w-full   mb-[60px]">
+          {isLoading ? <NoneUserScanSkeletion /> : <NoneUserScan />}
         </div>
       ) : (
         <div className="w-full h-full flex justify-between mb-[60px] md:my-[60px]">

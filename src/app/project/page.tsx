@@ -1,5 +1,5 @@
 import ProjectContent from "@/components/Project/CardResultComponent/ProjectContentComponent";
-import CreateProjectComponent from "@/components/Project/CreateProjectComponent/CreateProjectComponent";
+import ProjectComponent from "@/components/Project/ProjectComponent";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,17 +10,7 @@ export const metadata: Metadata = {
 export default function page() {
   return (
     <main className="w-[90%] mx-auto">
-      <section className="w-full flex justify-between items-center mt-[60px] mb-5 md:my-[60px]">
-        <p className="text-text_title_20 md:text-text_title_24 text-text_color_light dark:text-text_color_dark">
-          Scan Project
-        </p>
-        <div className="flex w-auto gap-3 justify-between">
-          <div className="p-2 rounded-2xl w-[50px] items-center text-text_color_light flex justify-center bg-primary_color">
-            All
-          </div>
-          <CreateProjectComponent />
-        </div>
-      </section>
+      <ProjectComponent />
       <ProjectContent />
     </main>
   );
