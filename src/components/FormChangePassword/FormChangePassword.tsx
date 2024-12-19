@@ -104,7 +104,7 @@ export default function FormChangePassowrd() {
       <section className=" hidden  h-full xl:flex flex-col items-center justify-between w-[60%] bg-primary_color py-[40px] ">
         <div className="w-full px-[100px]">
           <p className="text-[60px] text-text_color_light font-semibold leading-[1.2]">
-            Setting new <br />
+            Change new <br />
             <span className="font-normal">Password</span>
           </p>
           <p className="text-text_body_16 text-ascend_color leading-[1.4] mt-2">
@@ -146,7 +146,7 @@ export default function FormChangePassowrd() {
           </Link>
         </div>
         <p className="text-text_header_34 font-semibold text-text_color_light mt-10">
-          New Password
+          Change Password
         </p>
         <p className="text-text_body_16 mt-5 text-text_color_desc_light">
           Set the new password for your account so you can login and access all
