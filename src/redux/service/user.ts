@@ -20,6 +20,18 @@ export const userAPI = cyberApi.injectEndpoints({
       }),
     }),
 
+    uploadUserProfileImage: builder.mutation<any, { image: File }>({
+      query: ({ image }) => {
+        const formData = new FormData();
+        formData.append("image", image);
+        return {
+          url: `/users/profile/image`,
+          method: "PUT",
+          body: formData,
+        };
+      },
+    }),
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getUserHistoryBlog: builder.query<any, { uuid: string }>({
       query: ({ uuid }) => ({
@@ -30,4 +42,4 @@ export const userAPI = cyberApi.injectEndpoints({
   }),
 });
 
-export const { useGetUserDetailQuery, useUpdateUserProfileMutation, useGetUserHistoryBlogQuery } = userAPI;
+export const { useGetUserDetailQuery, useUpdateUserProfileMutation, useGetUserHistoryBlogQuery, useUploadUserProfileImageMutation } = userAPI;
