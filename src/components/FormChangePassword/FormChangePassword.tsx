@@ -6,42 +6,94 @@ import { RxCross2 } from "react-icons/rx";
 import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
 import * as Yup from "yup";
 import styles from "@/components/FromLoginComponent/styles.module.css";
+import { useToast } from "../hooks/use-toast";
+import { useChnagePasswordMutation } from "@/redux/service/auth";
+import { useRouter } from "next/navigation";
 
 export default function FormChangePassowrd() {
+
   const [isLoading, setIsLoading] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
+
   const [showconfirmPassword, setShowconfirmPassword] = useState(false);
+
+  const [showNewPassword,setShowNewPassword] = useState(false);
+
   const validationSchema = Yup.object({
-    password: Yup.string()
+    oldPassword: Yup.string().required("Old Password is Required"),
+    newPassword: Yup.string()
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
         "Password should be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number"
       )
-      .required("Password is Required"),
+      .required("New password is required"),
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password")], "Password must match")
+      .oneOf([Yup.ref("newPassword")], "Password must match")
       .required("Confirm Password is Required"),
   });
 
   type InitValue = {
-    password: string;
+    oldPassword: string;
+    newPassword: string;
     confirmPassword: string;
   };
 
   const initialValues: InitValue = {
-    password: "",
+    oldPassword: "",
+    newPassword: "",
     confirmPassword: "",
   };
 
-  const handleSubmit = (value: InitValue) => {
-    console.log(value);
-    setIsLoading(true);
-    // router.push("/verify");
+  const [changePassword] = useChnagePasswordMutation();
+
+  const {toast} = useToast();
+
+  const router = useRouter();
+
+  const handleChnagePassword = async (values: InitValue) => {
+    
+    try {
+ 
+      setIsLoading(true)
+
+      const response = await changePassword({ data:values });
+ 
+      if (response.data) {
+        toast({
+          description: "Password changed successfully!",
+          variant: "success",
+        })
+         
+         router.push('/')
+      }
+      else {
+        toast({
+          description: "Failed to change password. Please try again.",
+          variant: "error",
+        })
+        setIsLoading(false)
+       
+      }
+    } catch  {
+
+      toast({
+        description: "Failed to change password. Please try again.",
+        variant: "error",
+      });
+    } finally {
+      // end sure stsate is reset after work
+      setIsLoading(false)
+    }
   };
+
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
     // Toggle password visibility
   };
+  const handleShowNewPassword = () => {
+    setShowNewPassword(!showNewPassword)
+  }
   const handleShowconfirmPassword = () => {
     setShowconfirmPassword(!showconfirmPassword);
     // Toggle password visibility
@@ -105,27 +157,29 @@ export default function FormChangePassowrd() {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={handleSubmit}
+          onSubmit={async (values)=>{
+            await handleChnagePassword(values)
+          }}
         >
           {({ errors, touched }) => (
             <Form className="mt-10">
-              {/* Password */}
+              {/* old Password */}
               <div className="relative mb-4">
                 <label
-                  htmlFor="password"
+                  htmlFor="oldPassword"
                   className="text-[14px] text-text_color_light block"
                 >
-                  Password
+                  Old Password
                 </label>
                 <div className="relative">
                   <Field
                     type={showPassword ? "text" : "password"}
-                    id="password"
-                    name="password"
-                    placeholder="Enter password"
+                    id="oldPassword"
+                    name="oldPassword"
+                    placeholder="Enter old password"
                     className={`
                    mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light p-3 focus:outline-none focus:right-2 focus:border-primary_color  ${
-                     touched.password && errors.password
+                     touched.oldPassword && errors.oldPassword
                        ? "border-custom_red"
                        : ""
                    }`}
@@ -143,25 +197,73 @@ export default function FormChangePassowrd() {
                   )}
                 </div>
 
-                {errors.password && touched.password && (
+                {errors.oldPassword && touched.oldPassword && (
                   <div className="relative items-center justify-center flex top-[22px]	">
                     <div
                       className={`absolute z-10 w-auto  ${styles.popoverContainer} ${styles.popoverAnimation}`}
                     >
                       <p className={`text-text_body_16 ${styles.popoverText}`}>
-                        {errors.password}
+                        {errors.newPassword}
                       </p>
                     </div>
                   </div>
                 )}
               </div>
+
+              {/* new Password */}
+              <div className="relative mb-4">
+                <label
+                  htmlFor="newPassword"
+                  className="text-[14px] text-text_color_light block"
+                >
+                  New Password
+                </label>
+                <div className="relative">
+                  <Field
+                    type={showNewPassword ? "text" : "password"}
+                    id="newPassword"
+                    name="newPassword"
+                    placeholder="Enter new password"
+                    className={`
+                   mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light p-3 focus:outline-none focus:right-2 focus:border-primary_color  ${
+                     touched.newPassword && errors.newPassword
+                       ? "border-custom_red"
+                       : ""
+                   }`}
+                  />
+                  {!showPassword ? (
+                    <IoEyeOffSharp
+                      onClick={() => handleShowNewPassword()}
+                      className="absolute text-text_color_light right-2 top-5 cursor-pointer"
+                    />
+                  ) : (
+                    <IoEyeSharp
+                      onClick={() => handleShowNewPassword()}
+                      className="absolute  text-text_color_light right-2 top-5 cursor-pointer"
+                    />
+                  )}
+                </div>
+
+                {errors.newPassword && touched.newPassword && (
+                  <div className="relative items-center justify-center flex top-[22px]	">
+                    <div
+                      className={`absolute z-10 w-auto  ${styles.popoverContainer} ${styles.popoverAnimation}`}
+                    >
+                      <p className={`text-text_body_16 ${styles.popoverText}`}>
+                        {errors.newPassword}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Comfrim Password */}
               <div className="relative mb-4">
                 <label
-                  htmlFor="password"
+                  htmlFor="confirmPassword"
                   className="text-[14px] text-text_color_light block"
                 >
-                  ConfirmPassword
+                  Confirm Password
                 </label>
                 <div className="relative">
                   <Field

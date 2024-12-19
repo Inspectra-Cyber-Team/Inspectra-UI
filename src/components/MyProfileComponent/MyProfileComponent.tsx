@@ -6,9 +6,9 @@ import React, { useEffect, useState } from "react";
 import {
   useGetUserDetailQuery,
   useUpdateUserProfileMutation,
-  useUploadUserProfileImageMutation,
+  // useUploadUserProfileImageMutation,
 } from "@/redux/service/user";
-import { useUploadSingleFileMutation } from "@/redux/service/fileupload";
+// import { useUploadSingleFileMutation } from "@/redux/service/fileupload";
 import { FaEdit } from "react-icons/fa";
 
 export default function MyProfileComponent() {
@@ -16,8 +16,8 @@ export default function MyProfileComponent() {
   const [userUUID, setUserUUID] = useState("");
   const { data: userData } = useGetUserDetailQuery({ uuid: userUUID });
   const [updateUserProfile] = useUpdateUserProfileMutation();
-  const [uploadUserProfileImage] = useUploadUserProfileImageMutation();
-  const [uploadFile] = useUploadSingleFileMutation();
+  // const [uploadUserProfileImage] = useUploadUserProfileImageMutation();
+  // const [uploadFile] = useUploadSingleFileMutation();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>("");
 
@@ -45,7 +45,7 @@ export default function MyProfileComponent() {
       bio: "",
     },
     onSubmit: async (values) => {
-      let uploadedImageUrl = userData?.data?.profile;
+      const uploadedImageUrl = userData?.data?.profile;
       if (selectedImage) {
         //Upload the image first
         handleFileUpload([selectedImage]);
