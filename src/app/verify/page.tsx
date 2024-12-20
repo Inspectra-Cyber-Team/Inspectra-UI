@@ -1,6 +1,25 @@
 import VerifyComponent from "@/components/VerifyComponent/VerifyComponent";
 import Link from "next/link";
 import { RxCross2 } from "react-icons/rx";
+import { Metadata } from "next";
+
+export const metadata: Metadata ={
+  title: 'Verify - Inspectra',
+  description:
+    'Verify up your email in the case of forgetting your password and recieve OTP to setup your new password',
+  keywords:
+    'Inspectra verify, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+  authors: { name: 'Inspectra Team' },
+  publisher: 'Inspectra',
+  openGraph: {
+    title: 'Verify - Inspectra',
+    description:
+      'Verify up your email in the case of forgetting your password and recieve OTP to setup your new password',
+    siteName: 'Inspectra',
+    locale: 'en_KH',
+    type: 'website',
+  },
+}
 
 export default function page() {
   return (

@@ -1,14 +1,26 @@
 
 import React from 'react';
-import { Metadata } from 'next';
 import TeamComponent from '@/components/AboutUsComponent/TeamComponent';
 import MentorComponent from '@/components/AboutUsComponent/MentorComponent';
 import FeedbackComponent from '@/components/Feedback/FeedbackComponent';
+import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "About Us - Inspectra",
+  title: 'About Us - Inspectra',
   description:
-    "Learn more about Inspectra, a white-box testing platform designed to review source code and identify security weaknesses. Discover our mission, values, and commitment to secure development.",
+    'Inspectra mission and vision with the team and mentor. Inspectra empowers you to uncover hidden risks with precision. Through deep, intelligent scanning and proactive insights, we help you secure your code and protect against unseen vulnerabilities—keeping your systems resilient and your data safe based on Sonarqube Architecture',
+  keywords:
+    'Inspectra About Us, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+  authors: { name: 'Inspectra Team' },
+  publisher: 'Inspectra',
+  openGraph: {
+    title: 'About Us - Inspectra',
+    description:
+      'Check up your scanning history of all your previous scans on Inspectra, a leading platform from Cambodia that strengthens secure development with advanced source code analysis tools.',
+    siteName: 'Inspectra',
+    locale: 'en_KH',
+    type: 'website',
+  },
 };
 
 export default function page() {
