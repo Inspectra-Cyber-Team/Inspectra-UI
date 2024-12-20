@@ -8,23 +8,8 @@ import { GoHomeFill } from "react-icons/go";
 import Image from "next/image";
 import imagePlaceholder from "../../../public/placeholder/placeholder.png";
 import { useGetAllDocumentCategoriesQuery } from "@/redux/service/document";
-
-type Document = {
-  uuid: string;
-  documentCategoryName: string;
-  title: string;
-  description: string;
-  createdAt: string;
-  documentImages: string[];
-};
-
-type DocumentCategory = {
-  uuid: string;
-  name: string;
-  description: string;
-  documents: Document[];
-};
-
+import type { Document, DocumentCategory } from "@/types/DocumentType";
+// import { Document, DocumentCategory } from "@/types/DocumentType";
 
 export default function Document() {
 

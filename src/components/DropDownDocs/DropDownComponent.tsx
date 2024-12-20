@@ -7,31 +7,7 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useGetAllDocumentCategoriesQuery } from "@/redux/service/document";
-
-type DropdownMenuProps = {
-    categories?: DocumentCategory[];
-    searchTerm?: string;
-    onMenuClick: (categoryData: DocumentCategory, documentData?: Document) => void;
-};
-
-
-// Define types for Document
-type Document = {
-    uuid: string;
-    documentCategoryName: string;
-    title: string;
-    description: string;
-    createdAt: string;
-    documentImages: string[];
-}
-
-//Define type for Document Category
-type DocumentCategory = {
-    uuid: string;
-    name: string;
-    description: string;
-    documents: Document[];
-}
+import { Document, DocumentCategory, DropdownMenuProps } from "@/types/DocumentType";
 
 export default function DropdownMenu({categories, searchTerm = "" ,onMenuClick, }: DropdownMenuProps) {
     const { data: documentData } = useGetAllDocumentCategoriesQuery({});
@@ -46,11 +22,6 @@ export default function DropdownMenu({categories, searchTerm = "" ,onMenuClick, 
             doc.description.toLowerCase().includes(searchTerm.toLowerCase())
         ),
       })).filter((category: DocumentCategory) => category.documents.length > 0);
-    
-      console.log("Categories:", categories);
-      console.log("Search Term:", searchTerm);
-      console.log("Filtered Categories:", filteredCategories);
-
     return (
         <Accordion type="single" collapsible>
             {
@@ -79,7 +50,6 @@ export default function DropdownMenu({categories, searchTerm = "" ,onMenuClick, 
                 <div className="text-center text-text_color_desc_light">No documents found</div>
             )
             }
-            
         </Accordion>
     )
 }
