@@ -7,6 +7,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { GoHomeFill } from "react-icons/go";
 import Image from "next/image";
 import imagePlaceholder from "../../../public/placeholder/placeholder.png";
+import { useGetAllDocumentCategoriesQuery } from "@/redux/service/document";
 
 type Document = {
   uuid: string;
@@ -24,14 +25,17 @@ type DocumentCategory = {
   documents: Document[];
 };
 
+
 export default function Document() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
   const [selectedCategory, setSelectedCategory] = useState<DocumentCategory | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
   
+  const [searchTerm, setSearchTerm] = useState("");
+  const { data: apiData } = useGetAllDocumentCategoriesQuery({});
+  const categories = apiData?.data || [];
+
   // Dynamically calculate breadcrumb
   const breadcrumbDisplay = [
     <GoHomeFill key="home" />,
@@ -79,6 +83,8 @@ export default function Document() {
               <input
                 type="text"
                 placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full p-2.5 pl-10 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <span className="absolute inset-y-0 left-4 flex items-center text-gray-400">
@@ -86,15 +92,14 @@ export default function Document() {
               </span>
             </div>
           </div>
-          <DropdownMenu
-            onMenuClick={(category, document) => {
-              handleMenuClick(category, document); // Update content and breadcrumb
 
-              // Close sidebar only if a document is selected
-              if (document) {
-                setIsSidebarOpen(false);
-              }
-            }} searchTerm={""} />
+         
+          <DropdownMenu
+            categories={categories} // Pass filtered categories
+            searchTerm={searchTerm}
+            onMenuClick={handleMenuClick}
+          />
+       
         </div>
       </section>
 
@@ -116,7 +121,14 @@ export default function Document() {
             </span>
           </div>
         </div>
-        <DropdownMenu searchTerm={searchTerm} onMenuClick={handleMenuClick} />
+
+       
+          <DropdownMenu
+            categories={categories} // Pass filtered categories
+            searchTerm={searchTerm}
+            onMenuClick={handleMenuClick}
+          />
+        
       </section>
 
       {/* Main Content */}
@@ -161,7 +173,13 @@ export default function Document() {
                       onError={(e) => (e.currentTarget.src = `${imagePlaceholder}`)}
                     />
                   ))
-                ) : null}
+                ) : <Image
+                src={imagePlaceholder}
+                alt="Placeholder"
+                width={100}
+                height={100}
+                className="w-full h-auto rounded shadow"
+              />}
               </div>
             </div>
           ) : selectedCategory ? (
