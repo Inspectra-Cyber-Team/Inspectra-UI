@@ -12,12 +12,13 @@ import React, { useEffect, useState } from "react";
 import { FaGithub, FaGitlab } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { toast } from "../hooks/use-toast";
+import { useTheme } from "next-themes";
 export default function NoneUserScan() {
+  const { theme } = useTheme();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [countScan, setCountScan] = useState(0);
-  const [projectScanNonUser] =
-    useCreateProjectScanNonUserMutation();
+  const [projectScanNonUser] = useCreateProjectScanNonUserMutation();
 
   const handleSubmit = () => {
     setIsLoading(true);
@@ -104,7 +105,11 @@ export default function NoneUserScan() {
     <section className="flex mx-auto justify-center lg:justify-between xl:justify-around">
       {/* image */}
       <div className="h-full hidden lg:block  justify-center items-center">
-        <img src="/images/scan.png" alt="scan image"></img>
+        {theme == "dark" ? (
+          <img src="/images/scan-anonymouse-user.png" className="h-[400px]" alt="scan image"></img>
+        ) : (
+          <img src="/images/scan.png" alt="scan image"></img>
+        )}
       </div>
       {/* scaning project */}
       <div className="h-full   lg:w-[50%] p-10 rounded-[20px] bg-card_color_light dark:bg-card_color_dark  flex text-start flex-col justify-between">

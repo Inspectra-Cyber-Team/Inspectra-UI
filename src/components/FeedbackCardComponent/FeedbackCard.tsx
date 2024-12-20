@@ -7,9 +7,8 @@ import { convertToDayMonthYear } from "@/lib/utils";
 export default function FeedbackCard() {
 
   const { data } = useGetAllUserFeedbackQuery({});
-  const result = data?.content.slice(0, 3);
+  const result = data?.data.slice(0, 3);
 
-  console.log('this is result',result);
   return (
     <div className="grid gap-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-items-center xl:justify-items-between my-10">
       {result?.map((feedback: feedbackType, index: number) => (

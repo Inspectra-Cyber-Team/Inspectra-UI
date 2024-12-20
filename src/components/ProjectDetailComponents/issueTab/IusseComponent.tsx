@@ -17,6 +17,7 @@ import { IoIosMore } from "react-icons/io";
 
 import Prism from "prismjs";
 
+import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 import { useRouter } from "next/navigation";
 import {
   Accordion,
@@ -27,7 +28,6 @@ import {
 import HowToFix from "./HowToFix";
 import WhereIssue from "./WhereIssue";
 import WhyIssue from "./WhyIssue";
-import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 
 export default function IusseComponent({ ...props }) {
   const router = useRouter();
@@ -75,7 +75,6 @@ export default function IusseComponent({ ...props }) {
   const issueSideBarResult = issueData?.data.facets;
   const resultIssueDetail = issueDetail?.data;
 
-  console.log(ruleIssue);
 
   useEffect(() => setSize(issueData?.data?.total), [issueData]);
   useEffect(() => {
