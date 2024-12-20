@@ -10,7 +10,7 @@ export const fileApi = cyberApi.injectEndpoints({
         body: file,
       }),
     }),
-    uploadSingleFile: builder.mutation<any, { file: object }>({
+    uploadSingleFile: builder.mutation<any, { file: FormData }>({
       query: ({ file }) => ({
         url: `files`,
         method: "POST",

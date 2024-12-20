@@ -16,7 +16,7 @@ export default function NoneUserScan() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [countScan, setCountScan] = useState(0);
-  const [projectScanNonUser, { isSuccess, isError }] =
+  const [projectScanNonUser] =
     useCreateProjectScanNonUserMutation();
 
   const handleSubmit = () => {
