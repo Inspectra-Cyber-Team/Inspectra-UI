@@ -17,11 +17,11 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import ToggleTheme from "../ToggleTheme/ToggleTheme";
+import { ModeToggle } from "../ToggleTheme/ToggleTheme";
 
 export default function NavbarComponent() {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); 
   const [userUUID, setUserUUID] = useState("");
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,7 +33,9 @@ export default function NavbarComponent() {
   const handleMenuClose = () => {
     setIsMenuOpen(false);
   };
+
   const { data: userData } = useGetUserDetailQuery({ uuid: userUUID });
+
   const pathname = usePathname();
   const handleClick = () => {
     if (setIsOpen) {
@@ -105,36 +107,30 @@ export default function NavbarComponent() {
             </div>
             {/* group icon and sign in */}
             <div className="flex justify-center h-full items-center">
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
                 {/* Icon to change theme */}
-
-                <ToggleTheme />
-
+                <ModeToggle />
                 {/* Sign in button */}
                 {userUUID === "" ? (
                   <Link
                     href="/login"
-                    className="text-text_color_dark bg-background_dark_mode dark:bg-background_light_mode dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] text-text_body_16  px-4 lg:px-5 py-2 lg:py-2.5 hidden lg:block"
+                    className="text-text_color_dark bg-background_dark_mode dark:bg-background_light_mode dark:text-text_color_light rounded-tl-[14px] rounded-br-[14px] text-text_body_16 px-4 lg:px-4 py-2 lg:py-1.5 hidden lg:block"
                   >
                     Sign in
                   </Link>
                 ) : (
-                  <Menubar className="hidden md:block md:w-full md:h-full">
+                  <Menubar >
                     <MenubarMenu>
-                      <MenubarTrigger onClick={handleMenuToggle}>
-                        <div className="w-[40px] h-[40px] overflow-hidden rounded-full">
+                      <MenubarTrigger onClick={handleMenuToggle} className="hidden lg:block">
                           <img
-                            src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}${userData?.data?.profile}`}
+                            src={userData?.data?.profile}
                             alt="Profile"
-                            width={50}
-                            height={50}
-                            className="object-cover w-full h-full cursor-pointer"
+                            className="object-cover cursor-pointer rounded-full w-12 h-12"
                             onError={(e) =>
                               (e.currentTarget.src =
                                 "/images/default-profile.jpg")
                             }
                           />
-                        </div>
                       </MenubarTrigger>
                       {isMenuOpen && (
                         <MenubarContent className="absolute -left-[295px] w-[350px] p-5 rounded-[10px] border-none bg-card_color_light dark:bg-background_dark_mode">
@@ -144,6 +140,7 @@ export default function NavbarComponent() {
                           <p className="text-text_color_desc_light text-[14px] dark:text-text_color_dark">
                             {userData?.data?.email}
                           </p>
+
                           <hr className="my-5" />
                           {/* Profile */}
                           <button
@@ -229,7 +226,7 @@ export default function NavbarComponent() {
                   </Menubar>
                 )}
                 {/* menu icon */}
-                <div className=" text-[25px] block lg:hidden ">
+                <div className="text-[25px] block lg:hidden ">
                   {userUUID === "" ? (
                     <Sheet>
                       <SheetTrigger asChild>
@@ -260,11 +257,11 @@ export default function NavbarComponent() {
                         <IoMenu />
                       </SheetTrigger>
                       <SheetContent className="bg-background_light_mode dark:bg-background_dark_mode border-hidden">
-                        <ul className="  text-text_color_light dark:text-text_color_dark  text-text_body_16  justify-between space-y-4 flex flex-col">
+                        <ul className=" text-text_color_light dark:text-text_color_dark  text-text_body_16   space-y-4 flex flex-col">
                           <div className="flex">
-                            <div className=" w-[40px] h-[40px] overflow-hidden rounded-full">
+                            <div className=" w-12 h-12 overflow-hidden rounded-full">
                               <img
-                                src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}${userData?.data?.profile}`}
+                                src={userData?.data?.profile}
                                 alt="Profile"
                                 width={50}
                                 height={50}
