@@ -1,6 +1,10 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatTimestamp, timeSince } from "@/lib/utils";
+import {
+  convertApiResponseToHtml,
+  formatTimestamp,
+  timeSince,
+} from "@/lib/utils";
 import {
   useGetAllIssueQuery,
   useGetIssueDetailQuery,
@@ -23,6 +27,7 @@ import {
 import HowToFix from "./HowToFix";
 import WhereIssue from "./WhereIssue";
 import WhyIssue from "./WhyIssue";
+import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 
 export default function IusseComponent({ ...props }) {
   const router = useRouter();
@@ -40,7 +45,7 @@ export default function IusseComponent({ ...props }) {
   const [activeContent, setActiveContent] = useState(false);
   // store project key
   const [projectKey, setProjectKey] = useState("");
- 
+
   // store rule key
   const [ruleKey, setRuleKey] = useState("");
   const [size, setSize] = useState();
@@ -63,13 +68,14 @@ export default function IusseComponent({ ...props }) {
   const { data: issueDetail } = useGetIssueDetailQuery({
     projectKey: projectKey,
   });
+  const { data: ruleIssue } = useGetRulesByRuleNameQuery({ ruleName: ruleKey });
 
   // fetch rule detail for issue tab
   const issueCardResult = issueData?.data?.issues;
   const issueSideBarResult = issueData?.data.facets;
   const resultIssueDetail = issueDetail?.data;
 
-
+  console.log(ruleIssue);
 
   useEffect(() => setSize(issueData?.data?.total), [issueData]);
   useEffect(() => {
@@ -151,13 +157,26 @@ export default function IusseComponent({ ...props }) {
                 >
                   Why is this an issue?
                 </TabsTrigger>
-                <p className="mx-2">|</p>
-                <TabsTrigger
-                  value="How Can I fix it?"
-                  className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
-                >
-                  How Can I fix it?
-                </TabsTrigger>
+
+                {ruleIssue?.some(
+                  (rule: any) => rule?.descriptionSections.length === 3
+                ) && (
+                  <>
+                    <p className="mx-2">|</p>
+                    {ruleIssue.map((rule: any, index: number) =>
+                      rule?.descriptionSections.length === 3 ? (
+                        <div className="flex" key={index}>
+                          <TabsTrigger
+                            value="How Can I fix it?"
+                            className="data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent data-[state=active]:rounded-none data-[state=active]:border-b-2 data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+                          >
+                            How Can I fix it?
+                          </TabsTrigger>
+                        </div>
+                      ) : null
+                    )}
+                  </>
+                )}
                 <p className="mx-2">|</p>
                 <TabsTrigger
                   value="Activity"
@@ -203,7 +222,22 @@ export default function IusseComponent({ ...props }) {
               <TabsContent value="More info">
                 <div className="w-full  text-text_color_light dark:text-text_color_dark my-5">
                   <div>
-                    <HowToFix ruleKey={ruleKey} />
+                    {ruleIssue?.map((rule: any) =>
+                      rule?.descriptionSections?.map(
+                        (ruleDes: any, descIndex: number) => {
+                          return ruleDes?.key === "resources" ? (
+                            <p
+                              key={descIndex} // Added a key prop for list item elements
+                              dangerouslySetInnerHTML={{
+                                __html: convertApiResponseToHtml(
+                                  ruleDes?.content
+                                ), // Insert HTML content
+                              }}
+                            ></p>
+                          ) : null; // Return null for non-matching cases
+                        }
+                      )
+                    )}
                   </div>
                 </div>
               </TabsContent>
