@@ -121,8 +121,8 @@ export default function BlogUserCardComponent({
                   <h2 className="line-clamp-1 text-lg font-semibold text-text_color_light dark:text-text_color_dark mb-2">
                     {blog?.title}
                   </h2>
-                  <p className="line-clamp-2 text-text_color_desc_light dark:text-text_color_desc_dark text-sm mb-4">
-                    {blog?.description}
+                  <p className="line-clamp-1 text-text_color_desc_light dark:text-text_color_desc_dark text-sm mb-4"  dangerouslySetInnerHTML={{ __html: blog?.description || "" }}>
+                    {/* {blog?.description} */}
                   </p>
                 </div>
                 <div className="flex justify-between items-center">

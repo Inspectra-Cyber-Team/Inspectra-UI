@@ -13,14 +13,13 @@ import ParticlesComponent from "../Particle/ParticlesComponent";
 import { useToast } from "../hooks/use-toast";
 
 type FormValues = {
-  profile: string; 
+  profile: string;
   name: string;
   bio: string;
 };
 
 export default function MyProfileComponent() {
-
-  const {toast} = useToast();
+  const { toast } = useToast();
 
   const router = useRouter();
 
@@ -47,7 +46,6 @@ export default function MyProfileComponent() {
         variant: "success",
       });
     } catch {
-    
       toast({
         description: "Failed to update profile. Please try again.",
         variant: "error",
@@ -62,14 +60,12 @@ export default function MyProfileComponent() {
       profile: "",
     },
     onSubmit: async (values) => {
-     
       const updateValue = {
         ...values,
-        profile: previewImage || values?.profile
-      }
+        profile: previewImage || values?.profile,
+      };
 
       await handleUpdateProfile(updateValue);
-   
     },
   });
 
@@ -80,39 +76,29 @@ export default function MyProfileComponent() {
         bio: userData.data.bio || "",
         profile: userData.data.profile || "",
       });
-      
     }
   }, [userData]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-
     const file = e.target.files ? e.target.files[0] : null;
 
-    if(file)
-    {
+    if (file) {
       const fullUrl = await handleFileUpload(file);
-      
+
       if (fullUrl) {
-
         setPreviewImage(fullUrl);
-
       }
-    
     }
-   
   };
 
   const handleFileUpload = async (file: any) => {
-
     const formData = new FormData();
 
     formData.append("file", file);
 
-
     try {
-
       const response = await uploadFile({ file: formData }).unwrap();
-  
+
       // Check the response structure to ensure `fullUrl` exists
       if (response?.data?.fullUrl) {
         return response.data.fullUrl; // Return the full URL
@@ -123,11 +109,11 @@ export default function MyProfileComponent() {
         });
         return ""; // Return an empty string in case of failure
       }
-    } catch  {
-      toast ({
+    } catch {
+      toast({
         description: "Failed to upload file. Please try again.",
         variant: "error",
-      })
+      });
       return ""; // Return an empty string if an error occurs
     }
   };
@@ -162,35 +148,39 @@ export default function MyProfileComponent() {
             <div className="absolute">
               <ParticlesComponent id="particles" />
             </div>
-          <div className="absolute top-24 left-1/2 -translate-x-1/2 flex flex-col items-center">
-            {/* Profile Image Container */}
-            <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-white group">
-              <img
-                className="w-full h-full object-cover"
-                src={previewImage || userData?.data?.profile ||  "/images/default-profile.jpg"}
-                alt="profile"
-              />
-              {/* Edit Overlay */}
-              <button className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full">
-                <label className="cursor-pointer flex flex-col items-center justify-center gap-2 w-full h-full rounded-full">
-                  <div className="flex gap-3">
-                    <FaEdit className="text-white" />
-                    <span className="text-white">Edit</span>
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-                </label>
-              </button>
+            <div className="absolute top-24 left-1/2 -translate-x-1/2 flex flex-col items-center">
+              {/* Profile Image Container */}
+              <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-white group">
+                <img
+                  className="w-full h-full object-cover"
+                  src={
+                    previewImage ||
+                    userData?.data?.profile ||
+                    "/images/default-profile.jpg"
+                  }
+                  alt="profile"
+                />
+                {/* Edit Overlay */}
+                <button className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full">
+                  <label className="cursor-pointer flex flex-col items-center justify-center gap-2 w-full h-full rounded-full">
+                    <div className="flex gap-3">
+                      <FaEdit className="text-white" />
+                      <span className="text-white">Edit</span>
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                  </label>
+                </button>
+              </div>
+              <div className="text-center pt-3">
+                <p>{userData?.data?.name}</p>
+                <p>{userData?.data?.email}</p>
+              </div>
             </div>
-            <div className="text-center pt-3">
-              <p>{userData?.data?.name}</p>
-              <p>{userData?.data?.email}</p>
-            </div>
-          </div>
           </div>
           <form
             onSubmit={formik.handleSubmit}
@@ -226,6 +216,7 @@ export default function MyProfileComponent() {
               <p className="w-[35%] hidden md:block">Password</p>
               <div className="w-full">
                 <button
+                  type="button"
                   onClick={() => router.push("/change-password")}
                   className="border border-secondary_color text-text_color_light md:bg-secondary_color md:border-none p-3 rounded-lg mt-0"
                 >
@@ -241,7 +232,6 @@ export default function MyProfileComponent() {
                 Save Changes
               </button>
             </div>
-          
           </form>
         </div>
       </section>
