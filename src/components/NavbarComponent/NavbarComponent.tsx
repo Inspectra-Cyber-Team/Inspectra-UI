@@ -123,8 +123,9 @@ export default function NavbarComponent() {
                     <MenubarMenu>
                       <MenubarTrigger onClick={handleMenuToggle}>
                         <div className="w-[40px] h-[40px] overflow-hidden rounded-full">
+                        {/* ${process.env.NEXT_PUBLIC_IMAGE_API_URL} */}
                           <img
-                            src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}${userData?.data?.profile}`}
+                            src={`${userData?.data?.profile}`}
                             alt="Profile"
                             width={50}
                             height={50}
