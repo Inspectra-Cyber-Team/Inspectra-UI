@@ -122,9 +122,9 @@ export default function BlogComponent() {
               </div>
 
               {/* title */}
-              <p className="text-text_title_20  cursor-pointer  line-clamp-1 text-text_color_light dark:text-text_color_dark">
+              <h4 className="text-text_title_20  cursor-pointer  line-clamp-1 text-text_color_light dark:text-text_color_dark">
                 {blog?.title}
-              </p>
+              </h4>
 
               {/* description */}
               <p
@@ -146,15 +146,15 @@ export default function BlogComponent() {
                 </div>
 
                 {/* like */}
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center ">
                   {likeColor ? (
                     <FaHandsClapping
-                      className="text-orange-400 cursor-pointer"
+                      className="text-orange-400 cursor-pointer mb-1"
                       onClick={() => handleLike(blog?.uuid)}
                     />
                   ) : (
                     <FaHandsClapping
-                      className="cursor-pointer text-text_color_desc_light dark:text-text_color_desc_dark"
+                      className="cursor-pointer text-text_color_desc_light dark:text-text_color_desc_dark mb-1"
                       onClick={() => handleLike(blog?.uuid)}
                     />
                   )}

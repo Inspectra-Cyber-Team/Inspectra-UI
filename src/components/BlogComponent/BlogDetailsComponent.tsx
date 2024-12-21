@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Edit, MoreVertical, Trash2 } from "lucide-react";
 
+
 type BlogDetailsProps = Readonly<{
   uuid: string;
 }>;
@@ -262,37 +263,39 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         <h1 className="lg:text-[34px] md:text-[20px] font-bold">
           {blogData?.title}
         </h1>
-        <div className="flex flex-col md:flex-row text-[16px] my-5 gap-[35px]">
-          {/* Author Info */}
-          <div className="flex items-center">
+        <div className="flex flex-col md:flex-row my-3 gap-6">
+          <div className="flex items-center space-x-5">
+            {/* Author Info */}
+          <div className="flex items-center space-x-2">
             <img
               className="w-10 h-10 rounded-full"
               src={blogData?.user?.profile}
               alt="profile"
             />
-            <p className="ml-2">
+            <p>
               {blogData?.user?.firstName} {blogData?.user?.lastName}
             </p>
           </div>
           {/* Created Date */}
-          <div className="flex gap-2 items-center">
-            <FaCalendarAlt className="text-text_color_desc_light text-[24px]" />
+          <div className="flex items-center space-x-2">
+            <FaCalendarAlt className="text-text_color_desc_light text-xl" />
             <p>{convertToDayMonthYear(blogData?.createdAt || "")}</p>
           </div>
-          <div className="flex  gap-[20px] sm:gap-[35px]">
+          </div>
+          <div className="flex items-center space-x-9">
             {/* Views */}
-            <div className="flex gap-2 items-center">
-              <FaEye className="text-text_color_desc_light text-[24px]" />
+            <div className="flex space-x-2 items-center">
+              <FaEye className="text-text_color_desc_light text-2xl" />
               <p>{blogData?.viewsCount}</p>
             </div>
             {/* Likes */}
             <div
-              className="flex gap-2 items-center "
+              className="flex space-x-2 items-center "
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
               <FaHandsClapping
-                className={`text-[24px] cursor-pointer ${
+                className={`text-2xl cursor-pointer mb-2 ${
                   likeColor ? "text-orange-400" : "text-text_color_desc_light"
                 }`}
                 onClick={() => handleLike(blogData?.uuid)}
@@ -300,9 +303,9 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
               <p>{blogData?.likesCount}</p>
             </div>
             {/* Comments */}
-            <div className="flex gap-2 items-center">
+            <div className="flex space-x-2 items-center">
               <FaCommentDots
-                className="text-text_color_desc_light text-[24px] cursor-pointer"
+                className="text-text_color_desc_light text-2xl cursor-pointer"
                 onClick={() => setShowSidebar(!showSidebar)}
               />
               <p>{blogData?.countComments}</p>
@@ -343,8 +346,8 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
                   onOpenChange={setShowModalReport}
                 >
                   <DialogTrigger asChild>
-                    <div className="rounded-[16px]">
-                      <MdReport className="text-custom_red text-[40px] cursor-pointer" />
+                    <div>
+                      <MdReport className="text-destructive text-3xl cursor-pointer mb-1" />
                     </div>
                   </DialogTrigger>
                   <DialogContent className="bg-background_light_mode dark:bg-background_dark_mode max-w-md text-text_color_light dark:text-text_color_dark">
@@ -387,6 +390,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
           </div>
         )}
         {/* Description */}
+        <hr className="my-5"/>
         <div
           dangerouslySetInnerHTML={{ __html: modifiedDescription || "" }}
         ></div>

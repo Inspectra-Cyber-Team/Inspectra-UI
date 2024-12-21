@@ -67,7 +67,7 @@ export default function page() {
                   width={50}
                   height={50}
                   className="object-cover w-full h-full"
-                />
+                />   
               </div>
               <p className="font-medium text-text_color_light pl-3 text-text_title_20">
                 Inspectra

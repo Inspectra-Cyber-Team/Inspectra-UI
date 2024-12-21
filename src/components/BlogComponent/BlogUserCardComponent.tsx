@@ -4,8 +4,9 @@ import Image from "next/image";
 import { useGetBlogByUserUuidQuery } from "@/redux/service/blog";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button } from "../ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FaCommentDots, FaHandsClapping } from "react-icons/fa6";
+import {  ArrowRightIcon } from "lucide-react";
 
 type BlogCardProps = {
   uuid: string;
@@ -67,19 +68,20 @@ export default function BlogUserCardComponent({
     <section>
       {/* Header section below card */}
       <section className="flex justify-between items-center mx-5 mt-4">
-        <section className={"flex items-center justify-between  mx-5"}>
-          <p className={"font-bold text-[20px]"}>
+        <section className={"flex items-center justify-betwee"}>
+          <p className={"font-bold md:text-[20px] text-base"}>
             More from {data?.content?.[0]?.user?.firstName}{" "}
             {data?.content?.[0]?.user?.lastName}
           </p>
         </section>
-        <section>
-          <Button
+        <section className="flex justify-center items-center space-x-2  text-text_color_light dark:text-text_color_dark cursor-pointer">
+          <div
             onClick={() => setCurrentSize(currentSize + 3)}
-            className="bg-[#B9FF66] text-black rounded-[16px]"
+            className=""
           >
             See More
-          </Button>
+          </div>
+          <ArrowRightIcon/>
         </section>
       </section>
       {/* Card blog section */}
@@ -89,21 +91,21 @@ export default function BlogUserCardComponent({
         {data?.content?.map((blog: Blog) => (
           <div
             key={blog.uuid}
-            className=" mx-auto bg-white cursor-pointer dark:bg-card_color_dark rounded-lg shadow-md overflow-hidden w-full"
+            className=" mx-auto bg-white cursor-pointer dark:bg-card_color_dark rounded-lg overflow-hidden w-full"
             onClick={() => router.push(`/blog/${blog?.uuid}`)}
           >
-            <div className="relative w-full h-48">
+            <div className="relative w-auto h-40 m-4">
               <Image
                 src={blog.thumbnail[0]} // Use the actual thumbnail URL
                 alt={blog.title}
                 layout="fill"
                 objectFit="cover"
-                className="transition-transform duration-300 hover:scale-110"
+                className="transition-transform duration-300 hover:scale-110 rounded-md"
               />
             </div>
 
-            <div className="p-4 h-full relative ">
-              <div className=" h-[45%] flex flex-col justify-between ">
+            <div className="mx-4 my-4 h-full relative ">
+              <div className="flex flex-col justify-between ">
                 <div>
                   <div className="flex items-center text-sm text-gray-500 mb-2">
                     <img
@@ -112,36 +114,32 @@ export default function BlogUserCardComponent({
                       className="rounded-full h-8 w-8"
                     />
                     <div className="ml-2 flex justify-between w-full text-text_color_desc_light dark:text-text_color_desc_dark">
-                      <p className="font-medium">
+                      <p className="text-base">
                         {blog.user.firstName} {blog.user.lastName}
                       </p>
-                      <p>{new Date(blog.createdAt).toLocaleDateString()}</p>
+                      <p className="text-base">{new Date(blog.createdAt).toLocaleDateString()}</p>
                     </div>
                   </div>
                   <h2 className="line-clamp-1 text-lg font-semibold text-text_color_light dark:text-text_color_dark mb-2">
                     {blog?.title}
                   </h2>
-                  <p className="line-clamp-1 text-text_color_desc_light dark:text-text_color_desc_dark text-sm mb-4"  dangerouslySetInnerHTML={{ __html: blog?.description || "" }}>
+                  <p className="line-clamp-1 text-text_color_desc_light dark:text-text_color_desc_dark mb-2 text-base"  dangerouslySetInnerHTML={{ __html: blog?.description || "" }}>
                     {/* {blog?.description} */}
                   </p>
                 </div>
                 <div className="flex justify-between items-center">
-                  <div className={"flex justify-between gap-[20px]"}>
-                    <div className="flex items-center space-x-1 text-yellow-500">
-                      <span>👏</span>
-                      <span>{blog?.likesCount}</span>
+                  <div className={"flex justify-between space-x-4"}>
+                    <div className="flex items-center space-x-2 text-orange-400 text-lg">
+                      <div className="mb-1">
+                      <FaHandsClapping/>
+                      </div>
+                      <p>{blog?.likesCount}</p>
                     </div>
-                    <div className="flex items-center space-x-1 text-gray-500">
-                      <span>💬</span>
-                      <span>{blog?.countComments}</span>
+                    <div className="flex items-center space-x-2 text-text_color_desc_light dark:text-text_color_desc_dark text-lg">
+                      <FaCommentDots/>
+                      <p>{blog?.countComments}</p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => router.push(`/blog/${blog?.uuid}`)}
-                    className="text-text_color_desc_light dark:text-text_color_desc_dark cursor-pointer font-medium hover:underline"
-                  >
-                    Read more
-                  </button>
                 </div>
               </div>
             </div>
