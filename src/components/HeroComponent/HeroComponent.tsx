@@ -23,10 +23,8 @@ export default function HeroComponent() {
           </p>
           <p className="lg:w-full xl:w-[80%] text-text_body_16 md:text-text_title_24 text-text_color_light font-medium dark:text-text_color_dark">
             Through deep, intelligent scanning and proactive insights empowers
-            you to uncover hidden risks with precision
-            <span className="block lg:my-5 xl:mt-10">
-              Keeping your systems resilient and your data safe
-            </span>
+            you to uncover hidden risks with precision Keeping your systems
+            resilient and your data safe
           </p>
           {/* Centering Button */}
           <section className="flex justify-center lg:justify-center xl:justify-start">

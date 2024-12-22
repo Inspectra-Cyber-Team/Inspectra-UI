@@ -24,7 +24,7 @@ export default function FeedbackCard() {
 
   const result = data?.data.slice(0, sliceCount);
   return (
-    <div className="grid gap-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-items-center xl:justify-items-between my-10">
+    <div className="grid gap-10 lg:my-[80px] grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-items-center xl:justify-items-between my-10">
       {result?.map((feedback: feedbackType, index: number) => (
         <div
           key={index}
