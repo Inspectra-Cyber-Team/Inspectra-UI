@@ -1035,7 +1035,7 @@ export default function ProjectCardComponent() {
                           <p className="text-text_title_24 text-text_color_light">
                             {isLoading ? (
                               <p>
-                                Scanning On Project{" "}
+                                Scanning on project{" "}
                                 {projectResult?.component?.component.name} ...
                               </p>
                             ) : (
