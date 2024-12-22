@@ -1,11 +1,11 @@
 "use client";
-import { FaCheck } from "react-icons/fa6";
-import { RxCross2 } from "react-icons/rx";
 import { useGetProjectByUserUuidQuery } from "@/redux/service/overview";
 import { useEffect, useState } from "react";
+import { FaCheck } from "react-icons/fa6";
+import { RxCross2 } from "react-icons/rx";
 export default function QualityCardComponent() {
   const [userUUID, setUserUUID] = useState("");
-  const { data, error, isLoading } = useGetProjectByUserUuidQuery({
+  const { data} = useGetProjectByUserUuidQuery({
     uuid: userUUID,
   });
   useEffect(() => {

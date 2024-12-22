@@ -178,14 +178,7 @@ export const getLabelGrade = (value: number) => {
   return "F"; // Return F for 0 or negative values
 };
 
-const requiredMetrics = [
-  "security_issues",
-  "reliability_issues",
-  "maintainability_issues",
-  "duplicated_lines_density",
-  "coverage",
-  "security_hotspots",
-];
+
 
 export function transformWord(word: string): string | undefined {
   if (word.includes("_issues")) {
