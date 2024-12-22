@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect } from "react";
+import React, { useEffect } from "react";
 import Prism from "prismjs";
 import "prismjs/themes/prism.css";
 import DOMPurify from "dompurify";
@@ -42,12 +42,9 @@ export const RiskComponent = ({
     isLoading: sourceIsLoading,
   } = useGetSouceQuery({ issueKey: issueKey });
 
-
-
-
   useEffect(() => {
     Prism.highlightAll();
-  });	
+  });
 
   if (sourceIsLoading) {
     return <p>Loading...</p>;
@@ -72,7 +69,6 @@ export const RiskComponent = ({
         const codeContent = dockerfileSources
 
           .map((source) => {
-
             const lineNumber = source?.line;
 
             const code = source?.code;
@@ -115,7 +111,9 @@ export const RiskComponent = ({
     }
 
     const sectionKey = tabMapping[selectedTab];
+
     const section = description.find((item: any) => item.key === sectionKey);
+
     let rawContent = section ? section.content : "Content not available.";
 
     // Replace <h1>, <h2>, <pre>, <code> tags with prose classes
@@ -136,7 +134,7 @@ export const RiskComponent = ({
   };
 
   return (
-    <div className="mt-4 prose ">
+    <div className="mt-4 prose dark:text-text_color_desc_light">
       <div dangerouslySetInnerHTML={{ __html: getContent() }} />
     </div>
   );

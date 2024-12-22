@@ -212,17 +212,17 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
                     className="text-red-500 text-sm mt-2 text-center"
                   />
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                <div className="w-1/2 mx-auto">
                   {previewImages.map((src, index) => (
                     <div key={index} className="relative">
                       <img
                         src={src}
                         alt={`Preview ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-md border"
+                        className="w-full h-full object-contain rounded-md border"
                       />
                       <Button
                         type="button"
-                        className="absolute -top-2 right-0 px-1 text-white"
+                        className="absolute top-0 right-0 bg-red-500 text-white px-2 rounded"
                         onClick={() => {
                           const updatedFiles = [...previewImages];
                           updatedFiles.splice(index, 1);

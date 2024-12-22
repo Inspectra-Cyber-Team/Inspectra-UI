@@ -12,16 +12,25 @@ import React, { useEffect, useState } from "react";
 import { FaGithub, FaGitlab } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { toast } from "../hooks/use-toast";
+import { useTheme } from "next-themes";
 export default function NoneUserScan() {
+  const { theme } = useTheme();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [countScan, setCountScan] = useState(0);
-  const [projectScanNonUser] =
-    useCreateProjectScanNonUserMutation();
+  const [projectScanNonUser] = useCreateProjectScanNonUserMutation();
 
   const handleSubmit = () => {
+    // Check if the input is empty
+    if (!gitUrlResult.trim()) {
+      setIsLoading(false); 
+      toast({
+        description: "Please enter a Git URL",
+        variant: "error",
+      });
+      return;
+    }
     setIsLoading(true);
-
     if (countScan < 4) {
       const newCount = countScan + 1;
       setCountScan(newCount);
@@ -73,6 +82,8 @@ export default function NoneUserScan() {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
+
+      // vlaidate git url
       if (gitUrlResult.includes(".git")) {
         const fetchGitbranch = async () => {
           const data = await fetch(
@@ -104,7 +115,15 @@ export default function NoneUserScan() {
     <section className="flex mx-auto justify-center lg:justify-between xl:justify-around">
       {/* image */}
       <div className="h-full hidden lg:block  justify-center items-center">
-        <img src="/images/scan.png" alt="scan image"></img>
+        {theme == "dark" ? (
+          <img
+            src="/images/scan-anonymouse-user.png"
+            className="h-[400px]"
+            alt="scan image"
+          ></img>
+        ) : (
+          <img src="/images/scan.png" alt="scan image"></img>
+        )}
       </div>
       {/* scaning project */}
       <div className="h-full   lg:w-[50%] p-10 rounded-[20px] bg-card_color_light dark:bg-card_color_dark  flex text-start flex-col justify-between">

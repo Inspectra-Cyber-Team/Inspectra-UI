@@ -7,7 +7,6 @@ export async function POST(req: NextRequest) {
 
   const { email, password } = body;
 
-
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}auth/login`, {
     method: "POST",
     headers: {
@@ -23,7 +22,7 @@ export async function POST(req: NextRequest) {
       },
       {
         status: response.status,
-      },
+      }
     );
   }
 
@@ -33,15 +32,14 @@ export async function POST(req: NextRequest) {
   const accessToken = data?.data?.accessToken || null;
   const user = data || null;
   const uuid = user?.data?.uuid || null;
-  console.log(uuid)
 
   const cookieName = process.env?.COOKIE_REFRESH_TOKEN_NAME || "refresh_token";
   const serialized = serialize(cookieName, refreshToken, {
     httpOnly: true,
-    // secure: process.env.NODE_ENV === "production",
-    secure: false,
+    secure: process.env.NODE_ENV === "production",
+    // secure: false,
     sameSite: "lax",
-    path: "/", 
+    path: "/",
   });
 
   return NextResponse.json(
@@ -56,6 +54,6 @@ export async function POST(req: NextRequest) {
       headers: {
         "Set-Cookie": serialized,
       },
-    },
+    }
   );
 }

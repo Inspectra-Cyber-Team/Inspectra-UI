@@ -90,7 +90,6 @@ export default function ProjectCardComponent() {
         description: "Please Provide Git UR and Branch",
         variant: "error",
       });
-      setIsOpen(false);
       setIsLoading(false);
     } else {
       createScanProject({
@@ -1036,7 +1035,7 @@ export default function ProjectCardComponent() {
                           <p className="text-text_title_24 text-text_color_light">
                             {isLoading ? (
                               <p>
-                                Scanning On Project{" "}
+                                Scanning on project{" "}
                                 {projectResult?.component?.component.name} ...
                               </p>
                             ) : (

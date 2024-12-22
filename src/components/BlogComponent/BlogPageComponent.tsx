@@ -28,7 +28,7 @@ export default function BlogPageComponent() {
           href={"/blog/create"}
           className="px-3 py-2 bg-primary_color text-text_color_light flex rounded-[17px] items-center justify-center"
         >
-          <span className="hidden md:block">Create Blog</span>
+          <span className="md:block">Create Blog</span>
           <FaPlus className={"ml-1"} />
         </Link>
       </div>
@@ -45,7 +45,7 @@ export default function BlogPageComponent() {
             <p className="text-text_title_20 text-black my-2 dark:text-text_color_desc_dark">
               Common Topics
             </p>
-            <div className="py-2 flex flex-wrap gap-3">
+            <div className="py-2 mb-7 flex flex-wrap gap-3">
               {commonTopicData.map((common: CommonTopic) => (
                 <button
                   key={common.topic}

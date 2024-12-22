@@ -16,7 +16,7 @@ export const feedbackApi = cyberApi.injectEndpoints({
     // get user feedback
     getAllUserFeedback: builder.query({
       query: () => ({
-        url: `feedbacks`,
+        url: `feedbacks/all`,
       }),
       providesTags: [{ type: "Feedbacks", id: "FEEDBACKLIST" }],
     }),

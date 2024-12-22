@@ -177,3 +177,18 @@ export const getLabelGrade = (value: number) => {
   }
   return "F"; // Return F for 0 or negative values
 };
+
+
+
+export function transformWord(word: string): string | undefined {
+  if (word.includes("_issues")) {
+    return word.replace("_issues", ""); // Remove '_issues'
+  }
+  if (word.includes("_lines_density")) {
+    return word.replace("_lines_density", ""); // Remove '_lines_density'
+  }
+  if (word === "security_hotspots") {
+    return "Hotspots"; // Change 'security_hotspots' to 'Hotspots'
+  }
+  return undefined; // Return undefined if no conditions are met
+}

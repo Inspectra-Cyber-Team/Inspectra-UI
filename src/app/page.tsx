@@ -33,7 +33,10 @@ export default function Home() {
                 Inspect, Improve, Innovative
               </p>
               <section className="my-10 flex justify-center items-center xl:justify-start">
-                <Link href={"/project"} className="flex justify-between items-center bg-primary_color px-5 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[160px] hover:bg-ascend_color hover:text-white h-[50px] text-text_body_16">
+                <Link
+                  href={"/project"}
+                  className="flex justify-between items-center bg-primary_color px-5 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[160px] hover:bg-ascend_color hover:text-white h-[50px] text-text_body_16"
+                >
                   Try Now
                   <FaArrowRight />
                 </Link>
@@ -61,13 +64,14 @@ export default function Home() {
         </section>
         <p className="text-text_body_16 md:text-text_title_24 text-text_color_desc_light dark:text-text_color_desc_dark mx-auto lg:w-[80%] xl:w-[65%]">
           Through deep, intelligent scanning and proactive insights, we help you
-          secure your code and protect against unseen vulnerabilities
+          secure your code and protect against unseen vulnerabilities with these
+          supported popular frameworks
         </p>
         <LogoSliderComponent />
       </section>
 
       {/* benefit section */}
-      <section className="w-full text-center lg:mt-[60px] lg:mb-[60px]">
+      <section className="w-full text-center lg:my-[80px]">
         <p className=" text-text_header_34 px-5 py-1 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold">
           Benefit
         </p>
@@ -75,7 +79,7 @@ export default function Home() {
       </section>
 
       {/* feedback section */}
-      <section className="w-full text-center mt-[60px] lg:mt-[60px]">
+      <section className="w-full text-center lg:my-[80px]">
         <p className="text-text_header_34 px-5 py-1 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold">
           User Feedback
         </p>

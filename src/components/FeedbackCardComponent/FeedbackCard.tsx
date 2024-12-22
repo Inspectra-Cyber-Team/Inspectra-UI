@@ -22,11 +22,9 @@ export default function FeedbackCard() {
     return () => window.removeEventListener("resize", updateSliceCount);
   }, []);
 
-  const result = data?.content.slice(0, sliceCount);
-
-  console.log("this is result", result);
+  const result = data?.data.slice(0, sliceCount);
   return (
-    <div className="grid gap-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-items-center xl:justify-items-between my-10">
+    <div className="grid gap-10 lg:my-[80px] grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-items-center xl:justify-items-between my-10">
       {result?.map((feedback: feedbackType, index: number) => (
         <div
           key={index}
@@ -46,7 +44,7 @@ export default function FeedbackCard() {
               <div className="w-[50px] h-[50px] overflow-hidden rounded-full">
                 <Image
                   unoptimized
-                  src={`http://136.228.158.126:4011/images/${feedback?.profile}`}
+                  src={`${feedback?.profile}`}
                   alt="Logo"
                   width={50}
                   height={50}

@@ -144,12 +144,11 @@ export default function MyProfileComponent() {
       <section>
         <div className="relative mt-[30px] pb-3 bg-card_color_light dark:bg-card_color_dark rounded-3xl">
           {/* Particle Container */}
-          <div className="absolute translate-x-0 rounded-t-2xl flex flex-col items-center overflow-hidden h-44 w-full">
+          <div className="absolute translate-x-0 rounded-md flex flex-col items-center h-44 w-full">
             <div className="absolute">
               <ParticlesComponent id="particles" />
             </div>
-            <div className="absolute top-24 left-1/2 -translate-x-1/2 flex flex-col items-center">
-              {/* Profile Image Container */}
+            <div className="absolute items-center justify-center my-36 flex flex-col">
               <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-white group">
                 <img
                   className="w-full h-full object-cover"
@@ -176,10 +175,9 @@ export default function MyProfileComponent() {
                   </label>
                 </button>
               </div>
-              <div className="text-center pt-3">
-                <p>{userData?.data?.name}</p>
-                <p>{userData?.data?.email}</p>
-              </div>
+
+              <p className="text-center">{userData?.data?.name}</p>
+              <p className="text-center">{userData?.data?.email}</p>
             </div>
           </div>
           <form

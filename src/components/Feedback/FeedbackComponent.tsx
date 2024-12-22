@@ -2,27 +2,35 @@
 import { useToast } from "@/components/hooks/use-toast";
 import { useCreateUserFeedbackMutation } from "@/redux/service/feedback";
 import { createFeedbackType } from "@/types/Feedback";
-import { useEffect, useState } from "react";
+
 
 import { Field, Form, Formik } from "formik";
+import * as Yup from "yup";
 import { useTheme } from "next-themes";
+
 export default function FeedbackComponent() {
   const { theme } = useTheme();
   const { toast } = useToast();
-  const [userUUID, setUserUUID] = useState("");
   const [createUserFeedback] = useCreateUserFeedbackMutation();
 
   const initialValues: createFeedbackType = {
     message: "",
   };
 
+  const validationSchema = Yup.object({
+    message: Yup.string()
+      .required("Feedback message is required")
+      .min(3, "Message must be at least 3 characters")
+      .matches(/^\S+(?: \S+)*$/, "Message cannot contain leading, trailing, or multiple spaces"),
+  });
+
   const handleSubmit = async (values: createFeedbackType) => {
-    console.log(values);
     try {
-      const ressponse = await createUserFeedback({ message: values });
-      console.log(ressponse);
+      
+       await createUserFeedback({ message: values });
+
       toast({
-        description: "Thank For FeedBack Our Team Will Review It",
+        description: "Thank you for your feedback! Our team will review it.",
         variant: "success",
       });
     } catch (error) {
@@ -31,10 +39,6 @@ export default function FeedbackComponent() {
       });
     }
   };
-
-  useEffect(() => {
-      setUserUUID(localStorage.getItem("userUUID") || "");
-    });
 
   return (
     <section className="w-[90%] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -54,30 +58,37 @@ export default function FeedbackComponent() {
         {/* Textarea */}
         <Formik
           initialValues={initialValues}
+          validationSchema={validationSchema}
           onSubmit={(values) => {
             handleSubmit(values);
           }}
         >
-          <Form>
-            <Field
-              type="text"
-              id="message"
-              name="message"
-              placeholder="Your Message"
-              className={`mt-1 w-full border px-5 mb-5 rounded-tl-[20px] rounded-br-[20px]  pb-[100px] min-h-[150px] bg-text_color_dark dark:bg-card_color_dark  focus:outline-none focus:right-2 focus:border-text_color_light   `}
-            />
+          {({ errors, touched }) => (
+            <Form>
+              <Field
+                type="text"
+                id="message"
+                name="message"
+                placeholder="Your Message"
+                className={`mt-1 w-full border px-5 mb-5 rounded-tl-[20px] rounded-br-[20px] pb-[100px] min-h-[150px] bg-text_color_dark dark:bg-card_color_dark focus:outline-none focus:right-2 focus:border-text_color_light ${
+                  errors.message && touched.message ? "border-red-500" : ""
+                }`}
+              />
+              {errors.message && touched.message && (
+                <p className="text-red-500 text-sm mb-2">{errors.message}</p>
+              )}
 
-            <button
-              type="submit"
-              className="inline-block px-5 font-semibold bg-background_dark_mode py-2 rounded-tl-[20px] rounded-br-[20px] w-max"
-            >
-              <p className="text-text_color_dark text-text_body_16 font-normal">
-                Submit
-              </p>
-            </button>
-          </Form>
+              <button
+                type="submit"
+                className="inline-block px-5 font-semibold bg-background_dark_mode py-2 rounded-tl-[20px] rounded-br-[20px] w-max"
+              >
+                <p className="text-text_color_dark text-text_body_16 font-normal">
+                  Submit
+                </p>
+              </button>
+            </Form>
+          )}
         </Formik>
-        {/* Button */}
       </div>
       <div className="w-[400px] h-[400px] hidden lg:block mx-auto">
         {theme === "dark" ? (

@@ -75,9 +75,9 @@ export default function FormSignUpComponent() {
       {({ errors, touched }) => (
         <Form>
           {/* first name and last name */}
-          <div className="flex space-x-4 mb-4">
+          <div className="flex flex-col md:flex-row space-y-4 md:space-y-0  md:space-x-4  mb-4">
             {/* First Name */}
-            <div className="w-1/2">
+            <div className=" w-full md:w-1/2">
               <label
                 htmlFor="firstName"
                 className="text-[14px] text-text_color_light block"
@@ -109,7 +109,7 @@ export default function FormSignUpComponent() {
             </div>
 
             {/* Last Name */}
-            <div className="w-1/2">
+            <div className="w-full   md:w-1/2">
               <label
                 htmlFor="lastName"
                 className="text-[14px] text-text_color_light block"

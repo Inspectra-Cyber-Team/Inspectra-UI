@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 export default function BenefitComponentCard() {
   const { theme } = useTheme();
   return (
-    <div className="w-full mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-x-5 gap-y-5">
+    <div className="w-full  lg:my-[80px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-x-5 gap-y-5">
       {/* w-full my-5 flex flex-col items-center xl:flex-row xl:justify-between */}
       {benefitData.map((item: benefitType, index) => (
         <div
