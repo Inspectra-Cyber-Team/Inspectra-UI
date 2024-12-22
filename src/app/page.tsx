@@ -4,9 +4,29 @@ import FeedbackCard from "@/components/FeedbackCardComponent/FeedbackCard";
 import HeroComponent from "@/components/HeroComponent/HeroComponent";
 import LogoSliderComponent from "@/components/LogoSliderComponent/LogoSliderComponent";
 import WorkingProcessCard from "@/components/WorkingProcessCard/WorkingProcessCard";
-
+import { Metadata } from "next";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa6";
+
+export const metadata: Metadata ={
+  title: 'Inspectra',
+  description:
+    'Welcome to Inspectra, a cutting-edge white-box testing platform from Cambodia that ensures secure development through source code analysis and identification of security vulnerabilities.',
+  keywords:
+    'Inspectra homepage, Inspectra, inspectra, inspect, source code scan, scan, code scan, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+  authors: { name: 'Inspectra Team' },
+  publisher: 'Inspectra',
+  openGraph: {
+    title: 'Inspectra',
+    description:
+      'Welcome to Inspectra, a cutting-edge white-box testing platform from Cambodia that ensures secure development through source code analysis and identification of security vulnerabilities.',
+    siteName: 'Inspectra',
+    locale: 'en_KH',
+    type: 'website',
+    url: 'https://inspectra.istad.co/'
+  },
+}
+
 export default function Home() {
   return (
     <main className="w-[90%] mx-auto relative z-10">
@@ -79,7 +99,7 @@ export default function Home() {
       </section>
 
       {/* feedback section */}
-      <section className="w-full text-center lg:my-[80px]">
+      <section className="w-full text-center my-[80px]">
         <p className="text-text_header_34 px-5 py-1 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold">
           User Feedback
         </p>

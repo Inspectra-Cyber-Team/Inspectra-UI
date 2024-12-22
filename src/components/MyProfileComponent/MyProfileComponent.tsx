@@ -144,7 +144,7 @@ export default function MyProfileComponent() {
       <section>
         <div className="relative mt-[30px] pb-3 bg-card_color_light dark:bg-card_color_dark rounded-3xl">
           {/* Particle Container */}
-          <div className="absolute translate-x-0 rounded-md flex flex-col items-center h-44 w-full">
+          <div className="absolute translate-x-0 rounded-t-2xl overflow-hidden flex flex-col items-center h-44 w-full">
             <div className="absolute">
               <ParticlesComponent id="particles" />
             </div>
