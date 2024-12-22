@@ -111,22 +111,29 @@ export default function page() {
             <div className=" block xl:hidden justify-center text-center items-center text-text_color_desc_light">
               <p className="font-normal">Or Continue</p>
             </div>
-            <div className="flex flex-col justify-between space-y-6 ">
+            {/* with google or github in ipad screen   */}
+            <div className=" flex flex-row md:flex-col my-2  justify-between  space-x-5 space-y-0 md:space-x-0 md:space-y-6 ">
               <button className="xl:hidden w-full py-3 flex items-center font-normal bg-text_color_light justify-center rounded-[10px]">
                 <FcGoogle className="text-text_title_24" />
-                <span className="text-text_color_dark ml-3">
-                  Or sign up with Google
+                <span className=" hidden md:block text-text_color_dark ml-3">
+                  Sign up with Google
+                </span>
+                <span className=" block md:hidden text-text_color_dark ml-3">
+                  Google
                 </span>
               </button>
-              <button className="xl:hidden w-full py-3 flex items-center font-normal bg-background_light_mode justify-center rounded-[10px]">
+              <button className="xl:hidden  w-full py-3 flex items-center font-normal bg-background_light_mode justify-center rounded-[10px]">
                 <VscGithub className="text-text_title_24 text-text_color_light" />
-                <span className="text-text_color_light ml-3">
-                  Or sign up with GitHub
+                <span className=" hidden md:block text-text_color_light ml-3">
+                  Sign up with GitHub
+                </span>
+                <span className=" block md:hidden text-text_color_light ml-3">
+                  GitHub
                 </span>
               </button>
             </div>
 
-            {/* Auth Login */}
+            {/* with google or github in Login with laptop screen */}
             <Menubar className="hidden xl:block">
               <MenubarMenu>
                 <MenubarTrigger className="w-full flex rounded-[10px] justify-center items-center">
