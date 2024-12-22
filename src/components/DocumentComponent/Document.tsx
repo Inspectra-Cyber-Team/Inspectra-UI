@@ -50,7 +50,7 @@ export default function Document() {
     <main className="w-[90%] m-auto flex flex-col lg:flex-row">
       {/* Toggle Button for Small and Medium Screens */}
       <button
-        className="lg:hidden fixed top-15 left-5 bg-blue-500 text-white p-2 rounded-full shadow-md z-50"
+        className="lg:hidden fixed top-15 left-5 bg-ascend_color text-white p-2 rounded-full shadow-md z-50"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
       >
         <AiOutlineMenu size={16} />
@@ -58,13 +58,13 @@ export default function Document() {
 
       {/* Sidebar Overlay */}
       <section
-        className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 transition-opacity duration-300 z-40 ${
+        className={`fixed top-0 left-0 w-full h-full z-50 bg-black bg-opacity-50 transition-opacity duration-300 ${
           isSidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
         } lg:hidden`}
         onClick={() => setIsSidebarOpen(false)} // Close sidebar when clicking outside
       >
         <div
-          className={`fixed top-0 left-0 w-3/5 max-w-xs bg-card_color_light h-full p-5 transition-transform duration-200 z-50 transform ${
+          className={`fixed top-0 left-0 w-3/5 max-w-xs bg-card_color_light dark:bg-background_dark_mode h-full p-5 transition-transform duration-200 z-50 transform ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
           onClick={(e) => e.stopPropagation()}
