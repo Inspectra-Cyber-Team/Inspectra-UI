@@ -90,7 +90,6 @@ export default function ProjectCardComponent() {
         description: "Please Provide Git UR and Branch",
         variant: "error",
       });
-      setIsOpen(false);
       setIsLoading(false);
     } else {
       createScanProject({
