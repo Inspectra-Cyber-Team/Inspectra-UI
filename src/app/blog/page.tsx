@@ -3,9 +3,21 @@ import { Metadata } from "next";
 import BlogPageComponent from "@/components/BlogComponent/BlogPageComponent";
 
 export const metadata: Metadata = {
-  title: "Blog - Inspectra",
+  title: 'Blog community - Inspectra',
   description:
-    "Learn more about Inspectra, a white-box testing platform designed to review source code and identify security weaknesses. Discover our mission, values, and commitment to secure development.",
+    'Blog community of Inspectra, a leading platform from Cambodia that strengthens secure development with advanced source code analysis tools.',
+  keywords:
+    'Inspectra Blog, blog community, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+  authors: { name: 'Inspectra Team' },
+  publisher: 'Inspectra',
+  openGraph: {
+    title: 'Blog community - Inspectra',
+    description:
+      'Blog community of Inspectra, a leading platform from Cambodia that strengthens secure development with advanced source code analysis tools.',
+    siteName: 'Inspectra',
+    locale: 'en_KH',
+    type: 'website',
+  },
 };
 
 export default function page() {

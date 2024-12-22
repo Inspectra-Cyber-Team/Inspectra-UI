@@ -18,7 +18,6 @@ type SecurityComponentProps = {
 };
 
 export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
-
   const router = useRouter();
   // calling security hotspot query
   const {
@@ -28,12 +27,11 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
   } = useGetSecurityHotspotQuery({ projectName });
 
   const [roleName, setRoleName] = useState<string>("");
-  const [key,setKey] = useState<string>("");
+  const [key, setKey] = useState<string>("");
 
   const [componentFile, setComponentFile] = useState<string>("");
-//  hanle set line number for show issue message in compoent 
- const [startLineNumber, setStartLineNumber] = useState<number>(0);
-
+  //  hanle set line number for show issue message in compoent
+  const [startLineNumber, setStartLineNumber] = useState<number>(0);
 
   //calling rule query
   const {
@@ -80,7 +78,9 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
         <div className="mb-4">
           <p className="font-semibold">
             Total Security Hotspots:{" "}
-            <span className="text-red-500">{securityHotspotData?.[0]?.paging?.total || 0}</span>
+            <span className="text-red-500">
+              {securityHotspotData?.[0]?.paging?.total || 0}
+            </span>
           </p>
         </div>
 
@@ -89,15 +89,15 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
           type="multiple"
           className="w-full"
         >
-          {Object.entries(groupedData).map(([probability, items]:any) => (
+          {Object.entries(groupedData).map(([probability, items]: any) => (
             <AccordionItem key={probability} value={probability}>
               <AccordionTrigger>
                 Review Priority: {probability}
               </AccordionTrigger>
               <AccordionContent>
-                {items.map((item:any) => (
+                {items.map((item: any) => (
                   <button
-                    className="p-2 cursor-pointer rounded-md hover:bg-gray-100 text-left w-full"
+                    className="p-2 cursor-pointer rounded-md hover:bg-gray-100 dark:hover:bg-card_color_dark text-left w-full"
                     key={item.key}
                     onClick={() => {
                       setSelectedHotspot(item);
@@ -122,15 +122,24 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
           <section>
             <div className="">
               <p className="font-bold mb-5 ">{selectedHotspot.message}</p>
-              <p className='mb-2'>
+              <p className="mb-2">
                 {ruleData?.[0]?.name}{" "}
-                <button onClick={()=>router.push(`/rule/${roleName}`)}  className="font-bold cursor-pointer hover:text-primary_color"> {roleName}</button>
+                <button
+                  onClick={() => router.push(`/rule/${roleName}`)}
+                  className="font-bold cursor-pointer hover:text-primary_color"
+                >
+                  {" "}
+                  {roleName}
+                </button>
               </p>
               <div className="flex gap-4">
-              <p className="mb-1"><strong>Category:</strong> {selectedHotspot?.securityCategory}</p>
-              <p className="mb-2">
-                <strong>Review priority:</strong> {selectedHotspot?.vulnerabilityProbability}
-              </p>
+                <p className="mb-1">
+                  <strong>Category:</strong> {selectedHotspot?.securityCategory}
+                </p>
+                <p className="mb-2">
+                  <strong>Review priority:</strong>{" "}
+                  {selectedHotspot?.vulnerabilityProbability}
+                </p>
               </div>
             </div>
 
@@ -173,7 +182,7 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
                         }}
                         className={`shrink-0 border-b-2 px-1 pb-4 text-sm font-medium ${
                           selectedTab === tab
-                            ? "border-primary_color text-black"
+                            ? "border-primary_color text-black dark:text-white"
                             : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                         }`}
                         aria-current={selectedTab === tab ? "page" : undefined}
@@ -186,7 +195,6 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
               </div>
 
               {/* Render Content Based on Selected Tab */}
-       
             </div>
           </section>
         ) : (

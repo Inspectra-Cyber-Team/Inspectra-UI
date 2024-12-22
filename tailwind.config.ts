@@ -56,7 +56,7 @@ const config: Config = {
         secondary_color: "#F9B800",
         ascend_color: "#60935D",
         text_color_light: "#333333",
-        text_color_desc_light: "#939393",
+        text_color_desc_light: "#718096",
         text_color_dark: "#FFFFFF",
         text_color_desc_dark: "#A4B1CD",
         link_color: "#0000EE",

@@ -6,7 +6,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
 
-
 import {
   Select,
   SelectContent,
@@ -50,7 +49,6 @@ const validationSchema = Yup.object().shape({
 });
 
 const CreateBlogComponent = () => {
-  
   const router = useRouter();
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -229,13 +227,13 @@ const CreateBlogComponent = () => {
 
                 {/* Preview Selected Thumbnails */}
                 {previewImages.length > 0 && (
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                  <div className="w-1/2 mx-auto mt-4 ">
                     {previewImages.map((src, index) => (
-                      <div key={index} className="relative">
+                      <div key={index} className="relative ">
                         <img
                           src={src}
                           alt={`Preview ${index + 1}`}
-                          className="w-full h-32 object-cover rounded-md border"
+                          className="w-full h-full object-contain rounded-md border"
                         />
                         <Button
                           type="button"
@@ -265,23 +263,6 @@ const CreateBlogComponent = () => {
                     className="text-red-500 text-sm mt-1"
                   />
                 </div>
-
-                {/* <div>
-                  <Label htmlFor="description">Description</Label>
-                  <Field
-                    as={Textarea}
-                    id="description"
-                    name="description"
-                    placeholder="Write a brief description"
-                    rows={4}
-                    className="mt-1"
-                  />
-                  <ErrorMessage
-                    name="description"
-                    component="p"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div> */}
 
                 {/* new text editor plugin with description filed */}
                 <div className="col-span-full">
@@ -381,7 +362,7 @@ const CreateBlogComponent = () => {
                 <Button
                   type="submit"
                   // disabled={!isValid || !dirty}
-                  className="w-full bg-primary_color dark:text-text_color_light"
+                  className="w-full bg-primary_color text-text_color_light dark:text-text_color_light"
                 >
                   Create Blog
                 </Button>

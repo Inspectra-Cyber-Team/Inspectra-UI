@@ -1,16 +1,27 @@
-'use client';
 import React from "react";
 import { RxCross2 } from "react-icons/rx";
 import FormLoginComponent from "@/components/FromLoginComponent/FormLoginComponent";
 import Link from "next/link";
 import { LoginAuth } from "@/components/FormLoginWithAuthComponent/login-auth";
-// import {LoginAuth} from "@/components/FormLoginWithAuthComponent/login-auth";
+import { Metadata } from 'next'
 
-// export const metadata: Metadata = {
-//   title: "Login - Inspectra",
-//   description:
-//     "Learn more about Inspectra, a white-box testing platform designed to review source code and identify security weaknesses. Discover our mission, values, and commitment to secure development.",
-// };
+export const metadata: Metadata = {
+  title: 'Login - Inspectra',
+  description:
+    'Welcome to Inspectra. Login to access your account and explore the platform’s advanced source code analysis tools for secure development.',
+  keywords:
+    'Inspectra, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+  authors: { name: 'Inspectra Team' },
+  publisher: 'Inspectra',
+  openGraph: {
+    title: 'Login - Inspectra',
+    description:
+      'Welcome to Inspectra. Login to access your account and explore the platform’s advanced source code analysis tools for secure development.',
+    siteName: 'Inspectra',
+    locale: 'en_KH',
+    type: 'website',
+  },
+};
 
 export default function page() {
 

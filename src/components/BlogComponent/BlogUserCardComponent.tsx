@@ -129,7 +129,7 @@ export default function BlogUserCardComponent({
                 </div>
                 <div className="flex justify-between items-center">
                   <div className={"flex justify-between space-x-4"}>
-                    <div className="flex items-center space-x-2 text-orange-400 text-lg">
+                    <div className="flex items-center space-x-2 text-text_color_desc_light dark:text-text_color_desc_dark  text-lg">
                       <div className="mb-1">
                       <FaHandsClapping/>
                       </div>

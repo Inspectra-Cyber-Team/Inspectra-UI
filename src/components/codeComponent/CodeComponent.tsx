@@ -65,7 +65,13 @@ const columns: ColumnDef<CodeMetric>[] = [
           }
         >
           {qualifier === "DIR" && (
-            <FaFolder className={isBase?"mr-2 text-orange-400":"mr-2 text-orange-400 group-hover:underline"} />
+            <FaFolder
+              className={
+                isBase
+                  ? "mr-2 text-orange-400"
+                  : "mr-2 text-orange-400 group-hover:underline"
+              }
+            />
           )}
           {qualifier === "FIL" && (
             <FaFileAlt className="mr-2 text-gray-600 group-hover:text-blue-500" />
@@ -137,7 +143,7 @@ const columns: ColumnDef<CodeMetric>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Reliability 
+          Reliability
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -196,7 +202,6 @@ type CodeComponentProps = Readonly<{
 }>;
 
 export default function CodeComponent({ projectName }: CodeComponentProps) {
-  
   const router = useRouter();
 
   const [componentName, setComponentName] = React.useState<string>("");
@@ -336,9 +341,7 @@ export default function CodeComponent({ projectName }: CodeComponentProps) {
     if (qualifier === "DIR" && row.original.key !== componentName) {
       setComponentName(row.original.key);
     } else if (qualifier === "FIL") {
-      router.push(
-        `/code/${encodeURIComponent(row?.original?.key)}`
-      );
+      router.push(`/code/${encodeURIComponent(row?.original?.key)}`);
     }
   }, 300);
 
@@ -413,14 +416,20 @@ export default function CodeComponent({ projectName }: CodeComponentProps) {
               <TableRow
                 key={row.id}
                 className={
-                  row.original.isBaseComponent ? "bg-gray-100 mx-auto rounded-sm " : ""
+                  row.original.isBaseComponent
+                    ? "bg-gray-100 mx-auto rounded-sm dark:bg-card_color_dark"
+                    : ""
                 }
                 onClick={() => handleRowClick(row)}
               >
                 {row.getVisibleCells().map((cell, index) => (
                   <TableCell
                     key={cell.id}
-                    className={index === 0 ? "w-[70%] h-16 " : "w-[10%] h-16 mx-auto text-center"}
+                    className={
+                      index === 0
+                        ? "w-[70%] h-16 "
+                        : "w-[10%] h-16 mx-auto text-center"
+                    }
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>

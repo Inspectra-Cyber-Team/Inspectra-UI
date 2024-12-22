@@ -2,11 +2,24 @@ import ProjectContent from "@/components/Project/CardResultComponent/ProjectCont
 import ProjectComponent from "@/components/Project/ProjectComponent";
 import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Project - Inspectra",
+export const metadata: Metadata ={
+  title: 'Project - Inspectra',
   description:
-    "Learn more about Inspectra, a white-box testing platform designed to review source code and identify security weaknesses. Discover our mission, values, and commitment to secure development.",
-};
+    'Access the Inspectra Project Dashboard, a centralized platform to scan, analyze, and review source code for vulnerabilities. Ensure secure development with advanced tools and detailed insights.',
+  keywords:
+    'Inspectra project, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+  authors: { name: 'Inspectra Team' },
+  publisher: 'Inspectra',
+  openGraph: {
+    title: 'Project - Inspectra',
+    description:
+      'Access the Inspectra Project Dashboard, a centralized platform to scan, analyze, and review source code for vulnerabilities. Ensure secure development with advanced tools and detailed insights.',
+    siteName: 'Inspectra',
+    locale: 'en_KH',
+    type: 'website',
+  },
+}
+
 export default function page() {
   return (
     <main className="w-[90%] mx-auto">

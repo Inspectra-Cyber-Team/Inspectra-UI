@@ -141,7 +141,9 @@ export default function Document() {
           {selectedDocument ? (
             <div>
               <h2 className="text-2xl font-bold">{selectedDocument.title}</h2>
-              <p className="mt-3">{selectedDocument.description}</p>
+              <p className="mt-3" dangerouslySetInnerHTML={(
+                {__html: selectedDocument?.description}
+              )}></p>
 
               {/* Render images if they exist or show a placeholder */}
               <div className="w-[100%] mt-3 ">
@@ -176,7 +178,9 @@ export default function Document() {
                     <h2 className="text-2xl font-bold">
                       {doc.title}
                     </h2>
-                    <p className="mt-3 mb-3">{doc.description}</p>
+                    <p className="mt-3 mb-3" dangerouslySetInnerHTML={(
+                      {__html: doc?.description}
+                    )}></p>
 
                     {/* Render images if they exist or show a placeholder */}
                     <div className="w-[100%] mt-5 mb-5">

@@ -1,5 +1,24 @@
 import FAQsComponent from "@/components/FAQsComponent/FAQsComponent";
 import React from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata ={
+  title: 'FAQs - Inspectra',
+  description:
+    'Inspectra frequently asked questions to answers all your doubt on the scanning and tools or technique been used in the website',
+  keywords:
+    'Inspectra faqs, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+  authors: { name: 'Inspectra Team' },
+  publisher: 'Inspectra',
+  openGraph: {
+    title: 'FAQs - Inspectra',
+    description:
+      'Inspectra frequently asked questions to answers all your doubt on the scanning and tools or technique been used in the website',
+    siteName: 'Inspectra',
+    locale: 'en_KH',
+    type: 'website',
+  },
+}
 
 export default function page() {
   return (

@@ -5,18 +5,32 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { Metadata } from "next";
 import Link from "next/link";
 
 import { VscGithub } from "react-icons/vsc";
 import { FcGoogle } from "react-icons/fc";
 import { RxCross2 } from "react-icons/rx";
 import { IoIosArrowUp } from "react-icons/io";
+import { Metadata } from 'next'
+
 export const metadata: Metadata = {
-  title: "Sign Up - Inspectra",
+  title: 'Signup - Inspectra',
   description:
-    "Learn more about Inspectra, a white-box testing platform designed to review source code and identify security weaknesses. Discover our mission, values, and commitment to secure development.",
+    'Welcome to Inspectra. Signup to access your account and explore the platform’s advanced source code analysis tools for secure development.',
+  keywords:
+    'Inspectra, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+  authors: { name: 'Inspectra Team' },
+  publisher: 'Inspectra',
+  openGraph: {
+    title: 'Signup - Inspectra',
+    description:
+      'Welcome to Inspectra. Signup to access your account and explore the platform’s advanced source code analysis tools for secure development.',
+    siteName: 'Inspectra',
+    locale: 'en_KH',
+    type: 'website',
+  },
 };
+
 export default function page() {
   return (
     <main className="h-screen  w-full mx-auto flex ">
