@@ -6,7 +6,7 @@ export const metadata: Metadata ={
   description:
     'Change up your password and get started with your new password',
   keywords:
-    'Inspectra, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+    'Inspectra, white-box testing Cambodia, Inspectra, inspectra, inspect, source code scan, scan, code scan, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
   authors: { name: 'Inspectra Team' },
   publisher: 'Inspectra',
   openGraph: {
@@ -16,6 +16,7 @@ export const metadata: Metadata ={
     siteName: 'Inspectra',
     locale: 'en_KH',
     type: 'website',
+    url: 'https://inspectra.istad.co/'
   },
 }
 

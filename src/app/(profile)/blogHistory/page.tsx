@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     'Explore Inspectra’s history, a cutting-edge white-box testing platform from Cambodia that ensures secure development through source code analysis and identification of security vulnerabilities.',
   keywords:
-    'Inspectra blog history, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+    'Inspectra blog history, Inspectra, inspectra, inspect, source code scan, scan, code scan, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
   authors: { name: 'Inspectra Team' },
   publisher: 'Inspectra',
   openGraph: {
@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     siteName: 'Inspectra',
     locale: 'en_KH',
     type: 'website',
+    url: 'https://inspectra.istad.co/'
   },
 };
 

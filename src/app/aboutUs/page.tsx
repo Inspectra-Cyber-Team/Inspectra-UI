@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description:
     'Inspectra mission and vision with the team and mentor. Inspectra empowers you to uncover hidden risks with precision. Through deep, intelligent scanning and proactive insights, we help you secure your code and protect against unseen vulnerabilities—keeping your systems resilient and your data safe based on Sonarqube Architecture',
   keywords:
-    'Inspectra About Us, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+    'Inspectra About Us, Inspectra, inspectra, inspect, source code scan, scan, code scan, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
   authors: { name: 'Inspectra Team' },
   publisher: 'Inspectra',
   openGraph: {
@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     siteName: 'Inspectra',
     locale: 'en_KH',
     type: 'website',
+    url: 'https://inspectra.istad.co/'
   },
 };
 

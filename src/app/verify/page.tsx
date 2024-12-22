@@ -8,7 +8,7 @@ export const metadata: Metadata ={
   description:
     'Verify up your email in the case of forgetting your password and recieve OTP to setup your new password',
   keywords:
-    'Inspectra verify, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+    'Inspectra verify, Inspectra, inspectra, inspect, source code scan, scan, code scan, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
   authors: { name: 'Inspectra Team' },
   publisher: 'Inspectra',
   openGraph: {
@@ -18,6 +18,7 @@ export const metadata: Metadata ={
     siteName: 'Inspectra',
     locale: 'en_KH',
     type: 'website',
+    url: 'https://inspectra.istad.co/'
   },
 }
 
