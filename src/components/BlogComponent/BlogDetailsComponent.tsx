@@ -40,7 +40,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Edit, MoreVertical, Trash2 } from "lucide-react";
 
-
 type BlogDetailsProps = Readonly<{
   uuid: string;
 }>;
@@ -51,7 +50,6 @@ type ReportProps = {
 };
 
 export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
-
   const { toast } = useToast();
 
   const router = useRouter();
@@ -77,7 +75,6 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
   const [likeColor, setLikeColor] = useState(false);
 
   const [blogData, setBlogData] = useState<Blog | undefined>();
-  const [socket, setSocket] = useState<WebSocket | null>(null);
 
   const { data } = useGetBlogDetailsQuery({ uuid });
   const [createReport] = useReportMutation();
@@ -90,36 +87,36 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     setLikeColor(!!likedBlogs[data?.data?.uuid]);
   }, [data]);
 
-  useEffect(() => {
-    const connectWebSocket = () => {
-      const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL as string);
+  // useEffect(() => {
+  //   const connectWebSocket = () => {
+  //     const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL as string);
 
-      ws.onopen = () => console.log("WebSocket connection established.");
-      ws.onmessage = (event) => {
-        try {
-          const newBlog = JSON.parse(event.data);
-          if (newBlog.uuid === uuid) {
-            setBlogData((prevData) => ({
-              ...prevData,
-              ...newBlog,
-            }));
-          }
-        } catch (error) {
-          console.error("Error parsing WebSocket message:", error);
-        }
-      };
-      ws.onerror = () => console.error("WebSocket error. Retrying...");
-      ws.onclose = () => console.error("WebSocket closed. Retrying...");
+  //     ws.onopen = () => console.log("WebSocket connection established.");
+  //     ws.onmessage = (event) => {
+  //       try {
+  //         const newBlog = JSON.parse(event.data);
+  //         if (newBlog.uuid === uuid) {
+  //           setBlogData((prevData) => ({
+  //             ...prevData,
+  //             ...newBlog,
+  //           }));
+  //         }
+  //       } catch (error) {
+  //         console.error("Error parsing WebSocket message:", error);
+  //       }
+  //     };
+  //     ws.onerror = () => console.error("WebSocket error. Retrying...");
+  //     ws.onclose = () => console.error("WebSocket closed. Retrying...");
 
-      setSocket(ws);
-    };
+  //     setSocket(ws);
+  //   };
 
-    if (!socket) connectWebSocket();
+  //   if (!socket) connectWebSocket();
 
-    return () => {
-      socket?.close();
-    };
-  }, [uuid, socket]);
+  //   return () => {
+  //     socket?.close();
+  //   };
+  // }, [uuid, socket]);
 
   const handleSubmitReport = async ({ blogUuid, message }: ReportProps) => {
     try {
@@ -168,14 +165,14 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
       // Update local storage
       localStorage.setItem("likedBlogs", JSON.stringify(likedBlogs));
 
-      // Notify via WebSocket
-      socket?.send(
-        JSON.stringify({
-          type: message === "Blog liked successfully" ? "like" : "unlike",
-          blogUuid,
-          userUuid: blogData?.user?.uuid,
-        })
-      );
+      // // Notify via WebSocket
+      // socket?.send(
+      //   JSON.stringify({
+      //     type: message === "Blog liked successfully" ? "like" : "unlike",
+      //     blogUuid,
+      //     userUuid: blogData?.user?.uuid,
+      //   })
+      // );
 
       console.log(message);
     } catch (error) {
@@ -254,7 +251,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         variant: "error",
       });
     }
-  }
+  };
 
   return (
     <section className="w-[90%] mx-auto my-[20px] md:my-[60px]">
@@ -266,21 +263,21 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         <div className="flex flex-col md:flex-row my-3 gap-6">
           <div className="flex items-center space-x-5">
             {/* Author Info */}
-          <div className="flex items-center space-x-2">
-            <img
-              className="w-10 h-10 rounded-full"
-              src={blogData?.user?.profile}
-              alt="profile"
-            />
-            <p>
-              {blogData?.user?.firstName} {blogData?.user?.lastName}
-            </p>
-          </div>
-          {/* Created Date */}
-          <div className="flex items-center space-x-2">
-            <FaCalendarAlt className="text-text_color_desc_light text-xl" />
-            <p>{convertToDayMonthYear(blogData?.createdAt || "")}</p>
-          </div>
+            <div className="flex items-center space-x-2">
+              <img
+                className="w-10 h-10 rounded-full"
+                src={blogData?.user?.profile}
+                alt="profile"
+              />
+              <p>
+                {blogData?.user?.firstName} {blogData?.user?.lastName}
+              </p>
+            </div>
+            {/* Created Date */}
+            <div className="flex items-center space-x-2">
+              <FaCalendarAlt className="text-text_color_desc_light text-xl" />
+              <p>{convertToDayMonthYear(blogData?.createdAt || "")}</p>
+            </div>
           </div>
           <div className="flex items-center space-x-9">
             {/* Views */}
@@ -328,11 +325,17 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => router.push(`/blog/${uuid}/update`)} className="text-yellow-600 hover:cursor-pointer hover:bg-[#f5f5f5]">
+                    <DropdownMenuItem
+                      onClick={() => router.push(`/blog/${uuid}/update`)}
+                      className="text-yellow-600 hover:cursor-pointer hover:bg-[#f5f5f5]"
+                    >
                       <Edit className="mr-2 h-4 w-4" /> Edit
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={()=>setDeleteModalOpen(true)} className="text-destructive  hover:cursor-pointer hover:bg-[#f5f5f5]">
+                    <DropdownMenuItem
+                      onClick={() => setDeleteModalOpen(true)}
+                      className="text-destructive  hover:cursor-pointer hover:bg-[#f5f5f5]"
+                    >
                       <Trash2 className="mr-2 h-4 w-4" /> Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -390,7 +393,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
           </div>
         )}
         {/* Description */}
-        <hr className="my-5"/>
+        <hr className="my-5" />
         <div
           dangerouslySetInnerHTML={{ __html: modifiedDescription || "" }}
         ></div>
@@ -439,9 +442,8 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         </DialogContent>
       </Dialog>
 
-
-       {/* delete modal */}
-       <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+      {/* delete modal */}
+      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
         <DialogContent className="bg-card w-full max-w-[90%] md:max-w-md lg:max-w-lg mx-auto h-fit p-6 md:p-10 rounded-xl">
           <DialogHeader>
             <DialogTitle>Delete Blog</DialogTitle>
@@ -463,8 +465,6 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-
     </section>
   );
 }
