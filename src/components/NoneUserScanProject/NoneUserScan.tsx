@@ -21,8 +21,16 @@ export default function NoneUserScan() {
   const [projectScanNonUser] = useCreateProjectScanNonUserMutation();
 
   const handleSubmit = () => {
+    // Check if the input is empty
+    if (!gitUrlResult.trim()) {
+      setIsLoading(false); 
+      toast({
+        description: "Please enter a Git URL",
+        variant: "error",
+      });
+      return;
+    }
     setIsLoading(true);
-
     if (countScan < 4) {
       const newCount = countScan + 1;
       setCountScan(newCount);
@@ -74,6 +82,8 @@ export default function NoneUserScan() {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
+
+      // vlaidate git url
       if (gitUrlResult.includes(".git")) {
         const fetchGitbranch = async () => {
           const data = await fetch(
@@ -106,7 +116,11 @@ export default function NoneUserScan() {
       {/* image */}
       <div className="h-full hidden lg:block  justify-center items-center">
         {theme == "dark" ? (
-          <img src="/images/scan-anonymouse-user.png" className="h-[400px]" alt="scan image"></img>
+          <img
+            src="/images/scan-anonymouse-user.png"
+            className="h-[400px]"
+            alt="scan image"
+          ></img>
         ) : (
           <img src="/images/scan.png" alt="scan image"></img>
         )}

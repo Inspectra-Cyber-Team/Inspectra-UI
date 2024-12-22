@@ -29,7 +29,7 @@ export default function FeedbackCard() {
             </div>
             <div className="w-[50px] h-[50px] overflow-hidden rounded-full">
               <img
-                src={`http://136.228.158.126:4011/images/${feedback?.profile}`}
+                src={`${feedback?.profile}`}
                 alt="Logo"
                 width={50}
                 height={50}
