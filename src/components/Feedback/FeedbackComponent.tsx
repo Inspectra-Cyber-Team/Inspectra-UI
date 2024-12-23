@@ -3,16 +3,16 @@ import { useToast } from "@/components/hooks/use-toast";
 import { useCreateUserFeedbackMutation } from "@/redux/service/feedback";
 import { createFeedbackType } from "@/types/Feedback";
 
-
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export default function FeedbackComponent() {
   const { theme } = useTheme();
   const { toast } = useToast();
   const [createUserFeedback] = useCreateUserFeedbackMutation();
-
+  const [userUUID, setUserUUID] = useState("");
   const initialValues: createFeedbackType = {
     message: "",
   };
@@ -21,24 +21,36 @@ export default function FeedbackComponent() {
     message: Yup.string()
       .required("Feedback message is required")
       .min(3, "Message must be at least 3 characters")
-      .matches(/^\S+(?: \S+)*$/, "Message cannot contain leading, trailing, or multiple spaces"),
+      .matches(
+        /^\S+(?: \S+)*$/,
+        "Message cannot contain leading, trailing, or multiple spaces"
+      ),
   });
 
   const handleSubmit = async (values: createFeedbackType) => {
     try {
-      
-       await createUserFeedback({ message: values });
-
-      toast({
-        description: "Thank you for your feedback! Our team will review it.",
-        variant: "success",
-      });
+      await createUserFeedback({ message: values });
+      if (userUUID) {
+        toast({
+          description: "Thank you for your feedback! Our team will review it.",
+          variant: "success",
+        });
+      } else {
+        toast({
+          description: "Please login to give feedback",
+          variant: "error",
+        });
+      }
     } catch (error) {
       toast({
         description: `${error}`,
       });
     }
   };
+
+  useEffect(() => {
+    setUserUUID(localStorage.getItem("userUUID") || "");
+  });
 
   return (
     <section className="w-[90%] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">

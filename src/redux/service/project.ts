@@ -38,9 +38,9 @@ export const projectAPI = cyberApi.injectEndpoints({
 
     // get user Project
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    getProjectOverViewUser: builder.query<any, { uuid: string }>({
-      query: ({ uuid }) => ({
-        url: `/projects/user/${uuid}`,
+    getProjectOverViewUser: builder.query<any, { uuid: string ,page: number, size: number }>({
+      query: ({ uuid , page, size }) => ({
+        url: `/projects/user/${uuid}?page=${page}&size=${size}`,
       }),
       providesTags: [{ type: "Projects", id: "PRJECTLIST" }],
     }),

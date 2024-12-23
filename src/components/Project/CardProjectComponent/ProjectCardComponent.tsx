@@ -65,7 +65,8 @@ export default function ProjectCardComponent() {
     data: projectResult,
     isError,
     isFetching: isFetchDataProjectScan,
-  } = useGetProjectOverViewUserQuery({ uuid: userUUID });
+  } = useGetProjectOverViewUserQuery({ uuid: userUUID, page: 0, size: 100 });
+  // rtk for delete project
   const [deleteProject, { isSuccess: isDeleteSuccess }] =
     useDeleteProjectMutation();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
