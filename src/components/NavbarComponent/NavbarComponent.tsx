@@ -258,7 +258,7 @@ export default function NavbarComponent() {
                       </SheetTrigger>
                       <SheetContent className="bg-background_light_mode dark:bg-background_dark_mode border-hidden">
                         <ul className=" text-text_color_light dark:text-text_color_dark  text-text_body_16   space-y-4 flex flex-col">
-                          <div className="flex">
+                          <div className="flex items-center">
                             <div className=" w-12 h-12 overflow-hidden rounded-full">
                               <img
                                 src={userData?.data?.profile}
@@ -276,11 +276,12 @@ export default function NavbarComponent() {
                               <p className="text-text_color_light text-text_body_16 dark:text-text_color_dark">
                                 {userData?.data?.name}
                               </p>
-                              <p className="text-text_color_desc_light text-[14px] dark:text-text_color_dark">
-                                {userData?.data?.email}
-                              </p>
+                              
                             </div>
                           </div>
+                          <p className="text-text_color_desc_light text-[14px] dark:text-text_color_dark">
+                                {userData?.data?.email}
+                              </p>
                           <hr className="text-text_color_light" />
                           {navbarData.map((item, index: number) => (
                             <Link

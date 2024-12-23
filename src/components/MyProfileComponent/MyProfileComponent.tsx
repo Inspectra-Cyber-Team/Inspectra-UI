@@ -216,7 +216,7 @@ export default function MyProfileComponent() {
                 <button
                   type="button"
                   onClick={() => router.push("/change-password")}
-                  className="border border-secondary_color text-text_color_light md:bg-secondary_color md:border-none p-3 rounded-lg mt-0"
+                  className="border border-secondary_color text-text_color_light md:dark:text-text_color_light dark:text-text_color_dark md:bg-secondary_color md:border-none p-3 rounded-lg mt-0"
                 >
                   Change Password
                 </button>

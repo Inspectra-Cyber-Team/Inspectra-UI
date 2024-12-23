@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     title: 'Login - Inspectra',
     description:
       'Welcome to Inspectra. Login to access your account and explore the platform’s advanced source code analysis tools for secure development.',
+      
     siteName: 'Inspectra',
     locale: 'en_KH',
     type: 'website',
@@ -166,7 +167,7 @@ export default function page() {
 
               {/*/!* GitHub Button *!/*/}
               {/*<button className="w-full py-3 flex items-center font-normal bg-background_light_mode justify-center rounded-[10px]">*/}
-              {/*  <FaGithub className="text-text_title_24" />*/}
+              {/*  <FaGithub className="text-text_title_24 dark:text-text_color_light" />*/}
               {/*  <span className="text-text_color_light ml-3">*/}
               {/*    Or Sign in with GitHub*/}
               {/*  </span>*/}

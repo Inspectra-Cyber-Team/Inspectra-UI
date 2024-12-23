@@ -13,16 +13,7 @@ export default function ProjectComponent() {
       <p className="text-text_title_20 md:text-text_title_24 text-text_color_light dark:text-text_color_dark">
         Scan Project
       </p>
-      <div className="flex w-auto gap-3 justify-between">
-        {userUUID === "" ? (
-          <p></p>
-        ) : (
-          <div className="p-2 rounded-2xl w-[50px] items-center text-text_color_light flex justify-center bg-primary_color">
-            All
-          </div>
-        )}
-        <CreateProjectComponent />
-      </div>
+      <CreateProjectComponent />
     </section>
   );
 }
