@@ -45,15 +45,15 @@ export default function RecentPostComponent() {
 
   return (
     <div>
-      <p className="text-text_title_20 my-3 text-text_color_light dark:text-text_color_dark font-semibold">
+      <p className="text-text_title_20  text-text_color_light dark:text-text_color_dark font-semibold my-2">
         Recent Posts
       </p>
-      <div className="py-3 flex flex-col space-y-4">
+      <div className="py-3 flex flex-col space-y-5">
         {blogList?.map((blog: Blog, index: number) => (
           <div
             key={index}
             onClick={() => router.push(`/blog/${blog?.uuid}`)}
-            className="rounded-lg overflow-hidden flex w-full h-24 cursor-pointer"
+            className="rounded-lg overflow-hidden flex w-full h-24 cursor-pointer "
           >
             {/* Image Section */}
             <div className="w-[120px] h-24">

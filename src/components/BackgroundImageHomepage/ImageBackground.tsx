@@ -12,7 +12,7 @@ export default function ImageBackground() {
     pathname === "/useCase" ||
     pathname === "/project" ||
     pathname === "/useCase" ||
-    pathname === "/blog" ||
+    (pathname.startsWith("/blog") && pathname !== "/blog/uuid") ||
     pathname === "/faq" ||
     pathname === "/login" ||
     pathname === "/register" ||

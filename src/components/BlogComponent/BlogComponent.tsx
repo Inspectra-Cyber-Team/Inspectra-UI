@@ -172,7 +172,7 @@ export default function BlogComponent() {
 
             {/* thumbnail */}
             <div
-              className={"w-[300px] h-[150px] hidden lg:block overflow-hidden"}
+              className={"w-[300px] h-[180px] hidden lg:block overflow-hidden"}
             >
               <img
                 className="w-full h-full object-cover rounded-xl transition-transform duration-300 hover:scale-110"
