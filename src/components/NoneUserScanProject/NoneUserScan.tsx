@@ -13,6 +13,7 @@ import { FaGithub, FaGitlab } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { toast } from "../hooks/use-toast";
 import { useTheme } from "next-themes";
+import { Checkbox } from "../ui/checkbox";
 export default function NoneUserScan() {
   const { theme } = useTheme();
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function NoneUserScan() {
   const handleSubmit = () => {
     // Check if the input is empty
     if (!gitUrlResult.trim()) {
-      setIsLoading(false); 
+      setIsLoading(false);
       toast({
         description: "Please enter a Git URL",
         variant: "error",
@@ -110,21 +111,33 @@ export default function NoneUserScan() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGitUrl(e.target.value); // Update the state with the input value
   };
+  const [selectedCheckbox, setSelectedCheckBox] = useState<string[]>([]);
+
+  const handleCheckboxChange = (id: any, checked: any) => {
+    if (checked) {
+      setSelectedCheckBox([...selectedCheckbox, id]);
+    } else {
+      setSelectedCheckBox(selectedCheckbox.filter((item) => item !== id));
+    }
+  };
+
+  console.log(selectedCheckbox);
 
   return (
     <section className="flex mx-auto justify-center lg:justify-between xl:justify-around">
       {/* image */}
-      <div className="h-full hidden lg:block  justify-center items-center">
+      <div className=" hidden lg:flex justify-center items-center">
         {theme == "dark" ? (
           <img
             src="/images/scan-anonymouse-user.png"
             className="h-[400px]"
             alt="scan image"
-          ></img>
+          />
         ) : (
-          <img src="/images/scan.png" alt="scan image"></img>
+          <img src="/images/scan.png" className="h-[400px]" alt="scan image" />
         )}
       </div>
+
       {/* scaning project */}
       <div className="h-full   lg:w-[50%] p-10 rounded-[20px] bg-card_color_light dark:bg-card_color_dark  flex text-start flex-col justify-between">
         {isLoading ? (
@@ -204,17 +217,64 @@ export default function NoneUserScan() {
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* filter scan */}
+            <div>
+              <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-5">
+                Filter Scan
+              </p>
+              <div className="flex items-center space-x-2 my-5">
+                <Checkbox
+                  id="bug"
+                  onCheckedChange={(checked) =>
+                    handleCheckboxChange("bug", checked)
+                  }
+                  className="h-5 w-5"
+                />
+                <label
+                  htmlFor="bug"
+                  className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Bug
+                </label>
+              </div>
+              <div className="flex items-center space-x-2  my-5">
+                <Checkbox
+                  id="Vulnerability"
+                  onCheckedChange={(checked) =>
+                    handleCheckboxChange("Vulnerability", checked)
+                  }
+                  className="h-5 w-5"
+                />
+                <label
+                  htmlFor="Vulnerability"
+                  className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Vulnerability
+                </label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="Code Smell"
+                  onCheckedChange={(checked) =>
+                    handleCheckboxChange("Code Smell", checked)
+                  }
+                  className="h-5 w-5"
+                />
+                <label
+                  htmlFor="Code Smell"
+                  className="text-text_body_16  font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Code Smell
+                </label>
+              </div>
+            </div>
             {/* submit scan */}
             <button
               //disabled={isLoading}
               onClick={() => handleSubmit()}
               className="w-full mt-10 py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
             >
-              {/* {isLoading ? (
-                          <div className="spinner-border  animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
-                        ) : (
-                          "Submit"
-                        )} */}
               Submit
             </button>
           </div>

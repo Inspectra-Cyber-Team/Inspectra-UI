@@ -53,6 +53,7 @@ import { FaCheck, FaGithub, FaGitlab } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
+import { Checkbox } from "@/components/ui/checkbox";
 export default function ProjectCardComponent() {
   const [userUUID, setUserUUID] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -220,6 +221,15 @@ export default function ProjectCardComponent() {
     }
   };
 
+  const [selectedCheckbox, setSelectedCheckBox] = useState<string[]>([]);
+
+  const handleCheckboxChange = (id: any, checked: any) => {
+    if (checked) {
+      setSelectedCheckBox([...selectedCheckbox, id]);
+    } else {
+      setSelectedCheckBox(selectedCheckbox.filter((item) => item !== id));
+    }
+  };
   // handle on get all Directories from user after git url and selecet branch
   // const handleFetchDirectories = async () => {
   //   if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
@@ -1138,6 +1148,58 @@ export default function ProjectCardComponent() {
                               )}
                             </DropdownMenuContent>
                           </DropdownMenu>
+
+                          {/* filter scan */}
+                          <div>
+                            <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-5">
+                              Filter Scan
+                            </p>
+                            <div className="flex items-center space-x-2 my-5">
+                              <Checkbox
+                                id="bug"
+                                onCheckedChange={(checked) =>
+                                  handleCheckboxChange("bug", checked)
+                                }
+                                className="h-5 w-5"
+                              />
+                              <label
+                                htmlFor="bug"
+                                className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                              >
+                                Bug
+                              </label>
+                            </div>
+                            <div className="flex items-center space-x-2  my-5">
+                              <Checkbox
+                                id="Vulnerability"
+                                onCheckedChange={(checked) =>
+                                  handleCheckboxChange("Vulnerability", checked)
+                                }
+                                className="h-5 w-5"
+                              />
+                              <label
+                                htmlFor="Vulnerability"
+                                className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                              >
+                                Vulnerability
+                              </label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                id="Code Smell"
+                                onCheckedChange={(checked) =>
+                                  handleCheckboxChange("Code Smell", checked)
+                                }
+                                className="h-5 w-5"
+                              />
+                              <label
+                                htmlFor="Code Smell"
+                                className="text-text_body_16  font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                              >
+                                Code Smell
+                              </label>
+                            </div>
+                          </div>
                           {/* submit scan */}
                           <button
                             key={index}
