@@ -121,7 +121,7 @@ export default function NavbarComponent() {
                 ) : (
                   <Menubar >
                     <MenubarMenu>
-                      <MenubarTrigger onClick={handleMenuToggle} className="hidden lg:block">
+                      <MenubarTrigger onClick={handleMenuToggle} className="hidden md:block">
                           <img
                             src={userData?.data?.profile}
                             alt="Profile"
@@ -258,21 +258,19 @@ export default function NavbarComponent() {
                       </SheetTrigger>
                       <SheetContent className="bg-background_light_mode dark:bg-background_dark_mode border-hidden">
                         <ul className=" text-text_color_light dark:text-text_color_dark  text-text_body_16   space-y-4 flex flex-col">
-                          <div className="flex">
-                            <div className=" w-12 h-12 overflow-hidden rounded-full">
+                          <div className="flex space-x-3">
+                            <div className="overflow-hidden rounded-full">
                               <img
                                 src={userData?.data?.profile}
                                 alt="Profile"
-                                width={50}
-                                height={50}
-                                className="object-cover w-full h-full"
+                                className="object-cover cursor-pointer rounded-full w-12 h-12"
                                 onError={(e) =>
                                   (e.currentTarget.src =
                                     "/images/default-profile.jpg")
                                 }
                               />
                             </div>
-                            <div className="px-5">
+                            <div>
                               <p className="text-text_color_light text-text_body_16 dark:text-text_color_dark">
                                 {userData?.data?.name}
                               </p>
