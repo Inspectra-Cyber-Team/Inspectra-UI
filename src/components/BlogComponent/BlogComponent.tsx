@@ -104,7 +104,7 @@ export default function BlogComponent() {
           <div
             key={index}
             onClick={() => router.push(`/blog/${blog?.uuid}`)}
-            className="flex  my-2 flex-wrap lg:flex-nowrap justify-center lg:justify-between cursor-pointer items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5 lg:pb-0"
+            className="flex my-5 flex-wrap lg:flex-nowrap justify-center lg:justify-between cursor-pointer items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5"
           >
             <div className="flex flex-col gap-3 lg:w-[55%]">
               {/* profile */}
@@ -122,7 +122,7 @@ export default function BlogComponent() {
               </div>
 
               {/* title */}
-              <h4 className="text-text_title_20  cursor-pointer  line-clamp-1 text-text_color_light dark:text-text_color_dark">
+              <h4 className="text-text_title_20 cursor-pointer line-clamp-2 text-text_color_light dark:text-text_color_dark font-semibold">
                 {blog?.title}
               </h4>
 
@@ -133,15 +133,15 @@ export default function BlogComponent() {
               ></p>
 
               {/* created at */}
-              <div className="flex gap-5 mb-5">
+              <div className="flex space-x-8 mt-3">
                 <div className="flex gap-2 items-center">
-                  <FaCalendarAlt className="text-text_color_desc_light dark:text-text_color_desc_dark" />
+                  <FaCalendarAlt className="text-text_color_desc_light dark:text-text_color_desc_dark text-xl" />
                   <p>{convertToDayMonthYear(blog?.createdAt)}</p>
                 </div>
 
                 {/* view */}
                 <div className="flex gap-2 items-center">
-                  <FaEye className="text-text_color_desc_light dark:text-text_color_desc_dark" />
+                  <FaEye className="text-text_color_desc_light dark:text-text_color_desc_dark text-2xl" />
                   <p>{blog?.viewsCount}</p>
                 </div>
 
@@ -149,12 +149,12 @@ export default function BlogComponent() {
                 <div className="flex gap-2 items-center ">
                   {likeColor ? (
                     <FaHandsClapping
-                      className="text-orange-400 cursor-pointer mb-1"
+                      className="text-orange-400 cursor-pointer mb-1 text-xl"
                       onClick={() => handleLike(blog?.uuid)}
                     />
                   ) : (
                     <FaHandsClapping
-                      className="cursor-pointer text-text_color_desc_light dark:text-text_color_desc_dark mb-1"
+                      className="cursor-pointer text-text_color_desc_light dark:text-text_color_desc_dark mb-1 text-xl"
                       onClick={() => handleLike(blog?.uuid)}
                     />
                   )}
@@ -164,7 +164,7 @@ export default function BlogComponent() {
 
                 {/* comment */}
                 <div className="flex gap-2 items-center">
-                  <FaCommentDots className="text-text_color_desc_light dark:text-text_color_desc_dark" />
+                  <FaCommentDots className="text-text_color_desc_light dark:text-text_color_desc_dark text-xl" />
                   <p>{blog?.countComments}</p>
                 </div>
               </div>
@@ -172,7 +172,7 @@ export default function BlogComponent() {
 
             {/* thumbnail */}
             <div
-              className={"w-[200px] h-[150px] hidden lg:block overflow-hidden"}
+              className={"w-[300px] h-[150px] hidden lg:block overflow-hidden"}
             >
               <img
                 className="w-full h-full object-cover rounded-xl transition-transform duration-300 hover:scale-110"
@@ -185,7 +185,7 @@ export default function BlogComponent() {
       </section>
 
       {/* pagination */}
-      <Pagination className="flex justify-center mt-6">
+      <Pagination className="flex justify-center mt-10">
         <PaginationContent className="flex gap-2 items-center">
           <PaginationItem>
             <PaginationPrevious

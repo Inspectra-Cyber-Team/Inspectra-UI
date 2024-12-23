@@ -22,8 +22,8 @@ export default function BlogPageComponent() {
 
   return (
     <section>
-      <div className="flex justify-between top-0 ">
-        <p className="text-text_title_24">Blog Community</p>
+      <div className="flex justify-between">
+        <h2 className="text-text_title_24 font-bold">Blog Community</h2>
         <Link
           href={"/blog/create"}
           className="px-3 py-2 bg-primary_color text-text_color_light flex rounded-[17px] items-center justify-center"
@@ -32,7 +32,7 @@ export default function BlogPageComponent() {
           <FaPlus className={"ml-1"} />
         </Link>
       </div>
-      <div className="flex justify-between gap-10 my-5">
+      <div className="flex justify-between gap-14 my-5">
         {/* Main Content */}
         <div className="w-full lg:w-[70%]">
           {topic ? <BlogTopicComponent topic={topic} /> : <BlogComponent />}
@@ -42,14 +42,14 @@ export default function BlogPageComponent() {
         <div className="hidden lg:block w-[30%]">
           {/* Common Topics */}
           <div>
-            <p className="text-text_title_20 text-black my-2 dark:text-text_color_desc_dark">
+            <p className="text-text_title_20 text-text_color_light dark:text-text_color_dark my-2 font-semibold">
               Common Topics
             </p>
-            <div className="py-2 mb-7 flex flex-wrap gap-3">
+            <div className="py-2 mb-8 flex flex-wrap gap-3">
               {commonTopicData.map((common: CommonTopic) => (
                 <button
                   key={common.topic}
-                  className="bg-text_color_dark dark:bg-card_color_dark px-4 py-2 rounded-[17px] cursor-pointer"
+                  className="bg-card dark:bg-card_color_dark px-3 py-2 rounded-2xl cursor-pointer hover:bg-primary_color text-center justify-center"
                   onClick={() => handleTopicClick(common.topic)}
                 >
                   {common.topic}
