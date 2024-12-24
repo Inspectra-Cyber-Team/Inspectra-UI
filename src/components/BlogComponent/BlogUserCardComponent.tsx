@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FaCommentDots, FaHandsClapping } from "react-icons/fa6";
-import {  ArrowRightIcon } from "lucide-react";
+import { Button } from "../ui/button";
 
 type BlogCardProps = {
   uuid: string;
@@ -67,22 +67,19 @@ export default function BlogUserCardComponent({
   return (
     <section>
       {/* Header section below card */}
-      <section className="flex justify-between items-center mx-5 mt-4">
+      <section className="flex justify-between items-center lg:mx-5 mt-4">
         <section className={"flex items-center justify-betwee"}>
-          <p className={"font-bold md:text-[20px] text-base"}>
+          <p className={"font-semibold lg:text-text_title_24 text-text_body_16"}>
             More from {data?.content?.[0]?.user?.firstName}{" "}
             {data?.content?.[0]?.user?.lastName}
           </p>
         </section>
-        <section className="flex justify-center items-center space-x-2  text-text_color_light dark:text-text_color_dark cursor-pointer">
-          <div
-            onClick={() => setCurrentSize(currentSize + 3)}
-            className=""
+       
+          <Button
+            onClick={() => setCurrentSize(currentSize + 3)} className="bg-primary_color text-text_color_light rounded-2xl"
           >
             See More
-          </div>
-          <ArrowRightIcon/>
-        </section>
+          </Button>
       </section>
       {/* Card blog section */}
       <section

@@ -254,13 +254,28 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
   };
 
   return (
-    <section className="w-[90%] mx-auto my-[20px] md:my-[60px]">
+    <section className="w-[90%] mx-auto my-5 md:my-10">
+      {/* header */}
+        <div className="flex gap-3 text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark lg:mb-10">
+          <button onClick={() => router.push("/")}>
+           Home
+          </button>
+          <span>/</span>
+          <button onClick={() => router.push("/blog")}>
+            Blog 
+          </button>
+          <span>/</span>
+          <p className="text-ascend_color">
+            Blog Detail
+          </p>
+      </div>
+
       {/* Blog Details */}
-      <div className="w-[90%] mx-auto">
-        <h1 className="lg:text-[34px] md:text-[20px] font-bold">
+      <div className="lg:w-[90%] mx-auto">
+        <h1 className="md:text-4xl text-xl font-bold my-5">
           {blogData?.title}
         </h1>
-        <div className="flex flex-col md:flex-row my-3 gap-6">
+        <div className="flex flex-col md:flex-row my-4 gap-6">
           <div className="flex items-center space-x-5">
             {/* Author Info */}
             <div className="flex items-center space-x-2">
@@ -324,7 +339,6 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => router.push(`/blog/${uuid}/update`)}
                       className="text-yellow-600 hover:cursor-pointer hover:bg-[#f5f5f5]"

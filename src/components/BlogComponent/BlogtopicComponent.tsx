@@ -69,10 +69,10 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
           <div className="flex justify-center items-center">No data</div>
         ) : (
           blogList?.map((blog: Blog) => (
-            <button
+            <div
               key={blog?.uuid}
               onClick={() => router.push(`/blog/${blog?.uuid}`)}
-              className="flex my-2 flex-wrap lg:flex-nowrap cursor-pointer justify-center lg:justify-between items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5 lg:pb-0"
+              className="flex my-5 flex-wrap lg:flex-nowrap justify-center lg:justify-between cursor-pointer items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5"
             >
               <div className="flex flex-col gap-3 lg:w-[55%]">
                 {/* profile */}
@@ -90,25 +90,25 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
                 </div>
 
                 {/* title */}
-                <p className="text-text_title_20 text-start cursor-pointer line-clamp-1 text-text_color_light dark:text-text_color_dark">
+                <h4 className="text-text_title_20 cursor-pointer line-clamp-2 text-text_color_light dark:text-text_color_dark font-semibold">
                   {blog?.title}
-                </p>
+                </h4>
 
                 {/* description */}
-                <div className="text-text_body_16 cursor-pointer text-start text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-2" dangerouslySetInnerHTML={{ __html: blog?.description || "" }}>
-                 
+                <div className="text-text_body_16  cursor-pointer  text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-1" 
+                dangerouslySetInnerHTML={{ __html: blog?.description || "" }}>
                 </div>
 
                 {/* created at */}
-                <div className="flex gap-5 mb-5">
+                <div className="flex space-x-8 mt-3">
                   <div className="flex gap-2 items-center">
-                    <FaCalendarAlt className="text-text_color_desc_light dark:text-text_color_desc_dark" />
+                    <FaCalendarAlt className="text-text_color_desc_light dark:text-text_color_desc_dark text-xl" />
                     <p>{convertToDayMonthYear(blog?.createdAt)}</p>
                   </div>
 
                   {/* view */}
                   <div className="flex gap-2 items-center">
-                    <FaEye className="text-text_color_desc_light dark:text-text_color_desc_dark" />
+                    <FaEye className="text-text_color_desc_light dark:text-text_color_desc_dark text-xl" />
                     <p>{blog?.viewsCount}</p>
                   </div>
 
@@ -117,8 +117,8 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
                     <FaHandsClapping
                       className={`cursor-pointer ${
                         likedBlogs.includes(blog?.uuid)
-                          ? "text-orange-400"
-                          : "text-text_color_desc_light dark:text-text_color_desc_dark"
+                          ? "text-orange-400 text-xl"
+                          : "text-text_color_desc_light dark:text-text_color_desc_dark text-xl"
                       }`}
                       onClick={() => handleLike(blog?.uuid)}
                     />
@@ -127,27 +127,27 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
 
                   {/* comment */}
                   <div className="flex gap-2 items-center">
-                    <FaCommentDots className="text-text_color_desc_light dark:text-text_color_desc_dark" />
+                    <FaCommentDots className="text-text_color_desc_light dark:text-text_color_desc_dark text-xl" />
                     <p>{blog?.countComments}</p>
                   </div>
                 </div>
               </div>
 
               {/* thumbnail */}
-              <div className={"w-[200px] h-[150px]"}>
+              <div className={"w-[300px] h-[180px] hidden lg:block overflow-hidden"}>
                 <img
-                  className="w-full h-full object-contain rounded-xl"
+                  className="w-full h-full object-cover rounded-xl transition-transform duration-300 hover:scale-110"
                   src={blog?.thumbnail[0]}
                   alt="thumbnail"
                 />
               </div>
-            </button>
+            </div>
           ))
         )}
       </section>
 
       {/* pagination */}
-      <Pagination className="flex justify-center mt-6">
+      <Pagination className="flex justify-center items-center mt-6">
         <PaginationContent className="flex gap-2 items-center">
           <PaginationItem>
             <PaginationPrevious
