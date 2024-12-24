@@ -58,7 +58,6 @@ export const projectAPI = cyberApi.injectEndpoints({
 
 export const {
   useCreateProjectNameMutation,
-
   useCreateProjectScanMutation,
   useGetProjectOverViewUserQuery,
   useDeleteProjectMutation,

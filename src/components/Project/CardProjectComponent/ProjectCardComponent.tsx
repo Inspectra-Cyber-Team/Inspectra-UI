@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
+import ReactTypingEffect from "react-typing-effect";
 import {
   Select,
   SelectContent,
@@ -67,6 +68,7 @@ export default function ProjectCardComponent() {
     isError,
     isFetching: isFetchDataProjectScan,
   } = useGetProjectOverViewUserQuery({ uuid: userUUID, page: 0, size: 100 });
+
   // rtk for delete project
   const [deleteProject, { isSuccess: isDeleteSuccess }] =
     useDeleteProjectMutation();
@@ -74,7 +76,7 @@ export default function ProjectCardComponent() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
-
+  const [isClosing, setIsClosing] = useState(false);
   const [
     createScanProject,
     { isSuccess: isScanSuccess, isError: isScanError },
@@ -99,6 +101,7 @@ export default function ProjectCardComponent() {
           projectName: projectResult[index].component?.component.name,
           gitUrl: gitUrlResult,
           branch: selectedBranch,
+          issueTypes: selectedCheckbox,
         },
       });
     }
@@ -230,6 +233,7 @@ export default function ProjectCardComponent() {
       setSelectedCheckBox(selectedCheckbox.filter((item) => item !== id));
     }
   };
+
   // handle on get all Directories from user after git url and selecet branch
   // const handleFetchDirectories = async () => {
   //   if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
@@ -634,7 +638,7 @@ export default function ProjectCardComponent() {
                               return (
                                 <div
                                   key={index}
-                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
                                 >
                                   F
                                 </div>
@@ -743,7 +747,7 @@ export default function ProjectCardComponent() {
                               return (
                                 <div
                                   key={index}
-                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
                                 >
                                   F
                                 </div>
@@ -852,7 +856,7 @@ export default function ProjectCardComponent() {
                               return (
                                 <div
                                   key={index}
-                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
                                 >
                                   F
                                 </div>
@@ -882,38 +886,43 @@ export default function ProjectCardComponent() {
                   <div className="w-full h-full">
                     {/* Coverage Reviewed */}
                     <div className="flex w-full justify-center  text-center items-center">
-                      {projectResult?.component?.component?.measures?.map(
-                        (item: any, index: number) => {
-                          if (item.metric === "coverage") {
-                            return (
-                              <div
-                                key={index}
-                                className="w-[60px] h-[30px] flex items-center justify-center"
-                              >
-                                <Image
-                                  width={50}
-                                  height={50}
-                                  alt="coverage"
-                                  src={
-                                    getCoverageData(item?.value)?.image ||
-                                    "/default-image.png"
-                                  }
-                                />
-                              </div>
-                            );
+                      {projectResult?.component?.component?.measures.includes(
+                        "coverage"
+                      ) ? (
+                        projectResult?.component?.component?.measures?.map(
+                          (item: any, index: number) => {
+                            if (item.metric === "coverage") {
+                              return (
+                                <div
+                                  key={index}
+                                  className="w-[60px] h-[30px] flex items-center justify-center"
+                                >
+                                  <Image
+                                    width={50}
+                                    height={50}
+                                    alt="coverage"
+                                    src={
+                                      getCoverageData(item?.value)?.image ||
+                                      "/images/20percent.png"
+                                    }
+                                  />
+                                </div>
+                              );
+                            }
                           }
-                        }
-                      )}
-                      {projectResult?.component?.component?.measures?.map(
-                        (item: any, index: number) => {
-                          if (item.metric === "coverage") {
-                            return (
-                              <p key={index} className="mx-2">
-                                {item.value}
-                              </p>
-                            );
-                          }
-                        }
+                        )
+                      ) : (
+                        <div
+                          key={index}
+                          className="w-[60px] h-[30px] flex items-center justify-center"
+                        >
+                          <Image
+                            width={50}
+                            height={50}
+                            alt="coverage"
+                            src={"/images/20percent.png"}
+                          />
+                        </div>
                       )}
                     </div>
                     <div className="mt-5 w-full flex items-center text-center justify-center">
@@ -1026,197 +1035,219 @@ export default function ProjectCardComponent() {
                 </div>
                 <hr className="my-5 dark:border-primary_color" />
                 <div className="flex  flex-col items-start md:flex-row md:items-center">
-                  <p className=" text-left my-2 text-text_body_16 text-text_color_desc_light  dark:text-text_color_desc_dark ">
-                    {" "}
-                    Project&apos;s{" "}
-                    <span className="text-secondary_color truncate">
-                      {projectResult?.component?.component.name}
-                    </span>{" "}
-                    is not analyzed yet.{" "}
-                  </p>
-                  <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-                    <AlertDialogTrigger asChild>
-                      <p className=" md:pl-2 text-link_color dark:text-blue-500 underline cursor-pointer">
-                        Configure Project
-                      </p>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent className=" w-[90%] md:w-full rounded-[20px] bg-text_color_dark  flex flex-col   ">
-                      <AlertDialogHeader>
-                        <AlertDialogTitle className="flex justify-between text-center items-center">
-                          <p className="text-text_title_24 text-text_color_light">
-                            {isLoading ? (
-                              <p>
-                                Scanning on project{" "}
-                                {projectResult?.component?.component.name} ...
-                              </p>
-                            ) : (
-                              <p> {projectResult?.component?.component.name}</p>
-                            )}
+                  {isClosing ? (
+                    <div className="flex justify-start items-start w-full pt-2 h-full">
+                      <ReactTypingEffect
+                        text={[
+                          `Scanning on project ${projectResult?.component?.component.name} ...`,
+                        ]}
+                        speed={100}
+                        eraseSpeed={50}
+                        eraseDelay={2000}
+                        typingDelay={500}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex justify-between w-full items-center ">
+                      <p className=" text-left my-2 text-text_body_16 text-text_color_desc_light  dark:text-text_color_desc_dark ">
+                        {" "}
+                        Project&apos;s{" "}
+                        <span className="text-secondary_color truncate">
+                          {projectResult?.component?.component.name}
+                        </span>{" "}
+                        is not analyzed yet.{" "}
+                      </p>{" "}
+                      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+                        <AlertDialogTrigger asChild>
+                          <p className=" md:pl-2 text-link_color dark:text-blue-500 underline cursor-pointer">
+                            Configure Project
                           </p>
-                          <AlertDialogCancel className="flex text-center items-center">
-                            <button disabled={isLoading}>
-                              {isLoading ? (
-                                <RxCross2
-                                  className="text-text_color_light cursor-not-allowed  text-text_header_34"
-                                  style={{ height: "1em", width: "0.7em" }}
-                                />
-                              ) : (
-                                <RxCross2
-                                  className="text-text_color_light  text-text_header_34"
-                                  style={{ height: "1em", width: "0.7em" }}
-                                />
-                              )}
-                            </button>
-                          </AlertDialogCancel>
-                        </AlertDialogTitle>
-                      </AlertDialogHeader>
-                      {isLoading ? (
-                        <video
-                          src="/images/loadingScan.mp4"
-                          autoPlay
-                          className="w-full h-full"
-                          loop
-                        ></video>
-                      ) : (
-                        <section className="h-full flex flex-col justify-between">
-                          {/* git url */}
-                          <div className="relative">
-                            <FaGithub className="absolute top-1/2 left-3 text-text_title_24 transform -translate-y-1/2 text-text_color_desc_light" />
-                            <p className="absolute top-1/2 left-10 font-light text-text_color_desc_light text-text_title_24 transform -translate-y-1/2">
-                              |
-                            </p>
-                            <FaGitlab className="absolute top-1/2 left-[50px] text-text_title_20 transform -translate-y-1/2 text-text_color_desc_light" />
-                            <input
-                              type="text"
-                              placeholder="Enter Git URL"
-                              value={gitUrlResult}
-                              onChange={handleChange} // Update the state with the input value
-                              onKeyDown={handleKeyPress} // Trigger logic on Enter key press
-                              className="mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light pl-[80px] pr-3 py-3 focus:outline-none  border-ascend_color"
-                            />
-                          </div>
-                          {/* select branch */}
-                          <DropdownMenu>
-                            {gitResult.length != 0 ? (
-                              <DropdownMenuTrigger asChild>
-                                <div className="">
-                                  <p className="text-text_body_16 text-text_color_light my-2">
-                                    Branch
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className=" w-[90%] md:w-full rounded-[20px] bg-text_color_dark  flex flex-col   ">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle className="flex justify-between text-center items-center">
+                              <p className="text-text_title_24 text-text_color_light">
+                                {isLoading ? (
+                                  <p>
+                                    Scanning on project{" "}
+                                    {projectResult?.component?.component.name}{" "}
+                                    ...
                                   </p>
-                                  <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-text_color_dark">
-                                    <p className="text-text_body_16  py-3  text-text_color_desc_light">
-                                      {selectedBranch}
-                                    </p>
-                                    <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
-                                  </div>
-                                </div>
-                              </DropdownMenuTrigger>
-                            ) : (
-                              <DropdownMenuTrigger disabled asChild>
-                                <div className="">
-                                  <p className="text-text_body_16 text-text_color_light my-2">
-                                    Branch
+                                ) : (
+                                  <p>
+                                    {" "}
+                                    {projectResult?.component?.component.name}
                                   </p>
-                                  <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
-                                    <p className="text-text_body_16  py-3  text-text_color_desc_light">
-                                      {selectedBranch}
-                                    </p>
-                                    <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
-                                  </div>
-                                </div>
-                              </DropdownMenuTrigger>
-                            )}
-                            <DropdownMenuContent className="w-[462px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
-                              {gitResult?.length === 0 ? (
-                                <DropdownMenuItem disabled>
-                                  No branch to select
-                                </DropdownMenuItem>
-                              ) : (
-                                gitResult?.map(
-                                  (gitResult: GitUrlType, index: number) => (
-                                    <DropdownMenuItem
-                                      className=""
-                                      key={index}
-                                      onClick={() =>
-                                        setSelectedBranch(`${gitResult?.name}`)
-                                      }
-                                    >
-                                      {gitResult?.name}
+                                )}
+                              </p>
+                              <AlertDialogCancel className="flex text-center items-center">
+                                <button onClick={() => setIsClosing(true)}>
+                                  <RxCross2
+                                    className="text-text_color_light cursor-pointer text-text_header_34"
+                                    style={{ height: "1em", width: "0.7em" }}
+                                  />
+                                </button>
+                              </AlertDialogCancel>
+                            </AlertDialogTitle>
+                          </AlertDialogHeader>
+                          {isLoading ? (
+                            <video
+                              src="/images/loadingScan.mp4"
+                              autoPlay
+                              className="w-full h-full"
+                              loop
+                            ></video>
+                          ) : (
+                            <section className="h-full flex flex-col justify-between">
+                              {/* git url */}
+                              <div className="relative">
+                                <FaGithub className="absolute top-1/2 left-3 text-text_title_24 transform -translate-y-1/2 text-text_color_desc_light" />
+                                <p className="absolute top-1/2 left-10 font-light text-text_color_desc_light text-text_title_24 transform -translate-y-1/2">
+                                  |
+                                </p>
+                                <FaGitlab className="absolute top-1/2 left-[50px] text-text_title_20 transform -translate-y-1/2 text-text_color_desc_light" />
+                                <input
+                                  type="text"
+                                  placeholder="Enter Git URL"
+                                  value={gitUrlResult}
+                                  onChange={handleChange} // Update the state with the input value
+                                  onKeyDown={handleKeyPress} // Trigger logic on Enter key press
+                                  className="mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light pl-[80px] pr-3 py-3 focus:outline-none  border-ascend_color"
+                                />
+                              </div>
+                              {/* select branch */}
+                              <DropdownMenu>
+                                {gitResult.length != 0 ? (
+                                  <DropdownMenuTrigger asChild>
+                                    <div className="">
+                                      <p className="text-text_body_16 text-text_color_light my-2">
+                                        Branch
+                                      </p>
+                                      <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-text_color_dark">
+                                        <p className="text-text_body_16  py-3  text-text_color_desc_light">
+                                          {selectedBranch}
+                                        </p>
+                                        <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
+                                      </div>
+                                    </div>
+                                  </DropdownMenuTrigger>
+                                ) : (
+                                  <DropdownMenuTrigger disabled asChild>
+                                    <div className="">
+                                      <p className="text-text_body_16 text-text_color_light my-2">
+                                        Branch
+                                      </p>
+                                      <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
+                                        <p className="text-text_body_16  py-3  text-text_color_desc_light">
+                                          {selectedBranch}
+                                        </p>
+                                        <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
+                                      </div>
+                                    </div>
+                                  </DropdownMenuTrigger>
+                                )}
+                                <DropdownMenuContent className="w-[462px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
+                                  {gitResult?.length === 0 ? (
+                                    <DropdownMenuItem disabled>
+                                      No branch to select
                                     </DropdownMenuItem>
-                                  )
-                                )
-                              )}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                                  ) : (
+                                    gitResult?.map(
+                                      (
+                                        gitResult: GitUrlType,
+                                        index: number
+                                      ) => (
+                                        <DropdownMenuItem
+                                          className=""
+                                          key={index}
+                                          onClick={() =>
+                                            setSelectedBranch(
+                                              `${gitResult?.name}`
+                                            )
+                                          }
+                                        >
+                                          {gitResult?.name}
+                                        </DropdownMenuItem>
+                                      )
+                                    )
+                                  )}
+                                </DropdownMenuContent>
+                              </DropdownMenu>
 
-                          {/* filter scan */}
-                          <div>
-                            <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-5">
-                              Filter Scan
-                            </p>
-                            <div className="flex items-center space-x-2 my-5">
-                              <Checkbox
-                                id="bug"
-                                onCheckedChange={(checked) =>
-                                  handleCheckboxChange("bug", checked)
-                                }
-                                className="h-5 w-5"
-                              />
-                              <label
-                                htmlFor="bug"
-                                className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                              {/* filter scan */}
+                              <div className="text-text_body_16 text-text_color_light  ">
+                                <p className="my-5">Filter Scan</p>
+                                <div className="flex items-center space-x-2 my-5">
+                                  <Checkbox
+                                    id="bug"
+                                    onCheckedChange={(checked) =>
+                                      handleCheckboxChange("BUG", checked)
+                                    }
+                                    className="h-5 w-5 "
+                                  />
+                                  <label
+                                    htmlFor="bug"
+                                    className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                  >
+                                    Bug
+                                  </label>
+                                </div>
+                                <div className="flex items-center space-x-2  my-5">
+                                  <Checkbox
+                                    id="Vulnerability"
+                                    onCheckedChange={(checked) =>
+                                      handleCheckboxChange(
+                                        "VULNERABILITY",
+                                        checked
+                                      )
+                                    }
+                                    className="h-5 w-5"
+                                  />
+                                  <label
+                                    htmlFor="Vulnerability"
+                                    className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                  >
+                                    Vulnerability
+                                  </label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <Checkbox
+                                    id="Code Smell"
+                                    onCheckedChange={(checked) =>
+                                      handleCheckboxChange(
+                                        "CODE_SMELL",
+                                        checked
+                                      )
+                                    }
+                                    className="h-5 w-5"
+                                  />
+                                  <label
+                                    htmlFor="Code Smell"
+                                    className="text-text_body_16  font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                  >
+                                    Code Smell
+                                  </label>
+                                </div>
+                              </div>
+                              {/* submit scan */}
+                              <button
+                                key={index}
+                                disabled={isLoading}
+                                onClick={() => handleScanProject(index)}
+                                className="w-full my-[30px] py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
                               >
-                                Bug
-                              </label>
-                            </div>
-                            <div className="flex items-center space-x-2  my-5">
-                              <Checkbox
-                                id="Vulnerability"
-                                onCheckedChange={(checked) =>
-                                  handleCheckboxChange("Vulnerability", checked)
-                                }
-                                className="h-5 w-5"
-                              />
-                              <label
-                                htmlFor="Vulnerability"
-                                className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                              >
-                                Vulnerability
-                              </label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Checkbox
-                                id="Code Smell"
-                                onCheckedChange={(checked) =>
-                                  handleCheckboxChange("Code Smell", checked)
-                                }
-                                className="h-5 w-5"
-                              />
-                              <label
-                                htmlFor="Code Smell"
-                                className="text-text_body_16  font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                              >
-                                Code Smell
-                              </label>
-                            </div>
-                          </div>
-                          {/* submit scan */}
-                          <button
-                            key={index}
-                            disabled={isLoading}
-                            onClick={() => handleScanProject(index)}
-                            className="w-full my-[30px] py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
-                          >
-                            {isLoading ? (
-                              <div className="spinner-border  animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
-                            ) : (
-                              "Submit"
-                            )}
-                          </button>
-                        </section>
-                      )}
-                    </AlertDialogContent>
-                  </AlertDialog>
+                                {isLoading ? (
+                                  <div className="spinner-border  animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
+                                ) : (
+                                  "Submit"
+                                )}
+                              </button>
+                            </section>
+                          )}
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  )}
                 </div>
               </section>
             );
@@ -1661,7 +1692,7 @@ export default function ProjectCardComponent() {
                               return (
                                 <div
                                   key={index}
-                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
                                 >
                                   F
                                 </div>
@@ -1802,24 +1833,25 @@ export default function ProjectCardComponent() {
                     <div className="flex w-full justify-center  text-center items-center">
                       {item?.component?.component?.measures?.map(
                         (item: any, index: number) => {
-                          if (item.metric === "coverage") {
-                            return (
-                              <div
-                                key={index}
-                                className="w-[60px] h-[30px] flex items-center justify-center"
-                              >
-                                <Image
-                                  width={50}
-                                  height={50}
-                                  alt="coverage"
-                                  src={
-                                    getCoverageData(item?.value)?.image ||
-                                    "/default-image.png"
-                                  }
-                                />
-                              </div>
-                            );
-                          }
+                          console.log(item);
+                          // if (item.metric === "coverage") {
+                          //   return (
+                          //     <div
+                          //       key={index}
+                          //       className="w-[60px] h-[30px] flex items-center justify-center"
+                          //     >
+                          //       <Image
+                          //         width={50}
+                          //         height={50}
+                          //         alt="coverage"
+                          //         src={
+                          //           getCoverageData(item?.value)?.image ||
+                          //           "/default-image.png"
+                          //         }
+                          //       />
+                          //     </div>
+                          //   );
+                          // }
                         }
                       )}
                       {item?.component?.component?.measures?.map(

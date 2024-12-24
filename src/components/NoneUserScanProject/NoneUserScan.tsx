@@ -42,6 +42,7 @@ export default function NoneUserScan() {
           gitUrl: gitUrlResult,
           branch: selectedBranch,
           countScan: countScan,
+          issueTypes: selectedCheckbox,
         },
       })
         .then((response) => {
@@ -120,8 +121,6 @@ export default function NoneUserScan() {
       setSelectedCheckBox(selectedCheckbox.filter((item) => item !== id));
     }
   };
-
-  console.log(selectedCheckbox);
 
   return (
     <section className="flex mx-auto justify-center lg:justify-between xl:justify-around">
@@ -219,17 +218,15 @@ export default function NoneUserScan() {
             </DropdownMenu>
 
             {/* filter scan */}
-            <div>
-              <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-5">
-                Filter Scan
-              </p>
+            <div className="text-text_body_16 text-text_color_light dark:text-text_color_dark  ">
+              <p className="my-5">Filter Scan</p>
               <div className="flex items-center space-x-2 my-5">
                 <Checkbox
                   id="bug"
                   onCheckedChange={(checked) =>
-                    handleCheckboxChange("bug", checked)
+                    handleCheckboxChange("BUG", checked)
                   }
-                  className="h-5 w-5"
+                  className="h-5 w-5 "
                 />
                 <label
                   htmlFor="bug"
@@ -242,7 +239,7 @@ export default function NoneUserScan() {
                 <Checkbox
                   id="Vulnerability"
                   onCheckedChange={(checked) =>
-                    handleCheckboxChange("Vulnerability", checked)
+                    handleCheckboxChange("VULNERABILITY", checked)
                   }
                   className="h-5 w-5"
                 />
@@ -257,7 +254,7 @@ export default function NoneUserScan() {
                 <Checkbox
                   id="Code Smell"
                   onCheckedChange={(checked) =>
-                    handleCheckboxChange("Code Smell", checked)
+                    handleCheckboxChange("CODE_SMELL", checked)
                   }
                   className="h-5 w-5"
                 />
