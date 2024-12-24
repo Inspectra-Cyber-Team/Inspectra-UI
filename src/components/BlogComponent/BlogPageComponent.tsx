@@ -46,7 +46,7 @@ export default function BlogPageComponent() {
             {common.topic}
           </button>
         ))}
-      </div>
+      </div> 
 
       <div className="flex flex-col lg:flex-row justify-between lg:gap-14 lg:my-2">
         {/* Main Content */}

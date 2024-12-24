@@ -4,16 +4,21 @@ import { feedbackType } from "@/types/Feedback";
 import { useGetAllUserFeedbackQuery } from "@/redux/service/feedback";
 import { convertToDayMonthYear } from "@/lib/utils";
 import Image from "next/image";
+import Aos from "aos";
 
 export default function FeedbackCard() {
   const { data } = useGetAllUserFeedbackQuery({});
   const [sliceCount, setSliceCount] = useState(3);
+  useEffect(() => {
+        Aos.init({ duration: 1000 });
+      }, []);
+  
 
   // Dynamically adjust slice count based on screen size
   useEffect(() => {
     const updateSliceCount = () => {
       const screenWidth = window.innerWidth;
-      setSliceCount(screenWidth < 1200 ? 2 : 3); // Less than 1200px shows 2 items
+      setSliceCount(screenWidth < 1200 ? 3 : 3); // Less than 1200px shows 2 items
     };
 
     updateSliceCount();
@@ -24,7 +29,11 @@ export default function FeedbackCard() {
 
   const result = data?.data.slice(0, sliceCount);
   return (
-    <div className="grid gap-10 lg:my-[80px] grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-items-center xl:justify-items-between my-10">
+   <div>
+     <p className="text-text_header_34 px-5 py-1 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold ">
+          User Feedback
+        </p>
+    <div className="grid gap-10 lg:my-[80px] grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-items-center xl:justify-items-between my-10" data-aos="fade-up">
       {result?.map((feedback: feedbackType, index: number) => (
         <div
           key={index}
@@ -59,5 +68,6 @@ export default function FeedbackCard() {
         </div>
       ))}
     </div>
+   </div>
   );
 }
