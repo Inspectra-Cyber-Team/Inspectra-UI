@@ -21,7 +21,7 @@ import { ModeToggle } from "../ToggleTheme/ToggleTheme";
 
 export default function NavbarComponent() {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false); 
+  const [isOpen, setIsOpen] = useState(false);
   const [userUUID, setUserUUID] = useState("");
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -119,18 +119,21 @@ export default function NavbarComponent() {
                     Sign in
                   </Link>
                 ) : (
-                  <Menubar >
+                  <Menubar>
                     <MenubarMenu>
-                      <MenubarTrigger onClick={handleMenuToggle} className="hidden lg:block">
-                          <img
-                            src={userData?.data?.profile}
-                            alt="Profile"
-                            className="object-cover cursor-pointer rounded-full w-12 h-12"
-                            onError={(e) =>
-                              (e.currentTarget.src =
-                                "/images/default-profile.jpg")
-                            }
-                          />
+                      <MenubarTrigger
+                        onClick={handleMenuToggle}
+                        className="hidden lg:block"
+                      >
+                        <img
+                          src={userData?.data?.profile}
+                          alt="Profile"
+                          className="object-cover cursor-pointer rounded-full w-12 h-12"
+                          onError={(e) =>
+                            (e.currentTarget.src =
+                              "/images/default-profile.jpg")
+                          }
+                        />
                       </MenubarTrigger>
                       {isMenuOpen && (
                         <MenubarContent className="absolute -left-[295px] w-[350px] p-5 rounded-[10px] border-none bg-card_color_light dark:bg-background_dark_mode">
@@ -263,25 +266,22 @@ export default function NavbarComponent() {
                               <img
                                 src={userData?.data?.profile}
                                 alt="Profile"
-                                width={50}
-                                height={50}
-                                className="object-cover w-full h-full"
+                                className="object-cover cursor-pointer rounded-full w-12 h-12"
                                 onError={(e) =>
                                   (e.currentTarget.src =
                                     "/images/default-profile.jpg")
                                 }
                               />
                             </div>
-                            <div className="px-5">
+                            <div>
                               <p className="text-text_color_light text-text_body_16 dark:text-text_color_dark">
                                 {userData?.data?.name}
                               </p>
-                              
                             </div>
                           </div>
                           <p className="text-text_color_desc_light text-[14px] dark:text-text_color_dark">
-                                {userData?.data?.email}
-                              </p>
+                            {userData?.data?.email}
+                          </p>
                           <hr className="text-text_color_light" />
                           {navbarData.map((item, index: number) => (
                             <Link
