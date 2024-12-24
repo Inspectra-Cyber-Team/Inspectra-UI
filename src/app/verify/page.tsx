@@ -18,7 +18,15 @@ export const metadata: Metadata ={
     siteName: 'Inspectra',
     locale: 'en_KH',
     type: 'website',
-    url: 'https://inspectra.istad.co/'
+    url: 'https://inspectra.istad.co/',
+    images: [
+      {
+        url: '/images/openGraph.png',
+        width: 1200,
+        height: 630,
+        alt: 'Inspectra',
+      },
+    ],
   },
 }
 

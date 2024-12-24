@@ -17,11 +17,33 @@ const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600"],
   subsets: ["latin"],
 });
-export const metadata: Metadata = {
-  title: "Inspectra",
+
+export const metadata: Metadata ={
+  title: 'Inspectra',
   description:
-    "Provide a white-box testing platform for reviewing the source code in order to identify the security weakness.",
-};
+    'Welcome to Inspectra, a cutting-edge white-box testing platform from Cambodia that ensures secure development through source code analysis and identification of security vulnerabilities.',
+  keywords:
+    'Inspectra, inspectra, inspect, source code scan, scan, code scan, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+  authors: { name: 'Inspectra Team' },
+  publisher: 'Inspectra',
+  openGraph: {
+    title: 'Inspectra',
+    description:
+      'Welcome to Inspectra, a cutting-edge white-box testing platform from Cambodia that ensures secure development through source code analysis and identification of security vulnerabilities.',
+    siteName: 'Inspectra',
+    locale: 'en_KH',
+    type: 'website',
+    url: 'https://inspectra.istad.co/',
+    images: [
+      {
+        url: '/images/openGraph.png',
+        width: 1200,
+        height: 630,
+        alt: 'Inspectra',
+      },
+    ],
+  },
+}
 
 export default function RootLayout({
   children,
