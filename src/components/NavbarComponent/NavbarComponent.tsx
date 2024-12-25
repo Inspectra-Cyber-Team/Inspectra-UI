@@ -21,7 +21,7 @@ import { ModeToggle } from "../ToggleTheme/ToggleTheme";
 
 export default function NavbarComponent() {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false); 
+  const [isOpen, setIsOpen] = useState(false);
   const [userUUID, setUserUUID] = useState("");
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -119,18 +119,21 @@ export default function NavbarComponent() {
                     Sign in
                   </Link>
                 ) : (
-                  <Menubar >
+                  <Menubar>
                     <MenubarMenu>
-                      <MenubarTrigger onClick={handleMenuToggle} className="hidden md:block">
-                          <img
-                            src={userData?.data?.profile}
-                            alt="Profile"
-                            className="object-cover cursor-pointer rounded-full w-12 h-12"
-                            onError={(e) =>
-                              (e.currentTarget.src =
-                                "/images/default-profile.jpg")
-                            }
-                          />
+                      <MenubarTrigger
+                        onClick={handleMenuToggle}
+                        className="hidden md:block"
+                      >
+                        <img
+                          src={userData?.data?.profile}
+                          alt="Profile"
+                          className="object-cover cursor-pointer rounded-full w-12 h-12"
+                          onError={(e) =>
+                            (e.currentTarget.src =
+                              "/images/default-profile.jpg")
+                          }
+                        />
                       </MenubarTrigger>
                       {isMenuOpen && (
                         <MenubarContent className="absolute -left-[295px] w-[350px] p-5 rounded-[10px] border-none bg-card_color_light dark:bg-background_dark_mode">

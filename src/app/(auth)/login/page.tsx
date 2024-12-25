@@ -17,10 +17,19 @@ export const metadata: Metadata = {
     title: 'Login - Inspectra',
     description:
       'Welcome to Inspectra. Login to access your account and explore the platform’s advanced source code analysis tools for secure development.',
+      
     siteName: 'Inspectra',
     locale: 'en_KH',
     type: 'website',
-    url: 'https://inspectra.istad.co/'
+    url: 'https://inspectra.istad.co/',
+    images: [
+      {
+        url: 'http://136.228.158.126:4011/images/3639a448-5eb8-43f4-bba9-a7f98c27792e.png',
+        width: 1200,
+        height: 630,
+        alt: 'Inspectra',
+      },
+    ],
   },
 };
 
@@ -166,7 +175,7 @@ export default function page() {
 
               {/*/!* GitHub Button *!/*/}
               {/*<button className="w-full py-3 flex items-center font-normal bg-background_light_mode justify-center rounded-[10px]">*/}
-              {/*  <FaGithub className="text-text_title_24" />*/}
+              {/*  <FaGithub className="text-text_title_24 dark:text-text_color_light" />*/}
               {/*  <span className="text-text_color_light ml-3">*/}
               {/*    Or Sign in with GitHub*/}
               {/*  </span>*/}
