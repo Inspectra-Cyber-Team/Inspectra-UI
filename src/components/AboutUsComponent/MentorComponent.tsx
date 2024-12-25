@@ -1,17 +1,22 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTheme } from "next-themes";
 
 import { mentorData } from '@/data/mentor';
 import Link from 'next/link';
 import { AboutUs, SocialMedia } from '@/types/AboutUs';
+import Aos from 'aos';
 
 export default function MentorComponent() {
   const { theme } = useTheme();
+  useEffect(() => {
+                Aos.init({ duration: 1000 });
+              }, []);
+              
   return (
     <div>
-      <section className='relative my-[60px]'>
+      <section className='relative'>
         <div className='absolute top-0 -z-20 hidden md:block w-full'>
           {theme === "dark" ? (
             <img
@@ -23,19 +28,19 @@ export default function MentorComponent() {
             <img src="/images/about us background.png" alt="bg-aboutus" className='object-cover w-[100%] h-[100%]' />
           )}
         </div>
-        <div className='w-[90%] mx-auto text-center md:pt-20 lg:pt-24'>
+        <div className='w-[90%] mx-auto text-center my-10 md:pt-24'>
           <div>
             <div className='text-[20px] md:text-[30px] xl:text-[40px] inline-flex px-5 font-semibold bg-primary_color dark:bg-text_color_light py-2 rounded-tl-[20px] rounded-br-[20px]'>
-              <p className='text-text_color_light dark:text-primary_color'>Meet Our Mentor</p>
+              <p className='text-text_color_light dark:text-primary_color' data-aos="fade-up">Meet Our Mentor</p>
             </div>
             <div className='w-[90%] mx-auto'>
-              <p className='text-text_color_desc_light md:text-text_color_dark dark:text-text_color_desc_dark dark:md:text-text_color_light text-text_title_16 my-5'>Meet our diverse mentors of world-class Frontend and Backend Developer</p>
+              <p className='text-text_color_desc_light md:text-text_color_dark dark:text-text_color_desc_dark dark:md:text-text_color_light text-text_title_16 my-5 text-lg' data-aos="fade-up">Meet our diverse mentors of world-class Frontend and Backend Developer</p>
             </div>
           </div>
 
           {/* mentors card */}
           <div>
-            <div className="flex flex-wrap justify-center gap-10 md:gap-20">
+            <div className="flex flex-wrap justify-center gap-10 md:gap-32" data-aos="fade-up">
               {mentorData.map((mentor: AboutUs, index) => (
                 <div
                   key={index}

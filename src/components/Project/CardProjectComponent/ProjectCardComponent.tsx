@@ -60,8 +60,10 @@ export default function ProjectCardComponent() {
   const [userUUID, setUserUUID] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<string[]>([]);
+  const [selectedFile, setSelectedFile] = useState<any>([]);
   const [listDirectories, setListDirectories] = useState<any>();
+
+  console.log(selectedFile);
 
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
@@ -256,16 +258,8 @@ export default function ProjectCardComponent() {
   };
 
   // handle add file to array
-  const handleSelectItem = (file: string) => {
-    setSelectedFile((prevSelectedFiles) => {
-      if (prevSelectedFiles.includes(file)) {
-        // If the file is already selected, remove it
-        return prevSelectedFiles.filter((item: string) => item !== file);
-      } else {
-        // Otherwise, add the file
-        return [...prevSelectedFiles, file];
-      }
-    });
+  const handleSelectItem = (file: any) => {
+    setSelectedFile(file);
   };
 
   useEffect(() => {
@@ -1087,7 +1081,7 @@ export default function ProjectCardComponent() {
                       />
                     </div>
                   ) : (
-                    <div className="flex justify-between w-full items-center ">
+                    <div className="flex w-full items-center ">
                       <p className=" text-left my-2 text-text_body_16 text-text_color_desc_light  dark:text-text_color_desc_dark ">
                         {" "}
                         Project&apos;s{" "}
@@ -1219,7 +1213,7 @@ export default function ProjectCardComponent() {
                                 </p>
                                 <FileStructureViewer
                                   data={listDirectories}
-                                  selectedItem={selectedFile[0] || null}
+                                  selectedItem={selectedFile}
                                   onSelectItem={handleSelectItem}
                                 />
                               </div>
@@ -1234,7 +1228,7 @@ export default function ProjectCardComponent() {
                                     onCheckedChange={(checked) =>
                                       handleCheckboxChange("bug", checked)
                                     }
-                                    className="h-5 w-5 "
+                                    className="h-5 w-5 !border-text_color_light "
                                   />
                                   <label
                                     htmlFor="bug"
@@ -1252,7 +1246,7 @@ export default function ProjectCardComponent() {
                                         checked
                                       )
                                     }
-                                    className="h-5 w-5"
+                                    className="h-5 w-5 !border-text_color_light "
                                   />
                                   <label
                                     htmlFor="Vulnerability"
@@ -1270,7 +1264,7 @@ export default function ProjectCardComponent() {
                                         checked
                                       )
                                     }
-                                    className="h-5 w-5"
+                                    className="h-5 w-5 !border-text_color_light"
                                   />
                                   <label
                                     htmlFor="Code Smell"

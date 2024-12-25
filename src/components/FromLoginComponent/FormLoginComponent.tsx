@@ -32,7 +32,6 @@ export default function FormLoginComponent() {
   };
 
   const handleSubmit = async (values: FormValues) => {
-    console.log(values);
     setIsLoading(true);
     try {
       const res = await fetch(
@@ -50,7 +49,7 @@ export default function FormLoginComponent() {
         setIsLoading(false);
         const userUUID = data?.user?.data?.uuid;
         localStorage.setItem("userUUID", userUUID);
-        console.log(userUUID)
+ 
         router.push("/");
       } else {
         setIsLoading(false);

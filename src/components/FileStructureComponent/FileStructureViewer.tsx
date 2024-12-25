@@ -54,22 +54,34 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
 
   function transformData(
     structure: FileStructure,
-    parentPath = ""
+    parentPath = "",
+    visitedPaths = new Set<string>() // Track processed paths
   ): TreeNode[] {
     const result: TreeNode[] = [];
+
+    // Normalize the parentPath to ensure no trailing slashes
+    const normalizedParentPath = parentPath.replace(/\/+$/, "");
 
     // Add folders
     if (structure?.subdirectories) {
       structure.subdirectories.forEach((subdir) => {
         if (subdir && subdir.path !== "") {
-          const fullPath = `${parentPath}/${subdir.path}`;
-          const name = subdir.path.split("/").pop() || "Unnamed Folder";
-          result.push({
-            id: fullPath,
-            name: name,
-            children: transformData(subdir, fullPath),
-            isFolder: true,
-          });
+          const folderName = subdir.path.split("/").pop() || "Unnamed Folder";
+          const fullPath = `${normalizedParentPath}/${folderName}`.replace(
+            /\/+/g,
+            "/"
+          );
+
+          // Skip adding if this path is already processed
+          if (!visitedPaths.has(fullPath)) {
+            visitedPaths.add(fullPath); // Mark the path as visited
+            result.push({
+              id: fullPath,
+              name: folderName,
+              children: transformData(subdir, fullPath, visitedPaths), // Pass visitedPaths recursively
+              isFolder: true,
+            });
+          }
         }
       });
     }
@@ -78,11 +90,20 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
     if (structure?.files) {
       structure.files.forEach((file) => {
         if (file !== "") {
-          result.push({
-            id: `${parentPath}/${file}`,
-            name: file,
-            isFolder: false,
-          });
+          const fullPath = `${normalizedParentPath}/${file}`.replace(
+            /\/+/g,
+            "/"
+          );
+
+          // Skip adding if this path is already processed
+          if (!visitedPaths.has(fullPath)) {
+            visitedPaths.add(fullPath); // Mark the path as visited
+            result.push({
+              id: fullPath,
+              name: file,
+              isFolder: false,
+            });
+          }
         }
       });
     }
@@ -94,16 +115,17 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
     const isFolder = node.data.isFolder;
     const displayName =
       node.data.name || (isFolder ? "Unnamed Folder" : "Unnamed File");
-
+    const fullPath = node.id;
+    
     return (
       <div
         style={style}
         ref={dragHandle}
         className={`flex items-center py-1 cursor-pointer ${
-          selectedItem === displayName ? "bg-blue-100" : ""
+          selectedItem === fullPath ? "bg-blue-100" : ""
         }`}
         onClick={() => {
-          onSelectItem(displayName);
+          onSelectItem(fullPath); // Pass the full path instead of displayName
           if (isFolder) {
             node.toggle();
           }
@@ -146,8 +168,8 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
           {Node}
         </Tree>
       ) : (
-        <div className="flex mt-10 items-center justify-center h-full text-text_color_light">
-          <div className="spinner-border  animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
+        <div className="flex mt-10 items-center justify-center h-full text-text_color_desc_light ">
+          No files or folders found
         </div>
       )}
     </div>

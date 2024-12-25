@@ -5,7 +5,7 @@ import { FaCheck } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 export default function QualityCardComponent() {
   const [userUUID, setUserUUID] = useState("");
-  const { data} = useGetProjectByUserUuidQuery({
+  const { data } = useGetProjectByUserUuidQuery({
     uuid: userUUID,
   });
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function QualityCardComponent() {
                 const status = branchDetail?.status?.qualityGateStatus;
                 if (status === "OK") {
                   counts.passed += 1;
-                } else {
+                } else if (status === "ERROR") {
                   counts.failed += 1;
                 }
               });
@@ -62,7 +62,7 @@ export default function QualityCardComponent() {
                 </div>
                 <p className="px-2 text-text_color_light dark:text-text_color_dark text-text_body_16">
                   Failed
-                </p>  
+                </p>
               </div>
               <p className="text-text_color_desc_light dark:text-text_color_desc_dark text-text_body_16">
                 {statusCounts?.failed ?? 0}
