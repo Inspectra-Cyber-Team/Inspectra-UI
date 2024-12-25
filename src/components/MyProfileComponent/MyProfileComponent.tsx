@@ -144,45 +144,47 @@ export default function MyProfileComponent() {
       <section>
         <div className="relative mt-[30px] pb-3 bg-card_color_light dark:bg-card_color_dark rounded-3xl">
           {/* Particle Container */}
-          <div className="absolute translate-x-0 rounded-t-2xl overflow-hidden flex flex-col items-center h-44 w-full">
-            <div className="absolute">
-              <ParticlesComponent id="particles" />
-            </div>
-            <div className="absolute top-24 left-1/2 -translate-x-1/2 flex flex-col items-center">
-              <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-white group">
-                <img
-                  className="w-full h-full object-cover"
-                  src={
-                    previewImage ||
-                    userData?.data?.profile ||
-                    "/images/default-profile.jpg"
-                  }
-                  alt="profile"
-                />
-                {/* Edit Overlay */}
-                <button className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full">
-                  <label className="cursor-pointer flex flex-col items-center justify-center gap-2 w-full h-full rounded-full">
-                    <div className="flex gap-3">
-                      <FaEdit className="text-white" />
-                      <span className="text-white">Edit</span>
-                    </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="hidden"
-                    />
-                  </label>
-                </button>
-              </div>
-
-              <p className="text-center">{userData?.data?.name}</p>
-              <p className="text-center">{userData?.data?.email}</p>
-            </div>
+          <div className="absolute translate-x-0 rounded-t-2xl overflow-hidden h-72 w-full">
+            <ParticlesComponent id="particles" />
           </div>
+
+          {/* Profile Section */}
+          <div className="relative top-52 flex flex-col items-center">
+            <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-white group">
+              <img
+                className="w-full h-full object-cover"
+                src={
+                  previewImage ||
+                  userData?.data?.profile ||
+                  "/images/default-profile.jpg"
+                }
+                alt="profile"
+              />
+              {/* Edit Overlay */}
+              <button className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full">
+                <label className="cursor-pointer flex flex-col items-center justify-center gap-2 w-full h-full rounded-full">
+                  <div className="flex gap-3">
+                    <FaEdit className="text-white" />
+                    <span className="text-white">Edit</span>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                </label>
+              </button>
+            </div>
+
+            <p className="text-center mt-4">{userData?.data?.name}</p>
+            <p className="text-center">{userData?.data?.email}</p>
+          </div>
+
+          {/* Form Section */}
           <form
             onSubmit={formik.handleSubmit}
-            className="flex flex-col justify-center items-stretch pt-80 gap-5 md:pt-[360px] pb-10 md:pb-5 px-10"
+            className="flex flex-col justify-center items-stretch gap-5 pt-64 pb-10 md:pb-5 px-10"
           >
             <div className="flex flex-col md:flex-row md:items-center gap-3">
               <p className="md:w-[35%]">Username</p>
@@ -232,6 +234,7 @@ export default function MyProfileComponent() {
             </div>
           </form>
         </div>
+
       </section>
     </div>
   );

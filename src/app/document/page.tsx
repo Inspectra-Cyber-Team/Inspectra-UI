@@ -6,7 +6,7 @@ export const metadata: Metadata ={
   description:
     'Inspectra documentation providing step by step guide and code scanning, set up quality gateway through custom rules, issue, rule violations and enhancing CI/CD pipelines.',
   keywords:
-    'Inspectra Document, Inspectra, inspectra, inspect, source code scan, scan, code scan, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+    'Inspectra Document, document, Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
   authors: { name: 'Inspectra Team' },
   publisher: 'Inspectra',
   openGraph: {
