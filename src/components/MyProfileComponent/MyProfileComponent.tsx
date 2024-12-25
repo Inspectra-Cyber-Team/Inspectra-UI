@@ -148,7 +148,7 @@ export default function MyProfileComponent() {
             <div className="absolute">
               <ParticlesComponent id="particles" />
             </div>
-            <div className="absolute items-center justify-center my-36 flex flex-col">
+            <div className="absolute top-24 left-1/2 -translate-x-1/2 flex flex-col items-center">
               <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-white group">
                 <img
                   className="w-full h-full object-cover"
