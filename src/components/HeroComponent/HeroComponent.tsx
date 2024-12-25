@@ -1,8 +1,11 @@
-"use client";
+'use client';
+
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { FaArrowRight } from "react-icons/fa6";
+import { motion } from "framer-motion";
+import { SkeletonHero } from "@/components/HeroComponent/skeleton-hero";
 import 'aos/dist/aos.css';
 
 export default function HeroComponent() {
@@ -12,90 +15,109 @@ export default function HeroComponent() {
   
   // This effect ensures the component is only rendered on the client-side
   React.useEffect(() => {
-    setMounted(true); // Set mounted to true after the component is mounted
+    const timer = setTimeout(() => setMounted(true)); // Simulate loading delay
+    return () => clearTimeout(timer);
   }, []);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.3,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1
+    }
+  };
+
   if (!mounted) {
-    return (
-      <section className="xl:flex my-[60px] justify-center items-center">
-        {/* Content Section */}
-        <section className="text-center xl:text-left space-y-5">
-          <p className="text-[30px] md:text-[40px] xl:text-[60px] px-5 py-1 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold" >
-            Inspectra
-          </p>
-
-          <p className="lg:w-full xl:w-[80%] text-text_body_16 md:text-text_title_24 text-text_color_light font-medium dark:text-text_color_dark">
-            Through deep, intelligent scanning and proactive insights empowers
-            you to uncover hidden risks with precision Keeping your systems
-            resilient and your data safe
-          </p>
-          {/* Centering Button */}
-          <section className="flex justify-center lg:justify-center xl:justify-start " >
-            <button
-              onClick={() => router.push("/project")}
-              className="flex justify-between items-center hover:bg-primary_color dark:hover:bg-primary_color hover:text-text_color_light px-5 text-text_color_dark bg-background_dark_mode dark:bg-background_light_mode dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[160px] h-[50px] text-text_body_16"
-            >
-              Try Now
-              <FaArrowRight />
-            </button>
-          </section>
-        </section>
-
-        {/* Image Section */}
-        <section className="hidden justify-end items-end xl:block w-[40%]" >
-          <img
-            src="/images/hero section.png"
-            alt="hero section image"
-            className="object-cover w-[400px]"
-          />
-        </section>
-      </section>
-    ); // Or return a placeholder (like a spinner)
+    return <SkeletonHero />;
   }
 
   return (
-    <section className="xl:flex my-[60px] justify-center items-center">
+    <motion.section 
+      className="xl:flex my-[60px] justify-center items-center"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Content Section */}
-      <section className="text-center  xl:text-left space-y-5 "  >
-          <h1 className="text-[30px] md:text-[40px] xl:text-[60px] px-2 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold" >
-            Inspectra
-          </h1>
-          <p className="lg:w-full  xl:w-[80%] text-text_body_16 md:text-text_title_24 text-text_color_light font-medium dark:text-text_color_dark" >
-            Through deep, intelligent scanning and proactive insights empowers
-            you to uncover hidden risks with precision
-            <span className="block lg:my-5 xl:mt-10">
-              Keeping your systems resilient and your data safe
-            </span>
-          </p>
+      <motion.section className="text-center xl:text-left space-y-5" variants={itemVariants}>
+        <motion.h1 
+          className="text-[30px] md:text-[40px] xl:text-[60px] px-2 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold"
+          variants={itemVariants}
+        >
+          Inspectra
+        </motion.h1>
+        <motion.p 
+          className="lg:w-full xl:w-[80%] text-text_body_16 md:text-text_title_24 text-text_color_light font-medium dark:text-text_color_dark"
+          variants={itemVariants}
+        >
+          Through deep, intelligent scanning and proactive insights empowers
+          you to uncover hidden risks with precision
+          <motion.span className="block lg:my-5 xl:mt-10" variants={itemVariants}>
+            Keeping your systems resilient and your data safe
+          </motion.span>
+        </motion.p>
 
         {/* Centering Button */}
-        <section className="flex justify-center lg:justify-center xl:justify-start" >
-          <button
+        <motion.section 
+          className="flex justify-center lg:justify-center xl:justify-start"
+          variants={itemVariants}
+        >
+          <motion.button
             onClick={() => router.push("/project")}
             className="flex justify-between items-center hover:bg-primary_color dark:hover:bg-primary_color hover:text-text_color_light px-5 text-text_color_dark bg-background_dark_mode dark:bg-background_light_mode dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[160px] h-[50px] text-text_body_16"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
             Try Now
-            <FaArrowRight />
-          </button>
-        </section>
-      </section>
+            <motion.div
+              animate={{ x: [0, 5, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+            >
+              <FaArrowRight />
+            </motion.div>
+          </motion.button>
+        </motion.section>
+      </motion.section>
 
       {/* Image Section */}
-      <section className="hidden justify-end items-end xl:block w-[40%]"  >
+      <motion.section 
+        className="hidden justify-end items-end xl:block w-[40%]"
+        variants={itemVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {theme === "dark" ? (
-          <img
+          <motion.img
             src="/images/hero-section-white.png"
             alt="hero section image"
-            className="object-cover w-[400px]"  
+            className="object-cover w-[400px]"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
           />
         ) : (
-          <img
+          <motion.img
             src="/images/hero section.png"
             alt="hero section image"
-            className="object-cover w-[400px]" 
+            className="object-cover w-[400px]"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
           />
         )}
-      </section>
-    </section>
+      </motion.section>
+    </motion.section>
   );
 }
+
