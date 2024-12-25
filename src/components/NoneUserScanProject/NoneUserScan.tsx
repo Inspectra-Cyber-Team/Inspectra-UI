@@ -14,7 +14,23 @@ import { IoIosArrowDown } from "react-icons/io";
 import { toast } from "../hooks/use-toast";
 import { useTheme } from "next-themes";
 import { Checkbox } from "../ui/checkbox";
+import FileStructureViewer from "../FileStructureComponent/FileStructureViewer";
 export default function NoneUserScan() {
+  const [selectedFile, setSelectedFile] = useState<string[]>([]);
+  const [listDirectories, setListDirectories] = useState<any>();
+  // handle add file to array
+  const handleSelectItem = (file: string) => {
+    setSelectedFile((prevSelectedFiles) => {
+      if (prevSelectedFiles.includes(file)) {
+        // If the file is already selected, remove it
+        return prevSelectedFiles.filter((item: string) => item !== file);
+      } else {
+        // Otherwise, add the file
+        return [...prevSelectedFiles, file];
+      }
+    });
+  };
+
   const { theme } = useTheme();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +59,7 @@ export default function NoneUserScan() {
           branch: selectedBranch,
           countScan: countScan,
           issueTypes: selectedCheckbox,
+          includePaths: selectedFile,
         },
       })
         .then((response) => {
@@ -122,6 +139,24 @@ export default function NoneUserScan() {
     }
   };
 
+  //handle on get all Directories from user after git url and selecet branch
+  const handleFetchDirectories = async () => {
+    if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}gits/list_files?gitUrl=${gitUrlResult}&branch=${selectedBranch}`
+      );
+      const data = await response.json();
+      setListDirectories(data);
+    } else {
+      console.log("error");
+    }
+  };
+
+  useEffect(() => {
+    if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
+      handleFetchDirectories();
+    }
+  }, [selectedBranch, gitUrlResult]);
   return (
     <section className="flex mx-auto justify-center lg:justify-between xl:justify-around">
       {/* image */}
@@ -216,7 +251,17 @@ export default function NoneUserScan() {
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-
+            {/* file and directory */}
+            <div>
+              <p className="mt-5 text-text_body_16 text-text_color_light">
+                Filter Scan By Files & Directory{" "}
+              </p>
+              <FileStructureViewer
+                data={listDirectories}
+                selectedItem={selectedFile[0] || null}
+                onSelectItem={handleSelectItem}
+              />
+            </div>
             {/* filter scan */}
             <div className="text-text_body_16 text-text_color_light dark:text-text_color_dark  ">
               <p className="my-5">Filter Scan</p>
@@ -224,7 +269,7 @@ export default function NoneUserScan() {
                 <Checkbox
                   id="bug"
                   onCheckedChange={(checked) =>
-                    handleCheckboxChange("BUG", checked)
+                    handleCheckboxChange("bug", checked)
                   }
                   className="h-5 w-5 "
                 />
@@ -239,7 +284,7 @@ export default function NoneUserScan() {
                 <Checkbox
                   id="Vulnerability"
                   onCheckedChange={(checked) =>
-                    handleCheckboxChange("VULNERABILITY", checked)
+                    handleCheckboxChange("Vulnerability", checked)
                   }
                   className="h-5 w-5"
                 />
@@ -254,7 +299,7 @@ export default function NoneUserScan() {
                 <Checkbox
                   id="Code Smell"
                   onCheckedChange={(checked) =>
-                    handleCheckboxChange("CODE_SMELL", checked)
+                    handleCheckboxChange("code_smell", checked)
                   }
                   className="h-5 w-5"
                 />
