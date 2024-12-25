@@ -209,21 +209,20 @@ export default function MyProfileComponent() {
 
             {/* Button */}
             <div className="flex flex-col md:flex-row justify-end items-end md:mt-10 mt-3 gap-3">
-  <button
-    type="button"
-    onClick={() => router.push("/change-password")}
-    className="text-text_color_light dark:text-text_color_desc_dark outline outline-primary_color p-2 rounded-lg md:w-48 w-48 text-md"
-  >
-    Change Password
-  </button>
-  <button
-    type="submit"
-    className="text-text_color_light bg-primary_color p-2 rounded-lg md:w-48 w-48 text-md"
-  >
-    Save Changes
-  </button>
-</div>
-
+              <button
+                type="button"
+                onClick={() => router.push("/change-password")}
+                className="text-text_color_light dark:text-text_color_desc_dark outline outline-primary_color p-2 rounded-lg md:w-48 w-48 text-md"
+              >
+                Change Password
+              </button>
+              <button
+                type="submit"
+                className="text-text_color_light bg-primary_color p-2 rounded-lg md:w-48 w-48 text-md"
+              >
+                Save Changes
+              </button>
+            </div>
           </form>
         </div>
       </section>

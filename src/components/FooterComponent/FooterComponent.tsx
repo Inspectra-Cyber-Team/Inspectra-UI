@@ -108,8 +108,9 @@ export default function FooterComponent() {
                 <div className="text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
                   Our Sponsors
                 </div>
-                <div className="w-[90%] flex flex-col xl:justify-between lg:space-y-0 space-y-4 xl:flex-row xl:grid xl:grid-cols-3 gap-4 mt-5">
-                  {/* First Image */}
+                <div className="flex flex-col lg:space-y-0 space-y-2 gap-4 mt-5">
+                  <div className="flex flex-col justify-center md:flex-row md:justify-between gap-5">
+                    {/* First Image */}
                   <div className="flex justify-center md:justify-start xl:justify-center">
                     <img
                       src="/images/CBRD_Logo.png"
@@ -126,9 +127,10 @@ export default function FooterComponent() {
                       className="object-contain w-[200px] h-auto"
                     />
                   </div>
+                  </div>
 
                   {/* Third Image */}
-                  <div className="flex justify-center md:justify-start xl:justify-center">
+                  <div className="flex justify-center md:justify-start">
                     <div className="w-[200px] h-auto flex items-center justify-center">
                       {theme === "dark" ? (
                         <img
