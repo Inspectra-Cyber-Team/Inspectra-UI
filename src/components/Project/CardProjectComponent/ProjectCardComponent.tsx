@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { IoSearchSharp } from "react-icons/io5";
+import FileStructureViewer from "@/components/FileStructureComponent/FileStructureViewer";
 
 import {
   AlertDialog,
@@ -59,6 +60,9 @@ export default function ProjectCardComponent() {
   const [userUUID, setUserUUID] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<string[]>([]);
+  const [listDirectories, setListDirectories] = useState<any>();
+
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
@@ -77,6 +81,8 @@ export default function ProjectCardComponent() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
   const [isClosing, setIsClosing] = useState(false);
+
+  // rtk for scan project
   const [
     createScanProject,
     { isSuccess: isScanSuccess, isError: isScanError },
@@ -102,6 +108,7 @@ export default function ProjectCardComponent() {
           gitUrl: gitUrlResult,
           branch: selectedBranch,
           issueTypes: selectedCheckbox,
+          includePaths: selectedFile,
         },
       });
     }
@@ -234,23 +241,37 @@ export default function ProjectCardComponent() {
     }
   };
 
-  // handle on get all Directories from user after git url and selecet branch
-  // const handleFetchDirectories = async () => {
-  //   if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
-  //     const response = await fetch(
-  //       `${process.env.NEXT_PUBLIC_API_URL}gits/list_files?gitUrl=${gitUrlResult}&branch=${selectedBranch}`
-  //     );
-  //     const data = await response.json();
-  //     setListDirectories(data);
-  //   } else {
-  //     console.log("error");
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
-  //     handleFetchDirectories();
-  //   }
-  // }, [selectedBranch, gitUrlResult]);
+  //handle on get all Directories from user after git url and selecet branch
+  const handleFetchDirectories = async () => {
+    if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}gits/list_files?gitUrl=${gitUrlResult}&branch=${selectedBranch}`
+      );
+      const data = await response.json();
+      setListDirectories(data);
+    } else {
+      console.log("error");
+    }
+  };
+
+  // handle add file to array
+  const handleSelectItem = (file: string) => {
+    setSelectedFile((prevSelectedFiles) => {
+      if (prevSelectedFiles.includes(file)) {
+        // If the file is already selected, remove it
+        return prevSelectedFiles.filter((item: string) => item !== file);
+      } else {
+        // Otherwise, add the file
+        return [...prevSelectedFiles, file];
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
+      handleFetchDirectories();
+    }
+  }, [selectedBranch, gitUrlResult]);
 
   return (
     <div>
@@ -1035,7 +1056,7 @@ export default function ProjectCardComponent() {
                 </div>
                 <hr className="my-5 dark:border-primary_color" />
                 <div className="flex  flex-col items-start md:flex-row md:items-center">
-                  {isClosing ? (
+                  {isClosing && isLoading ? (
                     <div className="flex justify-start items-start w-full pt-2 h-full">
                       <ReactTypingEffect
                         text={[
@@ -1173,15 +1194,27 @@ export default function ProjectCardComponent() {
                                   )}
                                 </DropdownMenuContent>
                               </DropdownMenu>
-
+                              {/* file and directory */}
+                              <div>
+                                <p className="mt-5 text-text_body_16 text-text_color_light">
+                                  Filter Scan By Files & Directory{" "}
+                                </p>
+                                <FileStructureViewer
+                                  data={listDirectories}
+                                  selectedItem={selectedFile[0] || null}
+                                  onSelectItem={handleSelectItem}
+                                />
+                              </div>
                               {/* filter scan */}
                               <div className="text-text_body_16 text-text_color_light  ">
-                                <p className="my-5">Filter Scan</p>
+                                <p className="my-5">
+                                  Filter Scan By Issue Type
+                                </p>
                                 <div className="flex items-center space-x-2 my-5">
                                   <Checkbox
                                     id="bug"
                                     onCheckedChange={(checked) =>
-                                      handleCheckboxChange("BUG", checked)
+                                      handleCheckboxChange("bug", checked)
                                     }
                                     className="h-5 w-5 "
                                   />
@@ -1197,7 +1230,7 @@ export default function ProjectCardComponent() {
                                     id="Vulnerability"
                                     onCheckedChange={(checked) =>
                                       handleCheckboxChange(
-                                        "VULNERABILITY",
+                                        "Vulnerability",
                                         checked
                                       )
                                     }
@@ -1215,7 +1248,7 @@ export default function ProjectCardComponent() {
                                     id="Code Smell"
                                     onCheckedChange={(checked) =>
                                       handleCheckboxChange(
-                                        "CODE_SMELL",
+                                        "code_smell",
                                         checked
                                       )
                                     }
