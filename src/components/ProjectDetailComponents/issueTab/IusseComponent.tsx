@@ -28,6 +28,7 @@ import {
 import HowToFix from "./HowToFix";
 import WhereIssue from "./WhereIssue";
 import WhyIssue from "./WhyIssue";
+import ReactTypingEffect from "react-typing-effect";
 
 export default function IusseComponent({ ...props }) {
   const router = useRouter();
@@ -68,13 +69,13 @@ export default function IusseComponent({ ...props }) {
   const { data: issueDetail } = useGetIssueDetailQuery({
     projectKey: projectKey,
   });
+
   const { data: ruleIssue } = useGetRulesByRuleNameQuery({ ruleName: ruleKey });
 
   // fetch rule detail for issue tab
   const issueCardResult = issueData?.data?.issues;
   const issueSideBarResult = issueData?.data.facets;
   const resultIssueDetail = issueDetail?.data;
-
 
   useEffect(() => setSize(issueData?.data?.total), [issueData]);
   useEffect(() => {
@@ -245,7 +246,7 @@ export default function IusseComponent({ ...props }) {
         </div>
       ) : (
         // default card issue and filter
-        <section className="w-full h-full  flex justify-between">
+        <div className="w-full h-full flex justify-between">
           {/* filter side bar */}
           <div className="w-[35%] hidden lg:block h-full border-2 border-background_light_mode dark:border-none dark:bg-card_color_dark p-5 rounded-[20px]  ">
             <p className="text-text_title_24 text-text_color_light dark:text-text_color_dark ">
@@ -356,121 +357,135 @@ export default function IusseComponent({ ...props }) {
               )}
             </div>
           </div>
+
           {/* card issue */}
           <div className=" w-full h-[1000px] scrollbar-hide overflow-y-auto lg:w-[60%] ">
-            <section className="h-full">
-              {/* fetch issue  */}
-              {issueCardResult?.map((issue: any, index: number) => (
-                <div
-                  key={index}
-                  className="w-full mb-5 border-2 border-background_light_mode dark:border-none  dark:bg-card_color_dark p-5 rounded-[20px]"
-                >
-                  {/* first section*/}
-                  <div className="w-full flex justify-between">
-                    <p
-                      onClick={() => {
-                        setActiveContent(true);
-                        setProjectKey(issue?.key);
+            {issueData?.data?.issues.length === 0 ? (
+              <div className="w-full mx-auto text-center text-text_title_20 text-text_color_light dark:text-text_color_dark">
+                <img src="/images/noIssue.png" className="mx-auto" />
+                <ReactTypingEffect
+                  text={[`Congratulation! No issue found in this project`]}
+                  speed={100}
+                  eraseSpeed={50}
+                  eraseDelay={2000}
+                  typingDelay={500}
+                />
+              </div>
+            ) : (
+              <section className="h-full">
+                {/* fetch issue  */}
+                {issueCardResult?.map((issue: any, index: number) => (
+                  <div
+                    key={index}
+                    className="w-full mb-5 border-2 border-background_light_mode dark:border-none  dark:bg-card_color_dark p-5 rounded-[20px]"
+                  >
+                    {/* first section*/}
+                    <div className="w-full flex justify-between">
+                      <p
+                        onClick={() => {
+                          setActiveContent(true);
+                          setProjectKey(issue?.key);
 
-                        setRuleKey(issue.rule);
-                      }}
-                      className=" text-text_body_16 cursor-pointer truncate  w-[60%] md:w-[75%] xl:w-[80%] text-ascend_color underline"
-                    >
-                      {issue?.message}
-                    </p>
-                    <p className=" py-1 px-2 rounded-md text-[14px] text-text_color_light bg-primary_color">
-                      {issue?.cleanCodeAttributeCategory}
-                    </p>
-                  </div>
-                  {/* second section */}
-                  <div className="flex  justify-between  items-center text-center my-5">
-                    <div className=" flex flex-col space-y-2  md:flex-row md:space-y-0 md:space-x-2">
-                      {issue?.impacts.map((impact: any, index: number) => (
-                        <div
-                          key={index}
-                          className="flex text-[14px]  md:text-text_body_16 text-center items-center px-3 rounded-md bg-[#60935d21] py-2 "
-                        >
-                          {impact.severity === "LOW" ? (
-                            <img
-                              src="/images/iconGood.svg"
-                              className="h-5 w-5 md:h-6 md:w-6"
-                              alt="Warning Icon"
-                            ></img>
-                          ) : impact.severity === "MEDIUM" ? (
-                            <img
-                              src="/images/iconWarning.svg"
-                              className=" h-5 w-5 md:h-6 md:w-6"
-                              alt="Warning Icon"
-                            ></img>
-                          ) : (
-                            <img
-                              src="/images/iconWarning.svg"
-                              className="h-5 w-5 md:h-6 md:w-6"
-                              alt="Warning Icon"
-                            ></img>
-                          )}
-                          <p className="mx-3">{impact?.softwareQuality} </p>
-                        </div>
-                      ))}
+                          setRuleKey(issue.rule);
+                        }}
+                        className=" text-text_body_16 cursor-pointer truncate  w-[60%] md:w-[75%] xl:w-[80%] text-ascend_color underline"
+                      >
+                        {issue?.message}
+                      </p>
+                      <p className=" py-1 px-2 rounded-md text-[14px] text-text_color_light bg-primary_color">
+                        {issue?.cleanCodeAttributeCategory}
+                      </p>
                     </div>
-                    {/* tag */}
-                    <div className="flex flex-col space-y-2 md:flex-row text-[14px] md:text-text_body_16 md:space-y-0 md:space-x-2 text-center items-center">
-                      {issue?.tags
-                        .slice(0, 2)
-                        .map((tag: any, index: number) => (
+                    {/* second section */}
+                    <div className="flex  justify-between  items-center text-center my-5">
+                      <div className=" flex flex-col space-y-2  md:flex-row md:space-y-0 md:space-x-2">
+                        {issue?.impacts.map((impact: any, index: number) => (
                           <div
                             key={index}
-                            className="inline-block bg-[#60935d21] px-2 rounded-md"
+                            className="flex text-[14px]  md:text-text_body_16 text-center items-center px-3 rounded-md bg-[#60935d21] py-2 "
                           >
-                            {tag === "type-dependent" ? (
-                              <p className="md:whitespace-normal md:max-w-none truncate max-w-[40px]">
-                                {tag}
-                              </p>
+                            {impact.severity === "LOW" ? (
+                              <img
+                                src="/images/iconGood.svg"
+                                className="h-5 w-5 md:h-6 md:w-6"
+                                alt="Warning Icon"
+                              ></img>
+                            ) : impact.severity === "MEDIUM" ? (
+                              <img
+                                src="/images/iconWarning.svg"
+                                className=" h-5 w-5 md:h-6 md:w-6"
+                                alt="Warning Icon"
+                              ></img>
                             ) : (
-                              <p>{tag}</p>
+                              <img
+                                src="/images/iconWarning.svg"
+                                className="h-5 w-5 md:h-6 md:w-6"
+                                alt="Warning Icon"
+                              ></img>
                             )}
+                            <p className="mx-3">{impact?.softwareQuality} </p>
                           </div>
                         ))}
+                      </div>
+                      {/* tag */}
+                      <div className="flex flex-col space-y-2 md:flex-row text-[14px] md:text-text_body_16 md:space-y-0 md:space-x-2 text-center items-center">
+                        {issue?.tags
+                          .slice(0, 2)
+                          .map((tag: any, index: number) => (
+                            <div
+                              key={index}
+                              className="inline-block bg-[#60935d21] px-2 rounded-md"
+                            >
+                              {tag === "type-dependent" ? (
+                                <p className="md:whitespace-normal md:max-w-none truncate max-w-[40px]">
+                                  {tag}
+                                </p>
+                              ) : (
+                                <p>{tag}</p>
+                              )}
+                            </div>
+                          ))}
 
-                      {issue?.tags.length > 2 && (
-                        <div className=" hidden md:block  items-center">
-                          <IoIosMore className="bg-[#60935d21] rounded-md text-text_body_16 h-6 w-5" />
-                        </div>
-                      )}
+                        {issue?.tags.length > 2 && (
+                          <div className=" hidden md:block  items-center">
+                            <IoIosMore className="bg-[#60935d21] rounded-md text-text_body_16 h-6 w-5" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {/* line */}
+                    <hr className="text-text_color_desc_light opacity-10" />
+                    <div className="flex  items-center justify-start md:justify-end w-full mt-5 text-[14px] ">
+                      <p className="md:whitespace-normal md:max-w-none truncate max-w-full  text-text_color_light  dark:text-text_color_desc_dark">
+                        L{issue?.line} • {issue?.effort} effort •{" "}
+                        {timeSince(issue?.updateDate)} • {issue?.type} •{" "}
+                        <span className="inline md:hidden">
+                          {issue?.severity}
+                        </span>
+                      </p>
+                      <div className="hidden md:flex items-center ml-2 text-text_color_light dark:text-text_color_desc_dark">
+                        {issue?.severity === "MAJOR" ? (
+                          <img
+                            src="/images/dangericon.svg"
+                            alt=""
+                            className="w-[14px] h-full mr-1"
+                          />
+                        ) : (
+                          <img
+                            src="/images/iconWarning.svg"
+                            alt=""
+                            className="w-[14px] h-full mr-1"
+                          />
+                        )}
+                        <p>{issue?.severity}</p>
+                      </div>
                     </div>
                   </div>
-                  {/* line */}
-                  <hr className="text-text_color_desc_light opacity-10" />
-                  <div className="flex  items-center justify-start md:justify-end w-full mt-5 text-[14px] ">
-                    <p className="md:whitespace-normal md:max-w-none truncate max-w-full  text-text_color_light  dark:text-text_color_desc_dark">
-                      L{issue?.line} • {issue?.effort} effort •{" "}
-                      {timeSince(issue?.updateDate)} • {issue?.type} •{" "}
-                      <span className="inline md:hidden">
-                        {issue?.severity}
-                      </span>
-                    </p>
-                    <div className="hidden md:flex items-center ml-2 text-text_color_light dark:text-text_color_desc_dark">
-                      {issue?.severity === "MAJOR" ? (
-                        <img
-                          src="/images/dangericon.svg"
-                          alt=""
-                          className="w-[14px] h-full mr-1"
-                        />
-                      ) : (
-                        <img
-                          src="/images/iconWarning.svg"
-                          alt=""
-                          className="w-[14px] h-full mr-1"
-                        />
-                      )}
-                      <p>{issue?.severity}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </section>
+                ))}
+              </section>
+            )}
           </div>
-        </section>
+        </div>
       )}
     </main>
   );

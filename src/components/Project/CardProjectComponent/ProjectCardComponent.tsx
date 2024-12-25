@@ -120,6 +120,7 @@ export default function ProjectCardComponent() {
         description: "Project Scan Success",
         variant: "success",
       });
+      setIsOpen(false);
       setIsLoading(false);
     }
     if (isScanError) {
@@ -659,9 +660,9 @@ export default function ProjectCardComponent() {
                               return (
                                 <div
                                   key={index}
-                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
                                 >
-                                  F
+                                  A
                                 </div>
                               );
                             }
@@ -768,9 +769,9 @@ export default function ProjectCardComponent() {
                               return (
                                 <div
                                   key={index}
-                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
                                 >
-                                  F
+                                  A
                                 </div>
                               );
                             }
@@ -877,9 +878,9 @@ export default function ProjectCardComponent() {
                               return (
                                 <div
                                   key={index}
-                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-[#EA4335]"
+                                  className="w-[30px] h-[30px] flex items-center justify-center rounded-[5px] border border-primary_color"
                                 >
-                                  F
+                                  A
                                 </div>
                               );
                             }
@@ -910,40 +911,46 @@ export default function ProjectCardComponent() {
                       {projectResult?.component?.component?.measures.includes(
                         "coverage"
                       ) ? (
-                        projectResult?.component?.component?.measures?.map(
-                          (item: any, index: number) => {
-                            if (item.metric === "coverage") {
-                              return (
-                                <div
-                                  key={index}
-                                  className="w-[60px] h-[30px] flex items-center justify-center"
-                                >
-                                  <Image
-                                    width={50}
-                                    height={50}
-                                    alt="coverage"
-                                    src={
-                                      getCoverageData(item?.value)?.image ||
-                                      "/images/20percent.png"
-                                    }
-                                  />
-                                </div>
-                              );
+                        <div className="flex w-full justify-center  text-center items-center">
+                          {projectResult?.component?.component?.measures?.map(
+                            (item: any, index: number) => {
+                              if (item.metric === "coverage") {
+                                return (
+                                  <div
+                                    key={index}
+                                    className="w-[60px] h-[30px] flex items-center justify-center"
+                                  >
+                                    <Image
+                                      width={50}
+                                      height={50}
+                                      alt="coverage"
+                                      src={
+                                        getCoverageData(item?.value)?.image ||
+                                        "/images/20percent.png"
+                                      }
+                                    />
+                                  </div>
+                                );
+                              }
                             }
-                          }
-                        )
-                      ) : (
-                        <div
-                          key={index}
-                          className="w-[60px] h-[30px] flex items-center justify-center"
-                        >
-                          <Image
-                            width={50}
-                            height={50}
-                            alt="coverage"
-                            src={"/images/20percent.png"}
-                          />
+                          )}
+                          {projectResult?.component?.component?.measures?.map(
+                            (item: any, index: number) => {
+                              if (item.metric === "coverage") {
+                                return (
+                                  <p key={index} className="mx-2">
+                                    {item.value}
+                                  </p>
+                                );
+                              }
+                            }
+                          )}
                         </div>
+                      ) : (
+                        <p className="mt-2 text-text_color_light dark:text-text_color_dark">
+                          {" "}
+                          No Data{" "}
+                        </p>
                       )}
                     </div>
                     <div className="mt-5 w-full flex items-center text-center justify-center">
@@ -954,35 +961,46 @@ export default function ProjectCardComponent() {
                   <div className="w-full h-full">
                     {/* duplicated */}
                     <div className="flex w-full justify-center  text-center items-center">
-                      {projectResult?.component?.component?.measures?.map(
-                        (item: any, index: number) => {
-                          if (item.metric === "duplicated_lines_density") {
-                            return (
-                              <div
-                                key={index}
-                                className="w-[35px] h-[30px] flex items-center justify-center"
-                              >
-                                <Image
-                                  width={35}
-                                  height={30}
-                                  alt="coverage"
-                                  src={getDuplicationData(item.value).image}
-                                />
-                              </div>
-                            );
-                          }
-                        }
-                      )}
-                      {projectResult?.component?.component?.measures?.map(
-                        (item: any, index: number) => {
-                          if (item.metric === "duplicated_lines_density") {
-                            return (
-                              <p key={index} className="mx-2">
-                                {item.value}
-                              </p>
-                            );
-                          }
-                        }
+                      {projectResult?.component?.component?.measures.includes(
+                        "duplicated_lines_density"
+                      ) ? (
+                        <div className="flex w-full justify-center  text-center items-center">
+                          {projectResult?.component?.component?.measures?.map(
+                            (item: any, index: number) => {
+                              if (item.metric === "duplicated_lines_density") {
+                                return (
+                                  <div
+                                    key={index}
+                                    className="w-[35px] h-[30px] flex items-center justify-center"
+                                  >
+                                    <Image
+                                      width={35}
+                                      height={30}
+                                      alt="coverage"
+                                      src={getDuplicationData(item.value).image}
+                                    />
+                                  </div>
+                                );
+                              }
+                            }
+                          )}
+                          {projectResult?.component?.component?.measures?.map(
+                            (item: any, index: number) => {
+                              if (item.metric === "duplicated_lines_density") {
+                                return (
+                                  <p key={index} className="mx-2">
+                                    {item.value}
+                                  </p>
+                                );
+                              }
+                            }
+                          )}
+                        </div>
+                      ) : (
+                        <p className="mt-2 text-text_color_light dark:text-text_color_dark">
+                          {" "}
+                          No Data{" "}
+                        </p>
                       )}
                     </div>
                     <div className="mt-5 w-full flex items-center justify-center">
