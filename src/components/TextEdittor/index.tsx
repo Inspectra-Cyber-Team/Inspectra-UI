@@ -101,7 +101,7 @@ export default function RichTextEditor({ content, onChange }: any) {
               return false;
             }
 
-            // If all checks pass, URL is valid
+            // If all checks pass, URL is valid and allowed
             return true;
           } catch {
             return false;
