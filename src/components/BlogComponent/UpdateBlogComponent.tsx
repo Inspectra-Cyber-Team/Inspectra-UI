@@ -6,16 +6,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { MdClear } from "react-icons/md";
-import { useUploadFileMutation } from "@/redux/service/fileupload";
+import { useUploadFileMutation } from "@/redux/service/faqs";
 import { useToast } from "@/components/hooks/use-toast";
 import {
   useUpdateBlogMutation,
   useGetBlogByUuidQuery,
 } from "@/redux/service/blog";
 import { useRouter } from "next/navigation";
-import TextEditor from "../TextEdittor/TextEditor";
-import { Plus } from "lucide-react";
+import { XCircle } from "lucide-react";
+import RichTextEditor from "../TextEdittor";
 
 type UpdateBlogComponentProps = {
   uuid: string;
@@ -42,14 +41,11 @@ const validationSchema = Yup.object().shape({
 
 export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
   const router = useRouter();
-
-  const { data: blogUpdateData } = useGetBlogByUuidQuery({ uuid: uuid });
-
+  const { data: blogUpdateData } = useGetBlogByUuidQuery({ uuid });
   const { toast } = useToast();
-
   const [uploadFile] = useUploadFileMutation();
-
   const [updateBlog] = useUpdateBlogMutation();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -100,9 +96,8 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
 
   const handleUpdateBlog = async (values: any) => {
     try {
+      setIsLoading(true);
       const response = await updateBlog({ uuid: uuid, ...values }).unwrap();
-
-      console.log("Update Blog Response:", response);
 
       if (response.status === 200) {
         toast({
@@ -110,6 +105,7 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
           description: "Your blog has been updated successfully",
           variant: "success",
         });
+        setIsLoading(false);
         router.push("/blog");
       }
     } catch (error) {
@@ -131,8 +127,8 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 rounded-[20px] ">
-      <Card className="border-0">
+    <section className="max-w-4xl mx-auto mt-10 rounded-[20px] ">
+      <Card>
         <CardContent>
           <Formik
             initialValues={initialValues}
@@ -140,17 +136,14 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
             enableReinitialize
             onSubmit={async (values) => {
               try {
-                // Determine if the thumbnail contains new uploads
-                let updatedThumbnails = previewImages; // Start with the current preview images
+                let updatedThumbnails = previewImages;
 
                 if (values.thumbnail.some((file) => typeof file !== "string")) {
-                  // If new files are uploaded, handle the upload
                   updatedThumbnails = await handleFileUpload(
                     values.thumbnail.filter((file) => typeof file !== "string")
                   );
                 }
 
-                // Filter out local blob URLs and combine the newly uploaded URLs with existing URLs
                 const finalThumbnails = [
                   ...previewImages.filter(
                     (url) => typeof url === "string" && !url.startsWith("blob:")
@@ -160,10 +153,9 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
 
                 const updatedValues = {
                   ...values,
-                  thumbnail: finalThumbnails, // Use the final thumbnail URLs
+                  thumbnail: finalThumbnails,
                 };
 
-                // Submit the updated blog data
                 await handleUpdateBlog(updatedValues);
               } catch (error) {
                 console.error("Error updating blog:", error);
@@ -171,139 +163,138 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
             }}
           >
             {({ setFieldValue }) => (
-              <Form className="space-y-4">
-                <p className="text-black p-3 text-text_title_20 font-bold text-center dark:text-text_color_dark ">
-                  Update Blog
-                </p>
+              <Form className="space-y-8 bg-card p-6">
+                <h2 className="text-center font-bold text-2xl">Update Blog</h2>
+
+                {/* Thumbnail Upload */}
                 <div
-                  className="file-upload-design mt-4 p-6 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition-all duration-300 ease-in-out hover:border-blue-400 hover:bg-blue-50 dark:bg-background_dark_mode"
+                  className="file-upload-design p-6 rounded-xl border-2 border-dashed flex items-center justify-center flex-col gap-2"
                   onDragOver={handleDragOver}
                   onDrop={handleDrop}
                 >
-                  <div className="flex flex-col items-center justify-center space-y-2 text-center">
-                    <p className="text-sm font-medium text-gray-700 dark:text-text_color_dark">
-                      Drag and Drop Thumbnail Here
-                    </p>
-                    {/* <p className="text-sm text-gray-500">or</p> */}
-                    <button
-                      type="button"
-                      className="inline-flex items-center justify-center w-10 h-10 rounded-full  text-black  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-                      onClick={() => {
-                        const thumbnailInput =
-                          document.getElementById("thumbnail");
-                        if (thumbnailInput) thumbnailInput.click();
-                      }}
-                    >
-                      <Plus className="h-6 w-6 dark:text-text_color_dark" />
-                      <span className="sr-only">Browse Files</span>
-                    </button>
-                  </div>
-
+                  <p className="text-center font-medium">
+                    Drag and Drop Images Here
+                  </p>
+                  <p className="text-center text-gray-500">or</p>
+                  <span
+                    className="browse-button text-primary-foreground cursor-pointer justify-center bg-primary p-2 rounded-lg"
+                    onClick={() => {
+                      const thumbnailInput =
+                        document.getElementById("thumbnail");
+                      if (thumbnailInput) thumbnailInput.click();
+                    }}
+                  >
+                    Browse Files
+                  </span>
+                  {/* <Label htmlFor="thumbnail" className="block text-lg font-medium mt-4 object-contain">Thumbnail</Label> */}
                   <Input
-                    id="thumbnail"
                     type="file"
+                    id="thumbnail"
+                    name="thumbnail"
                     accept="image/*"
+                    multiple
                     onChange={(e) => handleFileChange(e, setFieldValue)}
                     className="hidden"
                   />
-                  <ErrorMessage
-                    name="thumbnail"
-                    component="p"
-                    className="text-red-500 text-sm mt-2 text-center"
-                  />
                 </div>
-                <div className="w-1/2 mx-auto">
+
+                {/* Preview Images */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                   {previewImages.map((src, index) => (
                     <div key={index} className="relative">
                       <img
                         src={src}
                         alt={`Preview ${index + 1}`}
-                        className="w-full h-full object-contain rounded-md border"
+                        className="w-full h-32 object-cover rounded-lg border"
                       />
-                      <Button
+                      <XCircle
                         type="button"
-                        className="absolute top-0 right-0 bg-red-500 text-white px-2 rounded"
+                        className="absolute -top-2 -right-0  text-destructive  cursor-pointer"
                         onClick={() => {
                           const updatedFiles = [...previewImages];
                           updatedFiles.splice(index, 1);
                           setPreviewImages(updatedFiles);
                         }}
-                      >
-                        <MdClear />
-                      </Button>
+                      ></XCircle>
                     </div>
                   ))}
                 </div>
 
+                {/* Title */}
                 <div>
-                  <Label htmlFor="title">Title</Label>
+                  <Label htmlFor="title" className="text-sm font-medium">
+                    Title
+                  </Label>
                   <Field
                     as={Input}
                     type="text"
                     id="title"
                     name="title"
                     placeholder="Enter blog title"
-                    className="mt-1"
+                    className="mt-2 p-3 border rounded-md w-full "
                   />
                   <ErrorMessage
                     name="title"
                     component="p"
-                    className="text-red-500 text-sm mt-1"
+                    className="text-destructive text-sm mt-1"
                   />
                 </div>
 
-                {/* <div>
-                  <Label htmlFor="description">Description</Label>
+                {/* Description */}
+                <div className="col-span-full mt-4">
+                  <Label htmlFor="description" className="text-sm font-medium">
+                    Description
+                  </Label>
                   <Field
-                    as={Textarea}
-                    id="description"
                     name="description"
-                    placeholder="Write a brief description"
-                    rows={4}
-                    className="mt-1"
-                  />
+                    className="mt-2 p-3 border rounded-md w-full "
+                  >
+                    {({ field }: any) => (
+                      // <TextEditor
+                      //   value={field.value}
+                      //   onChange={(value) => setFieldValue("description", value)}
+                      // />
+                      <RichTextEditor
+                        content={field.value}
+                        onChange={(value: any) =>
+                          setFieldValue("description", value)
+                        }
+                      />
+                    )}
+                  </Field>
                   <ErrorMessage
                     name="description"
-                    component="p"
-                    className="text-red-500 text-sm mt-1"
+                    component="div"
+                    className="text-destructive text-sm"
                   />
-                </div> */}
-
-                {/* new text editor plugin with description filed */}
-                <div className="col-span-full">
-                  <div className="md:col-span-4 col-span-6">
-                    <div className="sm:col-span-6 h-full">
-                      <div className="mt-2">
-                        <Label htmlFor="description">Description</Label>
-                        <Field name="description">
-                          {({ field }: any) => (
-                            <TextEditor
-                              value={field.value}
-                              onChange={(value) =>
-                                setFieldValue("description", value)
-                              }
-                            />
-                          )}
-                        </Field>
-                        <ErrorMessage
-                          name="description"
-                          component="div"
-                          className="text-red-600 text-sm"
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
-                <Button type="submit" className="w-full bg-primary_color">
-                  Update Blog
-                </Button>
+                {/* Submit Button */}
+                <div className="mt-4 flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => router.push("/blog")}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="bg-primary_color text-text_color_light dark:text-text_color_light"
+                    type="submit"
+                  >
+                    {isLoading ? (
+                      <div className="spinner-border animate-spin inline-block w-4 h-4 border-2 rounded-full border-t-2 border-primary-foreground border-t-transparent"></div>
+                    ) : (
+                      "Update Blog"
+                    )}
+                  </Button>
+                </div>
               </Form>
             )}
           </Formik>
         </CardContent>
       </Card>
-    </div>
+    </section>
   );
 };
 

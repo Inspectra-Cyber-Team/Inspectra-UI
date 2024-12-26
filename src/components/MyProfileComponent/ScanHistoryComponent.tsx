@@ -37,6 +37,8 @@ export default function ScanHistoryComponent() {
 
   const { data: projectScanByUser, isError } = useGetProjectOverViewUserQuery({
     uuid: userUUID,
+    page: 0,
+    size: 100,
   });
 
   return (

@@ -29,8 +29,9 @@ import { useGetUserLikeBlogQuery } from "@/redux/service/userlikeblog";
 import HoverModal from "./ModalHoverComponent";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/hooks/use-toast";
-// import "prismjs/themes/prism.css";
-// import Prism from "prismjs";
+import hljs from "highlight.js";
+import "highlight.js/styles/atom-one-dark.css";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -86,6 +87,16 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     const likedBlogs = JSON.parse(localStorage.getItem("likedBlogs") || "{}");
     setLikeColor(!!likedBlogs[data?.data?.uuid]);
   }, [data]);
+
+  useEffect(() => {
+    if (blogData?.description) {
+      setTimeout(() => {
+        document.querySelectorAll("pre code").forEach((block) => {
+          hljs.highlightElement(block as HTMLElement);
+        });
+      }, 0);
+    }
+  });
 
   // useEffect(() => {
   //   const connectWebSocket = () => {
@@ -173,8 +184,6 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
       //     userUuid: blogData?.user?.uuid,
       //   })
       // );
-
-      console.log(message);
     } catch (error) {
       console.error("Error toggling like status:", error);
     }
@@ -201,29 +210,6 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
     setTimeout(() => setShowModal(false), 200);
   };
-
-  const modifiedDescription = blogData?.description.replace(
-    /<img /g,
-    '<img style="max-width: 100%; height: auto; display: block; margin: 0 auto; object-fit: contain;" '
-  );
-  //   ?.replace(/<pre class="ql-syntax"/g, '<pre class="language-js"')
-  //   ?.replace(/&nbsp;/g, " ")
-  //   ?.replace(/&lt;/g, "<")
-  //   ?.replace(/&gt;/g, ">")
-  //   ?.replace(/<\/pre>/g, "</code></pre>")
-  //   ?.replace(
-  //     /<pre class="language-javascript">/g,
-  //     '<pre class="language-js"><code>'
-  //   );
-
-  // useEffect(() => {
-  //   Prism.highlightAll();
-  // }, [modifiedDescription]);
-
-  // useEffect(() => {
-  //   // Highlight all code blocks after the component mounts
-  //   Prism.highlightAll();
-  // }, [modifiedDescription]);
 
   // handle delete blog
   const [deleteBlog] = useDeleteBlogMutation();
@@ -256,18 +242,12 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
   return (
     <section className="w-[90%] mx-auto my-5 md:my-10">
       {/* header */}
-        <div className="flex gap-3 text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark lg:mb-10">
-          <button onClick={() => router.push("/")}>
-           Home
-          </button>
-          <span>/</span>
-          <button onClick={() => router.push("/blog")}>
-            Blog 
-          </button>
-          <span>/</span>
-          <p className="text-ascend_color">
-            Blog Detail
-          </p>
+      <div className="flex gap-3 text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark lg:mb-10">
+        <button onClick={() => router.push("/")}>Home</button>
+        <span>/</span>
+        <button onClick={() => router.push("/blog")}>Blog</button>
+        <span>/</span>
+        <p className="text-ascend_color">Blog Detail</p>
       </div>
 
       {/* Blog Details */}
@@ -409,7 +389,9 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         {/* Description */}
         <hr className="my-5" />
         <div
-          dangerouslySetInnerHTML={{ __html: modifiedDescription || "" }}
+          dangerouslySetInnerHTML={{
+            __html: blogData?.description ?? "No Blog Description !",
+          }}
         ></div>
       </div>
 

@@ -146,7 +146,7 @@ export default function ProjectCardComponent() {
             });
           } catch (error) {
             toast({
-              description: "Oops! Something went wrong",
+              description: `Oops! Something went wrong${error}`,
               variant: "error",
             });
           }
@@ -172,7 +172,6 @@ export default function ProjectCardComponent() {
 
   // handle delete project
   const handleDeleteProject = (projectName: string) => {
-    true;
     deleteProject({ projectName: projectName });
   };
 
@@ -446,7 +445,7 @@ export default function ProjectCardComponent() {
                     (branchItem: any, branchIndex: number) =>
                       branchItem?.branches?.map((item: any, index: number) => (
                         <span key={`${branchIndex}-${index}`}>
-                          {timeSince(item?.analysisDate)} {" "}
+                          {timeSince(item?.analysisDate)}{" "}
                         </span>
                       ))
                   )}
@@ -454,7 +453,9 @@ export default function ProjectCardComponent() {
                     (item: any, index: number) => {
                       if (item.metric === "ncloc") {
                         return (
-                          <span key={index}>{item.value} • Lines of Code • </span>
+                          <span key={index}>
+                            {item.value} • Lines of Code •{" "}
+                          </span>
                         );
                       }
                     }
@@ -490,6 +491,7 @@ export default function ProjectCardComponent() {
                             const parsedValue = JSON.parse(item.value);
                             return (
                               <CheckGrade
+                                key={index}
                                 parsedValue={parsedValue}
                                 index={index}
                               />
@@ -526,6 +528,7 @@ export default function ProjectCardComponent() {
                             const parsedValue = JSON.parse(item.value);
                             return (
                               <CheckGrade
+                                key={index}
                                 parsedValue={parsedValue}
                                 index={index}
                               />
@@ -562,6 +565,7 @@ export default function ProjectCardComponent() {
                             const parsedValue = JSON.parse(item.value);
                             return (
                               <CheckGrade
+                                key={index}
                                 parsedValue={parsedValue}
                                 index={index}
                               />
@@ -598,6 +602,7 @@ export default function ProjectCardComponent() {
                             const parsedValue = JSON.parse(item.value);
                             return (
                               <CheckGrade
+                                key={index}
                                 parsedValue={parsedValue}
                                 index={index}
                               />

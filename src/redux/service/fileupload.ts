@@ -20,4 +20,4 @@ export const fileApi = cyberApi.injectEndpoints({
   }),
 });
 
-export const { useUploadFileMutation , useUploadSingleFileMutation} = fileApi;
+export const { useUploadFileMutation, useUploadSingleFileMutation } = fileApi;

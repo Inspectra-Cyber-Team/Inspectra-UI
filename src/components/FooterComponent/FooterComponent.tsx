@@ -1,17 +1,12 @@
 "use client";
-import Link from "next/link";
-import React from "react";
-import { FaGithub } from "react-icons/fa";
-import { FaTelegram } from "react-icons/fa";
-import { FaFacebook } from "react-icons/fa";
-import { useTheme } from "next-themes";
-import { MdEmail } from "react-icons/md";
 import { FeaturesFooter, SupportFooter } from "@/data/footer";
+import { useTheme } from "next-themes";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { FaFacebook, FaGithub, FaTelegram } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
 export default function FooterComponent() {
   const { theme } = useTheme();
-  const router = useRouter();
   const pathname = usePathname();
   const isRender =
     pathname === "/login" ||

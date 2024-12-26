@@ -1,14 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { convertToDayMonthYear } from "@/lib/utils";
 import { useGetAllUserFeedbackQuery } from "@/redux/service/feedback";
-import { convertToDayMonthYear, getLatestCreatedAt } from "@/lib/utils";
-import Image from "next/image";
-import Aos from "aos";
 import { feedbackType } from "@/types/Feedback";
+import Aos from "aos";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function FeedbackCard() {
   const { data } = useGetAllUserFeedbackQuery({});
-  const [sliceCount, setSliceCount] = useState(3);
   const [lastThreeItems, setLastThreeItems] = useState<any>([]);
 
   useEffect(() => {
@@ -16,17 +15,17 @@ export default function FeedbackCard() {
   }, []);
 
   // Dynamically adjust slice count based on screen size
-  useEffect(() => {
-    const updateSliceCount = () => {
-      const screenWidth = window.innerWidth;
-      setSliceCount(screenWidth < 1200 ? 2 : 3); // Less than 1200px shows 2 items
-    };
+  // useEffect(() => {
+  //   const updateSliceCount = () => {
+  //     const screenWidth = window.innerWidth;
+  //     screenWidth < 1200 ? 2 : 3; 
+  //   };
 
-    updateSliceCount();
-    window.addEventListener("resize", updateSliceCount);
+  //   updateSliceCount();
+  //   window.addEventListener("resize", updateSliceCount);
 
-    return () => window.removeEventListener("resize", updateSliceCount);
-  }, []);
+  //   return () => window.removeEventListener("resize", updateSliceCount);
+  // }, []);
 
   useEffect(() => {
     if (data?.data && Array.isArray(data.data)) {

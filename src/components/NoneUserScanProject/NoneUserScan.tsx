@@ -132,7 +132,7 @@ export default function NoneUserScan() {
             });
           } catch (error) {
             toast({
-              description: "Oops! Something went wrong",
+              description: `Oops! Something went wrong${error}`,
               variant: "error",
             });
           }
