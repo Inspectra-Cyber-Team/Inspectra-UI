@@ -12,6 +12,7 @@ import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 import RiskComponent from "./RiskComponent";
 import { Hotspot } from "@/types/SecurityHostspot";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 type SecurityComponentProps = {
   projectName: string;
@@ -70,6 +71,22 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
   };
 
   const groupedData = groupHotspotsByProbability(hotspots);
+
+  if (hotspots.length === 0) {
+    return (
+      <section className="grid place-content-center ">
+        <Image
+          src="/images/NoIssue.png"
+          alt="No Issue"
+          width={400}
+          height={400}
+        />
+        <span className="text-center text-2xl font-bold">
+          No Security Hotspots Found
+        </span>
+      </section>
+    );
+  }
 
   return (
     <section className="flex gap-10  p-4 rounded-sm h-screen overflow-y-auto scrollbar-hide">

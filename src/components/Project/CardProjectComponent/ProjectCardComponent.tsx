@@ -84,7 +84,7 @@ export default function ProjectCardComponent() {
   const [gitResult, setGitResult] = useState([]); // result get from git url
 
   // for scan project
-  const handleScanProject = (index: number) => {
+  const handleScanProject = async (index: number) => {
     setSelectedIndex(index);
     setIsLoading(true);
     setIsOpen(true);
@@ -95,35 +95,50 @@ export default function ProjectCardComponent() {
       });
       setIsLoading(false);
     } else {
-      createScanProject({
+      const res = await createScanProject({
         project: {
           projectName: projectResult[index].component?.component.name,
           gitUrl: gitUrlResult,
           branch: selectedBranch,
           issueTypes: selectedCheckbox,
-          includePaths: selectedFiles,
+          includePaths: [selectedFiles],
         },
       });
+
+      if (res?.data) {
+        toast({
+          description: "Project Scan Success",
+          variant: "success",
+        });
+        setIsOpen(false);
+        setIsLoading(false);
+      } else {
+        toast({
+          description: "Someting when wrong !",
+          variant: "error",
+        });
+        setIsLoading(false);
+      }
     }
   };
 
-  useEffect(() => {
-    if (isScanSuccess && selectedIndex !== null) {
-      toast({
-        description: "Project Scan Success",
-        variant: "success",
-      });
-      setIsOpen(false);
-      setIsLoading(false);
-    }
-    if (isScanError) {
-      toast({
-        description: "Project is Current in Use",
-        variant: "error",
-      });
-      setIsLoading(false);
-    }
-  }, [isScanError, isScanSuccess, selectedIndex]);
+  // useEffect(() => {
+  //   if (isScanSuccess && selectedIndex !== null) {
+  //     toast({
+  //       description: "Project Scan Success",
+  //       variant: "success",
+  //     });
+  //     setIsOpen(false);
+  //     setIsLoading(false);
+  //   }
+  //   if (isScanError) {
+  //     toast({
+  //       description: "Project is Current in Use",
+  //       variant: "error",
+  //     });
+  //     setIsLoading(false);
+  //   }
+  // }, [isScanError, isScanSuccess, selectedIndex]);
 
   // handle for git input from user and fetch api
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -259,20 +274,23 @@ export default function ProjectCardComponent() {
     }
   };
 
-  // handle add file to array
   const handleSelectItem = (file: any) => {
-    setSelectedFiles((prevFiles: any[]) => {
-      const isAlreadySelected = prevFiles.some(
-        (item) =>
-          item.path.trim().toLowerCase() === file.path.trim().toLowerCase()
-      );
+    setSelectedFiles(file);
+    // setSelectedFiles((prevFiles: any[]) => {
+    //   const isAlreadySelected = prevFiles.some((item) => {
+    //     const itemPath = item?.path?.trim?.().toLowerCase();
+    //     const filePath = file?.path?.trim?.().toLowerCase();
 
-      if (!isAlreadySelected) {
-        return [...prevFiles, file];
-      }
+    //     return itemPath === filePath;
+    //   });
 
-      return prevFiles;
-    });
+    //   if (!isAlreadySelected && file?.path) {
+    //     console.log("this is file adding ", file);
+    //     return [...prevFiles, file];
+    //   }
+
+    //   return prevFiles;
+    // });
   };
 
   useEffect(() => {

@@ -17,10 +17,14 @@ import { useEffect, useState } from "react";
 
 export default function CreateProjectComponent() {
   const [isLoading, setIsLoading] = useState(false);
+
   const [projectName, setProjectName] = useState("");
+
   const [isOpen, setIsOpen] = useState(false);
+
   const [createProjectName, { isSuccess, isError }] =
     useCreateProjectNameMutation();
+
   type ProjectNameType = {
     projectName: string;
   };
