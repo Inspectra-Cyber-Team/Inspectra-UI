@@ -43,7 +43,8 @@ export default function NavbarComponent() {
     }
   };
   useEffect(() => {
-    setUserUUID(localStorage.getItem("userUUID") || "");
+    const storedUUID = localStorage.getItem("userUUID") || "";
+    setUserUUID(storedUUID);
   });
 
   const handleSignOut = () => {
@@ -95,7 +96,7 @@ export default function NavbarComponent() {
             <div className="hidden lg:block ">
               <ul className="flex w-[500px]  text-text_body_16  justify-between">
                 {navbarData.map((item, index: number) => (
-                  <Link key={index} href={item.link}>
+                  <Link key={index} target={item.name === "Document" ? "_blank" : "_self"} href={item.link}>
                     {pathname === item.link ? (
                       <p className="text-secondary_color">{item?.name}</p>
                     ) : (

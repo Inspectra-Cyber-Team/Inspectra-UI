@@ -70,7 +70,7 @@ export default function HomepageComponent() {
             </p>
           </section>
         </section>
-        <p className="text-text_body_16 md:text-text_title_24 text-text_color_desc_light dark:text-text_color_desc_dark mx-auto lg:w-[80%] xl:w-[65%]">
+        <p className="text-text_body_16 md:text-text_title_24 text-text_color_desc_light dark:text-text_color_desc_dark mx-auto w-[90%]">
           Through deep, intelligent scanning and proactive insights, we help you
           secure your code and protect against unseen vulnerabilities with these
           supported popular frameworks

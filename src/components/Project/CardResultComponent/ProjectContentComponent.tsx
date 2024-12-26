@@ -17,7 +17,7 @@ export default function ProjectContent() {
   return (
     <section>
       {userUUID === "" ? (
-        <div className=" lg:w-full   mb-[60px]">
+        <div className=" lg:w-full  my-[60px]">
           {isLoading ? <NoneUserScanSkeletion /> : <NoneUserScan />}
         </div>
       ) : (

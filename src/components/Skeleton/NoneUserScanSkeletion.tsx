@@ -5,8 +5,8 @@ export default function NoneUserScanSkeletion() {
   return (
     <section className="flex mx-auto justify-center lg:justify-between xl:justify-around">
       {/* Image skeleton */}
-      <div className="h-full hidden lg:flex justify-center items-center">
-        <Skeleton className="h-[400px] w-[500px] bg-card_color_light dark:bg-card_color_dark" />
+      <div className=" h-[350px] hidden lg:flex justify-center items-center">
+        <Skeleton className="h-full w-[500px] bg-card_color_light dark:bg-card_color_dark" />
       </div>
 
       {/* Scanning project skeleton */}

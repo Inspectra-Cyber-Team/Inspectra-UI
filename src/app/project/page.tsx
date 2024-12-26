@@ -32,7 +32,9 @@ export const metadata: Metadata ={
 export default function page() {
   return (
     <main className="w-[90%] mx-auto">
+      {/*  for create prject */}
       <ProjectComponent />
+      {/* project */}
       <ProjectContent />
     </main>
   );

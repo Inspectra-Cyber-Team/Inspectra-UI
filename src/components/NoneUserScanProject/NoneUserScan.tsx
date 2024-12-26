@@ -38,16 +38,29 @@ export default function NoneUserScan() {
   const [projectScanNonUser] = useCreateProjectScanNonUserMutation();
 
   const handleSubmit = () => {
-    // Check if the input is empty
+    // Check if the Git URL is empty
     if (!gitUrlResult.trim()) {
       setIsLoading(false);
       toast({
         description: "Please enter a Git URL",
         variant: "error",
       });
-      return;
+      return; // Stop further execution
     }
+
+    // Check if a branch is selected
+    if (selectedBranch === "Select Project Branch") {
+      setIsLoading(false);
+      toast({
+        description: "Please select a branch",
+        variant: "error",
+      });
+      return; // Stop further execution
+    }
+
+    // Proceed with scanning
     setIsLoading(true);
+
     if (countScan < 4) {
       const newCount = countScan + 1;
       setCountScan(newCount);
@@ -80,7 +93,7 @@ export default function NoneUserScan() {
           setIsLoading(false); // Stop loading after operation completes
         });
     } else {
-      setIsLoading(false); // Stop loading for limit reached
+      setIsLoading(false);
       toast({
         description: "You Have Reached Scan Limit. Please Sign In",
         variant: "error",
@@ -97,25 +110,32 @@ export default function NoneUserScan() {
   const [gitUrlResult, setGitUrl] = useState<string>(""); // Store the input value
   const [gitResult, setGitResult] = useState([]); // result get from git url
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
+
   // handle for git input from user and fetch api
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-
-      // vlaidate git url
       if (gitUrlResult.includes(".git")) {
         const fetchGitbranch = async () => {
-          const data = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}gits/branches?gitUrl=${gitUrlResult}`
-          );
-          if (data.ok) {
+          try {
+            const response = await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}gits/branches?gitUrl=${gitUrlResult}`
+            );
+            if (!response.ok) {
+              throw new Error("Failed to fetch branches");
+            }
+            const result = await response.json();
+            setGitResult(result);
             toast({
               description: "Get All Branches Successfully",
               variant: "success",
             });
+          } catch (error) {
+            toast({
+              description: "Oops! Something went wrong",
+              variant: "error",
+            });
           }
-          const result = await data.json();
-          setGitResult(result);
         };
         fetchGitbranch();
       } else {
@@ -126,6 +146,7 @@ export default function NoneUserScan() {
       }
     }
   };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGitUrl(e.target.value); // Update the state with the input value
   };

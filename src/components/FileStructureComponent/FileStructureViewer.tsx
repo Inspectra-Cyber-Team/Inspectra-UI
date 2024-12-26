@@ -151,7 +151,8 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
   return (
     <div
       id="file-structure-container"
-      className="h-[200px] overflow-auto scrollbar-hide"
+    
+      className="h-[200px] overflow-auto scrollbar-hide  text-text_color_light"
     >
       {treeData.length > 0 ? (
         <Tree
@@ -163,6 +164,7 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
           overscanCount={5}
           paddingTop={8}
           paddingBottom={8}
+          
           openByDefault={false}
         >
           {Node}
