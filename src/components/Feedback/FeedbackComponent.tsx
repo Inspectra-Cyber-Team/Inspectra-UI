@@ -6,7 +6,7 @@ import { createFeedbackType } from "@/types/Feedback";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useTheme } from "next-themes";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Aos from 'aos';
 
 export default function FeedbackComponent() {

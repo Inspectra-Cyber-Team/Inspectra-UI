@@ -152,7 +152,7 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
     <div
       id="file-structure-container"
     
-      className="h-[200px] overflow-auto scrollbar-hide  text-text_color_light"
+      className="h-[200px] overflow-auto scrollbar-hide  text-text_color_desc_light"
     >
       {treeData.length > 0 ? (
         <Tree

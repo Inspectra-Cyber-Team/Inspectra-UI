@@ -52,7 +52,7 @@ export default function ProjectCardComponent() {
   const [userUUID, setUserUUID] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<any>([]);
+  const [selectedFiles, setSelectedFiles] = useState<any>([]);
   const [listDirectories, setListDirectories] = useState<any>();
 
   useEffect(() => {
@@ -87,7 +87,7 @@ export default function ProjectCardComponent() {
   const handleScanProject = (index: number) => {
     setSelectedIndex(index);
     setIsLoading(true);
-    setIsOpen(false);
+    setIsOpen(true);
     if (gitResult.length === 0 || gitUrlResult === "Select Project Branch") {
       toast({
         description: "Please Provide Git UR and Branch",
@@ -101,7 +101,7 @@ export default function ProjectCardComponent() {
           gitUrl: gitUrlResult,
           branch: selectedBranch,
           issueTypes: selectedCheckbox,
-          includePaths: selectedFile,
+          includePaths: selectedFiles,
         },
       });
     }
@@ -172,7 +172,7 @@ export default function ProjectCardComponent() {
 
   // handle delete project
   const handleDeleteProject = (projectName: string) => {
-    setIsLoading(true);
+    true;
     deleteProject({ projectName: projectName });
   };
 
@@ -256,13 +256,24 @@ export default function ProjectCardComponent() {
       toast({
         description: "Oops! Something went wrong",
         variant: "error",
-      })
+      });
     }
   };
 
   // handle add file to array
   const handleSelectItem = (file: any) => {
-    setSelectedFile(file);
+    setSelectedFiles((prevFiles: any[]) => {
+      const isAlreadySelected = prevFiles.some(
+        (item) =>
+          item.path.trim().toLowerCase() === file.path.trim().toLowerCase()
+      );
+
+      if (!isAlreadySelected) {
+        return [...prevFiles, file];
+      }
+
+      return prevFiles;
+    });
   };
 
   useEffect(() => {
@@ -435,7 +446,7 @@ export default function ProjectCardComponent() {
                     (branchItem: any, branchIndex: number) =>
                       branchItem?.branches?.map((item: any, index: number) => (
                         <span key={`${branchIndex}-${index}`}>
-                          {timeSince(item?.analysisDate)} •{" "}
+                          {timeSince(item?.analysisDate)} {" "}
                         </span>
                       ))
                   )}
@@ -443,7 +454,7 @@ export default function ProjectCardComponent() {
                     (item: any, index: number) => {
                       if (item.metric === "ncloc") {
                         return (
-                          <span key={index}>{item.value} Lines of Code • </span>
+                          <span key={index}>{item.value} • Lines of Code • </span>
                         );
                       }
                     }
@@ -927,7 +938,7 @@ export default function ProjectCardComponent() {
                                 </p>
                                 <FileStructureViewer
                                   data={listDirectories}
-                                  selectedItem={selectedFile}
+                                  selectedItem={selectedFiles}
                                   onSelectItem={handleSelectItem}
                                 />
                               </div>

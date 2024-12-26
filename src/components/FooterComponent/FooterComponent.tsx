@@ -8,8 +8,10 @@ import { useTheme } from "next-themes";
 import { MdEmail } from "react-icons/md";
 import { FeaturesFooter, SupportFooter } from "@/data/footer";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 export default function FooterComponent() {
   const { theme } = useTheme();
+  const router = useRouter();
   const pathname = usePathname();
   const isRender =
     pathname === "/login" ||
@@ -75,6 +77,9 @@ export default function FooterComponent() {
                     {FeaturesFooter.map((featuresItem, index: number) => (
                       <Link
                         key={index}
+                        target={
+                          featuresItem.name === "Document" ? "_blank" : "_self"
+                        }
                         className="my-3 block text-text_body_16 text-text_color_light dark:text-text_color_dark"
                         href={featuresItem.link}
                       >
@@ -111,26 +116,38 @@ export default function FooterComponent() {
                 <div className="flex flex-col lg:space-y-0 space-y-2 gap-4 mt-5">
                   <div className="flex flex-col justify-center md:flex-row md:justify-between gap-5">
                     {/* First Image */}
-                  <div className="flex justify-center md:justify-start xl:justify-center">
-                    <img
-                      src="/images/CBRD_Logo.png"
-                      alt="CBRD logo"
-                      className="object-contain w-[200px] h-auto"
-                    />
-                  </div>
+                    <Link
+                      href={"https://mptc.gov.kh/"}
+                      target="_blank"
+                      className="flex justify-center md:justify-start xl:justify-center"
+                    >
+                      <img
+                        src="/images/CBRD_Logo.png"
+                        alt="CBRD logo"
+                        className="object-contain w-[200px] h-auto"
+                      />
+                    </Link>
 
-                  {/* Second Image */}
-                  <div className="flex justify-center md:justify-start xl:justify-center">
-                    <img
-                      src="/images/MPTC-Logo.png"
-                      alt="MPTC"
-                      className="object-contain w-[200px] h-auto"
-                    />
-                  </div>
+                    {/* Second Image */}
+                    <Link
+                      href={"https://mptc.gov.kh/"}
+                      target="_blank"
+                      className="flex justify-center md:justify-start xl:justify-center"
+                    >
+                      <img
+                        src="/images/MPTC-Logo.png"
+                        alt="MPTC"
+                        className="object-contain w-[200px] h-auto"
+                      />
+                    </Link>
                   </div>
 
                   {/* Third Image */}
-                  <div className="flex justify-center md:justify-start">
+                  <Link
+                    href="https://www.cstad.edu.kh/"
+                    target="_blank"
+                    className="flex cursor-pointer justify-center md:justify-start"
+                  >
                     <div className="w-[200px] h-auto flex items-center justify-center">
                       {theme === "dark" ? (
                         <img
@@ -146,7 +163,7 @@ export default function FooterComponent() {
                         />
                       )}
                     </div>
-                  </div>
+                  </Link>
                 </div>
               </div>
             </section>

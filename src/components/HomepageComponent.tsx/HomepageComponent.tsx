@@ -12,12 +12,10 @@ export default function HomepageComponent() {
   }, []);
   return (
     <section>
-       {/* Our Working Process */}
+      {/* Our Working Process */}
       <section className="w-full relative h-[1550px]  md:h-[1200px]  lg:h-[1150px] xl:h-[900px]">
         <section className="w-full rounded-tl-[50px] text-center rounded-br-[50px]   md:h-[900px] lg:h-[900px] xl:h-[650px] bg-text_color_light ">
-          <p
-            className=" text-text_title_24 md:text-text_header_34 py-10 text-primary_color"
-          >
+          <p className=" text-text_title_24 md:text-text_header_34 py-10 text-primary_color">
             Our Working Process
           </p>
           <section className="w-full h-full flex flex-col-reverse xl:flex-row">
@@ -54,27 +52,51 @@ export default function HomepageComponent() {
         </section>
       </section>
 
-        {/* Second Section */}
+      {/* Second Section */}
       <section className="text-center lg:my-[60px] space-y-5">
         <section className="flex w-full justify-center">
-          <section className="space-y-2 text-right text-text_title_24 md:text-text_header_34 pr-4 font-medium text-text_color_light dark:text-text_color_dark" data-aos="fade-down">
+          <section
+            className="space-y-2 text-right text-text_title_24 md:text-text_header_34 pr-4 font-medium text-text_color_light dark:text-text_color_dark"
+            data-aos="fade-down"
+          >
             <p>See the</p>
             <p>Secure the</p>
           </section>
           <section className="space-y-2 text-left text-text_title_24 md:text-text_header_34">
-            <p className="rounded-tl-[20px] rounded-br-[20px] bg-primary_color font-medium text-text_color_light px-2 inline-block" data-aos="fade-up">
+            <p
+              className="rounded-tl-[20px] rounded-br-[20px] bg-primary_color font-medium text-text_color_light px-2 inline-block"
+              data-aos="fade-up"
+            >
               Unseen
             </p>
-            <p className="rounded-tl-[20px] rounded-br-[20px] bg-primary_color font-medium text-text_color_light px-2" data-aos="fade-up">
+            <p
+              className="rounded-tl-[20px] rounded-br-[20px] bg-primary_color font-medium text-text_color_light px-2"
+              data-aos="fade-up"
+            >
               Unknown
             </p>
           </section>
         </section>
         <p className="text-text_body_16 md:text-text_title_24 text-text_color_desc_light dark:text-text_color_desc_dark mx-auto w-[90%]">
           Through deep, intelligent scanning and proactive insights, we help you
-          secure your code and protect against unseen vulnerabilities with these
-          supported popular frameworks
+          secure your code and protect against unseen vulnerabilities 
         </p>
+        <section className="flex w-full justify-center pt-[60px]">
+          <section
+            className="space-y-2 text-right text-text_title_24 md:text-text_header_34 pr-4 font-medium text-text_color_light dark:text-text_color_dark"
+            data-aos="fade-down"
+          >
+            <p>Supported</p>
+          </section>
+          <section className="space-y-2 text-left text-text_title_24 md:text-text_header_34">
+            <p
+              className="rounded-tl-[20px] rounded-br-[20px] bg-primary_color font-medium text-text_color_light px-2 inline-block"
+              data-aos="fade-up"
+            >
+              Languages
+            </p>
+          </section>
+        </section>
         <LogoSliderComponent />
       </section>
     </section>

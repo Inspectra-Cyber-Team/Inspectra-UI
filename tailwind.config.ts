@@ -65,7 +65,7 @@ const config: Config = {
         card_color_dark: "rgba(251, 252, 247, 0.1)",
       },
       fontSize: {
-        text_body_16: ["16px", "24px"],
+        text_body_16: ["18px", "24px"],
         text_title_20: ["20px", "28px"],
         text_title_24: ["24px", "36px"],
         text_header_34: ["34px", "51px"],

@@ -194,3 +194,9 @@ export function transformWord(word: string): string | undefined {
 }
 
 
+// check lasted feedback
+export const getLatestCreatedAt = (data: any[]) => {
+  return data.reduce((latest: { createdAt: string | number | Date; }, current: { createdAt: string | number | Date; }) => 
+      new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest
+  );
+};

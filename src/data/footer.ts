@@ -9,7 +9,7 @@ export const FeaturesFooter = [
     },
     {
         name: 'Use Case',
-        link: '/useCase'
+        link: '/usecase'
     },
 
     {
@@ -29,6 +29,6 @@ export const SupportFooter = [
     },
     {
         name: 'About',
-        link: '/aboutUs'
+        link: '/about'
     }
 ]

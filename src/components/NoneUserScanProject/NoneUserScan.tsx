@@ -228,7 +228,7 @@ export default function NoneUserScan() {
               {gitResult.length != 0 ? (
                 <DropdownMenuTrigger asChild>
                   <div className="">
-                    <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-5">
+                    <p className="text-text_body_16 text-text_color_light my-2">
                       Branch
                     </p>
                     <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-text_color_dark">
@@ -242,7 +242,7 @@ export default function NoneUserScan() {
               ) : (
                 <DropdownMenuTrigger disabled asChild>
                   <div className="">
-                    <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-5">
+                    <p className="text-text_body_16 text-text_color_light my-2">
                       Branch
                     </p>
                     <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
@@ -254,7 +254,7 @@ export default function NoneUserScan() {
                   </div>
                 </DropdownMenuTrigger>
               )}
-              <DropdownMenuContent className="w-[462px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
+              <DropdownMenuContent className=" w-[29  0px] md:w-[450px] lg:w-[380px] xl:w-[610px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
                 {gitResult?.length === 0 ? (
                   <DropdownMenuItem disabled>
                     No branch to select
@@ -274,7 +274,7 @@ export default function NoneUserScan() {
             </DropdownMenu>
             {/* file and directory */}
             <div>
-              <p className="mt-5 text-text_body_16 text-text_color_light">
+              <p className="mt-5 text-text_body_16 text-text_color_light dark:text-text_color_dark">
                 Filter Scan By Files & Directory{" "}
               </p>
               <FileStructureViewer

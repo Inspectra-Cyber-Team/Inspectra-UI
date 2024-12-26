@@ -8,8 +8,8 @@ export default function ImageBackground() {
   const pathname = usePathname();
 
   const isRender =
-    pathname === '/aboutUs' ||
-    pathname === '/useCase' ||
+    pathname === '/about' ||
+    pathname === '/usecase' ||
     pathname === '/project' ||
     pathname === '/useCase' ||
     (pathname.startsWith('/blog') && pathname !== '/blog/uuid') ||

@@ -6,7 +6,7 @@ export const navbarData = [
   },
   {
     name: "Use Case",
-    link: "/useCase",
+    link: "/usecase",
   },
   {
     name: "Project",
@@ -22,7 +22,7 @@ export const navbarData = [
   },
   {
     name: "About Us",
-    link: "/aboutUs",
+    link: "/about",
   }
 ];
 
