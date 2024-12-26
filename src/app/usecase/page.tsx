@@ -31,9 +31,9 @@ export const metadata: Metadata = {
 
 export default function page() {
   return (
-    <main>
+    <section>
       {/*  */}
       <UseCaseComponent />
-    </main>
+    </section>
   );
 }
