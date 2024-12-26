@@ -2,7 +2,6 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
-import ToolBar from "../../../../admin/Inspectra-Admin/components/test/ToolBar";
 import Heading from "@tiptap/extension-heading";
 import Highlight from "@tiptap/extension-highlight";
 import Image from "@tiptap/extension-image";
@@ -16,6 +15,7 @@ import { all, createLowlight } from "lowlight";
 import "highlight.js/styles/atom-one-dark.css";
 import js from "highlight.js/lib/languages/javascript";
 import { useEffect } from "react";
+import ToolBar from "./ToolBar";
 
 export default function RichTextEditor({ content, onChange }: any) {
   const lowlight = createLowlight(all);
