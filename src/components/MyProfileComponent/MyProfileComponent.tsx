@@ -144,23 +144,19 @@ export default function MyProfileComponent() {
       <section>
         <div className="relative mt-[30px] pb-3 bg-card_color_light dark:bg-card_color_dark rounded-3xl">
           {/* Particle Container */}
-          <div className="absolute translate-x-0 rounded-t-2xl overflow-hidden flex flex-col items-center h-44 w-full">
+          <div className="absolute translate-x-0 rounded-md flex flex-col items-center h-44 w-full">
             <div className="absolute">
               <ParticlesComponent id="particles" />
             </div>
-            <div className="absolute top-24 left-1/2 -translate-x-1/2 flex flex-col items-center">
-              <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-white group">
+            <div className="absolute mt-36 flex flex-col items-center justify-center ">
+              <div className="w-36 h-36 rounded-full overflow-hidden border-4 mb-2 border-primary_color group relative">
                 <img
-                  className="w-full h-full object-cover"
-                  src={
-                    previewImage ||
-                    userData?.data?.profile ||
-                    "/images/default-profile.jpg"
-                  }
+                  className="w-full h-full object-cover "
+                  src={previewImage || userData?.data?.profile || null}
                   alt="profile"
                 />
                 {/* Edit Overlay */}
-                <button className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full">
+                <button className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <label className="cursor-pointer flex flex-col items-center justify-center gap-2 w-full h-full rounded-full">
                     <div className="flex gap-3">
                       <FaEdit className="text-white" />
@@ -175,14 +171,14 @@ export default function MyProfileComponent() {
                   </label>
                 </button>
               </div>
-
               <p className="text-center">{userData?.data?.name}</p>
               <p className="text-center">{userData?.data?.email}</p>
             </div>
           </div>
+
           <form
             onSubmit={formik.handleSubmit}
-            className="flex flex-col justify-center items-stretch pt-80 gap-5 md:pt-[360px] pb-10 md:pb-5 px-10"
+            className="flex flex-col justify-center items-stretch pt-96 gap-5 md:pt-[360px] pb-10 md:pb-5 px-10"
           >
             <div className="flex flex-col md:flex-row md:items-center gap-3">
               <p className="md:w-[35%]">Username</p>
@@ -210,22 +206,19 @@ export default function MyProfileComponent() {
                 onChange={formik.handleChange}
               />
             </div>
-            <div className="flex items-center justify-start gap-3">
-              <p className="w-[35%] hidden md:block">Password</p>
-              <div className="w-full">
-                <button
-                  type="button"
-                  onClick={() => router.push("/change-password")}
-                  className="border border-secondary_color text-text_color_light md:dark:text-text_color_light dark:text-text_color_dark md:bg-secondary_color md:border-none p-3 rounded-lg mt-0"
-                >
-                  Change Password
-                </button>
-              </div>
-            </div>
-            <div className="flex md:justify-end">
+
+            {/* Button */}
+            <div className="flex flex-col md:flex-row justify-end items-end md:mt-10 mt-3 gap-3">
+              <button
+                type="button"
+                onClick={() => router.push("/change-password")}
+                className="text-text_color_light dark:text-text_color_desc_dark outline outline-primary_color p-2 rounded-lg md:w-48 w-48 text-md"
+              >
+                Change Password
+              </button>
               <button
                 type="submit"
-                className="text-text_color_light bg-primary_color p-3 rounded-lg w-full md:w-auto"
+                className="text-text_color_light bg-primary_color p-2 rounded-lg md:w-48 w-48 text-md"
               >
                 Save Changes
               </button>

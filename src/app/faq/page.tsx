@@ -7,7 +7,7 @@ export const metadata: Metadata ={
   description:
     'Inspectra frequently asked questions to answers all your doubt on the scanning and tools or technique been used in the website',
   keywords:
-    'Inspectra faqs, Inspectra, inspectra, inspect, source code scan, scan, code scan, faqs, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
+    'Inspectra faqs, faqs, faq, Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, faqs, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
   authors: { name: 'Inspectra Team' },
   publisher: 'Inspectra',
   openGraph: {

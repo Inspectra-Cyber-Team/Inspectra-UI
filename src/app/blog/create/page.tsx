@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Create your blog on Inspectra, a leading platform from Cambodia that strengthens secure development with advanced source code analysis tools.",
   keywords:
-    "Inspectra Create Blog, Inspectra, inspectra, inspect, source code scan, scan, code scan, blog create, create blog, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices",
+    "Inspectra Create Blog, Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, blog create, create blog, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices",
   authors: { name: "Inspectra Team" },
   publisher: "Inspectra",
   openGraph: {
