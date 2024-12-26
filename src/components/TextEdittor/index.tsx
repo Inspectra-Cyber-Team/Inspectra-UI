@@ -68,7 +68,7 @@ export default function RichTextEditor({ content, onChange }: any) {
               ? new URL(url)
               : new URL(`${ctx.defaultProtocol}://${url}`);
 
-            // Use the default validation
+            // Use the default validation method to check if the URL is valid
             if (!ctx.defaultValidate(parsedUrl.href)) {
               return false;
             }
