@@ -48,4 +48,5 @@ jobs:
             sudo docker rmi -f ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }} || true
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }}
             sudo docker run -d --name ${{ secrets.CONTAINER_NAME }} -p 4012:3000 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }}
+            sudo docker logout
           EOF

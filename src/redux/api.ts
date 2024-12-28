@@ -6,7 +6,6 @@ import { RootState } from "./store";
 import { setAccessToken } from "@/redux/feature/Auth/authSlice";
 // initialize an empty api service that we'll inject endpoints into later as needed
 
-
 // Setting up prepareHeaders to include the token in the headers
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_URL,
@@ -53,6 +52,14 @@ const baseQueryWithReAuth = async (args: any, api: any, extraOptions: any) => {
 export const cyberApi = createApi({
   reducerPath: "cyberApi",
   baseQuery: baseQueryWithReAuth,
-  tagTypes: ["Feedbacks", "Projects", "User","Comment","Reply","Blog"],
+  tagTypes: [
+    "Feedbacks",
+    "Projects",
+    "User",
+    "Comment",
+    "Reply",
+    "Blog",
+    "Bookmark",
+  ],
   endpoints: () => ({}),
 });

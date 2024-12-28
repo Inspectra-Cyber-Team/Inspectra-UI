@@ -40,6 +40,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Edit, MoreVertical, Trash2 } from "lucide-react";
+import { useCreateBookmarkMutation } from "@/redux/service/bookmark";
 
 type BlogDetailsProps = Readonly<{
   uuid: string;
@@ -61,6 +62,9 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
   const [showModalReport, setShowModalReport] = useState(false);
 
+  // set boolean for bookmark at blog
+  const [isBookmark, setIsBookmark] = useState(false);
+
   const [userUUID, setUserUUID] = useState("");
 
   useEffect(() => {
@@ -71,6 +75,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
   const { data: userLike, isLoading } = useGetUserLikeBlogQuery({ uuid });
 
   const [report, setReport] = useState("");
+
   const [showSidebar, setShowSidebar] = useState(false);
 
   const [likeColor, setLikeColor] = useState(false);
@@ -236,6 +241,34 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         description: "Error deleting the blog",
         variant: "error",
       });
+    }
+  };
+
+  // function to bookmark blog
+  const [createBookmark] = useCreateBookmarkMutation();
+
+  const handleBookmark = async (uuid: string) => {
+    try {
+      const res = await createBookmark({ blogUuid: uuid });
+      if (res.data) {
+        toast({
+          description: "Blog bookmarked successfully",
+          variant: "success",
+        });
+        setIsBookmark(true);
+      } else {
+        toast({
+          description: "Error bookmarking the blog",
+          variant: "error",
+        });
+        setIsBookmark(false);
+      }
+    } catch (error) {
+      toast({
+        description: "Error bookmarking the blog",
+        variant: "error",
+      });
+      setIsBookmark(false);
     }
   };
 
