@@ -39,8 +39,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { Edit, MoreVertical, Trash2 } from "lucide-react";
-import { useCreateBookmarkMutation } from "@/redux/service/bookmark";
+import { BookmarkPlusIcon, Edit, MoreVertical, Trash2 } from "lucide-react";
+import {
+  useCreateBookmarkMutation,
+  useDeleteBookmarkMutation,
+  useIsBookmarkedQuery,
+} from "@/redux/service/bookmark";
 
 type BlogDetailsProps = Readonly<{
   uuid: string;
@@ -65,6 +69,8 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
   // set boolean for bookmark at blog
   const [isBookmark, setIsBookmark] = useState(false);
 
+  console.log("isBookmark", isBookmark);
+
   const [userUUID, setUserUUID] = useState("");
 
   useEffect(() => {
@@ -82,8 +88,13 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
   const [blogData, setBlogData] = useState<Blog | undefined>();
 
+  // calling bookmark status
+  const { data: isBookmarkData } = useIsBookmarkedQuery({ blogUuid: uuid });
+
   const { data } = useGetBlogDetailsQuery({ uuid });
+
   const [createReport] = useReportMutation();
+
   const [likeBlog] = useLikeBlogMutation();
 
   useEffect(() => {
@@ -102,6 +113,23 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
       }, 0);
     }
   });
+
+  // handle check if blog is bookmarked
+  useEffect(() => {
+    try {
+      if (isBookmarkData) {
+        setIsBookmark(isBookmarkData?.data);
+        console.log("isBookmarkData", isBookmarkData?.data);
+      } else {
+        setIsBookmark(false);
+      }
+    } catch {
+      toast({
+        description: "Error checking bookmark status",
+        variant: "error",
+      });
+    }
+  }, [isBookmarkData]);
 
   // useEffect(() => {
   //   const connectWebSocket = () => {
@@ -247,7 +275,11 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
   // function to bookmark blog
   const [createBookmark] = useCreateBookmarkMutation();
 
-  const handleBookmark = async (uuid: string) => {
+  const [deleteBookmark] = useDeleteBookmarkMutation();
+
+  // function to handle remove bookmark
+
+  const handleBookmark = async () => {
     try {
       const res = await createBookmark({ blogUuid: uuid });
       if (res.data) {
@@ -258,7 +290,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         setIsBookmark(true);
       } else {
         toast({
-          description: "Error bookmarking the blog",
+          description: "Error bookmark the blog",
           variant: "error",
         });
         setIsBookmark(false);
@@ -266,6 +298,54 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     } catch (error) {
       toast({
         description: "Error bookmarking the blog",
+        variant: "error",
+      });
+      setIsBookmark(false);
+    }
+  };
+
+  // function to handle remove bookmark
+  const handleRemoveBookmark = async () => {
+    try {
+      const res = await deleteBookmark({ blogUuid: uuid });
+      if (res.data == null) {
+        toast({
+          description: "Bookmark removed successfully",
+          variant: "success",
+        });
+        setIsBookmark(false);
+      } else {
+        toast({
+          description: "Error removing the bookmark",
+          variant: "error",
+        });
+        setIsBookmark(true);
+      }
+    } catch (error) {
+      toast({
+        description: "Error removing the bookmark",
+        variant: "error",
+      });
+      setIsBookmark(true);
+    }
+  };
+
+  const handleBookmarkToggle = async () => {
+    try {
+      if (!uuid) {
+        return;
+      }
+
+      if (isBookmark) {
+        handleRemoveBookmark();
+        setIsBookmark(false);
+      } else {
+        handleBookmark();
+        setIsBookmark(true);
+      }
+    } catch {
+      toast({
+        description: "Error toggling bookmark status",
         variant: "error",
       });
       setIsBookmark(false);
@@ -335,6 +415,17 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
               />
               <p>{blogData?.countComments}</p>
             </div>
+
+            {/* Bookmark */}
+            <div className="text-text_color_desc_light text-2xl cursor-pointer">
+              <BookmarkPlusIcon
+                onClick={() => handleBookmarkToggle()}
+                className={`${
+                  isBookmark ? "text-yellow-400" : "text-text_color_desc_light"
+                }`}
+              />
+            </div>
+
             {/* Action Buttons */}
             <div className="flex items-center justify-center">
               {userUUID === blogData?.user?.uuid && (

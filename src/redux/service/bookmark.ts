@@ -11,7 +11,7 @@ const bookmarkApi = cyberApi.injectEndpoints({
 
     createBookmark: builder.mutation<any, { blogUuid: string }>({
       query: ({ blogUuid }) => ({
-        url: `/bookmarks`,
+        url: `/bookmarks/${blogUuid}`,
         method: "POST",
         body: { blogUuid },
       }),
@@ -25,6 +25,13 @@ const bookmarkApi = cyberApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: "Bookmark", id: "Bookmark" }],
     }),
+
+    isBookmarked: builder.query<any, { blogUuid: string }>({
+      query: ({ blogUuid }) => ({
+        url: `/bookmarks/${blogUuid}/exists`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -32,4 +39,5 @@ export const {
   useGetBookmarksQuery,
   useCreateBookmarkMutation,
   useDeleteBookmarkMutation,
+  useIsBookmarkedQuery,
 } = bookmarkApi;
