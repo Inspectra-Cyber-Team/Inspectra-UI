@@ -13,6 +13,8 @@ export const {
   handlers: { GET, POST },
   auth,
 } = NextAuth({
+  debug: true,
+  trustHost: true,
   providers: [
     GithubProvider({
       clientId: process.env.NEXT_PUBLIC_GITHUB_ID as string,
