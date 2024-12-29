@@ -51,7 +51,7 @@ export default function BookmarkComponent() {
 
   const { data: bookmarkData, isLoading } = useGetBookmarksQuery({
     page: currentPage - 1,
-    pageSize: 10,
+    pageSize: 4,
   });
 
   // Set total pages from the API response
