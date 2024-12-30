@@ -299,7 +299,7 @@ export default function BookmarkComponent() {
                       setUuid(blog?.uuid);
                       setDeleteModalOpen(true);
                     }}
-                    className="cursor-pointer flex gap-2 hover:text-custom_red items-center text-text_color_desc_light dark:text-text_color_desc_dark"
+                    className="cursor-pointer flex gap-2 hover:text-custom_red dark:hover:text-custom_red items-center text-text_color_desc_light dark:text-text_color_desc_dark"
                   >
                     <FaTrashAlt />
                     Delete
