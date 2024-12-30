@@ -6,6 +6,8 @@ import { Metadata } from "next";
 import React, { useRef } from "react";
 import { SiTicktick } from "react-icons/si";
 import { FaCodeBranch } from "react-icons/fa";
+import { get } from "http";
+import { AiOutlineClose } from "react-icons/ai";
 
 type OverviewProps = {
   projectName: string;
@@ -65,6 +67,7 @@ export default function PageOverviewProjectDetail({
     uuid: uuidOfUser ?? "",
   });
   const getProjectByUserUuid = projectUuid?.[0]?.branch?.[0]?.branches?.[0];
+  console.log(getProjectByUserUuid);
 
   // check data and time
   const formatDate = (dateString: string) => {
@@ -103,16 +106,15 @@ export default function PageOverviewProjectDetail({
 
   return (
     <section
-      className="px-4 md:px-8 lg:px-12 border border-1 border-background_light_mode dark:border-ascend_color  rounded-[20px]"
+      className="px-6 md:px-10 lg:px-14 border border-gray-300 dark:border-gray-700 rounded-xl pb-12"
       ref={contentRef}
     >
-      {/* First Section of Page */}
-      <div className="w-full flex flex-col gap-4 sm:gap-4 sm:flex-row sm:justify-between sm:items-center p-2">
-        {/* Header Section */}
-        <div className="text-text_color_light flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <FaCodeBranch className="text-lg" />
-            <p className="text-sm sm:text-base dark:text-white">
+      {/* Header Section */}
+      <div className="w-full flex flex-col gap-4 sm:gap-6 sm:flex-row sm:justify-between sm:items-center py-4">
+        <div className="text-gray-800 dark:text-gray-200 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex items-center gap-3">
+            <FaCodeBranch className="text-2xl text-gray-600 dark:text-gray-400" />
+            <p className="text-base sm:text-lg font-medium">
               {getProjectByUserUuid?.name || "main"}
             </p>
           </div>
@@ -120,17 +122,13 @@ export default function PageOverviewProjectDetail({
 
         {/* Info Section */}
         <div>
-          <ul className="grid grid-cols-1 sm:flex sm:flex-wrap items-start sm:items-center gap-2 sm:gap-3 text-text_color_light dark:text-text_color_dark">
-            <li className="text-sm sm:text-base flex items-center gap-2">
-              {ncLock || "1817"} Lines of Code
-            </li>
-            <li className="text-sm sm:text-base">Version not Provided</li>
-            <li className="mt-2 sm:mt-0">
+          <ul className="flex flex-wrap items-center gap-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
+            <li>{ncLock || "1817"} Lines of Code</li>
+            <li>Version not Provided</li>
+            <li>
               <button
-                className="bg-primary_color text-black px-4 py-2 rounded-full w-full sm:w-[100px] hover:bg-green-500 transition-colors"
-                onClick={() => {
-                  handleExportPDF(nameOfProject);
-                }}
+                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-all"
+                onClick={() => handleExportPDF(nameOfProject)}
               >
                 Export
               </button>
@@ -140,186 +138,100 @@ export default function PageOverviewProjectDetail({
       </div>
 
       {/* Divider */}
-      <div className="border-b border-ascend_color mt-3 mb-5"></div>
+      <div className="border-b border-gray-300 dark:border-gray-600 mb-6"></div>
 
-      {/* Second Section of Page */}
-      <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="text-text_color_light flex items-center gap-3">
+      {/* Quality Gate Section */}
+      <div className="w-full flex flex-col md:flex-row justify-between gap-6">
+        <div className="flex items-center gap-4">
           <h2
-            className="bg-primary_color p-3 rounded-md text-black
-                     text-xl"
+            className={`p-4 rounded-lg text-white text-xl ${getProjectByUserUuid?.status.qualityGateStatus === "OK"
+              ? "bg-green-500"
+              : "bg-red-500"
+              }`}
           >
-            <SiTicktick />
+            {getProjectByUserUuid?.status.qualityGateStatus === "OK" ? (
+              <SiTicktick />
+            ) : (
+              <AiOutlineClose />
+            )}
           </h2>
           <div>
-            <p className="text-xs md:text-sm dark:text-white">Quality Gate</p>
-            <p className="font-bold text-base md:text-lg dark:text-white">
+            <p className="text-sm dark:text-gray-400">Quality Gate</p>
+            <p className="text-lg font-semibold dark:text-white">
               {getProjectByUserUuid?.status.qualityGateStatus === "OK"
                 ? "Passed"
                 : "Failed"}
             </p>
           </div>
         </div>
-        <div className="text-sm md:text-base">
-          Last Analysis <b className="text-secondary_color">{formattedDate}</b>
-        </div>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Last Analysis: <span className="text-gray-800 dark:text-white">{formattedDate}</span>
+        </p>
       </div>
 
-      {/* Third Section of Page */}
-      <div className="w-full">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5 mb-5">
-          {metrics.map((metric: MetricType, index: number) => {
-            // Dynamically check and parse JSON string in `value`
+      {/* Metrics Section */}
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        {metrics.map((metric: any, index: any) => {
+          let grade = "N/A";
+          let percentage = 0;
+          let gradient = "";
+          let parsedValue = null;
 
-            let grade = "N/A";
-            let percentage = 0;
-            let gradient = "";
-            let parsedValue: any = null;
-
-            try {
-              if (metric.value.startsWith("{") && metric.value.endsWith("}")) {
-                parsedValue = JSON.parse(metric.value);
-                const totalIssues = parsedValue.total || 0;
-                percentage =
-                  maxIssues > 0 ? (totalIssues / maxIssues) * 100 : 0;
-              } else {
-                const value = parseFloat(metric.value) || 0;
-                percentage = maxIssues > 0 ? (value / maxIssues) * 100 : 0;
-              }
-
-              // Assign grade
-              grade =
-                percentage <= 0
-                  ? "A"
-                  : percentage <= 20
-                  ? "B"
-                  : percentage <= 40
-                  ? "C"
-                  : percentage <= 60
-                  ? "D"
-                  : percentage <= 80
-                  ? "E"
-                  : "F";
-
-              // Assign gradient for visual representation
-              gradient =
-                percentage > 0
-                  ? `conic-gradient(lime 0% ${percentage}%, red ${percentage}% 100%)`
-                  : `conic-gradient(lime ${percentage}% 100%)`;
-            } catch (err) {
-              console.error(
-                "Error parsing JSON for metric:",
-                metric.metric,
-                err
-              );
+          try {
+            if (metric.value.startsWith("{") && metric.value.endsWith("}")) {
+              parsedValue = JSON.parse(metric.value);
+              const totalIssues = parsedValue.total || 0;
+              percentage = maxIssues > 0 ? (totalIssues / maxIssues) * 100 : 0;
+            } else {
+              const value = parseFloat(metric.value) || 0;
+              percentage = maxIssues > 0 ? (value / maxIssues) * 100 : 0;
             }
 
-            // Format the metric name
-            const formattedMetric = metric.metric
-              .replace(/_/g, " ") // Replace underscores with spaces
-              .toUpperCase(); // Convert to uppercase
+            grade = percentage <= 0 ? "A" : percentage <= 20 ? "B" : percentage <= 40 ? "C" : percentage <= 60 ? "D" : percentage <= 80 ? "E" : "F";
+            gradient = percentage > 0 ? `conic-gradient(lime 0% ${percentage}%, red ${percentage}% 100%)` : `conic-gradient(lime ${percentage}% 100%)`;
+          } catch (err) {
+            console.error("Error parsing JSON for metric:", metric.metric, err);
+          }
 
-            return (
-              <div
-                key={index}
-                className="text-text_color_light flex flex-col gap-3 border-r border-gray-200 p-3 dark:text-white"
-              >
-                {/* Render formatted metric */}
-                <p className="text-sm md:text-base lg:text-lg mb-3 font-bold text-ascend_color">
-                  {formattedMetric}
+          const formattedMetric = metric.metric.replace(/_/g, " ").toUpperCase();
+
+          return (
+            <div key={index} className="flex flex-col gap-4 p-4 border border-gray-300 dark:border-gray-600 rounded-lg">
+              <p className="text-lg font-semibold text-gray-700 dark:text-white">
+                {formattedMetric}
+              </p>
+              <div className="flex justify-between items-center">
+                <p className="text-base font-medium text-gray-700 dark:text-gray-300">
+                  {parsedValue?.total || 0} {metric.metric === "ncloc" ? "Lines of Code" : "Open Issues"}
                 </p>
-                <div className="text-sm md:text-base flex justify-between items-center mb-3">
-                  {parsedValue ? (
-                    <>
-                      <p className="font-bold">
-                        {parsedValue.total || 0}{" "}
-                        <span className="font-normal">
-                          {metric.metric === "ncloc"
-                            ? "Lines of Code"
-                            : "Open Issues"}
-                        </span>
-                      </p>
-                      <p
-                        className={`w-[36px] h-[36px] text-sm md:text-base flex items-center justify-center p-2 rounded-md 
-                                                ${
-                                                  grade === "A"
-                                                    ? "border-2 border-green-500"
-                                                    : grade === "B"
-                                                    ? "border-2 border-green-300"
-                                                    : grade === "C"
-                                                    ? "border-2 border-blue-500"
-                                                    : grade === "D"
-                                                    ? "border-2 border-yellow-500"
-                                                    : grade === "E"
-                                                    ? "border-2 border-red-300"
-                                                    : grade === "F"
-                                                    ? "border-2 border-red-500"
-                                                    : "border-2 border-gray-500"
-                                                }`}
-                      >
-                        {grade}
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="font-bold">
-                        {parsedValue?.total || 0}{" "}
-                        <span className="font-normal">
-                          {metric.metric === "ncloc"
-                            ? "Lines of Code"
-                            : "Open Issues"}
-                        </span>
-                      </p>
-                      <div className="text-text_body_16 flex justify-between items-center mb-3">
-                        <div className="relative w-12 h-12">
-                          <div
-                            className="absolute w-full h-full rounded-full bg-transparent"
-                            style={{ background: gradient }}
-                          ></div>
-                          <div className="absolute w-1/2 h-1/2  bg-white dark:bg-black dark:opacity-80 rounded-full top-3 left-3"></div>
-                        </div>
-                      </div>
-                    </>
-                  )}
+                <div
+                  className={`w-10 h-10 flex items-center justify-center border rounded-lg ${grade === "A" ? "border-[#B9FF66]" : grade === "B" ? "border-[#60935D]" : grade === "C" ? "border-[#F7DC6F]" : grade === "D" ? "border-[#F9B800]" : "border-[#EA4335]"
+                    } text-text_color_light dark:text-text_color_dark font-bold`}
+                >
+                  {grade}
                 </div>
-
-                {/* Render HIGH, MEDIUM, LOW issues */}
-                {parsedValue ? (
-                  <div className="flex space-x-4 justify-between">
-                    <p className="px-4 py-2 bg-gray-100 rounded-md text-sm font-medium shadow-sm text-red-500 dark:bg-transparent">
-                      {parsedValue.HIGH || 0} H
-                    </p>
-                    <p className="px-4 py-2 bg-gray-100 text-yellow-500 rounded-md text-sm font-medium shadow-sm dark:bg-transparent">
-                      {parsedValue.MEDIUM || 0} M
-                    </p>
-                    <p
-                      className="px-4 py-2 bg-gray-100 dark:bg-transparent
-                                         text-green-500 rounded-md text-sm font-medium shadow-sm"
-                    >
-                      {parsedValue.LOW || 0} L
-                    </p>
-                  </div>
-                ) : (
-                  <div className="flex space-x-4 justify-between">
-                    <p className="px-3 py-2 rounded-md shadow-sm">
-                      {metric.bestValue === true ? (
-                        <span className="text-green-500 font-bold">
-                          Best Value
-                        </span>
-                      ) : (
-                        <span className="text-red-500 font-medium">
-                          No Best Value
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                )}
-                <div className="border-b border-gray-200 mt-3"></div>
               </div>
-            );
-          })}
-        </div>
+
+              {parsedValue ? (
+                <div className="flex justify-between gap-2">
+                  <span className="px-3 py-1 bg-red-100 text-red-500 rounded-md text-sm font-medium">
+                    {parsedValue.HIGH || 0} H
+                  </span>
+                  <span className="px-3 py-1 bg-yellow-100 text-yellow-500 rounded-md text-sm font-medium">
+                    {parsedValue.MEDIUM || 0} M
+                  </span>
+                  <span className="px-3 py-1 bg-green-100 text-green-500 rounded-md text-sm font-medium">
+                    {parsedValue.LOW || 0} L
+                  </span>
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm">No additional details available</p>
+              )}
+            </div>
+          );
+        })}
       </div>
     </section>
+
   );
 }
