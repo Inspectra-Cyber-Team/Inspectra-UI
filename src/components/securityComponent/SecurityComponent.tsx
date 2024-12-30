@@ -13,6 +13,7 @@ import RiskComponent from "./RiskComponent";
 import { Hotspot } from "@/types/SecurityHostspot";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import ReactTypingEffect from "react-typing-effect";
 
 type SecurityComponentProps = {
   projectName: string;
@@ -95,9 +96,13 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
           width={400}
           height={400}
         />
-        <span className="text-center text-2xl font-bold">
-          No Security Hotspots Found
-        </span>
+        <ReactTypingEffect
+          text={[`Congratulation! No Security hotspots found in this project`]}
+          speed={100}
+          eraseSpeed={50}
+          eraseDelay={2000}
+          typingDelay={500}
+        />
       </section>
     );
   }
