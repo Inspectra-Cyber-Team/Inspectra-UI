@@ -141,12 +141,12 @@ export default function PageOverviewProjectDetail({
       <div className="border-b border-gray-300 dark:border-gray-600 mb-6"></div>
 
       {/* Quality Gate Section */}
-      <div className="w-full flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="w-full flex flex-col md:flex-row justify-between gap-6">
         <div className="flex items-center gap-4">
           <h2
             className={`p-4 rounded-lg text-white text-xl ${getProjectByUserUuid?.status.qualityGateStatus === "OK"
-                ? "bg-green-500"
-                : "bg-red-500"
+              ? "bg-green-500"
+              : "bg-red-500"
               }`}
           >
             {getProjectByUserUuid?.status.qualityGateStatus === "OK" ? (
@@ -164,6 +164,9 @@ export default function PageOverviewProjectDetail({
             </p>
           </div>
         </div>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Last Analysis: <span className="text-gray-800 dark:text-white">{formattedDate}</span>
+        </p>
       </div>
 
       {/* Metrics Section */}
