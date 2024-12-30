@@ -895,7 +895,7 @@ export default function ProjectCardComponent() {
                               <AlertDialogCancel className="flex text-center items-center">
                                 <button
                                   onClick={() => {
-                                    setIsClosing(true), setSelectedFiles([]);
+                                  setSelectedFiles([]);
                                   }}
                                 >
                                   <RxCross2
