@@ -15,6 +15,14 @@ import { useCreateProjectNameMutation } from "@/redux/service/project";
 import { toast } from "@/components/hooks/use-toast";
 import { useEffect, useState } from "react";
 
+type ErrorResponse = {
+  data?: {
+    error?: {
+      description?: string;
+    };
+  };
+};
+
 export default function CreateProjectComponent() {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,38 +46,83 @@ export default function CreateProjectComponent() {
     projectName: "",
   };
 
-  const handleSubmit = (values: ProjectNameType) => {
+  const handleSubmit = async (values: ProjectNameType) => {
     setIsLoading(true);
     setProjectName(values.projectName);
-    createProjectName({ projectName: values });
-  };
-  useEffect(() => {
-    if (isSuccess) {
+    try {
+      const res = await createProjectName({ projectName: values });
+      if (res?.data) {
+        toast({
+          description: "Project created successfully",
+          variant: "success",
+        });
+        setIsOpen(false);
+        setIsLoading(false);
+      } else if (res?.error) {
+        let errorMessage = "An error occurred while creating the project.";
+
+        // Check if the error is of type FetchBaseQueryError
+        if ("data" in res.error) {
+          const errorResponse = res.error as ErrorResponse;
+
+          // Check if the description is an array or a string
+          if (Array.isArray(errorResponse.data?.error?.description)) {
+            // Join array elements into a single string (comma-separated or however you'd like)
+            errorMessage = errorResponse.data.error.description[0].reason;
+          } else {
+            // Handle as a string
+            errorMessage =
+              errorResponse.data?.error?.description || errorMessage;
+          }
+        }
+
+        toast({
+          description: errorMessage,
+          variant: "error",
+        });
+      } else {
+        toast({
+          description: "Something went wrong!",
+          variant: "error",
+        });
+      }
+    } catch (error) {
+      console.error("Error while creating scan project:", error);
       toast({
-        description: "Project created successfully",
-        variant: "success",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "error",
       });
-      setIsOpen(false);
+    } finally {
       setIsLoading(false);
     }
-    if (isError) {
-      if (projectName.trim().length === 0 || /\s/.test(projectName)) {
-        // Check if the projectName is empty or contains whitespace
-        toast({
-          description: "Project name cannot contain whitespace",
-          variant: "error",
-        });
-        setIsLoading(false);
-      } else {
-        // Handle the case where the project name already exists
-        toast({
-          description: "Oops! Something went wrong",
-          variant: "error",
-        });
-        setIsLoading(false);
-      }
-    }
-  }, [isSuccess, isError]);
+  };
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     toast({
+  //       description: "Project created successfully",
+  //       variant: "success",
+  //     });
+  //     setIsOpen(false);
+  //     setIsLoading(false);
+  //   }
+  //   if (isError) {
+  //     if (projectName.trim().length === 0 || /\s/.test(projectName)) {
+  //       // Check if the projectName is empty or contains whitespace
+  //       toast({
+  //         description: "Project name cannot contain whitespace",
+  //         variant: "error",
+  //       });
+  //       setIsLoading(false);
+  //     } else {
+  //       // Handle the case where the project name already exists
+  //       toast({
+  //         description: "Oops! Something went wrong",
+  //         variant: "error",
+  //       });
+  //       setIsLoading(false);
+  //     }
+  //   }
+  // }, [isSuccess, isError]);
 
   return (
     <div>

@@ -12,7 +12,6 @@ import { useGetSourceCodeByLineQuery } from "@/redux/service/source";
 import DOMPurify from "dompurify";
 import {
   Breadcrumb,
-  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
@@ -29,10 +28,14 @@ type LineData = {
 };
 
 type CodeViewerProps = Readonly<{
+  projectName: string;
   componentKey: string;
 }>;
 
-export default function CodeViewer({ componentKey }: CodeViewerProps) {
+export default function CodeViewer({
+  projectName,
+  componentKey,
+}: CodeViewerProps) {
   const [showAlert, setShowAlert] = useState(false);
   const [alertPosition, setAlertPosition] = useState<{
     top: number;
@@ -49,6 +52,8 @@ export default function CodeViewer({ componentKey }: CodeViewerProps) {
     error,
     isLoading,
   } = useGetSourceCodeByLineQuery({ componetKey: componentKey });
+
+  console.log("sourceData", sourceData);
 
   useEffect(() => {
     Prism.highlightAll();
@@ -101,7 +106,9 @@ export default function CodeViewer({ componentKey }: CodeViewerProps) {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href="/project">Project</BreadcrumbLink>
+            <BreadcrumbLink href={`/project/${projectName}`}>
+              {projectName}
+            </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>

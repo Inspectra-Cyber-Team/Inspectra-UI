@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { FaGithub, FaGitlab } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
-import { ArrowLeft } from 'lucide-react'
-import Image from 'next/image';
 import { useCreateProjectScanNonUserMutation } from "@/redux/service/project";
 import { GitUrlType } from "@/data/GitUrl";
 import { toast } from "../hooks/use-toast";
@@ -19,7 +17,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import FileStructureViewer from "@/components/FileStructureComponent/FileStructureViewer";
-import Link from "next/link";
 
 export default function NoneUserScan() {
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -35,6 +32,7 @@ export default function NoneUserScan() {
   const [gitResult, setGitResult] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
   const [selectedCheckbox, setSelectedCheckBox] = useState<string[]>([]);
+  const [isFetchFilesLoading, setIsFetchFilesLoading] = useState(false);
 
   useEffect(() => {
     const storedCount =
@@ -168,16 +166,33 @@ export default function NoneUserScan() {
 
   const handleFetchDirectories = async () => {
     if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}gits/list_files?gitUrl=${gitUrlResult}&branch=${selectedBranch}`
-      );
-      const data = await response.json();
-      setListDirectories(data);
+      try {
+        setIsFetchFilesLoading(true); // Start loading
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}gits/list_files?gitUrl=${gitUrlResult}&branch=${selectedBranch}`
+        );
+
+        if (response.status === 200) {
+          setIsFetchFilesLoading(false); // Stop loading
+          const data = await response.json();
+          setListDirectories(data);
+        }
+      } catch (error) {
+        console.error("Error fetching directories:", error);
+        toast({
+          description: "Oops! Something went wrong",
+          variant: "error",
+        });
+      } finally {
+        setIsLoading(false); // Stop loading
+      }
     } else {
-      console.log("error");
+      toast({
+        description: "Oops! Something went wrong",
+        variant: "error",
+      });
     }
   };
-
   useEffect(() => {
     if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
       handleFetchDirectories();
@@ -185,18 +200,16 @@ export default function NoneUserScan() {
   }, [selectedBranch, gitUrlResult]);
 
   const handleGoHome = () => {
-    router.push('/'); // Redirect to the homepage when clicking "Go to Homepage"
+    router.push("/"); // Redirect to the homepage when clicking "Go to Homepage"
   };
-
- 
 
   return (
     <section className="mx-auto rounded-lg justify-center items-center bg-card_color_light dark:bg-card_color_dark">
-        <ScanStepsModal
+      <ScanStepsModal
         isOpen={showTerms}
-        onOpenChange={setShowTerms} 
-        onStart={handleOnStart}  
-          />
+        onOpenChange={setShowTerms}
+        onStart={handleOnStart}
+      />
       {/* Top section */}
       <div className="flex flex-col items-center justify-center pt-10 ">
         <div className="px-3 w-[300px] md:w-[500px] font-semibold bg-primary_color py-2 rounded-tl-[20px] rounded-br-[20px]">
@@ -321,9 +334,11 @@ export default function NoneUserScan() {
                     Filter Scan By Files & Directory{" "}
                   </p>
                   <FileStructureViewer
-                      data={listDirectories}
-                      selectedItem={selectedFile[0] || null}
-                      onSelectItem={handleSelectItem} isFetchLoading={false}                  />
+                    data={listDirectories}
+                    selectedItem={selectedFile[0] || null}
+                    onSelectItem={handleSelectItem}
+                    isFetchLoading={false}
+                  />
                 </div>
 
                 {/* filter scan */}

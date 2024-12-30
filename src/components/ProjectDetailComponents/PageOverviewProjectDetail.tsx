@@ -3,7 +3,7 @@ import {
   useGetProjectDetailQuery,
 } from "@/redux/service/overview";
 import { Metadata } from "next";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { SiTicktick } from "react-icons/si";
 import { FaCodeBranch } from "react-icons/fa";
 import { get } from "http";
@@ -30,6 +30,8 @@ export default function PageOverviewProjectDetail({
 }: OverviewProps) {
   const nameOfProject = projectName;
 
+  const [isloading, setIsLoading] = useState(false);
+
   const uuidOfUser =
     typeof window !== "undefined" ? localStorage.getItem("userUUID") : null;
 
@@ -48,6 +50,7 @@ export default function PageOverviewProjectDetail({
 
   // handleExportPDF function
   const handleExportPDF = async (projectName: string) => {
+    setIsLoading(true);
     const endpoint = `${process.env.NEXT_PUBLIC_API_URL}pdf/${projectName}`;
     const response = await fetch(endpoint);
     const blob = await response.blob();
@@ -59,6 +62,7 @@ export default function PageOverviewProjectDetail({
     link.download = `${projectName}.pdf`; // Set the filename as `pName.pdf`
     document.body.appendChild(link);
     link.click(); // Trigger the download
+    setIsLoading(false);
     document.body.removeChild(link); // Cleanup
   };
 
@@ -130,7 +134,11 @@ export default function PageOverviewProjectDetail({
                 className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-all"
                 onClick={() => handleExportPDF(nameOfProject)}
               >
-                Export
+                {isloading ? (
+                  <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
+                ) : (
+                  "Export"
+                )}
               </button>
             </li>
           </ul>
@@ -144,10 +152,11 @@ export default function PageOverviewProjectDetail({
       <div className="w-full flex flex-col md:flex-row justify-between gap-6">
         <div className="flex items-center gap-4">
           <h2
-            className={`p-4 rounded-lg text-white text-xl ${getProjectByUserUuid?.status.qualityGateStatus === "OK"
-              ? "bg-green-500"
-              : "bg-red-500"
-              }`}
+            className={`p-4 rounded-lg text-white text-xl ${
+              getProjectByUserUuid?.status.qualityGateStatus === "OK"
+                ? "bg-green-500"
+                : "bg-red-500"
+            }`}
           >
             {getProjectByUserUuid?.status.qualityGateStatus === "OK" ? (
               <SiTicktick />
@@ -165,7 +174,8 @@ export default function PageOverviewProjectDetail({
           </div>
         </div>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Last Analysis: <span className="text-gray-800 dark:text-white">{formattedDate}</span>
+          Last Analysis:{" "}
+          <span className="text-gray-800 dark:text-white">{formattedDate}</span>
         </p>
       </div>
 
@@ -187,26 +197,55 @@ export default function PageOverviewProjectDetail({
               percentage = maxIssues > 0 ? (value / maxIssues) * 100 : 0;
             }
 
-            grade = percentage <= 0 ? "A" : percentage <= 20 ? "B" : percentage <= 40 ? "C" : percentage <= 60 ? "D" : percentage <= 80 ? "E" : "F";
-            gradient = percentage > 0 ? `conic-gradient(lime 0% ${percentage}%, red ${percentage}% 100%)` : `conic-gradient(lime ${percentage}% 100%)`;
+            grade =
+              percentage <= 0
+                ? "A"
+                : percentage <= 20
+                ? "B"
+                : percentage <= 40
+                ? "C"
+                : percentage <= 60
+                ? "D"
+                : percentage <= 80
+                ? "E"
+                : "F";
+            gradient =
+              percentage > 0
+                ? `conic-gradient(lime 0% ${percentage}%, red ${percentage}% 100%)`
+                : `conic-gradient(lime ${percentage}% 100%)`;
           } catch (err) {
             console.error("Error parsing JSON for metric:", metric.metric, err);
           }
 
-          const formattedMetric = metric.metric.replace(/_/g, " ").toUpperCase();
+          const formattedMetric = metric.metric
+            .replace(/_/g, " ")
+            .toUpperCase();
 
           return (
-            <div key={index} className="flex flex-col gap-4 p-4 border border-gray-300 dark:border-gray-600 rounded-lg">
+            <div
+              key={index}
+              className="flex flex-col gap-4 p-4 border border-gray-300 dark:border-gray-600 rounded-lg"
+            >
               <p className="text-lg font-semibold text-gray-700 dark:text-white">
                 {formattedMetric}
               </p>
               <div className="flex justify-between items-center">
                 <p className="text-base font-medium text-gray-700 dark:text-gray-300">
-                  {parsedValue?.total || 0} {metric.metric === "ncloc" ? "Lines of Code" : "Open Issues"}
+                  {parsedValue?.total || 0}{" "}
+                  {metric.metric === "ncloc" ? "Lines of Code" : "Open Issues"}
                 </p>
                 <div
-                  className={`w-10 h-10 flex items-center justify-center border rounded-lg ${grade === "A" ? "border-[#B9FF66]" : grade === "B" ? "border-[#60935D]" : grade === "C" ? "border-[#F7DC6F]" : grade === "D" ? "border-[#F9B800]" : "border-[#EA4335]"
-                    } text-text_color_light dark:text-text_color_dark font-bold`}
+                  className={`w-10 h-10 flex items-center justify-center border rounded-lg ${
+                    grade === "A"
+                      ? "border-[#B9FF66]"
+                      : grade === "B"
+                      ? "border-[#60935D]"
+                      : grade === "C"
+                      ? "border-[#F7DC6F]"
+                      : grade === "D"
+                      ? "border-[#F9B800]"
+                      : "border-[#EA4335]"
+                  } text-text_color_light dark:text-text_color_dark font-bold`}
                 >
                   {grade}
                 </div>
@@ -225,13 +264,14 @@ export default function PageOverviewProjectDetail({
                   </span>
                 </div>
               ) : (
-                <p className="text-gray-500 text-sm">No additional details available</p>
+                <p className="text-gray-500 text-sm">
+                  No additional details available
+                </p>
               )}
             </div>
           );
         })}
       </div>
     </section>
-
   );
 }
