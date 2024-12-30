@@ -43,9 +43,9 @@ export const metadata: Metadata = {
 
 export default function page() {
   return (
-    <main className="h-screen  w-full mx-auto flex ">
+    <main className=" md:h-screen  xl:h-full  w-full mx-auto flex ">
       {/* secontion welcome */}
-      <section className=" hidden  h-full xl:flex flex-col items-center justify-between w-[60%] bg-primary_color py-[40px] ">
+      <section className=" hidden xl:flex flex-col items-center justify-between w-[60%] bg-primary_color py-[40px] ">
         <div className="w-full px-[100px]">
           <p className="text-[60px] text-text_color_light font-semibold leading-[1.2]">
             Welcome to <br />

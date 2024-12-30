@@ -167,16 +167,33 @@ export default function NoneUserScan() {
   //handle on get all Directories from user after git url and selecet branch
   const handleFetchDirectories = async () => {
     if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}gits/list_files?gitUrl=${gitUrlResult}&branch=${selectedBranch}`
-      );
-      const data = await response.json();
-      setListDirectories(data);
+      try {
+        setIsFetchFilesLoading(true); // Start loading
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}gits/list_files?gitUrl=${gitUrlResult}&branch=${selectedBranch}`
+        );
+
+        if (response.status === 200) {
+          setIsFetchFilesLoading(false); // Stop loading
+          const data = await response.json();
+          setListDirectories(data);
+        }
+      } catch (error) {
+        console.error("Error fetching directories:", error);
+        toast({
+          description: "Oops! Something went wrong",
+          variant: "error",
+        });
+      } finally {
+        setIsLoading(false); // Stop loading
+      }
     } else {
-      console.log("error");
+      toast({
+        description: "Oops! Something went wrong",
+        variant: "error",
+      });
     }
   };
-
   useEffect(() => {
     if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
       handleFetchDirectories();

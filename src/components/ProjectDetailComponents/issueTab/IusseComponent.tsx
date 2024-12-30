@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { FaFile } from "react-icons/fa";
 import { GoFileDirectoryFill } from "react-icons/go";
 import { IoIosMore } from "react-icons/io";
-import { FaFilter } from "react-icons/fa";
+
 import Prism from "prismjs";
 
 import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
@@ -87,9 +87,38 @@ export default function IusseComponent({ ...props }) {
     <main className="w-full h-full  flex justify-between">
       {/* when on click issue card */}
       {activeContent === true ? (
-        <div className="w-full h-full  flex justify-between">
+        <div className="w-full h-full flex flex-col lg:flex-row justify-between">
           {/* filter side bar */}
-
+          <div className=" w-full flex justify-between  mb-[40px] lg:hidden ">
+            <div className="flex justify-center text-center items-center bg-primary_color px-5 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[150px] hover:bg-ascend_color h-[40px] text-text_body_16">
+              <p> Total issues {issueData?.data?.total} </p>
+            </div>
+            <Sheet>
+              <SheetTrigger asChild>
+                <div className="flex justify-center text-center items-center bg-primary_color px-5 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[120px] hover:bg-ascend_color h-[40px] text-text_body_16">
+                  <p> See More </p>
+                </div>
+              </SheetTrigger>
+              <SheetContent side={"right"}>
+                <div className="w-full cursor-pointer text-text_body_16 text-text_color_light dark:text-text_color_dark text-end">
+                  <p className="text-left font-medium"> Filter Issues</p>
+                  <hr className="text-text_color_desc_light mt-2" />
+                  {issueCardResult.map((item: any, index: number) => (
+                    <div
+                      onClick={() => {
+                        setProjectKey(item.key);
+                        setRuleKey(item.rule);
+                      }}
+                      key={index}
+                      className=" flex flex-col my-5 py-2 px-2  justify-center border-r-2 border-text_color_light bg-background_light_mode   dark:bg-card_color_dark  text-[14px]"
+                    >
+                      <p className=" text-left ">{item.message}</p>
+                    </div>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
           <div className="w-[35%] h-[1000px] overflow-y-auto scrollbar-hide hidden lg:block  border border-opacity-30 dark:border-none border-text_color_desc_light dark:bg-background_dark_mode p-5 rounded-[20px]  ">
             <div className="w-full cursor-pointer text-text_body_16 text-text_color_light dark:text-text_color_dark text-end">
               <p> {issueData?.data?.total} issues</p>
@@ -252,7 +281,7 @@ export default function IusseComponent({ ...props }) {
         <div className="w-full h-full flex flex-col lg:flex-row justify-between">
           {/* filter side bar */}
           <div className=" w-full  mb-[40px] lg:hidden ">
-            <Sheet >
+            <Sheet>
               <SheetTrigger asChild>
                 <div className="flex justify-center text-center items-center bg-primary_color px-5 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[100px] hover:bg-ascend_color h-[40px] text-text_body_16">
                   <p>Filter</p>
