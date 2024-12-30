@@ -151,8 +151,7 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
   return (
     <div
       id="file-structure-container"
-    
-      className="h-[200px] overflow-auto scrollbar-hide  text-text_color_desc_light"
+      className="h-[200px] overflow-auto scrollbar-hide  text-text_color_desc_light dark:text-text_color_desc_dark"
     >
       {treeData.length > 0 ? (
         <Tree
@@ -164,13 +163,13 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
           overscanCount={5}
           paddingTop={8}
           paddingBottom={8}
-          
+
           openByDefault={false}
         >
           {Node}
         </Tree>
       ) : (
-        <div className="flex mt-10 items-center justify-center h-full text-text_color_desc_light ">
+        <div className="flex  items-center justify-center  mt-20  text-text_color_desc_light dark:text-text_color_desc_dark">
           No files or folders found
         </div>
       )}

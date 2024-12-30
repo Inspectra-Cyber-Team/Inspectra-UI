@@ -1,64 +1,82 @@
 "use client";
+
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import { FaGithub, FaGitlab } from "react-icons/fa6";
+import { IoIosArrowDown } from "react-icons/io";
+import { ArrowLeft } from 'lucide-react'
+import Image from 'next/image';
+import { useCreateProjectScanNonUserMutation } from "@/redux/service/project";
+import { GitUrlType } from "@/data/GitUrl";
+import { toast } from "../hooks/use-toast";
+import { ScanStepsModal } from "@/components/NoneUserScanProject/ModalCondition";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { GitUrlType } from "@/data/GitUrl";
-import { useCreateProjectScanNonUserMutation } from "@/redux/service/project";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { FaGithub, FaGitlab } from "react-icons/fa6";
-import { IoIosArrowDown } from "react-icons/io";
-import { toast } from "../hooks/use-toast";
-import { useTheme } from "next-themes";
-import { Checkbox } from "../ui/checkbox";
-import FileStructureViewer from "../FileStructureComponent/FileStructureViewer";
+import { Checkbox } from "@/components/ui/checkbox";
+import FileStructureViewer from "@/components/FileStructureComponent/FileStructureViewer";
+import Link from "next/link";
+
 export default function NoneUserScan() {
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showTerms, setShowTerms] = useState(true);
   const [selectedFile, setSelectedFile] = useState<string[]>([]);
   const [listDirectories, setListDirectories] = useState<any>();
-  // handle add file to array
-  const handleSelectItem = (file: string) => {
-    setSelectedFile((prevSelectedFiles) => {
-      if (prevSelectedFiles.includes(file)) {
-        // If the file is already selected, remove it
-        return prevSelectedFiles.filter((item: string) => item !== file);
-      } else {
-        // Otherwise, add the file
-        return [...prevSelectedFiles, file];
-      }
-    });
-  };
-
   const { theme } = useTheme();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [countScan, setCountScan] = useState(0);
   const [projectScanNonUser] = useCreateProjectScanNonUserMutation();
+  const [gitUrlResult, setGitUrl] = useState<string>("");
+  const [gitResult, setGitResult] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
+  const [selectedCheckbox, setSelectedCheckBox] = useState<string[]>([]);
+
+  useEffect(() => {
+    const storedCount =
+      parseInt(localStorage.getItem("scanCount") ?? "0", 10) || 1;
+    setCountScan(storedCount);
+  }, []);
+
+  const handleOnStart = () => {
+    setTermsAccepted(true);
+    setShowTerms(false);
+    localStorage.setItem("termsAccepted", "true");
+  };
+
+  const handleSelectItem = (file: string) => {
+    setSelectedFile((prevSelectedFiles) => {
+      if (prevSelectedFiles.includes(file)) {
+        return prevSelectedFiles.filter((item: string) => item !== file);
+      } else {
+        return [...prevSelectedFiles, file];
+      }
+    });
+  };
 
   const handleSubmit = () => {
-    // Check if the Git URL is empty
     if (!gitUrlResult.trim()) {
       setIsLoading(false);
       toast({
         description: "Please enter a Git URL",
         variant: "error",
       });
-      return; // Stop further execution
+      return;
     }
 
-    // Check if a branch is selected
     if (selectedBranch === "Select Project Branch") {
       setIsLoading(false);
       toast({
         description: "Please select a branch",
         variant: "error",
       });
-      return; // Stop further execution
+      return;
     }
 
-    // Proceed with scanning
     setIsLoading(true);
 
     if (countScan < 4) {
@@ -90,7 +108,7 @@ export default function NoneUserScan() {
           console.error("Error during project scan:", error);
         })
         .finally(() => {
-          setIsLoading(false); // Stop loading after operation completes
+          setIsLoading(false);
         });
     } else {
       setIsLoading(false);
@@ -101,17 +119,6 @@ export default function NoneUserScan() {
     }
   };
 
-  useEffect(() => {
-    const storedCount =
-      parseInt(localStorage.getItem("scanCount") ?? "0", 10) || 1;
-    setCountScan(storedCount);
-  }, []);
-
-  const [gitUrlResult, setGitUrl] = useState<string>(""); // Store the input value
-  const [gitResult, setGitResult] = useState([]); // result get from git url
-  const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
-
-  // handle for git input from user and fetch api
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -148,9 +155,8 @@ export default function NoneUserScan() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGitUrl(e.target.value); // Update the state with the input value
+    setGitUrl(e.target.value);
   };
-  const [selectedCheckbox, setSelectedCheckBox] = useState<string[]>([]);
 
   const handleCheckboxChange = (id: any, checked: any) => {
     if (checked) {
@@ -160,7 +166,6 @@ export default function NoneUserScan() {
     }
   };
 
-  //handle on get all Directories from user after git url and selecet branch
   const handleFetchDirectories = async () => {
     if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
       const response = await fetch(
@@ -178,170 +183,213 @@ export default function NoneUserScan() {
       handleFetchDirectories();
     }
   }, [selectedBranch, gitUrlResult]);
+
+  const handleGoHome = () => {
+    router.push('/'); // Redirect to the homepage when clicking "Go to Homepage"
+  };
+
+ 
+
   return (
-    <section className="flex mx-auto justify-center lg:justify-between xl:justify-around">
-      {/* image */}
-      <div className=" hidden lg:flex justify-center items-center">
-        {theme == "dark" ? (
-          <img
-            src="/images/scan-anonymouse-user.png"
-            className="h-[400px]"
-            alt="scan image"
+    <section className="mx-auto rounded-lg justify-center items-center bg-card_color_light dark:bg-card_color_dark">
+        <ScanStepsModal
+        isOpen={showTerms}
+        onOpenChange={setShowTerms} 
+        onStart={handleOnStart}  
           />
-        ) : (
-          <img src="/images/scan.png" className="h-[400px]" alt="scan image" />
-        )}
+      {/* Top section */}
+      <div className="flex flex-col items-center justify-center pt-10 ">
+        <div className="px-3 w-[300px] md:w-[500px] font-semibold bg-primary_color py-2 rounded-tl-[20px] rounded-br-[20px]">
+          <p className="text-center text-text_color_light text-text_body_16 md:text-text_title_24">
+            Scan Your Project Repositories
+          </p>
+        </div>
+        <p className="mt-2 text-center px-2 text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
+          Connect your Git repository and select a branch to start scanning.
+        </p>
       </div>
 
-      {/* scaning project */}
-      <div className="h-full   lg:w-[50%] p-10 rounded-[20px] bg-card_color_light dark:bg-card_color_dark  flex text-start flex-col justify-between">
-        {isLoading ? (
-          <video
-            src="/images/loadingScan.mp4"
-            autoPlay
-            className="w-full h-full"
-            loop
-          ></video>
-        ) : (
-          <div>
-            <p className="text-center text-text_color_light dark:text-text_color_dark text-text_title_24 mb-5">
-              See the Unseen, Secure the Unknown.
-            </p>
-            {/* git url */}
-            <div className="relative">
-              <FaGithub className="absolute top-1/2 left-3 text-text_title_24 transform -translate-y-1/2 text-text_color_desc_light" />
-              <p className="absolute top-1/2 left-10 font-light text-text_color_desc_light text-text_title_24 transform -translate-y-1/2">
-                |
-              </p>
-              <FaGitlab className="absolute top-1/2 left-[50px] text-text_title_20 transform -translate-y-1/2 text-text_color_desc_light" />
-              <input
-                type="text"
-                placeholder="Enter Git URL"
-                value={gitUrlResult}
-                onChange={handleChange} // Update the state with the input value
-                onKeyDown={handleKeyPress} // Trigger logic on Enter key press
-                className="mt-1 w-full rounded-md border bg-card_color_light dark:bg-card_color_light dark:text-text_color_light pl-[80px] pr-3 py-3 focus:outline-none  border-ascend_color"
-              />
-            </div>
-            {/* select branch */}
-            <DropdownMenu>
-              {gitResult.length != 0 ? (
-                <DropdownMenuTrigger asChild>
-                  <div className="">
-                    <p className="text-text_body_16 text-text_color_light my-2">
-                      Branch
-                    </p>
-                    <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-text_color_dark">
-                      <p className="text-text_body_16  py-3  text-text_color_desc_light">
-                        {selectedBranch}
+      {/* Main content */}
+      <div className="flex lg:justify-between xl:justify-around">
+        {/* image */}
+        <div className="hidden lg:flex justify-center items-center">
+          {theme == "dark" ? (
+            <img
+              src="/images/scan-anonymouse-user.png"
+              className="h-[450px]"
+              alt="scan image"
+            />
+          ) : (
+            <img
+              src="/images/scan.png"
+              className="h-[450px]"
+              alt="scan image"
+            />
+          )}
+        </div>
+
+        {/* scanning project */}
+        <div className="h-full lg:w-[50%] p-10 rounded-[20px] flex text-start flex-col justify-between">
+          {isLoading ? (
+            <video
+              src="/images/loadingScan.mp4"
+              autoPlay
+              className="w-full h-full"
+              loop
+            ></video>
+          ) : (
+            <div className="space-y-6">
+              <div className="space-y-6">
+                {/* git url */}
+                <div className="space-y-2">
+                  <p className="text-text_body_16">Git Url</p>
+
+                  <div className="relative">
+                    <div className="inset-y-0 left-3 flex items-center gap-2">
+                      <FaGithub className="absolute top-1/2 left-3 text-text_title_24 transform -translate-y-1/2 text-text_color_desc_light" />
+                      <p className="absolute top-1/2 left-10 font-light text-text_color_desc_light text-text_title_24 transform -translate-y-1/2">
+                        |
                       </p>
-                      <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
+                      <FaGitlab className="absolute top-1/2 left-[50px] text-text_title_20 transform -translate-y-1/2 text-text_color_desc_light" />
+                      <input
+                        type="text"
+                        placeholder="Enter Git URL"
+                        value={gitUrlResult}
+                        onChange={handleChange}
+                        onKeyDown={handleKeyPress}
+                        className="my-1 w-full rounded-md pl-20 pr-3 py-3 border focus:outline-ascend_color "
+                      />
                     </div>
                   </div>
-                </DropdownMenuTrigger>
-              ) : (
-                <DropdownMenuTrigger disabled asChild>
-                  <div className="">
-                    <p className="text-text_body_16 text-text_color_light my-2">
-                      Branch
-                    </p>
-                    <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
-                      <p className="text-text_body_16  py-3  text-text_color_desc_light">
-                        {selectedBranch}
-                      </p>
-                      <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
+                </div>
+
+                {/* select branch */}
+                <DropdownMenu>
+                  {gitResult.length != 0 ? (
+                    <DropdownMenuTrigger asChild>
+                      <div className="space-y-2">
+                        <p className="text-text_body_16">Branch</p>
+
+                        <div className="flex px-5 justify-between items-center rounded-md border focus:outline-ascend_color bg-card_color_light dark:bg-[#121212]">
+                          <p className="py-3 text-base text-text_color_desc_light dark:text-text_color_desc_dark">
+                            {selectedBranch}
+                          </p>
+
+                          <IoIosArrowDown className="text-text_color_light dark:text-text_color_desc_dark h-5 w-5  " />
+                        </div>
+                      </div>
+                    </DropdownMenuTrigger>
+                  ) : (
+                    <DropdownMenuTrigger disabled asChild>
+                      <div className="space-y-2">
+                        <p className="text-text_body_16 ">Branch</p>
+
+                        <div className="flex px-5 justify-between items-center rounded-md border focus:outline-ascend_color bg-card_color_light dark:bg-[#121212]">
+                          <p className="py-3 text-base text-text_color_desc_light dark:text-text_color_desc_dark">
+                            {selectedBranch}
+                          </p>
+
+                          <IoIosArrowDown className="text-text_color_light dark:text-text_color_desc_dark h-5 w-5  " />
+                        </div>
+                      </div>
+                    </DropdownMenuTrigger>
+                  )}
+                  <DropdownMenuContent className="w-[285px] md:w-[400px] lg:w-[370px] xl:w-[600px] rounded-md border text-base bg-card_color_light dark:bg-black p-1">
+                    {gitResult?.length === 0 ? (
+                      <DropdownMenuItem disabled>
+                        No branch to select
+                      </DropdownMenuItem>
+                    ) : (
+                      gitResult?.map((gitResult: GitUrlType, index: number) => (
+                        <DropdownMenuItem
+                          className="text-base hover:bg-background_light_mode dark:hover:bg-background_dark_mode"
+                          key={index}
+                          onClick={() =>
+                            setSelectedBranch(`${gitResult?.name}`)
+                          }
+                        >
+                          {gitResult?.name}
+                        </DropdownMenuItem>
+                      ))
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* file and directory */}
+                <div className="space-y-2">
+                  <p className=" text-text_body_16 text-text_color_light dark:text-text_color_dark">
+                    Filter Scan By Files & Directory{" "}
+                  </p>
+                  <FileStructureViewer
+                    data={listDirectories}
+                    selectedItem={selectedFile[0] || null}
+                    onSelectItem={handleSelectItem}
+                  />
+                </div>
+
+                {/* filter scan */}
+                <div className="space-y-2">
+                  <div className="text-text_body_16 text-text_color_light dark:text-text_color_dark  ">
+                    <p className="my-5">Filter Scan</p>
+                    <div className="flex items-center space-x-2 my-5">
+                      <Checkbox
+                        id="bug"
+                        onCheckedChange={(checked) =>
+                          handleCheckboxChange("bug", checked)
+                        }
+                        className="h-5 w-5 "
+                      />
+                      <label
+                        htmlFor="bug"
+                        className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Bug
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2  my-5">
+                      <Checkbox
+                        id="Vulnerability"
+                        onCheckedChange={(checked) =>
+                          handleCheckboxChange("Vulnerability", checked)
+                        }
+                        className="h-5 w-5"
+                      />
+                      <label
+                        htmlFor="Vulnerability"
+                        className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Vulnerability
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="Code Smell"
+                        onCheckedChange={(checked) =>
+                          handleCheckboxChange("code_smell", checked)
+                        }
+                        className="h-5 w-5"
+                      />
+                      <label
+                        htmlFor="Code Smell"
+                        className="text-text_body_16  font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Code Smell
+                      </label>
                     </div>
                   </div>
-                </DropdownMenuTrigger>
-              )}
-              <DropdownMenuContent className=" w-[29  0px] md:w-[450px] lg:w-[380px] xl:w-[610px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
-                {gitResult?.length === 0 ? (
-                  <DropdownMenuItem disabled>
-                    No branch to select
-                  </DropdownMenuItem>
-                ) : (
-                  gitResult?.map((gitResult: GitUrlType, index: number) => (
-                    <DropdownMenuItem
-                      className=""
-                      key={index}
-                      onClick={() => setSelectedBranch(`${gitResult?.name}`)}
-                    >
-                      {gitResult?.name}
-                    </DropdownMenuItem>
-                  ))
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            {/* file and directory */}
-            <div>
-              <p className="mt-5 text-text_body_16 text-text_color_light dark:text-text_color_dark">
-                Filter Scan By Files & Directory{" "}
-              </p>
-              <FileStructureViewer
-                data={listDirectories}
-                selectedItem={selectedFile[0] || null}
-                onSelectItem={handleSelectItem}
-              />
-            </div>
-            {/* filter scan */}
-            <div className="text-text_body_16 text-text_color_light dark:text-text_color_dark  ">
-              <p className="my-5">Filter Scan</p>
-              <div className="flex items-center space-x-2 my-5">
-                <Checkbox
-                  id="bug"
-                  onCheckedChange={(checked) =>
-                    handleCheckboxChange("bug", checked)
-                  }
-                  className="h-5 w-5 "
-                />
-                <label
-                  htmlFor="bug"
-                  className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                </div>
+
+                {/* submit scan */}
+                <button
+                  onClick={() => handleSubmit()}
+                  className="w-full mt-10 py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-md"
                 >
-                  Bug
-                </label>
-              </div>
-              <div className="flex items-center space-x-2  my-5">
-                <Checkbox
-                  id="Vulnerability"
-                  onCheckedChange={(checked) =>
-                    handleCheckboxChange("Vulnerability", checked)
-                  }
-                  className="h-5 w-5"
-                />
-                <label
-                  htmlFor="Vulnerability"
-                  className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Vulnerability
-                </label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="Code Smell"
-                  onCheckedChange={(checked) =>
-                    handleCheckboxChange("code_smell", checked)
-                  }
-                  className="h-5 w-5"
-                />
-                <label
-                  htmlFor="Code Smell"
-                  className="text-text_body_16  font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Code Smell
-                </label>
+                  Start Scan
+                </button>
               </div>
             </div>
-            {/* submit scan */}
-            <button
-              //disabled={isLoading}
-              onClick={() => handleSubmit()}
-              className="w-full mt-10 py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
-            >
-              Submit
-            </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </section>
   );
