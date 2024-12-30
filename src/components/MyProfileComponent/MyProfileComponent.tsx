@@ -129,7 +129,7 @@ export default function MyProfileComponent() {
           Profile
         </p>
         <div className="flex gap-3 text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
-          <button onClick={() => router.push("/blogHistory")}>
+          <button onClick={() => router.push("/bloghistory")}>
             Blog <span className="hidden md:inline-block">History</span>
           </button>
           <span>/</span>
