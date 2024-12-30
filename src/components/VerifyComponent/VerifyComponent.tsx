@@ -122,7 +122,7 @@ export default function VerifyComponent() {
                         }
                       }
                     }}
-                    className={`h-[40px] w-[40px] md:w-[60px] md:h-[60px] border focus:right-2 border-text_color_desc_light rounded-md text-center text-text_body_16`}
+                    className={`h-[40px] w-[40px] md:w-[60px] md:h-[60px] bg-transparent border focus:right-2 border-text_color_desc_light rounded-md text-center text-text_body_16`}
                     placeholder="_" // Placeholder for empty fields
                   />
                 );
