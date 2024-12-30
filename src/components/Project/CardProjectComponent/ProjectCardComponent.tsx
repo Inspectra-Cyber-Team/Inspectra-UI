@@ -14,7 +14,6 @@ import ReactTypingEffect from "react-typing-effect";
 
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogHeader,
@@ -40,27 +39,36 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { GitUrlType } from "@/data/GitUrl";
 
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import CheckGrade from "@/lib/checkGrade";
 import { getCoverageData, getDuplicationData, timeSince } from "@/lib/utils";
+import { DialogTitle } from "@radix-ui/react-dialog";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FaCheck, FaGithub, FaGitlab } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
-import CheckGrade from "@/lib/checkGrade";
 export default function ProjectCardComponent() {
   const [userUUID, setUserUUID] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<any>([]);
   const [listDirectories, setListDirectories] = useState<any>();
-
+  const [errorNotSelectBranch, setErrorNotSelectBranch] = useState("");
+  const [isFetchFilesLoading, setIsFetchFilesLoading] = useState(false);
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
 
   const {
-    data: projectResult,
+    data: projectResultApi,
     isError,
     isFetching: isFetchDataProjectScan,
   } = useGetProjectOverViewUserQuery({ uuid: userUUID, page: 0, size: 100 });
@@ -71,14 +79,12 @@ export default function ProjectCardComponent() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
   const [isClosing, setIsClosing] = useState(false);
-
+  const [errorGitUrlMessage, setErrorGitUrlMessage] = useState("");
   // rtk for scan project
-  const [
-    createScanProject,
-    { isSuccess: isScanSuccess, isError: isScanError },
-  ] = useCreateProjectScanMutation();
+  const [createScanProject] = useCreateProjectScanMutation();
 
   const [gitUrlResult, setGitUrl] = useState<string>(""); // Store the input value
   const [gitResult, setGitResult] = useState([]); // result get from git url
@@ -87,38 +93,43 @@ export default function ProjectCardComponent() {
   const handleScanProject = async (index: number) => {
     setSelectedIndex(index);
     setIsLoading(true);
-    setIsOpen(true);
-    if (gitResult.length === 0 || gitUrlResult === "Select Project Branch") {
-      toast({
-        description: "Please Provide Git UR and Branch",
-        variant: "error",
-      });
+    if (selectedBranch === "Select Project Branch") {
       setIsLoading(false);
-    } else {
+      setErrorNotSelectBranch("Please select a branch");
+      return; // Stop further execution
+    }
+    try {
+      setErrorNotSelectBranch(""); // Clear any branch-related errors
       const res = await createScanProject({
         project: {
-          projectName: projectResult[index].component?.component.name,
+          projectName: projectResultApi[index].component?.component.name,
           gitUrl: gitUrlResult,
           branch: selectedBranch,
           issueTypes: selectedCheckbox,
-          includePaths: [selectedFiles],
+          includePaths: selectedFiles,
         },
       });
-
+      setSelectedFiles([]);
       if (res?.data) {
         toast({
           description: "Project Scan Success",
           variant: "success",
         });
         setIsOpen(false);
-        setIsLoading(false);
       } else {
         toast({
-          description: "Someting when wrong !",
+          description: "Something went wrong!",
           variant: "error",
         });
-        setIsLoading(false);
       }
+    } catch (error) {
+      console.error("Error while creating scan project:", error);
+      toast({
+        description: "An unexpected error occurred. Please try again.",
+        variant: "error",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -141,48 +152,52 @@ export default function ProjectCardComponent() {
   // }, [isScanError, isScanSuccess, selectedIndex]);
 
   // handle for git input from user and fetch api
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (gitUrlResult.includes(".git")) {
-        const fetchGitbranch = async () => {
-          try {
-            const response = await fetch(
-              `${process.env.NEXT_PUBLIC_API_URL}gits/branches?gitUrl=${gitUrlResult}`
-            );
-            if (!response.ok) {
-              throw new Error("Failed to fetch branches");
-            }
-            const result = await response.json();
-            setGitResult(result);
-            toast({
-              description: "Get All Branches Successfully",
-              variant: "success",
-            });
-          } catch (error) {
-            toast({
-              description: `Oops! Something went wrong${error}`,
-              variant: "error",
-            });
-          }
-        };
-        fetchGitbranch();
-      } else {
-        toast({
-          description: "Invalid URL",
-          variant: "error",
-        });
-      }
-    }
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGitUrl(e.target.value); // Update the state with the input value
+    const inputValue = e.target.value;
+
+    setGitUrl(inputValue); // Update the state with the input value
+
+    // Validate the input value
+    if (inputValue.includes(".git")) {
+      // Clear any error messages
+      setErrorGitUrlMessage("");
+
+      // Trigger the fetch logic
+      const fetchGitBranches = async () => {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}gits/branches?gitUrl=${inputValue}`
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch branches");
+          }
+          const result = await response.json();
+          setGitResult(result);
+          toast({
+            description: "Get All Branches Successfully",
+            variant: "success",
+          });
+        } catch (error) {
+          toast({
+            description: `Oops! Something went wrong: ${
+              (error as Error).message
+            }`,
+            variant: "error",
+          });
+        }
+      };
+
+      fetchGitBranches();
+    } else {
+      // Set an error message if the input is invalid
+      setErrorGitUrlMessage("Please Provide a Valid Git URL");
+    }
   };
 
   // for search
   const [filteredResults, setFilteredResults] = useState<any[]>(
-    projectResult || []
+    projectResultApi || []
   );
 
   // handle delete project
@@ -197,14 +212,7 @@ export default function ProjectCardComponent() {
         variant: "success",
       });
       setIsDeleteOpen(false);
-      setIsLoading(false);
-    }
-    if (isScanError) {
-      toast({
-        description: "Project is Current in Use",
-        variant: "error",
-      });
-      setIsLoading(false);
+      setIsDeleteLoading(false);
     }
   }, [isDeleteSuccess]);
 
@@ -220,7 +228,7 @@ export default function ProjectCardComponent() {
     event: React.KeyboardEvent<HTMLInputElement>
   ) => {
     if (event.key === "Enter") {
-      const matchingResults = projectResult?.filter((item: any) =>
+      const matchingResults = projectResultApi?.filter((item: any) =>
         item.component.component.name
           .toLowerCase()
           .includes(inputValue.toLowerCase())
@@ -230,7 +238,7 @@ export default function ProjectCardComponent() {
       if (inputValue === "") {
         setFilteredResults([]); // Set to empty array if input is empty
       } else {
-        const matchingResults = projectResult?.filter((item: any) =>
+        const matchingResults = projectResultApi?.filter((item: any) =>
           item.component.component.name
             .toLowerCase()
             .includes(inputValue.toLowerCase())
@@ -239,7 +247,7 @@ export default function ProjectCardComponent() {
       }
     } else {
       // Handle other key presses (if any)
-      const matchingResults = projectResult?.filter((item: any) =>
+      const matchingResults = projectResultApi?.filter((item: any) =>
         item.component.component.name
           .toLowerCase()
           .includes(inputValue.toLowerCase())
@@ -261,11 +269,27 @@ export default function ProjectCardComponent() {
   //handle on get all Directories from user after git url and selecet branch
   const handleFetchDirectories = async () => {
     if (selectedBranch !== "Select Project Branch" && gitUrlResult) {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}gits/list_files?gitUrl=${gitUrlResult}&branch=${selectedBranch}`
-      );
-      const data = await response.json();
-      setListDirectories(data);
+      try {
+        setIsFetchFilesLoading(true); // Start loading
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}gits/list_files?gitUrl=${gitUrlResult}&branch=${selectedBranch}`
+        );
+
+        if (response.status ===  200) {
+        setIsFetchFilesLoading(false); // Stop loading
+        const data = await response.json();
+        setListDirectories(data);
+        }
+
+      } catch (error) {
+        console.error("Error fetching directories:", error);
+        toast({
+          description: "Oops! Something went wrong",
+          variant: "error",
+        });
+      } finally {
+        setIsLoading(false); // Stop loading
+      }
     } else {
       toast({
         description: "Oops! Something went wrong",
@@ -274,23 +298,32 @@ export default function ProjectCardComponent() {
     }
   };
 
-  const handleSelectItem = (file: any) => {
-    setSelectedFiles(file);
-    // setSelectedFiles((prevFiles: any[]) => {
-    //   const isAlreadySelected = prevFiles.some((item) => {
-    //     const itemPath = item?.path?.trim?.().toLowerCase();
-    //     const filePath = file?.path?.trim?.().toLowerCase();
+  const handleSelectItem = (file: string) => {
+    setSelectedFiles((prevSelected: any) => {
+      const newSelected = [...prevSelected];
+      const fileIndex = newSelected.findIndex((f) => f === file);
 
-    //     return itemPath === filePath;
-    //   });
+      if (fileIndex !== -1) {
+        // If the file is already selected, remove it
+        newSelected.splice(fileIndex, 1);
+        // Also remove any children of this file
+        return newSelected.filter((f) => !f.startsWith(file + "/"));
+      } else {
+        // If the file is not selected, add it
+        const parentIndex = newSelected.findIndex((f) =>
+          file.startsWith(f + "/")
+        );
+        if (parentIndex !== -1) {
+          // If a parent folder is already selected, replace it with this file
+          newSelected[parentIndex] = file;
+        } else {
+          // Otherwise, just add this file
+          newSelected.push(file);
+        }
+      }
 
-    //   if (!isAlreadySelected && file?.path) {
-    //     console.log("this is file adding ", file);
-    //     return [...prevFiles, file];
-    //   }
-
-    //   return prevFiles;
-    // });
+      return newSelected;
+    });
   };
 
   useEffect(() => {
@@ -346,7 +379,7 @@ export default function ProjectCardComponent() {
         <ProjectScanSkeleton />
       ) : // check if search result is empty
       filteredResults.length === 0 ? (
-        projectResult?.map((projectResult: any, index: number) => {
+        projectResultApi?.map((projectResult: any, index: number) => {
           // check project that already scan
           if (projectResult?.component.component.measures != 0) {
             return (
@@ -365,94 +398,93 @@ export default function ProjectCardComponent() {
                   >
                     {projectResult?.component.component.name}
                   </p>
-                  {projectResult?.branch?.map(
-                    (branchItem: any, branchIndex: number) => {
-                      return branchItem?.branches?.map(
-                        (item: any, index: number) => {
-                          return (
-                            <div
-                              key={`${branchIndex}-${index}`}
-                              className="flex text-center items-center"
-                            >
+                  <div className="flex">
+                    {projectResult?.branch?.map(
+                      (branchItem: any, branchIndex: number) => {
+                        return branchItem?.branches?.map(
+                          (item: any, index: number) => {
+                            return (
                               <div
-                                className={`w-[25px] h-[25px] flex items-center justify-center rounded-[5px] ${
-                                  item.status.qualityGateStatus === "OK"
-                                    ? "bg-primary_color"
-                                    : "bg-custom_red"
-                                }`}
+                                key={`${branchIndex}-${index}`}
+                                className="flex text-center items-center"
                               >
-                                {item.status.qualityGateStatus === "OK" ? (
-                                  <FaCheck className="dark:text-text_color_light" />
-                                ) : (
-                                  <RxCross2 className="dark:text-text_color_light" />
-                                )}
+                                <div
+                                  className={`w-[25px] h-[25px] flex items-center justify-center rounded-[5px] ${
+                                    item.status.qualityGateStatus === "OK"
+                                      ? "bg-primary_color"
+                                      : "bg-custom_red"
+                                  }`}
+                                >
+                                  {item.status.qualityGateStatus === "OK" ? (
+                                    <FaCheck className="dark:text-text_color_light" />
+                                  ) : (
+                                    <RxCross2 className="dark:text-text_color_light" />
+                                  )}
+                                </div>
+                                <p className="px-2 text-text_body_16">
+                                  {item.status.qualityGateStatus === "OK"
+                                    ? "Passed"
+                                    : "Failed"}
+                                </p>
+                                <p className="mx-2">|</p>
                               </div>
-                              <p className="px-2 text-text_body_16">
-                                {item.status.qualityGateStatus === "OK"
-                                  ? "Passed"
-                                  : "Failed"}
-                              </p>
-                              <p className="mx-2">|</p>
+                            );
+                          }
+                        );
+                      }
+                    )}
+                    {/* for delete project */}
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <RxCross2 className="h-6 w-6 text-custom_red cursor-pointer" />
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader className="items-center">
+                          <div>
+                            {" "}
+                            <CgDanger className="h-[60px] w-[60px] text-custom_red" />
+                          </div>
+                        </DialogHeader>
+                        <DialogTitle className="text-center  text-text_color_light dark:text-text_color_dark  ">
+                          Are you sure want to delete project{" "}
+                          <span className="text-secondary_color">
+                            {" "}
+                            {projectResult?.component?.component.name}
+                          </span>
+                        </DialogTitle>
 
-                              <AlertDialog
-                                open={isDeleteOpen}
-                                onOpenChange={setIsDeleteOpen}
-                              >
-                                <AlertDialogTrigger asChild>
-                                  <RxCross2 className="h-6 w-6 text-custom_red cursor-pointer" />
-                                </AlertDialogTrigger>
-                                <AlertDialogContent className="sm:max-w-md ">
-                                  <AlertDialogHeader className="my-2">
-                                    <AlertDialogTitle className="w-full flex justify-center items-center ">
-                                      <div>
-                                        {" "}
-                                        <CgDanger className="h-[60px] w-[60px] text-custom_red" />
-                                      </div>
-                                    </AlertDialogTitle>
-                                    <AlertDialogAction className="text-center  text-text_color_light dark:text-text_color_dark !bg-transparent ">
-                                      Are you sure want to delete{" "}
-                                      {projectResult?.component.component.name}{" "}
-                                      ?{" "}
-                                    </AlertDialogAction>
-                                  </AlertDialogHeader>
-                                  <div className="w-full flex justify-center gap-5 ">
-                                    <Button
-                                      disabled={isLoading}
-                                      type="button"
-                                      className="px-5 hover:bg-custom_red "
-                                      variant="secondary"
-                                      onClick={() =>
-                                        handleDeleteProject(
-                                          projectResult?.component?.component
-                                            .name
-                                        )
-                                      }
-                                    >
-                                      {isLoading ? (
-                                        <div className="spinner-border animate-spin  inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_dark border-t-transparent"></div>
-                                      ) : (
-                                        "Yes"
-                                      )}
-                                    </Button>
-                                    <AlertDialogCancel asChild>
-                                      <Button
-                                        disabled={isLoading}
-                                        type="button"
-                                        variant="secondary"
-                                        className=" hover:bg-custom_red"
-                                      >
-                                        Close
-                                      </Button>
-                                    </AlertDialogCancel>
-                                  </div>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </div>
-                          );
-                        }
-                      );
-                    }
-                  )}
+                        <div className="w-full flex justify-center gap-5 ">
+                          <Button
+                            disabled={isLoading}
+                            type="button"
+                            className="px-5 hover:bg-custom_red "
+                            variant="secondary"
+                            onClick={() =>
+                              handleDeleteProject(
+                                projectResult?.component?.component.name
+                              )
+                            }
+                          >
+                            {isLoading ? (
+                              <div className="spinner-border animate-spin  inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_dark border-t-transparent"></div>
+                            ) : (
+                              "Yes"
+                            )}
+                          </Button>
+                          <DialogClose asChild>
+                            <Button
+                              disabled={isLoading}
+                              type="button"
+                              variant="secondary"
+                              className=" hover:bg-custom_red"
+                            >
+                              Close
+                            </Button>
+                          </DialogClose>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </div>
                 <p className=" my-2 text-left text-[14px] text-text_color_desc_light dark:text-text_color_desc_dark ">
                   {" "}
@@ -762,29 +794,28 @@ export default function ProjectCardComponent() {
                   <p className="text-text_body_16 text-secondary_color dark:text-text_color_dark ">
                     {projectResult?.component?.component.name}
                   </p>
-                  <AlertDialog
-                    open={isDeleteOpen}
-                    onOpenChange={setIsDeleteOpen}
-                  >
-                    <AlertDialogTrigger asChild>
+                  <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+                    <DialogTrigger asChild>
                       <RxCross2 className="h-6 w-6 text-custom_red cursor-pointer" />
-                    </AlertDialogTrigger>
-                    <AlertDialogContent className="sm:max-w-md ">
-                      <AlertDialogHeader className="my-2">
-                        <AlertDialogTitle className="w-full flex justify-center items-center ">
-                          <div>
-                            {" "}
-                            <CgDanger className="h-[60px] w-[60px] text-custom_red" />
-                          </div>
-                        </AlertDialogTitle>
-                        <AlertDialogAction className="text-center  text-text_color_light dark:text-text_color_dark !bg-transparent ">
-                          Are you sure want to delete{" "}
-                          {projectResult?.component?.component.name} project ?{" "}
-                        </AlertDialogAction>
-                      </AlertDialogHeader>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader className="items-center">
+                        <div>
+                          {" "}
+                          <CgDanger className="h-[60px] w-[60px] text-custom_red" />
+                        </div>
+                      </DialogHeader>
+                      <DialogTitle className="text-center  text-text_color_light dark:text-text_color_dark  ">
+                        Are you sure want to delete project{" "}
+                        <span className="text-secondary_color">
+                          {" "}
+                          {projectResult?.component?.component.name}
+                        </span>
+                      </DialogTitle>
+
                       <div className="w-full flex justify-center gap-5 ">
                         <Button
-                          disabled={isLoading}
+                          disabled={isDeleteLoading}
                           type="button"
                           className="px-5 hover:bg-custom_red "
                           variant="secondary"
@@ -794,25 +825,25 @@ export default function ProjectCardComponent() {
                             )
                           }
                         >
-                          {isLoading ? (
+                          {isDeleteLoading ? (
                             <div className="spinner-border animate-spin  inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_dark border-t-transparent"></div>
                           ) : (
                             "Yes"
                           )}
                         </Button>
-                        <AlertDialogCancel asChild>
+                        <DialogClose asChild>
                           <Button
-                            disabled={isLoading}
+                            disabled={isDeleteLoading}
                             type="button"
                             variant="secondary"
                             className=" hover:bg-custom_red"
                           >
                             Close
                           </Button>
-                        </AlertDialogCancel>
+                        </DialogClose>
                       </div>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                    </DialogContent>
+                  </Dialog>
                 </div>
                 <hr className="my-5 dark:border-primary_color" />
                 <div className="flex  flex-col items-start md:flex-row md:items-center">
@@ -862,7 +893,11 @@ export default function ProjectCardComponent() {
                                 )}
                               </p>
                               <AlertDialogCancel className="flex text-center items-center">
-                                <button onClick={() => setIsClosing(true)}>
+                                <button
+                                  onClick={() => {
+                                    setIsClosing(true), setSelectedFiles([]);
+                                  }}
+                                >
                                   <RxCross2
                                     className="text-text_color_light cursor-pointer text-text_header_34"
                                     style={{ height: "1em", width: "0.7em" }}
@@ -892,10 +927,19 @@ export default function ProjectCardComponent() {
                                   placeholder="Enter Git URL"
                                   value={gitUrlResult}
                                   onChange={handleChange} // Update the state with the input value
-                                  onKeyDown={handleKeyPress} // Trigger logic on Enter key press
-                                  className="mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light pl-[80px] pr-3 py-3 focus:outline-none  border-ascend_color"
+                                  className={`mt-1 w-full rounded-md border bg-card_color_light dark:bg-card_color_light dark:text-text_color_light pl-[80px] pr-3 py-3 focus:outline-none ${
+                                    errorGitUrlMessage
+                                      ? "border-custom_red"
+                                      : "border-ascend_color"
+                                  }`}
                                 />
                               </div>
+                              {errorGitUrlMessage && (
+                                <p className="mt-1 text-text_body_16 text-custom_red">
+                                  {errorGitUrlMessage}
+                                </p>
+                              )}
+
                               {/* select branch */}
                               <DropdownMenu>
                                 {gitResult.length != 0 ? (
@@ -904,18 +948,29 @@ export default function ProjectCardComponent() {
                                       <p className="text-text_body_16 text-text_color_light my-2">
                                         Branch
                                       </p>
-                                      <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-text_color_dark">
+                                      <div
+                                        className={`flex px-5 justify-between items-center rounded-[10px] border border-1 bg-text_color_dark ${
+                                          errorNotSelectBranch
+                                            ? "border-custom_red"
+                                            : "border-ascend_color"
+                                        }`}
+                                      >
                                         <p className="text-text_body_16  py-3  text-text_color_desc_light">
                                           {selectedBranch}
                                         </p>
                                         <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
                                       </div>
+                                      {errorNotSelectBranch && (
+                                        <p className="mt-1 text-text_body_16 text-custom_red">
+                                          {errorNotSelectBranch}
+                                        </p>
+                                      )}
                                     </div>
                                   </DropdownMenuTrigger>
                                 ) : (
                                   <DropdownMenuTrigger disabled asChild>
                                     <div className="">
-                                      <p className="text-text_body_16 text-text_color_light my-2">
+                                      <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-2">
                                         Branch
                                       </p>
                                       <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
@@ -927,7 +982,7 @@ export default function ProjectCardComponent() {
                                     </div>
                                   </DropdownMenuTrigger>
                                 )}
-                                <DropdownMenuContent className="w-[462px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
+                                <DropdownMenuContent className=" w-[290px] md:w-[450px] lg:w-[380px] xl:w-[510px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
                                   {gitResult?.length === 0 ? (
                                     <DropdownMenuItem disabled>
                                       No branch to select
@@ -963,6 +1018,7 @@ export default function ProjectCardComponent() {
                                   data={listDirectories}
                                   selectedItem={selectedFiles}
                                   onSelectItem={handleSelectItem}
+                                  isFetchLoading={isFetchFilesLoading}
                                 />
                               </div>
                               {/* filter scan */}
