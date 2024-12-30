@@ -311,13 +311,13 @@ export const LoginAuth = () => {
             );
 
             if (response.status === 401) {
+              toast({
+                description:
+                  "An account with this email already exists. Please log in using your email and password",
+                variant: "error",
+              });
               try {
                 await signOut(); // Wait for the signOut function to complete
-                toast({
-                  description:
-                    "An account with this email already exists. Please log in using your email and password",
-                  variant: "error",
-                });
               } catch (error) {
                 console.error("Error during sign-out:", error);
                 toast({
