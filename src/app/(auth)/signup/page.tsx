@@ -6,35 +6,36 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import Link from "next/link";
+import { LoginAuth } from "@/components/FormLoginWithAuthComponent/login-auth";
 
 import { VscGithub } from "react-icons/vsc";
 import { FcGoogle } from "react-icons/fc";
 import { RxCross2 } from "react-icons/rx";
 import { IoIosArrowUp } from "react-icons/io";
-import { Metadata } from 'next'
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Signup - Inspectra',
+  title: "Signup - Inspectra",
   description:
-    'Welcome to Inspectra. Signup to access your account and explore the platform’s advanced source code analysis tools for secure development.',
+    "Welcome to Inspectra. Signup to access your account and explore the platform’s advanced source code analysis tools for secure development.",
   keywords:
-    'Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
-  authors: { name: 'Inspectra Team' },
-  publisher: 'Inspectra',
+    "Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices",
+  authors: { name: "Inspectra Team" },
+  publisher: "Inspectra",
   openGraph: {
-    title: 'Signup - Inspectra',
+    title: "Signup - Inspectra",
     description:
-      'Welcome to Inspectra. Signup to access your account and explore the platform’s advanced source code analysis tools for secure development.',
-    siteName: 'Inspectra',
-    locale: 'en_KH',
-    type: 'website',
-    url: 'https://inspectra.istad.co/',
+      "Welcome to Inspectra. Signup to access your account and explore the platform’s advanced source code analysis tools for secure development.",
+    siteName: "Inspectra",
+    locale: "en_KH",
+    type: "website",
+    url: "https://inspectra.istad.co/",
     images: [
       {
-        url: 'http://136.228.158.126:4011/images/3639a448-5eb8-43f4-bba9-a7f98c27792e.png',
+        url: "https://api-inspectra.istad.co/images/3639a448-5eb8-43f4-bba9-a7f98c27792e.png",
         width: 1200,
         height: 630,
-        alt: 'Inspectra',
+        alt: "Inspectra",
       },
     ],
   },
@@ -90,7 +91,7 @@ export default function page() {
                   width={50}
                   height={50}
                   className="object-cover w-full h-full"
-                />   
+                />
               </div>
               <p className="font-medium text-text_color_light pl-3 text-text_title_20">
                 Inspectra
@@ -115,64 +116,17 @@ export default function page() {
             <FormSignUpComponent />
 
             {/* Line Break */}
-            <hr className="my-2 xl:mt-5" />
-            {/* auth with google and github */}
-            <div className=" block xl:hidden justify-center text-center items-center text-text_color_desc_light">
-              <p className="font-normal">Or Continue</p>
+            <div className="flex items-center md:my-4">
+              <hr className="flex-grow border-t border-gray-300" />
+              <span className="mx-4 text-gray-500">or</span>
+              <hr className="flex-grow border-t border-gray-300" />
             </div>
             {/* with google or github in ipad screen   */}
-            <div className=" flex flex-row md:flex-col my-2  justify-between  space-x-5 space-y-0 md:space-x-0 md:space-y-6 ">
-              <button className="xl:hidden w-full py-3 flex items-center font-normal bg-text_color_light justify-center rounded-[10px]">
-                <FcGoogle className="text-text_title_24" />
-                <span className=" hidden md:block text-text_color_dark ml-3">
-                  Sign up with Google
-                </span>
-                <span className=" block md:hidden text-text_color_dark ml-3">
-                  Google
-                </span>
-              </button>
-              <button className="xl:hidden  w-full py-3 flex items-center font-normal bg-background_light_mode justify-center rounded-[10px]">
-                <VscGithub className="text-text_title_24 text-text_color_light" />
-                <span className=" hidden md:block text-text_color_light ml-3">
-                  Sign up with GitHub
-                </span>
-                <span className=" block md:hidden text-text_color_light ml-3">
-                  GitHub
-                </span>
-              </button>
-            </div>
-
-            {/* with google or github in Login with laptop screen */}
-            <Menubar className="hidden xl:block">
-              <MenubarMenu>
-                <MenubarTrigger className="w-full flex rounded-[10px] justify-center items-center">
-                  <div className="flex items-center text-text_color_desc_light">
-                    <p className="text-center font-normal">
-                      Or Continue With More Option
-                    </p>
-                    <IoIosArrowUp className="h-5 w-5 ml-2" />
-                  </div>
-                </MenubarTrigger>
-
-                <MenubarContent className="absolute  bottom-[50px] -left-1">
-                  <div className="w-full h-[60px] space-x-5 flex justify-between">
-                    <button className="w-[230px] py-3 flex items-center font-normal bg-text_color_light justify-center rounded-[10px]">
-                      <FcGoogle className="text-text_title_24" />
-                      <span className="text-text_color_dark ml-3">Google</span>
-                    </button>
-
-                    <button className="w-[230px]  py-3 flex items-center font-normal bg-background_light_mode justify-center rounded-[10px]">
-                      <VscGithub className="text-text_title_24 text-text_color_light" />
-                      <span className="text-text_color_light ml-3">GitHub</span>
-                    </button>
-                  </div>
-                </MenubarContent>
-              </MenubarMenu>
-            </Menubar>
+            <LoginAuth />
 
             {/* Register */}
             <div className="text-center">
-              <p className="text-text_color_desc_light text-[14px]">
+              <p className="text-text_color_desc_light text-[14px] pt-3">
                 Already have an account?{" "}
                 <Link href={"/login"}>
                   <span className="text-link_color underline font-medium">

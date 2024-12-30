@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Tree } from "react-arborist";
 import { FaFolder } from "react-icons/fa6";
 import { IoIosDocument } from "react-icons/io";
+import ReactTypingEffect from "react-typing-effect";
 
 interface FileStructure {
   path: string;
@@ -21,12 +22,14 @@ interface FileStructureViewerProps {
   data: FileStructure;
   selectedItem: string | null;
   onSelectItem: (item: string) => void;
+  isFetchLoading: boolean;
 }
 
 const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
   data,
   selectedItem,
   onSelectItem,
+  isFetchLoading,
 }) => {
   const [treeData, setTreeData] = useState<TreeNode[]>([]);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -116,7 +119,7 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
     const displayName =
       node.data.name || (isFolder ? "Unnamed Folder" : "Unnamed File");
     const fullPath = node.id;
-    
+
     return (
       <div
         style={style}
@@ -151,10 +154,19 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
   return (
     <div
       id="file-structure-container"
-    
-      className="h-[200px] overflow-auto scrollbar-hide  text-text_color_desc_light"
+      className="h-[200px] overflow-auto scrollbar-hide text-text_color_desc_light"
     >
-      {treeData.length > 0 ? (
+      {isFetchLoading ? (
+        <div className="flex items-center justify-center h-full">
+          <ReactTypingEffect
+            text={[`Fetching files and folders ...`]}
+            speed={100}
+            eraseSpeed={50}
+            eraseDelay={2000}
+            typingDelay={500}
+          />
+        </div>
+      ) : treeData.length > 0 ? (
         <Tree
           data={treeData}
           width={dimensions.width}
@@ -164,13 +176,12 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
           overscanCount={5}
           paddingTop={8}
           paddingBottom={8}
-          
           openByDefault={false}
         >
           {Node}
         </Tree>
       ) : (
-        <div className="flex mt-10 items-center justify-center h-full text-text_color_desc_light ">
+        <div className="flex mt-10 items-center justify-center h-full text-text_color_desc_light">
           No files or folders found
         </div>
       )}

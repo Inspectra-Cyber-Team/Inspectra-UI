@@ -8,42 +8,39 @@ import { useEffect, useState } from "react";
 
 export default function FeedbackCard() {
   const { data } = useGetAllUserFeedbackQuery({});
-  const [lastThreeItems, setLastThreeItems] = useState<any>([]);
+  const [displayedItems, setDisplayedItems] = useState<any>([]);
+  const [itemsToShow, setItemsToShow] = useState(3);
 
   useEffect(() => {
     Aos.init({ duration: 1000 });
   }, []);
 
-  // Dynamically adjust slice count based on screen size
-  // useEffect(() => {
-  //   const updateSliceCount = () => {
-  //     const screenWidth = window.innerWidth;
-  //     screenWidth < 1200 ? 2 : 3; 
-  //   };
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1200) {
+        setItemsToShow(2);
+      } else {
+        setItemsToShow(3);
+      }
+    };
 
-  //   updateSliceCount();
-  //   window.addEventListener("resize", updateSliceCount);
+    // Set initial value
+    handleResize();
 
-  //   return () => window.removeEventListener("resize", updateSliceCount);
-  // }, []);
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Clean up
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (data?.data && Array.isArray(data.data)) {
-      const items = [];
       const dataLength = data.data.length;
-
-      // If there are fewer than 3 items, get all items
-      if (dataLength <= 3) {
-        setLastThreeItems(data.data);
-      } else {
-        // Otherwise, manually get the last 3 items
-        for (let i = dataLength - 3; i < dataLength; i++) {
-          items.push(data.data[i]);
-        }
-        setLastThreeItems(items);
-      }
+      const items = data.data.slice(-itemsToShow);
+      setDisplayedItems(items);
     }
-  }, [data]);
+  }, [data, itemsToShow]);
 
   return (
     <div>
@@ -54,7 +51,7 @@ export default function FeedbackCard() {
         className="grid gap-10 lg:my-[80px] grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-items-center xl:justify-items-between my-10"
         data-aos="fade-up"
       >
-        {lastThreeItems?.map((feedback: feedbackType, index: number) => (
+        {displayedItems?.map((feedback: feedbackType, index: number) => (
           <div
             key={index}
             className="w-full h-full rounded-[20px] p-5 text-text_color_light dark:text-text_color_dark bg-card_color_light dark:bg-card_color_dark flex flex-col justify-between"

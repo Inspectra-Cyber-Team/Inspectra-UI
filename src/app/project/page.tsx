@@ -2,32 +2,32 @@ import ProjectContent from "@/components/Project/CardResultComponent/ProjectCont
 import ProjectComponent from "@/components/Project/ProjectComponent";
 import { Metadata } from "next";
 
-export const metadata: Metadata ={
-  title: 'Project - Inspectra',
+export const metadata: Metadata = {
+  title: "Project - Inspectra",
   description:
-    'Access the Inspectra Project Dashboard, a centralized platform to scan, analyze, and review source code for vulnerabilities. Ensure secure development with advanced tools and detailed insights.',
+    "Access the Inspectra Project Dashboard, a centralized platform to scan, analyze, and review source code for vulnerabilities. Ensure secure development with advanced tools and detailed insights.",
   keywords:
-    'Inspectra project, white-box testing Cambodia, Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
-  authors: { name: 'Inspectra Team' },
-  publisher: 'Inspectra',
+    "Inspectra project, white-box testing Cambodia, Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, secure development platform, source code analysis, cybersecurity tools, secure coding practices",
+  authors: { name: "Inspectra Team" },
+  publisher: "Inspectra",
   openGraph: {
-    title: 'Project - Inspectra',
+    title: "Project - Inspectra",
     description:
-      'Access the Inspectra Project Dashboard, a centralized platform to scan, analyze, and review source code for vulnerabilities. Ensure secure development with advanced tools and detailed insights.',
-    siteName: 'Inspectra',
-    locale: 'en_KH',
-    type: 'website',
-    url: 'https://inspectra.istad.co/',
+      "Access the Inspectra Project Dashboard, a centralized platform to scan, analyze, and review source code for vulnerabilities. Ensure secure development with advanced tools and detailed insights.",
+    siteName: "Inspectra",
+    locale: "en_KH",
+    type: "website",
+    url: "https://inspectra.istad.co/",
     images: [
       {
-        url: 'http://136.228.158.126:4011/images/3639a448-5eb8-43f4-bba9-a7f98c27792e.png',
+        url: "https://api-inspectra.istad.co/images/3639a448-5eb8-43f4-bba9-a7f98c27792e.png",
         width: 1200,
         height: 630,
-        alt: 'Inspectra',
+        alt: "Inspectra",
       },
     ],
   },
-}
+};
 
 export default function page() {
   return (
