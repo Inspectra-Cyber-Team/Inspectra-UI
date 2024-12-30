@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: 'Login - Inspectra',
     description:
       'Welcome to Inspectra. Login to access your account and explore the platform’s advanced source code analysis tools for secure development.',
-      
+
     siteName: 'Inspectra',
     locale: 'en_KH',
     type: 'website',
@@ -38,47 +38,47 @@ export default function page() {
   //handle session from next-auth
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-    //
-    // console.log('this is session',session)
-    //
-    // if (session) {
-    //     return (
-    //         <div className="w-full h-screen flex flex-col justify-center items-center">
-    //         <div className="w-44 h-44 relative mb-4">
-    //             <Image
-    //             src={session.user?.image as string || ""}
-    //             fill
-    //             alt=""
-    //             className="object-cover rounded-full"
-    //             />
-    //         </div>
-    //         <p className="text-2xl mb-2">
-    //             Welcome <span className="font-bold">{session.user?.name}</span>. Signed
-    //             In As
-    //         </p>
-    //         <p className="font-bold mb-4">{session.user?.email}</p>
-    //         <button
-    //             className="bg-red-600 py-2 px-6 rounded-md"
-    //             onClick={() => signOut()}
-    //         >
-    //             Sign out
-    //         </button>
-    //         </div>
-    //     );
-    // } else {
-    //     return (
-    //         <div className="w-full h-screen flex flex-col justify-center items-center">
-    //         <p className="text-2xl mb-4">You are not signed in</p>
-    //         <button
-    //             className="bg-blue-600 py-2 px-6 rounded-md"
-    //             onClick={() => signIn()}
-    //         >
-    //             Sign in
-    //         </button>
-    //         <FormLoginComponent />
-    //         </div>
-    //     );
-    // }
+  //
+  // console.log('this is session',session)
+  //
+  // if (session) {
+  //     return (
+  //         <div className="w-full h-screen flex flex-col justify-center items-center">
+  //         <div className="w-44 h-44 relative mb-4">
+  //             <Image
+  //             src={session.user?.image as string || ""}
+  //             fill
+  //             alt=""
+  //             className="object-cover rounded-full"
+  //             />
+  //         </div>
+  //         <p className="text-2xl mb-2">
+  //             Welcome <span className="font-bold">{session.user?.name}</span>. Signed
+  //             In As
+  //         </p>
+  //         <p className="font-bold mb-4">{session.user?.email}</p>
+  //         <button
+  //             className="bg-red-600 py-2 px-6 rounded-md"
+  //             onClick={() => signOut()}
+  //         >
+  //             Sign out
+  //         </button>
+  //         </div>
+  //     );
+  // } else {
+  //     return (
+  //         <div className="w-full h-screen flex flex-col justify-center items-center">
+  //         <p className="text-2xl mb-4">You are not signed in</p>
+  //         <button
+  //             className="bg-blue-600 py-2 px-6 rounded-md"
+  //             onClick={() => signIn()}
+  //         >
+  //             Sign in
+  //         </button>
+  //         <FormLoginComponent />
+  //         </div>
+  //     );
+  // }
 
 
   return (
@@ -154,15 +154,12 @@ export default function page() {
 
             <FormLoginComponent />
 
-            {/* Line Break */}
-            <hr className="my-4" />
-
             <div className="space-y-5">
               {/* Auth Login */}
-              <div className="text-center">
-                <p className="text-text_color_desc_light text-[14px]">
-                  Or Continue With
-                </p>
+              <div className="flex items-center md:my-4">
+                <hr className="flex-grow border-t border-gray-300" />
+                <span className="mx-4 text-gray-500">or</span>
+                <hr className="flex-grow border-t border-gray-300" />
               </div>
 
               {/*/!* Google Button *!/*/}
@@ -180,7 +177,7 @@ export default function page() {
               {/*    Or Sign in with GitHub*/}
               {/*  </span>*/}
               {/*</button>*/}
-              <LoginAuth/>
+              <LoginAuth />
             </div>
 
             {/* Register */}

@@ -8,14 +8,6 @@ import { FaHandsClapping } from "react-icons/fa6";
 import LoadProjectComponent from "../Project/LoadingProjectComponent/LoadProjectComponent";
 import { Blog } from "@/types/Blog";
 import { convertToDayMonthYear } from "@/lib/utils";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 
 export default function BlogHistoryComponent() {
   const router = useRouter();
@@ -23,6 +15,19 @@ export default function BlogHistoryComponent() {
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
+
+  const [activeTab, setActiveTab] = useState("bloghistory");
+
+  const handleTabClick = (tab: any) => {
+    setActiveTab(tab);
+    if (tab === "scanhistory") {
+      router.push("/scanhistory");
+    } else if (tab === "myprofile") {
+      router.push("/myprofile");
+    } else if (tab === "bookmark") {
+      router.push("/bookmark");
+    }
+  };
 
   const { data: userBlogData } = useGetUserHistoryBlogQuery({
     uuid: userUUID,
@@ -33,38 +38,49 @@ export default function BlogHistoryComponent() {
   return (
     <section>
       {/* header */}
-      <div className="flex justify-between">
-        {/* <p className="text-text_title_20 text-text_color_light dark:text-text_color_dark">
+      <div className="flex justify-center md:justify-between pb-2">
+        <p className="text-text_title_20 text-text_color_light dark:text-text_color_dark hidden md:inline-block">
           Blog History
-        </p> */}
-        <Breadcrumb>
-          <BreadcrumbList className="text-[18px]">
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
-            </BreadcrumbItem>
-
-            <BreadcrumbSeparator />
-
-            <BreadcrumbItem>
-              <BreadcrumbPage>Blog History</BreadcrumbPage>
-            </BreadcrumbItem>
-
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/bookmark">Bookmark</BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <div className="flex gap-3 text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
-          <p className="text-ascend_color">
+        </p>
+        <div className="flex gap-6 text-text_body_16">
+          <button
+            onClick={() => setActiveTab("bloghistory")}
+            className={`pb-2 ${
+              activeTab === "bloghistory"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
+          >
             Blog <span className="hidden md:inline-block">History</span>
-          </p>
-          <span>/</span>
-          <button onClick={() => router.push("/scanHistory")}>
+          </button>
+          <button
+            onClick={() => handleTabClick("bookmark")}
+            className={`pb-2 ${
+              activeTab === "bookmark"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
+          >
+            <span className="hidden md:inline-block">Blog</span> Bookmark
+          </button>
+          <button
+            onClick={() => handleTabClick("scanhistory")}
+            className={`pb-2 ${
+              activeTab === "scanhistory"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
+          >
             Scan <span className="hidden md:inline-block">History</span>
           </button>
-          <span>/</span>
-          <button onClick={() => router.push("/myprofile")}>
+          <button
+            onClick={() => handleTabClick("myprofile")}
+            className={`pb-2 ${
+              activeTab === "myprofile"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
+          >
             Profile <span className="hidden md:inline-block">Setting</span>
           </button>
         </div>

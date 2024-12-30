@@ -29,6 +29,6 @@ export const navbarData = [
 export const navbarDataWithProfile = [
   {
     name: "My Profile",
-    link: "/myProfile",
+    link: "/myprofile",
   },
 ];

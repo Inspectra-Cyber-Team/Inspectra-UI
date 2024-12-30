@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import NavbarComponent from "@/components/NavbarComponent/NavbarComponent";
 import FooterComponent from "@/components/FooterComponent/FooterComponent";
 import { Toaster } from "@/components/ui/toaster";
-
+import ScrollToTopButton from "@/components/ScrollToTopComponent/ScrollToTopComponent";
 import { Suspense } from "react";
 import StoreProvider from "./StoreProvider";
 import ImageBackground from "@/components/BackgroundImageHomepage/ImageBackground";
@@ -70,6 +70,7 @@ export default function RootLayout({
                 <Toaster />
               </Suspense>
               <ImageBackground />
+              <ScrollToTopButton />
               <FooterComponent />
             </ThemeProvider>
           </StoreProvider>

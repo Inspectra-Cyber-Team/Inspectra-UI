@@ -37,6 +37,19 @@ export default function ScanHistoryComponent() {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
 
+  const [activeTab, setActiveTab] = useState("scanhistory");
+
+  const handleTabClick = (tab: any) => {
+    setActiveTab(tab);
+    if (tab === "bloghistory") {
+      router.push("/bloghistory");
+    } else if (tab === "myprofile") {
+      router.push("/myprofile");
+    } else if (tab === "bookmark") {
+      router.push("/bookmark");
+    }
+  };
+
   const { data: projectScanByUser, isError } = useGetProjectOverViewUserQuery({
     uuid: userUUID,
     page: 0,
@@ -46,21 +59,45 @@ export default function ScanHistoryComponent() {
   return (
     <section>
       {/* header */}
-
-      <div className="flex justify-between">
-        <p className="text-text_title_20 text-text_color_light dark:text-text_color_dark">
+      <div className="flex justify-center md:justify-between pb-2">
+        <p className="text-text_title_20 text-text_color_light dark:text-text_color_dark hidden md:inline-block">
           Scan History
         </p>
-        <div className="flex gap-3 text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
-          <button onClick={() => router.push("/blogHistory")}>
+        <div className="flex gap-6 text-text_body_16">
+          <button
+            onClick={() => handleTabClick("bloghistory")}
+            className={`pb-2 ${activeTab === "bloghistory"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+              }`}
+          >
             Blog <span className="hidden md:inline-block">History</span>
           </button>
-          <span>/</span>
-          <p className="text-ascend_color">
+          <button
+            onClick={() => handleTabClick("bookmark")}
+            className={`pb-2 ${activeTab === "bookmark"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+              }`}
+          >
+            <span className="hidden md:inline-block">Blog</span> Bookmark
+          </button>
+          <button
+            onClick={() => setActiveTab("scanhistory")}
+            className={`pb-2 ${activeTab === "scanhistory"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+              }`}
+          >
             Scan <span className="hidden md:inline-block">History</span>
-          </p>
-          <span>/</span>
-          <button onClick={() => router.push("/myProfile")}>
+          </button>
+          <button
+            onClick={() => handleTabClick("myprofile")}
+            className={`pb-2 ${activeTab === "myprofile"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+              }`}
+          >
             Profile <span className="hidden md:inline-block">Setting</span>
           </button>
         </div>
@@ -148,14 +185,13 @@ export default function ScanHistoryComponent() {
                                     className="flex text-center items-center"
                                   >
                                     <div
-                                      className={`w-[25px] h-[25px] flex items-center justify-center rounded-[5px] ${
-                                        item.status.qualityGateStatus === "OK"
+                                      className={`w-[25px] h-[25px] flex items-center justify-center rounded-[5px] ${item.status.qualityGateStatus === "OK"
                                           ? "bg-primary_color"
                                           : "bg-custom_red"
-                                      }`}
+                                        }`}
                                     >
                                       {item.status.qualityGateStatus ===
-                                      "OK" ? (
+                                        "OK" ? (
                                         <FaCheck className="dark:text-text_color_light" />
                                       ) : (
                                         <RxCross2 className="dark:text-text_color_light" />
@@ -199,11 +235,11 @@ export default function ScanHistoryComponent() {
                                 type="button"
                                 className="px-5 hover:bg-custom_red "
                                 variant="secondary"
-                                // onClick={() =>
-                                //   handleDeleteProject(
-                                //     projectResult?.component?.component.name
-                                //   )
-                                // }
+                              // onClick={() =>
+                              //   handleDeleteProject(
+                              //     projectResult?.component?.component.name
+                              //   )
+                              // }
                               >
                                 {isLoading ? (
                                   <div className="spinner-border animate-spin  inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_dark border-t-transparent"></div>

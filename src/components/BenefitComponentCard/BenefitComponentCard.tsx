@@ -17,7 +17,7 @@ export default function BenefitComponentCard() {
       <p className=" text-text_header_34 px-5 py-1 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold" >
         Benefit
       </p>
-      <div className="w-full  lg:my-[80px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-x-5 gap-y-5" data-aos="fade-up">
+      <div className="w-full  lg:my-[80px] grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-5 gap-y-5" data-aos="fade-up">
         {/* w-full my-5 flex flex-col items-center xl:flex-row xl:justify-between */}
         {benefitData.map((item: benefitType, index) => (
           <div
