@@ -22,5 +22,11 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/blog/create"],
+  matcher: [
+    "/blog/create",
+    "/myprofile",
+    "/scanhistory",
+    "/bloghistory",
+    "/bookmark",
+  ],
 };

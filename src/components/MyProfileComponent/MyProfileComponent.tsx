@@ -26,7 +26,7 @@ export default function MyProfileComponent() {
 
   const [activeTab, setActiveTab] = useState("myprofile");
 
-  const handleTabClick = (tab:any) => {
+  const handleTabClick = (tab: any) => {
     setActiveTab(tab);
     if (tab === "bloghistory") {
       router.push("/bloghistory");
@@ -184,8 +184,7 @@ export default function MyProfileComponent() {
           </button>
         </div>
       </div>
-      <div className="mt-4">
-      </div>
+      <div className="mt-4"></div>
 
       {/* section */}
       <section>

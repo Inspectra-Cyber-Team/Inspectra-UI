@@ -3,38 +3,37 @@ import { RxCross2 } from "react-icons/rx";
 import FormLoginComponent from "@/components/FromLoginComponent/FormLoginComponent";
 import Link from "next/link";
 import { LoginAuth } from "@/components/FormLoginWithAuthComponent/login-auth";
-import { Metadata } from 'next'
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Login - Inspectra',
+  title: "Login - Inspectra",
   description:
-    'Welcome to Inspectra. Login to access your account and explore the platform’s advanced source code analysis tools for secure development.',
+    "Welcome to Inspectra. Login to access your account and explore the platform’s advanced source code analysis tools for secure development.",
   keywords:
-    'Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices',
-  authors: { name: 'Inspectra Team' },
-  publisher: 'Inspectra',
+    "Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices",
+  authors: { name: "Inspectra Team" },
+  publisher: "Inspectra",
   openGraph: {
-    title: 'Login - Inspectra',
+    title: "Login - Inspectra",
     description:
-      'Welcome to Inspectra. Login to access your account and explore the platform’s advanced source code analysis tools for secure development.',
+      "Welcome to Inspectra. Login to access your account and explore the platform’s advanced source code analysis tools for secure development.",
 
-    siteName: 'Inspectra',
-    locale: 'en_KH',
-    type: 'website',
-    url: 'https://inspectra.istad.co/',
+    siteName: "Inspectra",
+    locale: "en_KH",
+    type: "website",
+    url: "https://inspectra.istad.co/",
     images: [
       {
-        url: 'http://136.228.158.126:4011/images/3639a448-5eb8-43f4-bba9-a7f98c27792e.png',
+        url: "https://api-inspectra.istad.co/images/3639a448-5eb8-43f4-bba9-a7f98c27792e.png",
         width: 1200,
         height: 630,
-        alt: 'Inspectra',
+        alt: "Inspectra",
       },
     ],
   },
 };
 
 export default function page() {
-
   //handle session from next-auth
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -79,7 +78,6 @@ export default function page() {
   //         </div>
   //     );
   // }
-
 
   return (
     <main className="h-screen  w-full mx-auto flex ">

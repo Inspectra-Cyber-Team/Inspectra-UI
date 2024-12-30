@@ -6,7 +6,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { Blog } from "@/types/Blog";
 import { useRouter } from "next/navigation";
-import { FaCalendarAlt, FaCommentDots, FaEye, FaTrashAlt } from "react-icons/fa";
+import {
+  FaCalendarAlt,
+  FaCommentDots,
+  FaEye,
+  FaTrashAlt,
+} from "react-icons/fa";
 import { FaHandsClapping } from "react-icons/fa6";
 import { convertToDayMonthYear } from "@/lib/utils";
 import { useToast } from "../hooks/use-toast";
@@ -39,11 +44,12 @@ export default function BookmarkComponent() {
 
   const handleTabClick = (tab: any) => {
     setActiveTab(tab);
-    if (tab === "scanhistory") {
+
+    if (tab === "scanHistory") {
       router.push("/scanhistory");
-    } else if (tab === "myprofile") {
+    } else if (tab === "myProfile") {
       router.push("/myprofile");
-    } else if (tab === "bloghistory") {
+    } else if (tab === "blogHistory") {
       router.push("/bloghistory");
     }
   };
@@ -86,37 +92,41 @@ export default function BookmarkComponent() {
           <div className="flex gap-6 text-text_body_16">
             <button
               onClick={() => handleTabClick("bloghistory")}
-              className={`pb-2 ${activeTab === "bloghistory"
-                ? "border-b-2 border-ascend_color text-ascend_color"
-                : "text-text_color_desc_light dark:text-text_color_desc_dark"
-                }`}
+              className={`pb-2 ${
+                activeTab === "bloghistory"
+                  ? "border-b-2 border-ascend_color text-ascend_color"
+                  : "text-text_color_desc_light dark:text-text_color_desc_dark"
+              }`}
             >
               Blog <span className="hidden md:inline-block">History</span>
             </button>
             <button
               onClick={() => setActiveTab("bookmark")}
-              className={`pb-2 ${activeTab === "bookmark"
-                ? "border-b-2 border-ascend_color text-ascend_color"
-                : "text-text_color_desc_light dark:text-text_color_desc_dark"
-                }`}
+              className={`pb-2 ${
+                activeTab === "bookmark"
+                  ? "border-b-2 border-ascend_color text-ascend_color"
+                  : "text-text_color_desc_light dark:text-text_color_desc_dark"
+              }`}
             >
               <span className="hidden md:inline-block">Blog</span> Bookmark
             </button>
             <button
               onClick={() => handleTabClick("scanhistory")}
-              className={`pb-2 ${activeTab === "scanhistory"
-                ? "border-b-2 border-ascend_color text-ascend_color"
-                : "text-text_color_desc_light dark:text-text_color_desc_dark"
-                }`}
+              className={`pb-2 ${
+                activeTab === "scanhistory"
+                  ? "border-b-2 border-ascend_color text-ascend_color"
+                  : "text-text_color_desc_light dark:text-text_color_desc_dark"
+              }`}
             >
               Scan <span className="hidden md:inline-block">History</span>
             </button>
             <button
               onClick={() => handleTabClick("myprofile")}
-              className={`pb-2 ${activeTab === "myprofile"
-                ? "border-b-2 border-ascend_color text-ascend_color"
-                : "text-text_color_desc_light dark:text-text_color_desc_dark"
-                }`}
+              className={`pb-2 ${
+                activeTab === "myprofile"
+                  ? "border-b-2 border-ascend_color text-ascend_color"
+                  : "text-text_color_desc_light dark:text-text_color_desc_dark"
+              }`}
             >
               Profile <span className="hidden md:inline-block">Setting</span>
             </button>
@@ -190,37 +200,41 @@ export default function BookmarkComponent() {
         <div className="flex gap-6 text-text_body_16">
           <button
             onClick={() => handleTabClick("blogHistory")}
-            className={`pb-2 ${activeTab === "blogHistory"
-              ? "border-b-2 border-ascend_color text-ascend_color"
-              : "text-text_color_desc_light dark:text-text_color_desc_dark"
-              }`}
+            className={`pb-2 ${
+              activeTab === "blogHistory"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
           >
             Blog <span className="hidden md:inline-block">History</span>
           </button>
           <button
             onClick={() => setActiveTab("bookmark")}
-            className={`pb-2 ${activeTab === "bookmark"
-              ? "border-b-2 border-ascend_color text-ascend_color"
-              : "text-text_color_desc_light dark:text-text_color_desc_dark"
-              }`}
+            className={`pb-2 ${
+              activeTab === "bookmark"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
           >
             <span className="hidden md:inline-block">Blog</span> Bookmark
           </button>
           <button
             onClick={() => handleTabClick("scanHistory")}
-            className={`pb-2 ${activeTab === "scanHistory"
-              ? "border-b-2 border-ascend_color text-ascend_color"
-              : "text-text_color_desc_light dark:text-text_color_desc_dark"
-              }`}
+            className={`pb-2 ${
+              activeTab === "scanHistory"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
           >
             Scan <span className="hidden md:inline-block">History</span>
           </button>
           <button
             onClick={() => handleTabClick("myProfile")}
-            className={`pb-2 ${activeTab === "myProfile"
-              ? "border-b-2 border-ascend_color text-ascend_color"
-              : "text-text_color_desc_light dark:text-text_color_desc_dark"
-              }`}
+            className={`pb-2 ${
+              activeTab === "myProfile"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
           >
             Profile <span className="hidden md:inline-block">Setting</span>
           </button>

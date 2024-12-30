@@ -19,9 +19,11 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { ModeToggle } from "../ToggleTheme/ToggleTheme";
+import { signOut } from "next-auth/react";
 
 export default function NavbarComponent() {
   const router = useRouter();
+
   const [isOpen, setIsOpen] = useState(false);
   const [userUUID, setUserUUID] = useState("");
 
@@ -247,6 +249,8 @@ export default function NavbarComponent() {
                           {/* Log Out */}
                           <button
                             onClick={() => {
+                              // handle remove also session from next-auth
+                              signOut();
                               handleSignOut();
                               handleMenuClose();
                             }}

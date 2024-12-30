@@ -3,26 +3,26 @@ import Link from "next/link";
 import { RxCross2 } from "react-icons/rx";
 import { Metadata } from "next";
 
-export const metadata: Metadata ={
-  title: 'Verify - Inspectra',
+export const metadata: Metadata = {
+  title: "Verify - Inspectra",
   description:
-    'Verify up your email in the case of forgetting your password and recieve OTP to setup your new password',
+    "Verify up your email in the case of forgetting your password and recieve OTP to setup your new password",
   openGraph: {
-    title: 'Verify - Inspectra',
+    title: "Verify - Inspectra",
     description:
-      'Verify up your email in the case of forgetting your password and recieve OTP to setup your new password',
-    siteName: 'Inspectra',
-    url: 'https://inspectra.istad.co/',
+      "Verify up your email in the case of forgetting your password and recieve OTP to setup your new password",
+    siteName: "Inspectra",
+    url: "https://inspectra.istad.co/",
     images: [
       {
-        url: 'http://136.228.158.126:4011/images/3639a448-5eb8-43f4-bba9-a7f98c27792e.png',
+        url: "https://api-inspectra.istad.co/images/3639a448-5eb8-43f4-bba9-a7f98c27792e.png",
         width: 1200,
         height: 630,
-        alt: 'Inspectra',
+        alt: "Inspectra",
       },
     ],
   },
-}
+};
 
 export default function page() {
   return (
