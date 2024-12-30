@@ -131,7 +131,7 @@ export default function PageOverviewProjectDetail({
             <li>Version not Provided</li>
             <li>
               <button
-                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-all"
+                className="bg-primary_color text-white px-4 py-2 rounded-md hover:bg-green-600 transition-all"
                 onClick={() => handleExportPDF(nameOfProject)}
               >
                 {isloading ? (
@@ -154,7 +154,7 @@ export default function PageOverviewProjectDetail({
           <h2
             className={`p-4 rounded-lg text-white text-xl ${
               getProjectByUserUuid?.status.qualityGateStatus === "OK"
-                ? "bg-green-500"
+                ? "bg-primary_color"
                 : "bg-red-500"
             }`}
           >

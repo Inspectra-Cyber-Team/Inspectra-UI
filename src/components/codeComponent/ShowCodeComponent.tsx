@@ -87,9 +87,9 @@ export default function CodeViewer({
 
     // Store SCM data for the clicked line
     setAlertData({
-      scmAuthor: line.scmAuthor,
-      scmRevision: line.scmRevision,
-      scmDate: line.scmDate,
+      scmAuthor: line.scmAuthor || "Unknown",
+      scmRevision: line.scmRevision || "Unknown",
+      scmDate: line.scmDate || "Unknown",
     });
 
     setShowAlert(true);
