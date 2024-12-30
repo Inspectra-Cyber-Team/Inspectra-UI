@@ -1,7 +1,7 @@
 import NextAuth, { Session } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import {JWT} from "@auth/core/jwt";
+import { JWT } from "@auth/core/jwt";
 
 type CustomSession = {
   accessToken?: string;
@@ -9,7 +9,12 @@ type CustomSession = {
   email?: string;
 } & Session;
 
-export const { handlers: { GET, POST }, auth} = NextAuth({
+export const {
+  handlers: { GET, POST },
+  auth,
+} = NextAuth({
+  debug: true,
+  trustHost: true,
   providers: [
     GithubProvider({
       clientId: process.env.NEXT_PUBLIC_GITHUB_ID as string,
@@ -25,6 +30,7 @@ export const { handlers: { GET, POST }, auth} = NextAuth({
       clientSecret: process.env.NEXT_PUBLIC_CLIENT_SECRET as string,
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
     async jwt({ token, account, profile }) {
@@ -36,8 +42,7 @@ export const { handlers: { GET, POST }, auth} = NextAuth({
       return token; // Always return the token
     },
 
-
-    async session({ session, token }: { session: CustomSession, token: JWT }) {
+    async session({ session, token }: { session: CustomSession; token: JWT }) {
       // Attach the accessToken and username to the session object
       session.accessToken = token.accessToken as string | undefined;
       session.username = token.username as string | undefined;

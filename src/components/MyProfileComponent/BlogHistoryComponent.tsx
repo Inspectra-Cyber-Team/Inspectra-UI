@@ -8,6 +8,15 @@ import { FaHandsClapping } from "react-icons/fa6";
 import LoadProjectComponent from "../Project/LoadingProjectComponent/LoadProjectComponent";
 import { Blog } from "@/types/Blog";
 import { convertToDayMonthYear } from "@/lib/utils";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+
 export default function BlogHistoryComponent() {
   const router = useRouter();
   const [userUUID, setUserUUID] = useState("");
@@ -25,9 +34,27 @@ export default function BlogHistoryComponent() {
     <section>
       {/* header */}
       <div className="flex justify-between">
-        <p className="text-text_title_20 text-text_color_light dark:text-text_color_dark">
+        {/* <p className="text-text_title_20 text-text_color_light dark:text-text_color_dark">
           Blog History
-        </p>
+        </p> */}
+        <Breadcrumb>
+          <BreadcrumbList className="text-[18px]">
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+
+            <BreadcrumbSeparator />
+
+            <BreadcrumbItem>
+              <BreadcrumbPage>Blog History</BreadcrumbPage>
+            </BreadcrumbItem>
+
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/bookmark">Bookmark</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
         <div className="flex gap-3 text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
           <p className="text-ascend_color">
             Blog <span className="hidden md:inline-block">History</span>
@@ -37,7 +64,7 @@ export default function BlogHistoryComponent() {
             Scan <span className="hidden md:inline-block">History</span>
           </button>
           <span>/</span>
-          <button onClick={() => router.push("/myProfile")}>
+          <button onClick={() => router.push("/myprofile")}>
             Profile <span className="hidden md:inline-block">Setting</span>
           </button>
         </div>
