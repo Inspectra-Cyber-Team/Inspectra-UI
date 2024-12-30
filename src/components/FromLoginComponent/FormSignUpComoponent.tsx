@@ -249,7 +249,7 @@ export default function FormSignUpComponent() {
               htmlFor="password"
               className="text-[14px] text-text_color_light block"
             >
-              ConfirmPassword
+              Confirm Password
             </label>
             <div className="relative">
               <Field

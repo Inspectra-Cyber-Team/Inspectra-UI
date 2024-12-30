@@ -23,6 +23,17 @@ export default function MyProfileComponent() {
 
   const router = useRouter();
 
+  const [activeTab, setActiveTab] = useState("myProfile");
+
+  const handleTabClick = (tab:any) => {
+    setActiveTab(tab);
+    if (tab === "blogHistory") {
+      router.push("/blogHistory");
+    } else if (tab === "scanHistory") {
+      router.push("/scanHistory");
+    }
+  };
+
   const [userUUID, setUserUUID] = useState("");
 
   const { data: userData } = useGetUserDetailQuery({ uuid: userUUID });
@@ -121,30 +132,55 @@ export default function MyProfileComponent() {
   return (
     <div>
       {/* header */}
-      <div className="flex justify-between">
+      <div className="flex justify-between pb-2">
         <p className="text-text_title_20 text-text_color_light dark:text-text_color_dark">
           Profile
         </p>
-        <div className="flex gap-3 text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
-          <button onClick={() => router.push("/blogHistory")}>
+        <div className="flex gap-6 text-text_body_16">
+          <button
+            onClick={() => handleTabClick("blogHistory")}
+            className={`pb-2 ${
+              activeTab === "blogHistory"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
+          >
             Blog <span className="hidden md:inline-block">History</span>
           </button>
-          <span>/</span>
-          <button onClick={() => router.push("/scanHistory")}>
+          <button
+            onClick={() => handleTabClick("scanHistory")}
+            className={`pb-2 ${
+              activeTab === "scanHistory"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
+          >
             Scan <span className="hidden md:inline-block">History</span>
           </button>
-          <span>/</span>
-          <p className="text-ascend_color">
+          <button
+            onClick={() => setActiveTab("myProfile")}
+            className={`pb-2 ${
+              activeTab === "myProfile"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
+          >
             Profile <span className="hidden md:inline-block">Setting</span>
-          </p>
+          </button>
         </div>
+      </div>
+      <div className="mt-4">
+        {/* Render the content based on the active tab */}
+        {activeTab === "blogHistory" }
+        {activeTab === "scanHistory" }
+        {activeTab === "myProfile" }
       </div>
 
       {/* section */}
       <section>
         <div className="relative mt-[30px] pb-3 bg-card_color_light dark:bg-card_color_dark rounded-3xl">
           {/* Particle Container */}
-          <div className="absolute translate-x-0 rounded-md flex flex-col items-center h-44 w-full">
+          <div className="absolute translate-x-0 flex flex-col items-center h-44 w-full">
             <div className="absolute">
               <ParticlesComponent id="particles" />
             </div>

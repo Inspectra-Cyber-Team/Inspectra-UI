@@ -31,6 +31,17 @@ export default function ScanHistoryComponent() {
   const router = useRouter();
   const [userUUID, setUserUUID] = useState("");
 
+    const [activeTab, setActiveTab] = useState("profile");
+  
+    const handleTabClick = (tab:any) => {
+      setActiveTab(tab);
+      if (tab === "blogHistory") {
+        router.push("/blogHistory");
+      } else if (tab === "scanHistory") {
+        router.push("/scanHistory");
+      }
+    };
+
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });

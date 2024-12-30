@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FaCommentDots, FaHandsClapping } from "react-icons/fa6";
 import { Button } from "../ui/button";
+import { convertToDayMonthYear } from "@/lib/utils";
 
 type BlogCardProps = {
   uuid: string;
@@ -112,9 +113,8 @@ export default function BlogUserCardComponent({
                     />
                     <div className="ml-2 flex justify-between w-full text-text_color_desc_light dark:text-text_color_desc_dark">
                       <p className="text-base">
-                        {blog.user.firstName} {blog.user.lastName}
-                      </p>
-                      <p className="text-base">{new Date(blog.createdAt).toLocaleDateString()}</p>
+                        {blog.user.firstName} {blog.user.lastName}</p>
+                      <p className="text-base">{convertToDayMonthYear(blog.createdAt)}</p>
                     </div>
                   </div>
                   <h2 className="line-clamp-1 text-lg font-semibold text-text_color_light dark:text-text_color_dark mb-2">
