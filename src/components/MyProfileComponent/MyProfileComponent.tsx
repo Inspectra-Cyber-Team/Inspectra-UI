@@ -16,6 +16,7 @@ type FormValues = {
   profile: string;
   name: string;
   bio: string;
+  position: string;
 };
 
 export default function MyProfileComponent() {
@@ -58,6 +59,7 @@ export default function MyProfileComponent() {
       name: "",
       bio: "",
       profile: "",
+      position: "",
     },
     onSubmit: async (values) => {
       const updateValue = {
@@ -75,6 +77,7 @@ export default function MyProfileComponent() {
         name: userData.data.name || "",
         bio: userData.data.bio || "",
         profile: userData.data.profile || "",
+        position: userData.data.position || "",
       });
     }
   }, [userData]);
@@ -203,6 +206,18 @@ export default function MyProfileComponent() {
                 className="border border-text_color_desc_light text-text_color_desc_light w-full p-3 rounded-lg"
                 placeholder={userData?.data?.bio || "Add a short bio..."}
                 value={formik.values.bio}
+                onChange={formik.handleChange}
+              />
+            </div>
+
+            <div className="flex flex-col md:flex-row md:items-center gap-3">
+              <p className="md:w-[35%]">Position</p>
+              <input
+                type="text"
+                name="position"
+                className="border border-text_color_desc_light text-text_color_desc_light w-full p-3 rounded-lg"
+                placeholder={userData?.data?.position || "Your Position"}
+                value={formik.values.position}
                 onChange={formik.handleChange}
               />
             </div>

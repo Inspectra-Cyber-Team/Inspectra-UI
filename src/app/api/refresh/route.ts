@@ -17,7 +17,7 @@ export async function POST() {
       },
       {
         status: 404,
-      },
+      }
     );
   }
 
@@ -31,7 +31,7 @@ export async function POST() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken: refreshToken }),
-    },
+    }
   );
 
   // If the request fails, return an error message to the client-side
@@ -42,14 +42,15 @@ export async function POST() {
       },
       {
         status: response.status,
-      },
+      }
     );
   }
 
   // Parse the response body to get the data
   const data = await response.json();
-  console.log("Data", data);
+
   const refresh = data?.data?.refreshToken || null;
+
   const access = data?.data?.accessToken || null;
 
   // Serialize the refresh token and set it as a cookie with
@@ -70,6 +71,6 @@ export async function POST() {
       headers: {
         "Set-Cookie": serialized,
       },
-    },
+    }
   );
 }
