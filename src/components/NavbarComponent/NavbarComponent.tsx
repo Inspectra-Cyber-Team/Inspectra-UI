@@ -163,7 +163,7 @@ export default function NavbarComponent() {
                           {/* Profile */}
                           <button
                             onClick={() => {
-                              router.push("/myProfile");
+                              router.push("/myprofile");
                               handleMenuClose();
                             }}
                             className="p-3 my-3 flex w-full justify-between items-center text-center"
@@ -184,7 +184,7 @@ export default function NavbarComponent() {
                           {/* Blog History */}
                           <button
                             onClick={() => {
-                              router.push("/blogHistory");
+                              router.push("/bloghistory");
                               handleMenuClose();
                             }}
                             className="p-3 my-3 flex w-full justify-between items-center text-center"
@@ -226,7 +226,7 @@ export default function NavbarComponent() {
                           {/* Scan History */}
                           <button
                             onClick={() => {
-                              router.push("/scanHistory");
+                              router.push("/scanhistory");
                               handleMenuClose();
                             }}
                             className="p-3 my-3 flex w-full justify-between items-center text-center"

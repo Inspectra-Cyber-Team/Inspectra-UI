@@ -16,14 +16,14 @@ export default function BlogHistoryComponent() {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
 
-  const [activeTab, setActiveTab] = useState("blogHistory");
+  const [activeTab, setActiveTab] = useState("bloghistory");
 
   const handleTabClick = (tab: any) => {
     setActiveTab(tab);
-    if (tab === "scanHistory") {
-      router.push("/scanHistory");
-    } else if (tab === "myProfile") {
-      router.push("/myProfile");
+    if (tab === "scanhistory") {
+      router.push("/scanhistory");
+    } else if (tab === "myprofile") {
+      router.push("/myprofile");
     } else if (tab === "bookmark") {
       router.push("/bookmark");
     }
@@ -44,9 +44,9 @@ export default function BlogHistoryComponent() {
         </p>
         <div className="flex gap-6 text-text_body_16">
           <button
-            onClick={() => setActiveTab("blogHistory")}
+            onClick={() => setActiveTab("bloghistory")}
             className={`pb-2 ${
-              activeTab === "blogHistory"
+              activeTab === "bloghistory"
                 ? "border-b-2 border-ascend_color text-ascend_color"
                 : "text-text_color_desc_light dark:text-text_color_desc_dark"
             }`}
@@ -64,9 +64,9 @@ export default function BlogHistoryComponent() {
             <span className="hidden md:inline-block">Blog</span> Bookmark
           </button>
           <button
-            onClick={() => handleTabClick("scanHistory")}
+            onClick={() => handleTabClick("scanhistory")}
             className={`pb-2 ${
-              activeTab === "scanHistory"
+              activeTab === "scanhistory"
                 ? "border-b-2 border-ascend_color text-ascend_color"
                 : "text-text_color_desc_light dark:text-text_color_desc_dark"
             }`}
@@ -74,9 +74,9 @@ export default function BlogHistoryComponent() {
             Scan <span className="hidden md:inline-block">History</span>
           </button>
           <button
-            onClick={() => handleTabClick("myProfile")}
+            onClick={() => handleTabClick("myprofile")}
             className={`pb-2 ${
-              activeTab === "myProfile"
+              activeTab === "myprofile"
                 ? "border-b-2 border-ascend_color text-ascend_color"
                 : "text-text_color_desc_light dark:text-text_color_desc_dark"
             }`}

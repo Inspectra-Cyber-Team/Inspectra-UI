@@ -24,14 +24,14 @@ export default function MyProfileComponent() {
 
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState("myProfile");
+  const [activeTab, setActiveTab] = useState("myprofile");
 
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
-    if (tab === "blogHistory") {
-      router.push("/blogHistory");
-    } else if (tab === "scanHistory") {
-      router.push("/scanHistory");
+    if (tab === "bloghistory") {
+      router.push("/bloghistory");
+    } else if (tab === "scanhistory") {
+      router.push("/scanhistory");
     } else if (tab === "bookmark") {
       router.push("/bookmark");
     }
@@ -143,9 +143,9 @@ export default function MyProfileComponent() {
         </p>
         <div className="flex gap-6 text-text_body_16">
           <button
-            onClick={() => handleTabClick("blogHistory")}
+            onClick={() => handleTabClick("bloghistory")}
             className={`pb-2 ${
-              activeTab === "blogHistory"
+              activeTab === "bloghistory"
                 ? "border-b-2 border-ascend_color text-ascend_color"
                 : "text-text_color_desc_light dark:text-text_color_desc_dark"
             }`}
@@ -163,9 +163,9 @@ export default function MyProfileComponent() {
             <span className="hidden md:inline-block">Blog</span> Bookmark
           </button>
           <button
-            onClick={() => handleTabClick("scanHistory")}
+            onClick={() => handleTabClick("scanhistory")}
             className={`pb-2 ${
-              activeTab === "scanHistory"
+              activeTab === "scanhistory"
                 ? "border-b-2 border-ascend_color text-ascend_color"
                 : "text-text_color_desc_light dark:text-text_color_desc_dark"
             }`}
@@ -173,9 +173,9 @@ export default function MyProfileComponent() {
             Scan <span className="hidden md:inline-block">History</span>
           </button>
           <button
-            onClick={() => setActiveTab("myProfile")}
+            onClick={() => setActiveTab("myprofile")}
             className={`pb-2 ${
-              activeTab === "myProfile"
+              activeTab === "myprofile"
                 ? "border-b-2 border-ascend_color text-ascend_color"
                 : "text-text_color_desc_light dark:text-text_color_desc_dark"
             }`}
@@ -185,11 +185,6 @@ export default function MyProfileComponent() {
         </div>
       </div>
       <div className="mt-4">
-        {/* Render the content based on the active tab */}
-        {activeTab === "blogHistory" }
-        {activeTab === "bookmark" }
-        {activeTab === "scanHistory" }
-        {activeTab === "myProfile" }
       </div>
 
       {/* section */}

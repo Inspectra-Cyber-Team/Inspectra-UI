@@ -39,12 +39,12 @@ export default function BookmarkComponent() {
 
   const handleTabClick = (tab: any) => {
     setActiveTab(tab);
-    if (tab === "scanHistory") {
-      router.push("/scanHistory");
-    } else if (tab === "myProfile") {
-      router.push("/myProfile");
-    } else if (tab === "blogHistory") {
-      router.push("/blogHistory");
+    if (tab === "scanhistory") {
+      router.push("/scanhistory");
+    } else if (tab === "myprofile") {
+      router.push("/myprofile");
+    } else if (tab === "bloghistory") {
+      router.push("/bloghistory");
     }
   };
 
@@ -85,8 +85,8 @@ export default function BookmarkComponent() {
           </p>
           <div className="flex gap-6 text-text_body_16">
             <button
-              onClick={() => handleTabClick("blogHistory")}
-              className={`pb-2 ${activeTab === "blogHistory"
+              onClick={() => handleTabClick("bloghistory")}
+              className={`pb-2 ${activeTab === "bloghistory"
                 ? "border-b-2 border-ascend_color text-ascend_color"
                 : "text-text_color_desc_light dark:text-text_color_desc_dark"
                 }`}
@@ -103,8 +103,8 @@ export default function BookmarkComponent() {
               <span className="hidden md:inline-block">Blog</span> Bookmark
             </button>
             <button
-              onClick={() => handleTabClick("scanHistory")}
-              className={`pb-2 ${activeTab === "scanHistory"
+              onClick={() => handleTabClick("scanhistory")}
+              className={`pb-2 ${activeTab === "scanhistory"
                 ? "border-b-2 border-ascend_color text-ascend_color"
                 : "text-text_color_desc_light dark:text-text_color_desc_dark"
                 }`}
@@ -112,8 +112,8 @@ export default function BookmarkComponent() {
               Scan <span className="hidden md:inline-block">History</span>
             </button>
             <button
-              onClick={() => handleTabClick("myProfile")}
-              className={`pb-2 ${activeTab === "myProfile"
+              onClick={() => handleTabClick("myprofile")}
+              className={`pb-2 ${activeTab === "myprofile"
                 ? "border-b-2 border-ascend_color text-ascend_color"
                 : "text-text_color_desc_light dark:text-text_color_desc_dark"
                 }`}
