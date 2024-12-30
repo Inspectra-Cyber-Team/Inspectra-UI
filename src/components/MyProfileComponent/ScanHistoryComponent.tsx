@@ -31,16 +31,18 @@ export default function ScanHistoryComponent() {
   const router = useRouter();
   const [userUUID, setUserUUID] = useState("");
 
-    const [activeTab, setActiveTab] = useState("profile");
-  
-    const handleTabClick = (tab:any) => {
-      setActiveTab(tab);
-      if (tab === "blogHistory") {
-        router.push("/blogHistory");
-      } else if (tab === "scanHistory") {
-        router.push("/scanHistory");
-      }
-    };
+  const [activeTab, setActiveTab] = useState("scanHistory");
+
+  const handleTabClick = (tab: any) => {
+    setActiveTab(tab);
+    if (tab === "blogHistory") {
+      router.push("/blogHistory");
+    } else if (tab === "myProfile") {
+      router.push("/myProfile");
+    } else if (tab === "bookmark") {
+      router.push("/bookmark");
+    }
+  };
 
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
@@ -52,23 +54,54 @@ export default function ScanHistoryComponent() {
     size: 100,
   });
 
+  console.log(projectScanByUser);
+
   return (
     <section>
       {/* header */}
-      <div className="flex justify-between">
-        <p className="text-text_title_20 text-text_color_light dark:text-text_color_dark">
+      <div className="flex justify-center md:justify-between pb-2">
+        <p className="text-text_title_20 text-text_color_light dark:text-text_color_dark hidden md:inline-block">
           Scan History
         </p>
-        <div className="flex gap-3 text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
-          <button onClick={() => router.push("/blogHistory")}>
+        <div className="flex gap-6 text-text_body_16">
+          <button
+            onClick={() => handleTabClick("blogHistory")}
+            className={`pb-2 ${
+              activeTab === "blogHistory"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
+          >
             Blog <span className="hidden md:inline-block">History</span>
           </button>
-          <span>/</span>
-          <p className="text-ascend_color">
+          <button
+            onClick={() => handleTabClick("bookmark")}
+            className={`pb-2 ${
+              activeTab === "bookmark"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
+          >
+            <span className="hidden md:inline-block">Blog</span> Bookmark
+          </button>
+          <button
+            onClick={() => setActiveTab("scanHistory")}
+            className={`pb-2 ${
+              activeTab === "scanHistory"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
+          >
             Scan <span className="hidden md:inline-block">History</span>
-          </p>
-          <span>/</span>
-          <button onClick={() => router.push("/myProfile")}>
+          </button>
+          <button
+            onClick={() => handleTabClick("myProfile")}
+            className={`pb-2 ${
+              activeTab === "myProfile"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
+          >
             Profile <span className="hidden md:inline-block">Setting</span>
           </button>
         </div>
@@ -143,11 +176,10 @@ export default function ScanHistoryComponent() {
                               className="flex text-center items-center "
                             >
                               <div
-                                className={`w-[25px] h-[25px] flex items-center justify-center rounded-[5px] ${
-                                  item.status.qualityGateStatus === "OK"
+                                className={`w-[25px] h-[25px] flex items-center justify-center rounded-[5px] ${item.status.qualityGateStatus === "OK"
                                     ? "bg-primary_color"
                                     : "bg-custom_red"
-                                }`}
+                                  }`}
                               >
                                 {item.status.qualityGateStatus === "OK" ? (
                                   <FaCheck className="dark:text-text_color_light" />
@@ -184,9 +216,9 @@ export default function ScanHistoryComponent() {
                                       type="button"
                                       className="px-5 hover:bg-custom_red "
                                       variant="secondary"
-                                      // onClick={() =>
+                                    // onClick={() =>
 
-                                      // }
+                                    // }
                                     >
                                       {/* {isLoading ? (
                                         <div className="spinner-border animate-spin  inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_dark border-t-transparent"></div>

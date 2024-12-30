@@ -39,7 +39,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { BookmarkPlusIcon, Edit, MoreVertical, Trash2 } from "lucide-react";
+import { FaBookmark } from "react-icons/fa6";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { MdMoreVert } from "react-icons/md";
 import {
   useCreateBookmarkMutation,
   useDeleteBookmarkMutation,
@@ -418,7 +420,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
             {/* Bookmark */}
             <div className="text-text_color_desc_light text-2xl cursor-pointer">
-              <BookmarkPlusIcon
+              <FaBookmark
                 onClick={() => handleBookmarkToggle()}
                 className={`${
                   isBookmark ? "text-yellow-400" : "text-text_color_desc_light"
@@ -437,24 +439,24 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
                 // </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-6 w-6 p-0 ml-1">
+                    <div className="h-6 w-6 p-0">
                       <span className="sr-only">Open menu</span>
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
+                      <MdMoreVert className="h-6 w-6 cursor-pointer" />
+                    </div>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem
                       onClick={() => router.push(`/blog/${uuid}/update`)}
-                      className="text-yellow-600 hover:cursor-pointer hover:bg-[#f5f5f5]"
+                      className="text-secondary_color hover:cursor-pointer hover:bg-[#f5f5f5]"
                     >
-                      <Edit className="mr-2 h-4 w-4" /> Edit
+                      <FaEdit className="mr-2 h-4 w-4" /> Edit
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => setDeleteModalOpen(true)}
                       className="text-destructive  hover:cursor-pointer hover:bg-[#f5f5f5]"
                     >
-                      <Trash2 className="mr-2 h-4 w-4" /> Delete
+                      <FaTrashAlt className="mr-2 h-4 w-4" /> Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

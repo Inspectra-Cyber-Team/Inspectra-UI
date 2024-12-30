@@ -32,6 +32,8 @@ export default function MyProfileComponent() {
       router.push("/blogHistory");
     } else if (tab === "scanHistory") {
       router.push("/scanHistory");
+    } else if (tab === "bookmark") {
+      router.push("/bookmark");
     }
   };
 
@@ -135,8 +137,8 @@ export default function MyProfileComponent() {
   return (
     <div>
       {/* header */}
-      <div className="flex justify-between pb-2">
-        <p className="text-text_title_20 text-text_color_light dark:text-text_color_dark">
+      <div className="flex justify-center md:justify-between pb-2">
+        <p className="text-text_title_20 text-text_color_light dark:text-text_color_dark hidden md:inline-block">
           Profile
         </p>
         <div className="flex gap-6 text-text_body_16">
@@ -149,6 +151,16 @@ export default function MyProfileComponent() {
             }`}
           >
             Blog <span className="hidden md:inline-block">History</span>
+          </button>
+          <button
+            onClick={() => handleTabClick("bookmark")}
+            className={`pb-2 ${
+              activeTab === "bookmark"
+                ? "border-b-2 border-ascend_color text-ascend_color"
+                : "text-text_color_desc_light dark:text-text_color_desc_dark"
+            }`}
+          >
+            <span className="hidden md:inline-block">Blog</span> Bookmark
           </button>
           <button
             onClick={() => handleTabClick("scanHistory")}
@@ -175,13 +187,14 @@ export default function MyProfileComponent() {
       <div className="mt-4">
         {/* Render the content based on the active tab */}
         {activeTab === "blogHistory" }
+        {activeTab === "bookmark" }
         {activeTab === "scanHistory" }
         {activeTab === "myProfile" }
       </div>
 
       {/* section */}
       <section>
-        <div className="relative mt-[30px] pb-3 bg-card_color_light dark:bg-card_color_dark rounded-3xl">
+        <div className="relative mt-[30px] pb-3 bg-card_color_light dark:bg-card_color_dark rounded-3xl overflow-hidden">
           {/* Particle Container */}
           <div className="absolute translate-x-0 flex flex-col items-center h-44 w-full">
             <div className="absolute">
