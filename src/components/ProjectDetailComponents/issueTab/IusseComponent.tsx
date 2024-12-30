@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { FaFile } from "react-icons/fa";
 import { GoFileDirectoryFill } from "react-icons/go";
 import { IoIosMore } from "react-icons/io";
-
+import { FaFilter } from "react-icons/fa";
 import Prism from "prismjs";
 
 import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
@@ -29,6 +29,7 @@ import HowToFix from "./HowToFix";
 import WhereIssue from "./WhereIssue";
 import WhyIssue from "./WhyIssue";
 import ReactTypingEffect from "react-typing-effect";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function IusseComponent({ ...props }) {
   const router = useRouter();
@@ -88,6 +89,7 @@ export default function IusseComponent({ ...props }) {
       {activeContent === true ? (
         <div className="w-full h-full  flex justify-between">
           {/* filter side bar */}
+
           <div className="w-[35%] h-[1000px] overflow-y-auto scrollbar-hide hidden lg:block  border border-opacity-30 dark:border-none border-text_color_desc_light dark:bg-background_dark_mode p-5 rounded-[20px]  ">
             <div className="w-full cursor-pointer text-text_body_16 text-text_color_light dark:text-text_color_dark text-end">
               <p> {issueData?.data?.total} issues</p>
@@ -106,6 +108,7 @@ export default function IusseComponent({ ...props }) {
               ))}
             </div>
           </div>
+
           {/* issue detail section */}
           <div className=" w-full h-full px-5  scrollbar-hide overflow-y-auto lg:w-[60%] border border-opacity-30 dark:border-none border-text_color_desc_light dark:bg-background_dark_mode rounded-[20px]  ">
             {resultIssueDetail?.issues?.map((item: any, index: number) => (
@@ -246,8 +249,127 @@ export default function IusseComponent({ ...props }) {
         </div>
       ) : (
         // default card issue and filter
-        <div className="w-full h-full flex justify-between">
+        <div className="w-full h-full flex flex-col lg:flex-row justify-between">
           {/* filter side bar */}
+          <div className=" w-full  mb-[40px] lg:hidden ">
+            <Sheet >
+              <SheetTrigger asChild>
+                <div className="flex justify-center text-center items-center bg-primary_color px-5 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[100px] hover:bg-ascend_color h-[40px] text-text_body_16">
+                  <p>Filter</p>
+                </div>
+              </SheetTrigger>
+              <SheetContent side={"left"}>
+                <div className="h-full ">
+                  {issueSideBarResult?.map(
+                    (issueItem: IusseSideBarType, index: number) => (
+                      <div key={index}>
+                        <Accordion type="single" collapsible>
+                          <AccordionItem value={`item-${index}`}>
+                            <AccordionTrigger className="text-text_color_light dark:text-text_color_dark text-left md:text-text_body_16">
+                              {issueItem?.property}
+                            </AccordionTrigger>
+                            {issueItem?.values.map(
+                              (item: any, index: number) => (
+                                <AccordionContent
+                                  key={index}
+                                  className="w-full flex justify-between  text-[14px]"
+                                >
+                                  {/* check if count = 0 make color lighter then normal text */}
+                                  {item.count === 0 ? (
+                                    <p className=" text-[14px] truncate  text-text_color_desc_light  dark:text-text_color_desc_dark  ">
+                                      {item.val}
+                                    </p>
+                                  ) : // check to make icon if it files
+                                  issueItem.property === "files" ? (
+                                    <div
+                                      onClick={() => {
+                                        setFileStore(item.val);
+                                      }}
+                                      className="flex  truncate cursor-pointer items-center"
+                                    >
+                                      <FaFile />
+                                      <p className="truncate max-w-[90%] ml-2 text-text_color_light dark:text-text_color_dark">
+                                        {item.val}
+                                      </p>
+                                    </div>
+                                  ) : // check is it directories show icon directory
+                                  issueItem.property === "directories" ? (
+                                    <div
+                                      onClick={() =>
+                                        setDirectoriesStore(item.val)
+                                      }
+                                      className="flex  truncate cursor-pointer items-center"
+                                    >
+                                      <GoFileDirectoryFill />
+                                      <p className="truncate max-w-[90%] ml-2 text-text_color_light dark:text-text_color_dark">
+                                        {item.val}
+                                      </p>
+                                    </div>
+                                  ) : issueItem.property === "languages" ? (
+                                    <p
+                                      onClick={() =>
+                                        setLanguagesStore(item.val)
+                                      }
+                                      className="truncate cursor-pointer max-w-[90%] text-text_color_light dark:text-text_color_dark"
+                                    >
+                                      {item.val}
+                                    </p>
+                                  ) : issueItem.property === "tags" ? (
+                                    <p
+                                      onClick={() => setTagStore(item.val)}
+                                      className="truncate cursor-pointer max-w-[90%] text-text_color_light dark:text-text_color_dark"
+                                    >
+                                      {item.val}
+                                    </p>
+                                  ) : issueItem.property === "severities" ? (
+                                    <p
+                                      onClick={() =>
+                                        setImpactSeveritiesStore(item.val)
+                                      }
+                                      className="truncate cursor-pointer max-w-[90%] text-text_color_light dark:text-text_color_dark"
+                                    >
+                                      {item.val}
+                                    </p>
+                                  ) : issueItem.property === "rules" ? (
+                                    <p
+                                      onClick={() => setRuleStore(item.val)}
+                                      className="truncate cursor-pointer max-w-[90%] text-text_color_light dark:text-text_color_dark"
+                                    >
+                                      {item.val}
+                                    </p>
+                                  ) : issueItem.property ===
+                                    "cleanCodeAttributeCategories" ? (
+                                    <p
+                                      onClick={() => setCleanCode(item.val)}
+                                      className="truncate cursor-pointer max-w-[90%] text-text_color_light dark:text-text_color_dark"
+                                    >
+                                      {item.val}
+                                    </p>
+                                  ) : (
+                                    <p className="truncate max-w-[90%] text-text_color_light dark:text-text_color_dark">
+                                      {item.val}
+                                    </p>
+                                  )}
+                                  {/* change color if it equal 0 */}
+                                  {item.count === 0 ? (
+                                    <p className=" text-[14px] text-text_color_desc_light dark:text-text_color_desc_dark ">
+                                      {item.count}
+                                    </p>
+                                  ) : (
+                                    <p>{item.count}</p>
+                                  )}
+                                </AccordionContent>
+                              )
+                            )}
+                          </AccordionItem>
+                        </Accordion>
+                      </div>
+                    )
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
           <div className="w-[35%] hidden lg:block h-full border-2 border-background_light_mode dark:border-none dark:bg-card_color_dark p-5 rounded-[20px]  ">
             <p className="text-text_title_24 text-text_color_light dark:text-text_color_dark ">
               Filter

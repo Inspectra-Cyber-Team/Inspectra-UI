@@ -63,7 +63,7 @@ export default function CreateProjectComponent() {
       } else {
         // Handle the case where the project name already exists
         toast({
-          description: "Project name already exists",
+          description: "Oops! Something went wrong",
           variant: "error",
         });
         setIsLoading(false);

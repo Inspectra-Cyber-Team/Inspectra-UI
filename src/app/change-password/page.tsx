@@ -1,26 +1,25 @@
 import FormUpdatePassowrd from "@/components/FormChangePassword/FormChangePassword";
 import { Metadata } from "next";
 
-export const metadata: Metadata ={
-  title: 'Change Password - Inspectra',
-  description:
-    'Change up your password and get started with your new password',
+export const metadata: Metadata = {
+  title: "Change Password - Inspectra",
+  description: "Change up your password and get started with your new password",
   openGraph: {
-    title: 'Change Password - Inspectra',
+    title: "Change Password - Inspectra",
     description:
-      'Change up your password and get started with your new password',
-    siteName: 'Inspectra',
-    url: 'https://inspectra.istad.co/',
+      "Change up your password and get started with your new password",
+    siteName: "Inspectra",
+    url: "https://inspectra.istad.co/",
     images: [
       {
-        url: 'http://136.228.158.126:4011/images/3639a448-5eb8-43f4-bba9-a7f98c27792e.png',
+        url: "https://api-inspectra.istad.co/images/3639a448-5eb8-43f4-bba9-a7f98c27792e.png",
         width: 1200,
         height: 630,
-        alt: 'Inspectra',
+        alt: "Inspectra",
       },
     ],
   },
-}
+};
 
 export default function page() {
   return <FormUpdatePassowrd />;

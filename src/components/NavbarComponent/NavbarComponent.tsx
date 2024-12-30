@@ -10,6 +10,7 @@ import { IoIosArrowUp } from "react-icons/io";
 import { IoLogOutSharp, IoMenu } from "react-icons/io5";
 import { SiMicrodotblog } from "react-icons/si";
 import { TbScan } from "react-icons/tb";
+import { FaBookmark } from "react-icons/fa6";
 
 import {
   Menubar,
@@ -18,9 +19,11 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { ModeToggle } from "../ToggleTheme/ToggleTheme";
+import { signOut } from "next-auth/react";
 
 export default function NavbarComponent() {
   const router = useRouter();
+
   const [isOpen, setIsOpen] = useState(false);
   const [userUUID, setUserUUID] = useState("");
 
@@ -201,6 +204,27 @@ export default function NavbarComponent() {
                             </div>
                           </button>
 
+                          {/* Blog Bookmark */}
+                          <button
+                            onClick={() => {
+                              router.push("/bookmark");
+                              handleMenuClose();
+                            }}
+                            className="p-3 my-3 flex w-full justify-between items-center text-center"
+                          >
+                            <div className="flex items-center">
+                              <div className="flex items-center justify-center w-6 h-6">
+                                <FaBookmark className="w-full h-full text-text_title_20" />
+                              </div>
+                              <p className="mx-5 text-text_body_16">
+                                Blog Bookmark
+                              </p>
+                            </div>
+                            <div>
+                              <IoIosArrowUp className="rotate-90" />
+                            </div>
+                          </button>
+
                           {/* Scan History */}
                           <button
                             onClick={() => {
@@ -225,6 +249,8 @@ export default function NavbarComponent() {
                           {/* Log Out */}
                           <button
                             onClick={() => {
+                              // handle remove also session from next-auth
+                              signOut();
                               handleSignOut();
                               handleMenuClose();
                             }}

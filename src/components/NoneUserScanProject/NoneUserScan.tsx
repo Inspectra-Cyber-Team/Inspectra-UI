@@ -321,10 +321,9 @@ export default function NoneUserScan() {
                     Filter Scan By Files & Directory{" "}
                   </p>
                   <FileStructureViewer
-                    data={listDirectories}
-                    selectedItem={selectedFile[0] || null}
-                    onSelectItem={handleSelectItem}
-                  />
+                      data={listDirectories}
+                      selectedItem={selectedFile[0] || null}
+                      onSelectItem={handleSelectItem} isFetchLoading={false}                  />
                 </div>
 
                 {/* filter scan */}
