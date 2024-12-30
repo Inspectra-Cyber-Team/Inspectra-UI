@@ -17,7 +17,7 @@ export default function page({ params }: ParamProps) {
   return (
     <main className="w-[90%] m-auto rounded-[20px] bg-card_color_light  h-auto p-5 my-10 dark:bg-background_dark_mode">
       <Tabs defaultValue="Overview">
-        <TabsList className="flex  w-[90%] mx-auto mb-10  justify-between text-center !bg-transparent overflow-x-auto scrollbar-hide overflow-y-hidden">
+        <TabsList className="flex  w-full mx-auto mb-10  justify-between text-center !bg-transparent overflow-x-auto scrollbar-hide overflow-y-hidden">
           <TabsTrigger
             value="Overview"
             className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  dark:data-[state=active]:bg-transparent data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
