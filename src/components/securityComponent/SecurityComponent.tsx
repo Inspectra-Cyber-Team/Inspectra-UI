@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetSecurityHotspotQuery } from "@/redux/service/security-hotspot";
 import {
   Accordion,
@@ -42,6 +42,20 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
   } = useGetRulesByRuleNameQuery({ ruleName: roleName });
 
   const [selectedTab, setSelectedTab] = useState("Where is the risk?");
+
+  // Automatically select the first hotspot once data is loaded
+  useEffect(() => {
+    if (securityHotspotData && securityHotspotData?.[0]?.hotspots?.length > 0) {
+      setSelectedHotspot(securityHotspotData?.[0]?.hotspots[0]); // Select the first hotspot
+      const firstHotspot = securityHotspotData?.[0]?.hotspots[0];
+      if (firstHotspot) {
+        setRoleName(firstHotspot?.ruleKey);
+        setKey(firstHotspot?.key);
+        setStartLineNumber(firstHotspot?.textRange?.startLine);
+        setComponentFile(firstHotspot?.component);
+      }
+    }
+  }, [securityHotspotData]);
 
   const handleTabChange = (tabName: any) => {
     setSelectedTab(tabName);
@@ -88,10 +102,24 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
     );
   }
 
+  // Define color classes based on the probability
+  const getColorClass = (probability: string) => {
+    switch (probability) {
+      case "LOW":
+        return "bg-green-200 px-2 text-[15px] rounded-md text-green-800"; // Green for LOW
+      case "MEDIUM":
+        return "bg-yellow-200 px-3 text-[15px] rounded-md  text-yellow-800"; // Yellow for MEDIUM
+      case "HIGH":
+        return " bg-red-200 px-3 text-[15px]  text-red-800"; // Red for HIGH
+      default:
+        return "";
+    }
+  };
+
   return (
-    <section className="flex gap-10  p-4 rounded-sm h-screen overflow-y-auto scrollbar-hide">
+    <section className=" sm:flex gap-10  p-4 rounded-sm h-screen overflow-y-auto scrollbar-hide">
       {/* Sidebar with grouped data */}
-      <section className="w-1/2 shadow-sm p-4">
+      <section className="w-full sm:w-1/2 shadow-sm p-4">
         <div className="mb-4">
           <p className="font-semibold">
             Total Security Hotspots:{" "}
@@ -109,7 +137,12 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
           {Object.entries(groupedData).map(([probability, items]: any) => (
             <AccordionItem key={probability} value={probability}>
               <AccordionTrigger>
-                Review Priority: {probability}
+                <span className="text-black">
+                  Review Priority:{" "}
+                  <span className={`${getColorClass(probability)}`}>
+                    {probability}
+                  </span>
+                </span>
               </AccordionTrigger>
               <AccordionContent>
                 {items.map((item: any) => (
