@@ -11,12 +11,17 @@ import ImageBackground from "@/components/BackgroundImageHomepage/ImageBackgroun
 import SessionWrapper from "@/app/SessionProvider";
 import { Metadata } from "next";
 import BannerComponent from "@/components/BannerComponent/BannerComponent";
-import NetworkStatusProvider from "@/components/NetworkStatusProvider";
+import dynamic from "next/dynamic";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600"],
   subsets: ["latin"],
 });
+
+const NetworkProvider = dynamic(
+  () => import("@/components/NetworkStatusProvider"),
+  { ssr: false }
+);
 
 export const metadata: Metadata = {
   title: "Inspectra",
@@ -56,7 +61,7 @@ export default function RootLayout({
         className={`${poppins.className}  relative   overflow-y-auto scrollbar  overflow-x-hidden bg-background_light_mode  dark:bg-background_dark_mode flex flex-col justify-between  `}
       >
         <SessionWrapper>
-          <NetworkStatusProvider>
+          <NetworkProvider>
             <StoreProvider>
               <ThemeProvider
                 attribute="class"
@@ -77,7 +82,7 @@ export default function RootLayout({
                 <FooterComponent />
               </ThemeProvider>
             </StoreProvider>
-          </NetworkStatusProvider>
+          </NetworkProvider>
         </SessionWrapper>
       </body>
     </html>

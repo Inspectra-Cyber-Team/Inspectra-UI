@@ -16,18 +16,16 @@ const NetworkStatusProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!isOnline) {
       setStatusMessage("Whoops!!");
-      console.log("Offline now");
     } else {
       setStatusMessage("You are online.");
-      console.log("Online now");
     }
   }, [isOnline]);
 
   return (
-    <div>
+    <section>
       {/* Offline message */}
       {!isOnline && (
-        <div className="grid place-content-center h-screen">
+        <div className="grid place-content-center h-screen ">
           {/* Display an image or icon */}
           <div>
             <Image
@@ -35,23 +33,25 @@ const NetworkStatusProvider = ({ children }: { children: React.ReactNode }) => {
               src={"/images/no-connection.png"}
               width={500}
               height={500}
+              layout="responsive"
+              objectFit="contain"
               alt="No connection"
             />
           </div>
           {/* Display status message */}
-          <div className="text-center text-text_header_34 my-4">
-            <h1 className="font-bold text-text_title_36 mb-2">
+          <div className="text-center my-4 ">
+            <h1 className="font-bold text-text_header_34 mb-2">
               {statusMessage}
             </h1>
             <p>
-              No internet connection was found. Please check your connection and
-              try again.
+              No internet connection was found. Please check <br /> your
+              connection and try again.
             </p>
             {/* Retry button */}
             <div className="mt-6">
               <button
                 onClick={handleReconnect}
-                className="px-6 py-2 rounded-tl-[20px] rounded-br-[20px] text-white bg-primary_color font-semibold hover:bg-primary_dark"
+                className=" px-6 py-2 rounded-tl-[20px] rounded-br-[20px] text-black bg-primary_color hover:bg-primary_dark"
               >
                 Try Again
               </button>
@@ -62,7 +62,7 @@ const NetworkStatusProvider = ({ children }: { children: React.ReactNode }) => {
 
       {/* Main content is hidden when offline */}
       {isOnline && <main>{children}</main>}
-    </div>
+    </section>
   );
 };
 
