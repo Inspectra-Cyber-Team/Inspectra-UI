@@ -43,13 +43,13 @@ export default function WhereIssue({ issueKey }: any) {
   useEffect(() => {
     // Run Prism's highlightAll function when ruleIssue changes or component mounts
     Prism.highlightAll();
-  }, [issueSource, issueDetail]); // Only run when ruleIssue data changes
+  }) // Only run when ruleIssue data changes
 
   return (
     <div className="w-full h-full my-5  border border-1 border-opacity-30 border-text_color_desc_light  rounded-[20px] text-text_color_light dark:text-text_color_desc_dark ">
       {/* header content */}
       <div className=" w-full border-b border-opacity-30 border-text_color_desc_light  p-5">
-        <div className="w-full   md:w-[60%] lg:w-[80%] xl:w-[60%] flex justify-between">
+        <div className="w-full  md:w-[60%] lg:w-[80%] xl:w-[40%] flex justify-between">
           <p
             onClick={() => router.push(`/project`)}
             className=" hidden md:block hover:underline hover:cursor-pointer hover:text-blue-500"

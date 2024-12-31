@@ -71,7 +71,6 @@ export default function PageOverviewProjectDetail({
     uuid: uuidOfUser ?? "",
   });
   const getProjectByUserUuid = projectUuid?.[0]?.branch?.[0]?.branches?.[0];
-  console.log(getProjectByUserUuid);
 
   // check data and time
   const formatDate = (dateString: string) => {
@@ -131,7 +130,7 @@ export default function PageOverviewProjectDetail({
             <li>Version not Provided</li>
             <li>
               <button
-                className="bg-primary_color text-white px-4 py-2 rounded-md hover:bg-green-600 transition-all"
+                className="bg-primary_color text-text_color_light px-4 py-2 rounded-md hover:bg-green-600 transition-all"
                 onClick={() => handleExportPDF(nameOfProject)}
               >
                 {isloading ? (
@@ -152,7 +151,7 @@ export default function PageOverviewProjectDetail({
       <div className="w-full flex flex-col md:flex-row justify-between gap-6">
         <div className="flex items-center gap-4">
           <h2
-            className={`p-4 rounded-lg text-white text-xl ${
+            className={`p-4 rounded-lg text-text_color_light text-xl ${
               getProjectByUserUuid?.status.qualityGateStatus === "OK"
                 ? "bg-primary_color"
                 : "bg-red-500"

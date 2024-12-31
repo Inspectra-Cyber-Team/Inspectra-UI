@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-
+import Lottie from "lottie-react";
+import animtionLoading from "@/components/loadingAnimation.json";
 import FileStructureViewer from "@/components/FileStructureComponent/FileStructureViewer";
 import {
   Select,
@@ -55,6 +56,12 @@ import { FaCheck, FaGithub, FaGitlab } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
+import { LottiePlayer } from "@lottiefiles/lottie-player";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 export default function ProjectCardComponent() {
   const [userUUID, setUserUUID] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -161,6 +168,10 @@ export default function ProjectCardComponent() {
 
   // handle for git input from user and fetch api
 
+  // for search
+  const [filteredResults, setFilteredResults] = useState<any[]>(
+    projectResultApi || []
+  );
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
@@ -202,11 +213,6 @@ export default function ProjectCardComponent() {
       setErrorGitUrlMessage("Please Provide a Valid Git URL");
     }
   };
-
-  // for search
-  const [filteredResults, setFilteredResults] = useState<any[]>(
-    projectResultApi || []
-  );
 
   // handle delete project
   const handleDeleteProject = (projectName: string) => {
@@ -569,8 +575,14 @@ export default function ProjectCardComponent() {
                         }
                       )}
                     </div>
-                    <div className="my-5 w-full flex items-center justify-center">
-                      Security
+                    <div className="my-5 cursor-default w-full flex items-center justify-center">
+                      <HoverCard>
+                        <HoverCardTrigger>Security</HoverCardTrigger>
+                        <HoverCardContent className="text-text_body_16">
+                          Security is the protection of your software from
+                          unauthorized access, use, or destruction.
+                        </HoverCardContent>
+                      </HoverCard>
                     </div>
                   </div>
                   {/* reliability */}
@@ -606,8 +618,15 @@ export default function ProjectCardComponent() {
                         }
                       )}
                     </div>
-                    <div className="my-5 w-full flex items-center justify-center">
-                      Reliability
+                    <div className="my-5 cursor-default w-full flex items-center justify-center">
+                      <HoverCard>
+                        <HoverCardTrigger>Reliability</HoverCardTrigger>
+                        <HoverCardContent className="text-text_body_16 ">
+                          Reliability is a measure of how your software is
+                          capable of maintaining its level of performance under
+                          stated conditions for a stated period of time.
+                        </HoverCardContent>
+                      </HoverCard>
                     </div>
                   </div>
                   {/* Maintainability */}
@@ -643,8 +662,14 @@ export default function ProjectCardComponent() {
                         }
                       )}
                     </div>
-                    <div className="my-5 w-full flex items-center justify-center">
-                      Maintainability
+                    <div className="my-5 cursor-default w-full flex items-center justify-center">
+                      <HoverCard>
+                        <HoverCardTrigger>Maintainability</HoverCardTrigger>
+                        <HoverCardContent className="text-text_body_16 ">
+                          Maintainability refers to the ease with which you can
+                          repair, improve and understand software code.
+                        </HoverCardContent>
+                      </HoverCard>
                     </div>
                   </div>
                   {/* Hotspot Reviewed */}
@@ -681,7 +706,13 @@ export default function ProjectCardComponent() {
                       )}
                     </div>
                     <div className="mt-5 w-full flex items-center text-center justify-center">
-                      Hotspot
+                      <HoverCard>
+                        <HoverCardTrigger>Hotspot</HoverCardTrigger>
+                        <HoverCardContent className="text-text_body_16 ">
+                          Areas of code that may require a closer look but
+                          aren't necessarily vulnerabilities.
+                        </HoverCardContent>
+                      </HoverCard>
                     </div>
                   </div>
                   {/* Coverage Reviewed */}
@@ -734,7 +765,12 @@ export default function ProjectCardComponent() {
                       )}
                     </div>
                     <div className="mt-5 w-full flex items-center text-center justify-center">
-                      Coverage
+                      <HoverCard>
+                        <HoverCardTrigger> Coverage</HoverCardTrigger>
+                        <HoverCardContent className="text-text_body_16 ">
+                          Measures how well your unit tests cover the codebase.
+                        </HoverCardContent>
+                      </HoverCard>
                     </div>
                   </div>
                   {/* duplicated */}
@@ -784,7 +820,12 @@ export default function ProjectCardComponent() {
                       )}
                     </div>
                     <div className="mt-5 w-full flex items-center justify-center">
-                      Duplicated
+                      <HoverCard>
+                        <HoverCardTrigger> Duplicated</HoverCardTrigger>
+                        <HoverCardContent className="text-text_body_16 ">
+                          Identifies duplicate or copy-pasted code.
+                        </HoverCardContent>
+                      </HoverCard>
                     </div>
                   </div>
                 </div>
@@ -904,6 +945,7 @@ export default function ProjectCardComponent() {
                                   onClick={() => {
                                     setSelectedFiles([]);
                                     setIsClosing(true);
+                                    setIsOpen(false);
                                   }}
                                 >
                                   <RxCross2
@@ -915,12 +957,12 @@ export default function ProjectCardComponent() {
                             </AlertDialogTitle>
                           </AlertDialogHeader>
                           {isLoading ? (
-                            <video
-                              src="/images/loadingScan.mp4"
-                              autoPlay
-                              className="w-full h-full"
-                              loop
-                            ></video>
+                            <div className="h-full w-full">
+                              <Lottie
+                                animationData={animtionLoading}
+                                loop={true}
+                              ></Lottie>
+                            </div>
                           ) : (
                             <section className="h-full flex flex-col justify-between">
                               {/* git url */}
@@ -957,13 +999,13 @@ export default function ProjectCardComponent() {
                                         Branch
                                       </p>
                                       <div
-                                        className={`flex px-5 justify-between items-center rounded-[10px] border border-1 bg-text_color_dark ${
+                                        className={`flex  px-5 justify-between items-center rounded-[10px] border border-1 bg-text_color_dark ${
                                           errorNotSelectBranch
                                             ? "border-custom_red"
                                             : "border-ascend_color"
                                         }`}
                                       >
-                                        <p className="text-text_body_16  py-3  text-text_color_desc_light">
+                                        <p className="text-text_body_16     py-3  text-text_color_desc_light">
                                           {selectedBranch}
                                         </p>
                                         <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
@@ -981,7 +1023,7 @@ export default function ProjectCardComponent() {
                                       <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-2">
                                         Branch
                                       </p>
-                                      <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
+                                      <div className="flex px-5  justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
                                         <p className="text-text_body_16  py-3  text-text_color_desc_light">
                                           {selectedBranch}
                                         </p>
@@ -990,7 +1032,7 @@ export default function ProjectCardComponent() {
                                     </div>
                                   </DropdownMenuTrigger>
                                 )}
-                                <DropdownMenuContent className=" w-[290px] md:w-[450px] lg:w-[380px] xl:w-[510px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
+                                <DropdownMenuContent className=" w-[290px] md:w-[450px] lg:w-[380px] xl:w-[465px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
                                   {gitResult?.length === 0 ? (
                                     <DropdownMenuItem disabled>
                                       No branch to select
