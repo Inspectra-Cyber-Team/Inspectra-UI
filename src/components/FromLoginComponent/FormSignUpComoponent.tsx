@@ -31,6 +31,9 @@ export default function FormSignUpComponent() {
     confirmPassword: Yup.string()
       .oneOf([Yup.ref("password")], "Password must match")
       .required("Confirm Password is Required"),
+    privacyPolicy: Yup.boolean()
+      .oneOf([true], "You must accept the Privacy Policy")
+      .required("Accepting the Privacy Policy is required"),
   });
 
   const router = useRouter();
@@ -50,6 +53,23 @@ export default function FormSignUpComponent() {
     email: "",
     password: "",
     confirmPassword: "",
+    privacyPolicy: false,
+  };
+
+  // State for Privacy Policy Modal visibility
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+
+  // State for Privacy Policy checkbox
+  const [privacyPolicyAccepted, setPrivacyPolicyAccepted] = useState(false);
+
+  // Handler to show the Privacy Policy Modal
+  const handleShowPrivacyModal = () => {
+    setShowPrivacyModal(true);
+  };
+
+  // Handler to close the Privacy Policy Modal
+  const handleClosePrivacyModal = () => {
+    setShowPrivacyModal(false);
   };
 
   const handleSubmit = async (values: SigUpFormValues) => {
@@ -89,11 +109,10 @@ export default function FormSignUpComponent() {
                 id="firstName"
                 name="firstName"
                 placeholder="First Name"
-                className={`mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color ${
-                  touched.firstName && errors.firstName
-                    ? "border-custom_red"
-                    : ""
-                }`}
+                className={`mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color ${touched.firstName && errors.firstName
+                  ? "border-custom_red"
+                  : ""
+                  }`}
               />
               {errors.firstName && touched.firstName && (
                 <div className="relative items-center justify-center flex top-[22px]">
@@ -121,9 +140,8 @@ export default function FormSignUpComponent() {
                 id="lastName"
                 name="lastName"
                 placeholder="Last Name"
-                className={`mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color ${
-                  touched.lastName && errors.lastName ? "border-custom_red" : ""
-                }`}
+                className={`mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color ${touched.lastName && errors.lastName ? "border-custom_red" : ""
+                  }`}
               />
               {errors.lastName && touched.lastName && (
                 <div className="relative items-center justify-center flex top-[22px]">
@@ -139,7 +157,7 @@ export default function FormSignUpComponent() {
             </div>
           </div>
 
-          {/* Emial */}
+          {/* Email */}
           <div className="mb-4">
             <label
               htmlFor="email"
@@ -152,9 +170,8 @@ export default function FormSignUpComponent() {
               id="email"
               name="email"
               placeholder="username@gmail.com"
-              className={`mt-1 w-full rounded-md border  bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color   ${
-                touched.email && errors.email ? "border-custom_red" : ""
-              }`}
+              className={`mt-1 w-full rounded-md border  bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color   ${touched.email && errors.email ? "border-custom_red" : ""
+                }`}
             />
             {errors.lastName && touched.lastName && (
               <div className="relative items-center justify-center flex top-[22px]	">
@@ -181,9 +198,8 @@ export default function FormSignUpComponent() {
               id="userName"
               name="userName"
               placeholder="UserName"
-              className={`mt-1 w-full rounded-md border  bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color   ${
-                touched.email && errors.email ? "border-custom_red" : ""
-              }`}
+              className={`mt-1 w-full rounded-md border  bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color   ${touched.email && errors.email ? "border-custom_red" : ""
+                }`}
             />
             {errors.userName && touched.userName && (
               <div className="relative items-center justify-center flex top-[22px]">
@@ -212,11 +228,10 @@ export default function FormSignUpComponent() {
                 name="password"
                 placeholder="Enter password"
                 className={`
-                   mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light p-3 focus:outline-none focus:right-2 focus:border-primary_color  ${
-                     touched.password && errors.password
-                       ? "border-custom_red"
-                       : ""
-                   }`}
+                   mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light p-3 focus:outline-none focus:right-2 focus:border-primary_color  ${touched.password && errors.password
+                    ? "border-custom_red"
+                    : ""
+                  }`}
               />
               {!showPassword ? (
                 <IoEyeOffSharp
@@ -258,11 +273,10 @@ export default function FormSignUpComponent() {
                 name="confirmPassword"
                 placeholder="Enter Confirm Password"
                 className={`
-                   mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color  ${
-                     touched.confirmPassword && errors.confirmPassword
-                       ? "border-custom_red"
-                       : ""
-                   }`}
+                   mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color  ${touched.confirmPassword && errors.confirmPassword
+                    ? "border-custom_red"
+                    : ""
+                  }`}
               />
               {!showconfirmPassword ? (
                 <IoEyeOffSharp
@@ -289,6 +303,58 @@ export default function FormSignUpComponent() {
               </div>
             )}
           </div>
+
+          {/* Privacy Policy Checkbox */}
+          <div className="flex items-center mb-4">
+            <Field
+              type="checkbox"
+              id="privacyPolicy"
+              name="privacyPolicy"
+              className="mr-2 cursor-pointer"
+            />
+            <label htmlFor="privacyPolicy" className="text-[14px] text-text_color_light">
+              I agree to the
+              <span
+                className="text-link_color underline cursor-pointer ml-1"
+                onClick={handleShowPrivacyModal}
+              >
+                Privacy Policy
+              </span>
+            </label>
+          </div>
+          {errors.privacyPolicy && touched.privacyPolicy && (
+            <div className="relative items-center flex top-0	">
+            <div
+              className={`absolute z-10 w-auto  ${styles.popoverContainer} ${styles.popoverAnimation}`}
+            >
+              <p className={`text-text_body_16 ${styles.popoverText}`}>
+                {errors.privacyPolicy}
+              </p>
+            </div>
+          </div>
+          )}
+
+          {/* Privacy Policy Modal */}
+          {showPrivacyModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
+                <h2 className="text-text_title_20 font-semibold mb-4">Privacy Policy</h2>
+                <p className="text-text_body_16 text-text_color_desc_light">
+                  Your project data is encrypted and securely stored. Only you have access
+                  to your data. We ensure complete privacy and security for your
+                  information.
+                </p>
+                <div className="mt-4 flex justify-end">
+                  <button
+                    className="px-4 py-2 bg-primary_color text-background_dark_mode rounded-md"
+                    onClick={handleClosePrivacyModal}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
           {/* Login Button */}
           <button
             disabled={isLoading}

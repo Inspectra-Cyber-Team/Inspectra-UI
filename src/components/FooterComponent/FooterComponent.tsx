@@ -143,7 +143,7 @@ export default function FooterComponent() {
                     target="_blank"
                     className="flex cursor-pointer justify-center md:justify-start"
                   >
-                    <div className="w-[200px] h-auto flex items-center justify-center">
+                    <div className="w-[200px] md:w-[135px] lg:w-[200px] h-auto flex items-center justify-center">
                       {theme === "dark" ? (
                         <img
                           src="/images/istad-logo-white.png"
