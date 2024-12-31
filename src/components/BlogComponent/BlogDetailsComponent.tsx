@@ -456,7 +456,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
             </div>
 
             {/* Bookmark */}
-            <div className="text-text_color_desc_light text-2xl cursor-pointer">
+            <div className="text-text_color_desc_light text-2xl cursor-pointer mb-1">
               <FaBookmark
                 onClick={() => handleBookmarkToggle()}
                 className={`${
