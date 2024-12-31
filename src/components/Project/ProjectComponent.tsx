@@ -3,10 +3,10 @@ import CreateProjectComponent from "./CreateProjectComponent/CreateProjectCompon
 
 export default function ProjectComponent() {
   return (
-    <section className="w-full flex justify-between items-center mt-[60px] mb-5 md:my-[60px]">
-      <p className="text-text_title_20 md:text-text_title_24 text-text_color_light font-semibold dark:text-text_color_dark">
+    <section className="w-full flex justify-between items-center my-5">
+      <h1 className="text-text_title_20 md:text-text_title_24 text-text_color_light dark:text-text_color_dark">
         Scan Project
-      </p>
+      </h1>
       <CreateProjectComponent />
     </section>
   );

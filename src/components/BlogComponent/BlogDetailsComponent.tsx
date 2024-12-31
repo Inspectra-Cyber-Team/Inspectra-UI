@@ -64,14 +64,14 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
   const [modalOpen, setModalOpen] = useState(false);
 
+  const [submitReport, setSubmitReport] = useState(false);
+
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const [showModalReport, setShowModalReport] = useState(false);
 
   // set boolean for bookmark at blog
   const [isBookmark, setIsBookmark] = useState(false);
-
-  console.log("isBookmark", isBookmark);
 
   const [userUUID, setUserUUID] = useState("");
 
@@ -121,7 +121,6 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     try {
       if (isBookmarkData) {
         setIsBookmark(isBookmarkData?.data);
-        console.log("isBookmarkData", isBookmarkData?.data);
       } else {
         setIsBookmark(false);
       }
@@ -168,13 +167,24 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     try {
       const res = await createReport({ report: { blogUuid, message } });
       setReport("");
+      setSubmitReport(true);
       if (res.data) {
         toast({
           description: "Blog Report Successfully",
           variant: "success",
         });
+        setSubmitReport(false);
         setShowModalReport(false);
         setModalOpen(true);
+      }
+      if (res.error && "status" in res.error) {
+        if (res.error.status === 401) {
+          toast({
+            description: "Please login to report the blog",
+            variant: "error",
+          });
+          router.push("/login");
+        }
       }
     } catch (error) {
       console.error("Error reporting the blog:", error);
@@ -208,6 +218,15 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         delete likedBlogs[blogUuid]; // Remove blogUuid from local storage
       }
 
+      if (res.error && "status" in res.error) {
+        if (res.error.status === 401) {
+          toast({
+            description: "Please login to like the blog",
+            variant: "error",
+          });
+          router.push("/login");
+        }
+      }
       // Update local storage
       localStorage.setItem("likedBlogs", JSON.stringify(likedBlogs));
 
@@ -297,6 +316,15 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         });
         setIsBookmark(false);
       }
+      if (res.error && "status" in res.error) {
+        if (res.error.status === 401) {
+          toast({
+            description: "Please login to bookmark the blog",
+            variant: "error",
+          });
+          router.push("/login");
+        }
+      }
     } catch (error) {
       toast({
         description: "Error bookmarking the blog",
@@ -322,6 +350,15 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
           variant: "error",
         });
         setIsBookmark(true);
+      }
+      if (res.error && "status" in res.error) {
+        if (res.error.status === 401) {
+          toast({
+            description: "Please login to remove bookmark",
+            variant: "error",
+          });
+          router.push("/login");
+        }
       }
     } catch (error) {
       toast({
@@ -419,7 +456,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
             </div>
 
             {/* Bookmark */}
-            <div className="text-text_color_desc_light text-2xl cursor-pointer">
+            <div className="text-text_color_desc_light text-2xl cursor-pointer mb-1">
               <FaBookmark
                 onClick={() => handleBookmarkToggle()}
                 className={`${
@@ -493,7 +530,11 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
                         }
                         className="bg-primary_color px-3 text-text_color_light dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
                       >
-                        Submit
+                        {submitReport ? (
+                          <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
+                        ) : (
+                          "Submit"
+                        )}
                       </Button>
                     </div>
                   </DialogContent>

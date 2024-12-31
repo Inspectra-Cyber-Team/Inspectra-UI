@@ -36,6 +36,7 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 type commentProp = {
   uuid: string;
@@ -44,6 +45,8 @@ type commentProp = {
 const CommentSection = ({ uuid }: commentProp) => {
   //calling toast function
   const { toast } = useToast();
+
+  const router = useRouter();
 
   const [userUUID, setUserUUID] = useState("");
 
@@ -57,8 +60,29 @@ const CommentSection = ({ uuid }: commentProp) => {
 
   const handleCreateComment = async (blogUuid: string) => {
     try {
-      await createComment({ comment: { content, blogUuid } });
-      setContent("");
+      const res = await createComment({ comment: { content, blogUuid } });
+
+      if (res.data) {
+        toast({
+          description: "Comment successfully",
+          variant: "success",
+        });
+        setContent("");
+      } else {
+        toast({
+          description: "Something went wrong",
+          variant: "error",
+        });
+      }
+      if (res.error && "status" in res.error) {
+        if (res.error.status === 401) {
+          toast({
+            description: "Please login to comment on the blog",
+            variant: "error",
+          });
+          router.push("/login");
+        }
+      }
     } catch (error) {
       console.error("Error commenting on the blog:", error);
     }
@@ -84,6 +108,15 @@ const CommentSection = ({ uuid }: commentProp) => {
           description: "Something went wrong",
           variant: "error",
         });
+      }
+      if (res.error && "status" in res.error) {
+        if (res.error.status === 401) {
+          toast({
+            description: "Please login to edit the comment",
+            variant: "error",
+          });
+          router.push("/login");
+        }
       }
     } catch (error) {
       toast({
@@ -113,6 +146,15 @@ const CommentSection = ({ uuid }: commentProp) => {
           variant: "error",
         });
       }
+      if (res.error && "status" in res.error) {
+        if (res.error.status === 401) {
+          toast({
+            description: "Please login to delete the comment",
+            variant: "error",
+          });
+          router.push("/login");
+        }
+      }
     } catch (error) {
       toast({
         description: "Something went wrong",
@@ -128,7 +170,6 @@ const CommentSection = ({ uuid }: commentProp) => {
     page: 0,
     size: 25,
   });
-
 
   const [dataComment, setDataComment] = useState<Content[]>([]);
 
@@ -226,13 +267,22 @@ const CommentSection = ({ uuid }: commentProp) => {
 
   const handleReplySubmit = async (commentUuid: string) => {
     try {
-      await replyToComment({
+      const res = await replyToComment({
         data: { commentUuid, content: replyContent[commentUuid] },
       });
       setReplyContent((prevState) => ({
         ...prevState,
         [commentUuid]: "",
       }));
+      if (res.error && "status" in res.error) {
+        if (res.error.status === 401) {
+          toast({
+            description: "Please login to reply to the comment",
+            variant: "error",
+          });
+          router.push("/login");
+        }
+      }
     } catch (error) {
       console.error("Error replying to the comment:", error);
     }
@@ -248,6 +298,15 @@ const CommentSection = ({ uuid }: commentProp) => {
           description: "Reply liked successfully",
           variant: "success",
         });
+      }
+      if (res.error && "status" in res.error) {
+        if (res.error.status === 401) {
+          toast({
+            description: "Please login to like the reply",
+            variant: "error",
+          });
+          router.push("/login");
+        }
       }
     } catch (error) {
       toast({
@@ -270,6 +329,11 @@ const CommentSection = ({ uuid }: commentProp) => {
           description: "Comment liked successfully",
           variant: "success",
         });
+      }
+      if (res.error && "status" in res.error) {
+        if (res.error.status === 401) {
+          router.push("/login");
+        }
       }
     } catch (error) {
       toast({
@@ -303,6 +367,11 @@ const CommentSection = ({ uuid }: commentProp) => {
           variant: "error",
         });
       }
+      if (res.error && "status" in res.error) {
+        if (res.error.status === 401) {
+          router.push("/login");
+        }
+      }
     } catch (error) {
       toast({
         description: "Something went wrong",
@@ -327,6 +396,11 @@ const CommentSection = ({ uuid }: commentProp) => {
           description: "Something went wrong",
           variant: "error",
         });
+      }
+      if (res.error && "status" in res.error) {
+        if (res.error.status === 401) {
+          router.push("/login");
+        }
       }
     } catch (error) {
       toast({

@@ -10,6 +10,14 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetSourceCodeByLineQuery } from "@/redux/service/source";
 import DOMPurify from "dompurify";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 type LineData = {
   line: number;
@@ -20,10 +28,14 @@ type LineData = {
 };
 
 type CodeViewerProps = Readonly<{
+  projectName: string;
   componentKey: string;
 }>;
 
-export default function CodeViewer({ componentKey }: CodeViewerProps) {
+export default function CodeViewer({
+  projectName,
+  componentKey,
+}: CodeViewerProps) {
   const [showAlert, setShowAlert] = useState(false);
   const [alertPosition, setAlertPosition] = useState<{
     top: number;
@@ -40,6 +52,8 @@ export default function CodeViewer({ componentKey }: CodeViewerProps) {
     error,
     isLoading,
   } = useGetSourceCodeByLineQuery({ componetKey: componentKey });
+
+  console.log("sourceData", sourceData);
 
   useEffect(() => {
     Prism.highlightAll();
@@ -73,9 +87,9 @@ export default function CodeViewer({ componentKey }: CodeViewerProps) {
 
     // Store SCM data for the clicked line
     setAlertData({
-      scmAuthor: line.scmAuthor,
-      scmRevision: line.scmRevision,
-      scmDate: line.scmDate,
+      scmAuthor: line.scmAuthor || "Unknown",
+      scmRevision: line.scmRevision || "Unknown",
+      scmDate: line.scmDate || "Unknown",
     });
 
     setShowAlert(true);
@@ -84,12 +98,32 @@ export default function CodeViewer({ componentKey }: CodeViewerProps) {
   };
 
   return (
-    <section>
-      <Card className="w-full max-w-[88%] mx-auto">
+    <section className="w-full max-w-[88%] mx-auto my-[60px]">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href={`/project/${projectName}`}>
+              {projectName}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{decodeURIComponent(componentKey)}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      <Card className="mt-3">
         <div className="flex items-center justify-between border-b p-5">
           <div className="flex items-center gap-2">
             <FileIcon className="h-4 w-4 text-blue-500" />
-            <span className="text-muted-foreground">{decodeURIComponent(componentKey)}</span>
+            <span className="text-muted-foreground">
+              {decodeURIComponent(componentKey)}
+            </span>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
@@ -122,7 +156,7 @@ export default function CodeViewer({ componentKey }: CodeViewerProps) {
 
         <ScrollArea className="h-screen w-full bg-[#f5f5f5] dark:bg-black">
           <div className="rounded-b-lg p-4">
-            {sourceData?.[0]?.sources?.map((line:any) => {
+            {sourceData?.[0]?.sources?.map((line: any) => {
               const authorName = line.scmAuthor.split("@")[0];
               const formattedHTML = `
             <span class='line-number'>${String(line.line).padStart(
@@ -133,9 +167,9 @@ export default function CodeViewer({ componentKey }: CodeViewerProps) {
               const sanitizedContent = DOMPurify.sanitize(formattedHTML);
 
               const hoverClass =
-              line.utLineHits === 0 || line.lineHits === 0
-                ? "hover:bg-red-200 border-s-red-500 border-s-4 group relative"
-                : "hover:bg-white border-s-gray-300 border-s-2 group relative";
+                line.utLineHits === 0 || line.lineHits === 0
+                  ? "hover:bg-red-200 border-s-red-500 border-s-4 group relative"
+                  : "hover:bg-white border-s-gray-300 border-s-2 group relative";
 
               return (
                 <button
@@ -144,9 +178,13 @@ export default function CodeViewer({ componentKey }: CodeViewerProps) {
                   onClick={(event) => handleCodeClick(event, line)}
                 >
                   <div>
-                    <span className="author text-[13px] dark:text-text_color_desc_light">{authorName}</span>
+                    <span className="author text-[13px] dark:text-text_color_desc_light">
+                      {authorName}
+                    </span>
                   </div>
-                  <div className={`language-js w-full hover:cursor-pointer hover:rounded-sm border-s px-4 ${hoverClass}`}>
+                  <div
+                    className={`language-js w-full hover:cursor-pointer hover:rounded-sm border-s px-4 ${hoverClass}`}
+                  >
                     <code
                       className="prose whitespace-pre-wrap"
                       dangerouslySetInnerHTML={{ __html: sanitizedContent }}
@@ -186,8 +224,8 @@ export default function CodeViewer({ componentKey }: CodeViewerProps) {
       )}
       {/* Hover message */}
       <div className="absolute hidden group-hover:block text-xs text-white bg-black rounded py-1 px-2 mt-2">
-          Uncovered code
-        </div>
+        Uncovered code
+      </div>
     </section>
   );
 }

@@ -350,7 +350,11 @@ export default function NavbarComponent() {
                             </Link>
                           ))}
                           <button
-                            onClick={() => handleSignOut()}
+                            onClick={() => {
+                              // calling auth from next auth
+                              signOut();
+                              handleSignOut();
+                            }}
                             className="text-start"
                           >
                             Log Out

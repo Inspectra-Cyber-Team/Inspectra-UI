@@ -169,11 +169,9 @@ export default function CreateBlogComponent() {
                 const updatedValues = {
                   ...values,
                   thumbnail: uploadedImages, // Set the uploaded URLs
-                  topic:
-                    selectedTopic === "other"
-                      ? values.customTopic
-                      : selectedTopic,
+                  topic: selectedTopic,
                 };
+
                 await handleCreateBlog(updatedValues);
               } else {
                 console.error("No files uploaded");

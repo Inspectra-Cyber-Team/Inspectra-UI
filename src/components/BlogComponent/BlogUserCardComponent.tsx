@@ -79,7 +79,7 @@ export default function BlogUserCardComponent({
           <Button
             onClick={() => setCurrentSize(currentSize + 3)} className="bg-primary_color text-text_color_light rounded-2xl"
           >
-            See More
+            Load More
           </Button>
       </section>
       {/* Card blog section */}

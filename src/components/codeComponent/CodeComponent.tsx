@@ -341,11 +341,11 @@ export default function CodeComponent({ projectName }: CodeComponentProps) {
     if (qualifier === "DIR" && row.original.key !== componentName) {
       setComponentName(row.original.key);
     } else if (qualifier === "FIL") {
-      router.push(`/code/${encodeURIComponent(row?.original?.key)}`);
+      router.push(`/code?project=${projectName}&key=${row.original.key}`);
     }
   }, 300);
 
-  if (codeIsLoading) return <div>Loading...</div>;
+  if (codeIsLoading) return <div className="flex items-start">Loading...</div>;
 
   if (codeError) return <div>Error loading data</div>;
 

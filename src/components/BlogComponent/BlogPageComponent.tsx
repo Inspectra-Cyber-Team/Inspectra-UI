@@ -9,6 +9,7 @@ import { useState } from "react";
 import BlogTopicComponent from "./BlogtopicComponent";
 
 export default function BlogPageComponent() {
+  const [isLoading, setIsloading] = useState<boolean>(false);
   const [topic, setTopic] = useState<string>("");
 
   const handleTopicClick = (topicName: string) => {
@@ -20,17 +21,22 @@ export default function BlogPageComponent() {
   };
 
   return (
-    <section >
+    <section>
       {/* Header */}
       <div className="flex flex-wrap justify-between items-center my-3">
-        <h2 className="text-text_title_24 font-bold">
-          Blog Community
-        </h2>
+        <h2 className="text-text_title_24 font-bold">Blog Community</h2>
         <Link
+          onClick={() => setIsloading(true)}
           href={"/blog/create"}
           className="px-3 py-2 bg-primary_color text-text_color_light flex rounded-[17px] items-center justify-center text-sm sm:text-base"
         >
-          <span className="hidden sm:block">Create Blog</span>
+          <span className="hidden sm:block">
+            {isLoading ? (
+              <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
+            ) : (
+              "Create Blog"
+            )}
+          </span>
           <FaPlus className={"ml-1"} />
         </Link>
       </div>
@@ -46,7 +52,7 @@ export default function BlogPageComponent() {
             {common.topic}
           </button>
         ))}
-      </div> 
+      </div>
 
       <div className="flex flex-col lg:flex-row justify-between lg:gap-14 lg:my-2">
         {/* Main Content */}

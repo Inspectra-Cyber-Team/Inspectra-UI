@@ -93,6 +93,14 @@ export default function ProjectCardComponent() {
   const handleScanProject = async (index: number) => {
     setSelectedIndex(index);
     setIsLoading(true);
+    if (gitResult.length === 0 || gitUrlResult === "Select Project Branch") {
+      toast({
+        description: "Please Provide Git UR and Branch",
+        variant: "error",
+      });
+      setIsLoading(false);
+    }
+
     if (selectedBranch === "Select Project Branch") {
       setIsLoading(false);
       setErrorNotSelectBranch("Please select a branch");
@@ -275,12 +283,11 @@ export default function ProjectCardComponent() {
           `${process.env.NEXT_PUBLIC_API_URL}gits/list_files?gitUrl=${gitUrlResult}&branch=${selectedBranch}`
         );
 
-        if (response.status ===  200) {
-        setIsFetchFilesLoading(false); // Stop loading
-        const data = await response.json();
-        setListDirectories(data);
+        if (response.status === 200) {
+          setIsFetchFilesLoading(false); // Stop loading
+          const data = await response.json();
+          setListDirectories(data);
         }
-
       } catch (error) {
         console.error("Error fetching directories:", error);
         toast({
@@ -895,7 +902,8 @@ export default function ProjectCardComponent() {
                               <AlertDialogCancel className="flex text-center items-center">
                                 <button
                                   onClick={() => {
-                                  setSelectedFiles([]);
+                                    setSelectedFiles([]);
+                                    setIsClosing(true);
                                   }}
                                 >
                                   <RxCross2

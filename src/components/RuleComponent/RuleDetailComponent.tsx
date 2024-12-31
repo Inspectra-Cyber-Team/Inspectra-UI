@@ -8,7 +8,6 @@ import DOMPurify from "dompurify";
 type RiskComponentProps = {
   selectedTab: string;
   description: any;
-  
 };
 
 type tabMappingType = {
