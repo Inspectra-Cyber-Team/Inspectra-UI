@@ -903,6 +903,7 @@ export default function ProjectCardComponent() {
                                 <button
                                   onClick={() => {
                                     setSelectedFiles([]);
+                                    setIsClosing(true);
                                   }}
                                 >
                                   <RxCross2
