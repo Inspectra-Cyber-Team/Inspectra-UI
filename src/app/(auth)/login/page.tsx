@@ -116,7 +116,7 @@ export default function page() {
         </div>
 
         {/* form */}
-        <div className=" h-screen m-[40px]  md:w-[60%] md:h-[70%] md:my-[100px]  md:mx-auto lg:h-[55%] lg:my-auto xl:h-[100px] xl:my-[50px] flex flex-col ">
+        <div className=" h-full m-[40px]  md:w-[60%] md:h-[70%] md:my-[100px]  md:mx-auto lg:h-[55%] lg:my-auto xl:h-[100px] xl:my-[50px] flex flex-col ">
           {/* Logo and close icon */}
           <div className="w-full flex justify-between">
             {/* Logo and name */}
