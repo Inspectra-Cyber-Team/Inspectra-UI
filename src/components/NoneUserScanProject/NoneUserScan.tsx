@@ -265,7 +265,7 @@ export default function NoneUserScan() {
                         placeholder="Enter Git URL"
                         value={gitUrlResult}
                         onChange={handleChange} // Update the state with the input value
-                        className={`mt-1 w-full rounded-md border bg-card_color_light dark:bg-card_color_light dark:text-text_color_light pl-[80px] pr-3 py-3 focus:outline-none ${
+                        className={`mt-1 w-full rounded-md border bg-card_color_light  dark:text-text_color_light pl-[80px] pr-3 py-3 focus:outline-none ${
                           errorGitUrlMessage
                             ? "border-custom_red"
                             : "border-ascend_color"
@@ -293,12 +293,12 @@ export default function NoneUserScan() {
                             errorNotSelectBranch
                               ? "border-custom_red"
                               : "border-ascend_color"
-                          } bg-card_color_light dark:bg-card_color_dark`}
+                          } bg-card_color_light`}
                         >
                           <p className="text-text_body_16  py-3  text-text_color_desc_light">
                             {selectedBranch}
                           </p>
-                          <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
+                          <IoIosArrowDown className="text-text_color_desc_light h-5 w-5  " />
                         </div>
                         {errorNotSelectBranch && (
                           <p className="mt-1 text-text_body_16 text-custom_red">
@@ -310,19 +310,19 @@ export default function NoneUserScan() {
                   ) : (
                     <DropdownMenuTrigger disabled asChild>
                       <div className="">
-                        <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-2">
+                        <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark  my-2">
                           Branch
                         </p>
-                        <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
-                          <p className="text-text_body_16  py-3  text-text_color_desc_light">
+                        <div className="flex px-5 justify-between items-center rounded-md border border-ascend_color bg-background_light_mode">
+                          <p className="text-text_body_16 py-3  text-text_color_desc_light">
                             {selectedBranch}
                           </p>
-                          <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
+                          <IoIosArrowDown className="text-text_color_desc_light h-5 w-5  " />
                         </div>
                       </div>
                     </DropdownMenuTrigger>
                   )}
-                  <DropdownMenuContent className=" w-[290px] md:w-[450px] lg:w-[380px] xl:w-[510px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
+                  <DropdownMenuContent className=" w-[320px] md:w-[450px] text-text_color_light text-start bg-background_light_mode border-ascend_color mt-1">
                     {gitResult?.length === 0 ? (
                       <DropdownMenuItem disabled>
                         No branch to select
