@@ -326,8 +326,19 @@ export default function NavbarComponent() {
                           {navbarData.map((item, index: number) => (
                             <Link
                               key={index}
-                              href={item.link}
-                              onClick={handleClick}
+                              href={
+                                item.link === "/document"
+                                  ? "https://inspectra-doc.istad.co/"
+                                  : item.link
+                              }
+                              target={
+                                item.link === "/document" ? "_blank" : undefined
+                              } // Open in new tab for /document
+                              rel={
+                                item.link === "/document"
+                                  ? "noopener noreferrer"
+                                  : undefined
+                              } // Add security for external links
                             >
                               {pathname === item.link ? (
                                 <p className="text-secondary_color">
