@@ -9,6 +9,8 @@ import { useCreateProjectScanNonUserMutation } from "@/redux/service/project";
 import { GitUrlType } from "@/data/GitUrl";
 import { toast } from "../hooks/use-toast";
 import { ScanStepsModal } from "@/components/NoneUserScanProject/ModalCondition";
+import Lottie from "lottie-react";
+import animtionLoading from "@/components/loadingAnimation.json";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,7 +35,8 @@ export default function NoneUserScan() {
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
   const [selectedCheckbox, setSelectedCheckBox] = useState<string[]>([]);
   const [isFetchFilesLoading, setIsFetchFilesLoading] = useState(false);
-
+  const [errorGitUrlMessage, setErrorGitUrlMessage] = useState("");
+  const [errorNotSelectBranch, setErrorNotSelectBranch] = useState("");
   useEffect(() => {
     const storedCount =
       parseInt(localStorage.getItem("scanCount") ?? "0", 10) || 1;
@@ -57,22 +60,18 @@ export default function NoneUserScan() {
   };
 
   const handleSubmit = () => {
-    if (!gitUrlResult.trim()) {
-      setIsLoading(false);
+    if (gitResult.length === 0 || gitUrlResult === "Select Project Branch") {
       toast({
-        description: "Please enter a Git URL",
+        description: "Please Provide Git UR and Branch",
         variant: "error",
       });
-      return;
+      setIsLoading(false);
     }
 
     if (selectedBranch === "Select Project Branch") {
       setIsLoading(false);
-      toast({
-        description: "Please select a branch",
-        variant: "error",
-      });
-      return;
+      setErrorNotSelectBranch("Please select a branch");
+      return; // Stop further execution
     }
 
     setIsLoading(true);
@@ -117,45 +116,47 @@ export default function NoneUserScan() {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (gitUrlResult.includes(".git")) {
-        const fetchGitbranch = async () => {
-          try {
-            const response = await fetch(
-              `${process.env.NEXT_PUBLIC_API_URL}gits/branches?gitUrl=${gitUrlResult}`
-            );
-            if (!response.ok) {
-              throw new Error("Failed to fetch branches");
-            }
-            const result = await response.json();
-            setGitResult(result);
-            toast({
-              description: "Get All Branches Successfully",
-              variant: "success",
-            });
-          } catch (error) {
-            toast({
-              description: `Oops! Something went wrong${error}`,
-              variant: "error",
-            });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    setGitUrl(inputValue); // Update the state with the input value
+    // Validate the input value
+    if (inputValue.includes(".git")) {
+      // Clear any error messages
+      setErrorGitUrlMessage("");
+
+      // Trigger the fetch logic
+      const fetchGitBranches = async () => {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}gits/branches?gitUrl=${inputValue}`
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch branches");
           }
-        };
-        fetchGitbranch();
-      } else {
-        toast({
-          description: "Invalid URL",
-          variant: "error",
-        });
-      }
+          const result = await response.json();
+          setGitResult(result);
+          toast({
+            description: "Get All Branches Successfully",
+            variant: "success",
+          });
+        } catch (error) {
+          toast({
+            description: `Oops! Something went wrong: ${
+              (error as Error).message
+            }`,
+            variant: "error",
+          });
+        }
+      };
+
+      fetchGitBranches();
+    } else {
+      // Set an error message if the input is invalid
+      setErrorGitUrlMessage("Please Provide a Valid Git URL");
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGitUrl(e.target.value);
-  };
-
+  console.log(errorGitUrlMessage);
   const handleCheckboxChange = (id: any, checked: any) => {
     if (checked) {
       setSelectedCheckBox([...selectedCheckbox, id]);
@@ -244,12 +245,9 @@ export default function NoneUserScan() {
         {/* scanning project */}
         <div className="h-full lg:w-[50%] p-10 rounded-[20px] flex text-start flex-col justify-between">
           {isLoading ? (
-            <video
-              src="/images/loadingScan.mp4"
-              autoPlay
-              className="w-full h-full"
-              loop
-            ></video>
+            <div className="h-full w-full">
+              <Lottie animationData={animtionLoading} loop={true}></Lottie>
+            </div>
           ) : (
             <div className="space-y-6">
               <div className="space-y-6">
@@ -268,46 +266,65 @@ export default function NoneUserScan() {
                         type="text"
                         placeholder="Enter Git URL"
                         value={gitUrlResult}
-                        onChange={handleChange}
-                        onKeyDown={handleKeyPress}
-                        className="my-1 w-full rounded-md pl-20 pr-3 py-3 border focus:outline-ascend_color "
+                        onChange={handleChange} // Update the state with the input value
+                        className={`mt-1 w-full rounded-md border bg-card_color_light dark:bg-card_color_light dark:text-text_color_light pl-[80px] pr-3 py-3 focus:outline-none ${
+                          errorGitUrlMessage
+                            ? "border-custom_red"
+                            : "border-ascend_color"
+                        }`}
                       />
                     </div>
                   </div>
+                  {errorGitUrlMessage && (
+                    <p className="mt-1 text-text_body_16 text-custom_red">
+                      {errorGitUrlMessage}
+                    </p>
+                  )}
                 </div>
 
                 {/* select branch */}
                 <DropdownMenu>
                   {gitResult.length != 0 ? (
                     <DropdownMenuTrigger asChild>
-                      <div className="space-y-2">
-                        <p className="text-text_body_16">Branch</p>
-
-                        <div className="flex px-5 justify-between items-center rounded-md border focus:outline-ascend_color bg-card_color_light dark:bg-[#121212]">
-                          <p className="py-3 text-base text-text_color_desc_light dark:text-text_color_desc_dark">
+                      <div className="">
+                        <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-2">
+                          Branch
+                        </p>
+                        <div
+                          className={`flex px-5 justify-between items-center rounded-[10px] border border-1 bg-text_color_dark ${
+                            errorNotSelectBranch
+                              ? "border-custom_red"
+                              : "border-ascend_color"
+                          }`}
+                        >
+                          <p className="text-text_body_16  py-3  text-text_color_desc_light">
                             {selectedBranch}
                           </p>
-
-                          <IoIosArrowDown className="text-text_color_light dark:text-text_color_desc_dark h-5 w-5  " />
+                          <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
                         </div>
+                        {errorNotSelectBranch && (
+                          <p className="mt-1 text-text_body_16 text-custom_red">
+                            {errorNotSelectBranch}
+                          </p>
+                        )}
                       </div>
                     </DropdownMenuTrigger>
                   ) : (
                     <DropdownMenuTrigger disabled asChild>
-                      <div className="space-y-2">
-                        <p className="text-text_body_16 ">Branch</p>
-
-                        <div className="flex px-5 justify-between items-center rounded-md border focus:outline-ascend_color bg-card_color_light dark:bg-[#121212]">
-                          <p className="py-3 text-base text-text_color_desc_light dark:text-text_color_desc_dark">
+                      <div className="">
+                        <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-2">
+                          Branch
+                        </p>
+                        <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
+                          <p className="text-text_body_16  py-3  text-text_color_desc_light">
                             {selectedBranch}
                           </p>
-
-                          <IoIosArrowDown className="text-text_color_light dark:text-text_color_desc_dark h-5 w-5  " />
+                          <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
                         </div>
                       </div>
                     </DropdownMenuTrigger>
                   )}
-                  <DropdownMenuContent className="w-[285px] md:w-[400px] lg:w-[370px] xl:w-[600px] rounded-md border text-base bg-card_color_light dark:bg-black p-1">
+                  <DropdownMenuContent className=" w-[290px] md:w-[450px] lg:w-[380px] xl:w-[510px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
                     {gitResult?.length === 0 ? (
                       <DropdownMenuItem disabled>
                         No branch to select
@@ -315,7 +332,7 @@ export default function NoneUserScan() {
                     ) : (
                       gitResult?.map((gitResult: GitUrlType, index: number) => (
                         <DropdownMenuItem
-                          className="text-base hover:bg-background_light_mode dark:hover:bg-background_dark_mode"
+                          className=""
                           key={index}
                           onClick={() =>
                             setSelectedBranch(`${gitResult?.name}`)
@@ -329,15 +346,16 @@ export default function NoneUserScan() {
                 </DropdownMenu>
 
                 {/* file and directory */}
-                <div className="space-y-2">
+                <div className="space-y-2 scrollbar-hide">
                   <p className=" text-text_body_16 text-text_color_light dark:text-text_color_dark">
                     Filter Scan By Files & Directory{" "}
                   </p>
                   <FileStructureViewer
+
                     data={listDirectories}
                     selectedItem={selectedFile[0] || null}
                     onSelectItem={handleSelectItem}
-                    isFetchLoading={false}
+                    isFetchLoading={isFetchFilesLoading}
                   />
                 </div>
 

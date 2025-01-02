@@ -1,0 +1,80 @@
+/* Light theme */
+:root {
+  --prism-background: #f5f2f0;
+  --prism-text: #333;
+  --prism-comment: #998;
+  --prism-punctuation: #999;
+  --prism-property: #905;
+  --prism-selector: #690;
+  --prism-operator: #9a6e3a;
+  --prism-keyword: #07a;
+}
+
+/* Dark theme */
+.dark {
+  --prism-background: #1e1e1e; /* A darker, slightly textured background */
+  --prism-text: #d4d4d4; /* Softer text color for better contrast */
+  --prism-comment: #6a9955; /* Muted green for comments */
+  --prism-punctuation: #c5c5c5; /* Light gray for punctuation */
+  --prism-property: #c586c0; /* Purple for properties */
+  --prism-selector: #9cdcfe; /* Bright blue for selectors */
+  --prism-operator: #d7ba7d; /* Golden tone for operators */
+  --prism-keyword: #569cd6; /* Brighter blue for keywords */
+}
+
+/* Prism.js theme */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: var(--prism-text);
+  background: var(--prism-background);
+  font-family: inherit;
+  font-size: 1em;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 2;
+  tab-size: 4;
+  hyphens: none;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: var(--prism-comment);
+}
+
+.token.punctuation {
+  color: var(--prism-punctuation);
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: var(--prism-property);
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: var(--prism-selector);
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: var(--prism-operator);
+}
+
+.token.keyword {
+  color: var(--prism-keyword);
+}

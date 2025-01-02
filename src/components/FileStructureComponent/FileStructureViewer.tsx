@@ -154,7 +154,7 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
   return (
     <div
       id="file-structure-container"
-      className="h-[200px] overflow-auto scrollbar-hide  text-text_color_desc_light dark:text-text_color_desc_dark"
+      className="h-[200px]  scrollbar-default  text-text_color_desc_light dark:text-text_color_desc_dark"
     >
       {isFetchLoading ? (
         <div className="flex items-center justify-center h-full">

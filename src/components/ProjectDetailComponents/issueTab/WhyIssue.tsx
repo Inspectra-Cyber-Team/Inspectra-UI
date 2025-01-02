@@ -1,38 +1,45 @@
 import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
-import React, { useEffect } from "react";
-
 import Prism from "prismjs";
-import "prismjs/themes/prism.css";
-export default function WhyIssue({ ruleKey }: any) {
+import { useEffect } from "react";
+import { Poppins } from "next/font/google";
+import { useTheme } from "next-themes";
+
+// Import our custom Prism theme
+import "@/components/ProjectDetailComponents/issueTab/styles/prism-theme.css";
+
+// Initialize the Poppins font
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600"],
+  subsets: ["latin"],
+});
+
+export default function WhyIssue({ ruleKey }: { ruleKey: string }) {
   const { data: ruleIssue } = useGetRulesByRuleNameQuery({ ruleName: ruleKey });
+  const { theme } = useTheme();
 
   useEffect(() => {
-    // Run Prism's highlightAll function when ruleIssue changes or component mounts
+    // Run Prism's highlightAll function when ruleIssue changes, component mounts, or theme changes
     Prism.highlightAll();
-  }, [ruleIssue]); // Only run when ruleIssue data changes
+  }, [ruleIssue, theme]); // Run when ruleIssue data or theme changes
 
   return (
-    <div>
+    <div className={`${poppins.className} ${theme === "dark" ? "dark" : ""}`}>
       {ruleIssue?.map((rule: any) =>
         rule?.descriptionSections?.map((ruleDes: any, descIndex: number) => {
           return ruleDes?.key === "root_cause" ? (
             <pre
               key={descIndex}
+              className="bg-transparent p-0 m-0 w-full h-full"
               style={{
-                background: "transparent",
-                paddingLeft: "0", // Add this line
-                paddingTop: "0",
-                margin: 0,
-                width: "100%",
-                height: "100%",
+                fontFamily: "inherit",
               }}
             >
               <code
-                className="language-javascript break-words whitespace-normal "
+                className="language-javascript break-words whitespace-normal"
                 dangerouslySetInnerHTML={{ __html: ruleDes.content }}
               ></code>
             </pre>
-          ) : null; // Return null for non-matching cases
+          ) : null;
         })
       )}
     </div>
