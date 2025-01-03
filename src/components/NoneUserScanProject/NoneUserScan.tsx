@@ -354,7 +354,7 @@ export default function NoneUserScan() {
                   </p>
                   <FileStructureViewer
                     data={listDirectories}
-                    selectedItem={selectedFile[0] || null}
+                    selectedItems={selectedFile}
                     onSelectItem={handleSelectItem}
                     isFetchLoading={isFetchFilesLoading}
                     status={status}

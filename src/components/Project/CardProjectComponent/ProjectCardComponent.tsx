@@ -1017,7 +1017,7 @@ export default function ProjectCardComponent() {
                                     </div>
                                   </DropdownMenuTrigger>
                                 )}
-                                <DropdownMenuContent className=" w-[290px] md:w-[450px] lg:w-[380px] xl:w-[465px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
+                                <DropdownMenuContent className=" w-[340px] md:w-[460px] lg:w-[550px]  text-text_color_light text-start bg-background_light_mode border-ascend_color">
                                   {gitResult?.length === 0 ? (
                                     <DropdownMenuItem disabled>
                                       No branch to select
