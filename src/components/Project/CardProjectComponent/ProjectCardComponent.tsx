@@ -71,8 +71,6 @@ export default function ProjectCardComponent() {
   const [isFetchFilesLoading, setIsFetchFilesLoading] = useState(false);
   const [status, setStatus] = useState(false);
 
-  console.log(selectedFiles);
-
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });

@@ -36,6 +36,9 @@ export default function NoneUserScan() {
   const [isFetchFilesLoading, setIsFetchFilesLoading] = useState(false);
   const [errorGitUrlMessage, setErrorGitUrlMessage] = useState("");
   const [errorNotSelectBranch, setErrorNotSelectBranch] = useState("");
+
+  const [status, setStatus] = useState(false);
+
   useEffect(() => {
     const storedCount =
       parseInt(localStorage.getItem("scanCount") ?? "0", 10) || 1;
@@ -94,6 +97,7 @@ export default function NoneUserScan() {
             description: "Project Scan is Successfully",
             variant: "success",
           });
+          setStatus(true);
           router.push(`project/${response?.data?.data}`);
         })
         .catch((error) => {
@@ -225,7 +229,7 @@ export default function NoneUserScan() {
       <div className="container">
         {/* Check if loading */}
         {isLoading ? (
-          <LoadingSection/>
+          <LoadingSection />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 py-8 max-w-7xl mx-auto">
             {/* image */}
@@ -353,6 +357,7 @@ export default function NoneUserScan() {
                     selectedItem={selectedFile[0] || null}
                     onSelectItem={handleSelectItem}
                     isFetchLoading={isFetchFilesLoading}
+                    status={status}
                   />
                 </div>
 
