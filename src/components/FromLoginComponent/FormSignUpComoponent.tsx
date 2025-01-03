@@ -9,6 +9,14 @@ import * as Yup from "yup";
 import { useAppDispatch } from "@/redux/hooks";
 import { useRouter } from "next/navigation";
 import { setUserEmail } from "@/redux/feature/userSlice";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 export default function FormSignUpComponent() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -16,7 +24,7 @@ export default function FormSignUpComponent() {
   const [register] = useRegisterMutation();
   const dispatch = useAppDispatch();
   const validationSchema = Yup.object({
-    userName: Yup.string().required("userName is Required"),
+    userName: Yup.string().required("Username is Required"),
     firstName: Yup.string().required("First Name is Required"),
     lastName: Yup.string().required("Last Name is Required"),
     email: Yup.string()
@@ -46,11 +54,17 @@ export default function FormSignUpComponent() {
     // Toggle password visibility
   };
 
+  const [selectedPosition, setSelectedPosition] = useState('');
+
+  const handleSelectChange = (value: any) => {
+    setSelectedPosition(value);
+  };
+
   const initialValues = {
     firstName: "",
     lastName: "",
-    userName: "",
     email: "",
+    userName: "",
     password: "",
     confirmPassword: "",
     privacyPolicy: false,
@@ -128,7 +142,7 @@ export default function FormSignUpComponent() {
             </div>
 
             {/* Last Name */}
-            <div className="w-full   md:w-1/2">
+            <div className="w-full md:w-1/2">
               <label
                 htmlFor="lastName"
                 className="text-[14px] text-text_color_light block"
@@ -173,45 +187,71 @@ export default function FormSignUpComponent() {
               className={`mt-1 w-full rounded-md border  bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color   ${touched.email && errors.email ? "border-custom_red" : ""
                 }`}
             />
-            {errors.lastName && touched.lastName && (
+            {errors.email && touched.email && (
               <div className="relative items-center justify-center flex top-[22px]	">
                 <div
                   className={`absolute z-10 w-auto  ${styles.popoverContainer} ${styles.popoverAnimation}`}
                 >
                   <p className={`text-text_body_16 ${styles.popoverText}`}>
-                    {errors.lastName}
+                    {errors.email}
                   </p>
                 </div>
               </div>
             )}
           </div>
-          {/* username */}
-          <div className="mb-4">
-            <label
-              htmlFor="userName"
-              className="text-[14px] text-text_color_light block "
-            >
-              UserName
-            </label>
-            <Field
-              type="text"
-              id="userName"
-              name="userName"
-              placeholder="UserName"
-              className={`mt-1 w-full rounded-md border  bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color   ${touched.email && errors.email ? "border-custom_red" : ""
-                }`}
-            />
-            {errors.userName && touched.userName && (
-              <div className="relative items-center justify-center flex top-[22px]">
-                <div
-                  className={`absolute z-10 w-auto ${styles.popoverContainer} ${styles.popoverAnimation}`}
-                >
-                  <p className={`text-text_body_16 ${styles.popoverText}`}>
-                    {errors.userName}
-                  </p>
+          {/* Username and Job Position */}
+          <div className="flex flex-col justify-between md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4">
+            {/* Username */}
+            <div className="w-full">
+              <label
+                htmlFor="userName"
+                className="text-[14px] text-text_color_light block "
+              >
+                Username
+              </label>
+              <Field
+                type="text"
+                id="userName"
+                name="userName"
+                placeholder="UserName"
+                className={`mt-1 w-full rounded-md border  bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color ${touched.userName && errors.userName ? "border-custom_red" : ""
+                  }`}
+              />
+              {errors.userName && touched.userName && (
+                <div className="relative items-center justify-center flex top-[22px]">
+                  <div
+                    className={`absolute z-10 w-auto ${styles.popoverContainer} ${styles.popoverAnimation}`}
+                  >
+                    <p className={`text-text_body_16 ${styles.popoverText}`}>
+                      {errors.userName}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+
+              {/* job position */}
+            </div>
+            <div>
+              <label
+                htmlFor="Position"
+                className="text-[14px] text-text_color_light block "
+              >
+                Job Position
+              </label>
+              <Select value={selectedPosition} onValueChange={handleSelectChange}>
+                <SelectTrigger className="md:w-[180px] h-14 bg-background_light_mode outline-none focus:outline-none focus:ring-0 focus:ring-offset-0 focus text-text_color_light dark:text-text_color_light w-full">
+                  <SelectValue placeholder="Position" />
+                </SelectTrigger>
+                <SelectContent className="dark:bg-background_light_mode dark:text-text_color_light dark:border-text_color_desc_light shadow-md">
+                  <SelectItem value="Software Engineer">Software Engineer</SelectItem>
+                  <SelectItem value="Product Manager">Product Manager</SelectItem>
+                  <SelectItem value="UI/UX Designer">UI/UX Designer</SelectItem>
+                  <SelectItem value="Pentester">Pentester</SelectItem>
+                  <SelectItem value="Data Analyst">Data Analyst</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           {/* Password */}
           <div className="relative mb-4">
@@ -324,21 +364,21 @@ export default function FormSignUpComponent() {
           </div>
           {errors.privacyPolicy && touched.privacyPolicy && (
             <div className="relative items-center flex top-0	">
-            <div
-              className={`absolute z-10 w-auto  ${styles.popoverContainer} ${styles.popoverAnimation}`}
-            >
-              <p className={`text-text_body_16 ${styles.popoverText}`}>
-                {errors.privacyPolicy}
-              </p>
+              <div
+                className={`absolute z-10 w-auto  ${styles.popoverContainer} ${styles.popoverAnimation}`}
+              >
+                <p className={`text-text_body_16 ${styles.popoverText}`}>
+                  {errors.privacyPolicy}
+                </p>
+              </div>
             </div>
-          </div>
           )}
 
           {/* Privacy Policy Modal */}
           {showPrivacyModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
               <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
-                <h2 className="text-text_title_20 font-semibold mb-4">Privacy Policy</h2>
+                <h2 className="text-text_title_20 font-semibold mb-4 dark:text-text_color_light">Privacy Policy</h2>
                 <p className="text-text_body_16 text-text_color_desc_light">
                   Your project data is encrypted and securely stored. Only you have access
                   to your data. We ensure complete privacy and security for your
