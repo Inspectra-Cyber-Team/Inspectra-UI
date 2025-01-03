@@ -21,7 +21,7 @@ interface TreeNode {
 
 interface FileStructureViewerProps {
   data: FileStructure;
-  selectedItem: string | null;
+  selectedItems: string[]; // Updated to accept an array of selected paths
   onSelectItem: (item: string) => void;
   isFetchLoading: boolean;
   status: boolean;
@@ -29,7 +29,7 @@ interface FileStructureViewerProps {
 
 const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
   data,
-  selectedItem,
+  selectedItems, // Updated prop name to reflect it's an array
   onSelectItem,
   isFetchLoading,
   status,
@@ -104,10 +104,10 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
     const displayName =
       node.data.name || (isFolder ? "Unnamed Folder" : "Unnamed File");
     const fullPath = node.id;
-    const isSelected = selectedItem === fullPath;
+    const isSelected = selectedItems.includes(fullPath); // Check if the item is in the selectedItems array
 
     const handleClick = () => {
-      onSelectItem(fullPath);
+      onSelectItem(fullPath); // Notify the parent of the selected item
       if (isFolder && !node.isOpen) {
         node.toggle();
       }
@@ -118,7 +118,7 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
         style={style}
         ref={dragHandle}
         className={`flex items-center py-1 cursor-pointer transition-colors ${
-          isSelected ? "bg-blue-500 text-black" : "hover:bg-gray-100"
+          isSelected ? "bg-slate-200 text-black" : "hover:bg-gray-100"
         }`}
         onClick={handleClick}
       >
@@ -136,7 +136,7 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
           node.isOpen ? (
             <FaFolderOpen
               className={`w-5 h-5 mr-2 ${
-                isSelected ? "text-yellow-50" : "text-yellow-500"
+                isSelected ? "text-yellow-500" : "text-yellow-500"
               }`}
             />
           ) : (

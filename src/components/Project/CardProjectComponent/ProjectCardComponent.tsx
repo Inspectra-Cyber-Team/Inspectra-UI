@@ -71,6 +71,7 @@ export default function ProjectCardComponent() {
   const [isFetchFilesLoading, setIsFetchFilesLoading] = useState(false);
   const [status, setStatus] = useState(false);
 
+ 
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
@@ -1051,7 +1052,7 @@ export default function ProjectCardComponent() {
 
                                 <FileStructureViewer
                                   data={listDirectories}
-                                  selectedItem={selectedFiles}
+                                  selectedItems={selectedFiles}
                                   onSelectItem={handleSelectItem}
                                   isFetchLoading={isFetchFilesLoading}
                                   status={status}
