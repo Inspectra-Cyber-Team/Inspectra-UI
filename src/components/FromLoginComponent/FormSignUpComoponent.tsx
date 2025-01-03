@@ -15,7 +15,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 export default function FormSignUpComponent() {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +27,7 @@ export default function FormSignUpComponent() {
     userName: Yup.string().required("Username is Required"),
     firstName: Yup.string().required("First Name is Required"),
     lastName: Yup.string().required("Last Name is Required"),
+    position: Yup.string().required("Position is Required"),
     email: Yup.string()
       .email("Invalid email format")
       .required("Email is Required"),
@@ -54,7 +55,7 @@ export default function FormSignUpComponent() {
     // Toggle password visibility
   };
 
-  const [selectedPosition, setSelectedPosition] = useState('');
+  const [selectedPosition, setSelectedPosition] = useState("");
 
   const handleSelectChange = (value: any) => {
     setSelectedPosition(value);
@@ -63,6 +64,7 @@ export default function FormSignUpComponent() {
   const initialValues = {
     firstName: "",
     lastName: "",
+    position: "",
     email: "",
     userName: "",
     password: "",
@@ -91,7 +93,7 @@ export default function FormSignUpComponent() {
     try {
       register({ user: values });
       router.push("/verify");
-      dispatch(setUserEmail(values.email))
+      dispatch(setUserEmail(values.email));
       setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -123,10 +125,11 @@ export default function FormSignUpComponent() {
                 id="firstName"
                 name="firstName"
                 placeholder="First Name"
-                className={`mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color ${touched.firstName && errors.firstName
-                  ? "border-custom_red"
-                  : ""
-                  }`}
+                className={`mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color ${
+                  touched.firstName && errors.firstName
+                    ? "border-custom_red"
+                    : ""
+                }`}
               />
               {errors.firstName && touched.firstName && (
                 <div className="relative items-center justify-center flex top-[22px]">
@@ -154,8 +157,9 @@ export default function FormSignUpComponent() {
                 id="lastName"
                 name="lastName"
                 placeholder="Last Name"
-                className={`mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color ${touched.lastName && errors.lastName ? "border-custom_red" : ""
-                  }`}
+                className={`mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color ${
+                  touched.lastName && errors.lastName ? "border-custom_red" : ""
+                }`}
               />
               {errors.lastName && touched.lastName && (
                 <div className="relative items-center justify-center flex top-[22px]">
@@ -184,8 +188,9 @@ export default function FormSignUpComponent() {
               id="email"
               name="email"
               placeholder="username@gmail.com"
-              className={`mt-1 w-full rounded-md border  bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color   ${touched.email && errors.email ? "border-custom_red" : ""
-                }`}
+              className={`mt-1 w-full rounded-md border  bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color   ${
+                touched.email && errors.email ? "border-custom_red" : ""
+              }`}
             />
             {errors.email && touched.email && (
               <div className="relative items-center justify-center flex top-[22px]	">
@@ -200,7 +205,7 @@ export default function FormSignUpComponent() {
             )}
           </div>
           {/* Username and Job Position */}
-          <div className="flex flex-col justify-between md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4">
+          <div className="flex flex-col  justify-between md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4">
             {/* Username */}
             <div className="w-full">
               <label
@@ -214,8 +219,9 @@ export default function FormSignUpComponent() {
                 id="userName"
                 name="userName"
                 placeholder="UserName"
-                className={`mt-1 w-full rounded-md border  bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color ${touched.userName && errors.userName ? "border-custom_red" : ""
-                  }`}
+                className={`mt-1 w-full rounded-md border  bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color ${
+                  touched.userName && errors.userName ? "border-custom_red" : ""
+                }`}
               />
               {errors.userName && touched.userName && (
                 <div className="relative items-center justify-center flex top-[22px]">
@@ -231,26 +237,64 @@ export default function FormSignUpComponent() {
 
               {/* job position */}
             </div>
-            <div>
+            <div className="relative mb-4">
               <label
-                htmlFor="Position"
-                className="text-[14px] text-text_color_light block "
+                htmlFor="position"
+                className="text-[14px] text-text_color_light block"
               >
                 Job Position
               </label>
-              <Select value={selectedPosition} onValueChange={handleSelectChange}>
-                <SelectTrigger className="md:w-[180px] h-14 bg-background_light_mode outline-none focus:outline-none focus:ring-0 focus:ring-offset-0 focus text-text_color_light dark:text-text_color_light w-full">
-                  <SelectValue placeholder="Position" />
-                </SelectTrigger>
-                <SelectContent className="dark:bg-background_light_mode dark:text-text_color_light dark:border-text_color_desc_light shadow-md">
-                  <SelectItem value="Software Engineer">Software Engineer</SelectItem>
-                  <SelectItem value="Product Manager">Product Manager</SelectItem>
-                  <SelectItem value="UI/UX Designer">UI/UX Designer</SelectItem>
-                  <SelectItem value="Pentester">Pentester</SelectItem>
-                  <SelectItem value="Data Analyst">Data Analyst</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="relative">
+                <Field
+                  className={`${
+                    touched.userName && errors.userName
+                      ? "border-custom_red"
+                      : ""
+                  }`}
+                  name="position"
+                >
+                  {({ field, form }: any) => (
+                    <Select
+                      value={field.value} // Bind Formik's value
+                      onValueChange={(value) =>
+                        form.setFieldValue("position", value)
+                      } // Update Formik's state
+                    >
+                      <SelectTrigger className="md:w-[180px] h-[50px] mt-[4px] bg-white outline-none border-desc-light focus:outline-none focus:ring-0 focus:ring-offset-0 text-text_color_light dark:text-text_color_light w-full">
+                        <SelectValue placeholder="Position" />
+                      </SelectTrigger>
+                      <SelectContent className=" dark:bg-background_light_mode dark:text-text_color_light dark:border-text_color_desc_light shadow-md ">
+                        <SelectItem value="Software Engineer">
+                          Software Engineer
+                        </SelectItem>
+                        <SelectItem value="Product Manager">
+                          Product Manager
+                        </SelectItem>
+                        <SelectItem value="UI/UX Designer">
+                          UI/UX Designer
+                        </SelectItem>
+                        <SelectItem value="Pentester">Pentester</SelectItem>
+                        <SelectItem value="Data Analyst">
+                          Data Analyst
+                        </SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                </Field>
+              </div>
+
+              {errors.position && touched.position && (
+                <div className="relative items-center justify-center flex top-[22px]">
+                  <div
+                    className={`absolute z-10 w-auto ${styles.popoverContainer} ${styles.popoverAnimation}`}
+                  >
+                    <p className={`text-text_body_16 ${styles.popoverText}`}>
+                      {errors.position}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           {/* Password */}
@@ -268,10 +312,11 @@ export default function FormSignUpComponent() {
                 name="password"
                 placeholder="Enter password"
                 className={`
-                   mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light p-3 focus:outline-none focus:right-2 focus:border-primary_color  ${touched.password && errors.password
-                    ? "border-custom_red"
-                    : ""
-                  }`}
+                   mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light p-3 focus:outline-none focus:right-2 focus:border-primary_color  ${
+                     touched.password && errors.password
+                       ? "border-custom_red"
+                       : ""
+                   }`}
               />
               {!showPassword ? (
                 <IoEyeOffSharp
@@ -313,10 +358,11 @@ export default function FormSignUpComponent() {
                 name="confirmPassword"
                 placeholder="Enter Confirm Password"
                 className={`
-                   mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color  ${touched.confirmPassword && errors.confirmPassword
-                    ? "border-custom_red"
-                    : ""
-                  }`}
+                   mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color  ${
+                     touched.confirmPassword && errors.confirmPassword
+                       ? "border-custom_red"
+                       : ""
+                   }`}
               />
               {!showconfirmPassword ? (
                 <IoEyeOffSharp
@@ -352,7 +398,10 @@ export default function FormSignUpComponent() {
               name="privacyPolicy"
               className="mr-2 cursor-pointer"
             />
-            <label htmlFor="privacyPolicy" className="text-[14px] text-text_color_light">
+            <label
+              htmlFor="privacyPolicy"
+              className="text-[14px] text-text_color_light"
+            >
               I agree to the
               <span
                 className="text-link_color underline cursor-pointer ml-1"
@@ -378,11 +427,13 @@ export default function FormSignUpComponent() {
           {showPrivacyModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
               <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
-                <h2 className="text-text_title_20 font-semibold mb-4 dark:text-text_color_light">Privacy Policy</h2>
+                <h2 className="text-text_title_20 font-semibold mb-4 dark:text-text_color_light">
+                  Privacy Policy
+                </h2>
                 <p className="text-text_body_16 text-text_color_desc_light">
-                  Your project data is encrypted and securely stored. Only you have access
-                  to your data. We ensure complete privacy and security for your
-                  information.
+                  Your project data is encrypted and securely stored. Only you
+                  have access to your data. We ensure complete privacy and
+                  security for your information.
                 </p>
                 <div className="mt-4 flex justify-end">
                   <button
