@@ -8,7 +8,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getCoverageData, getDuplicationData, timeSince } from "@/lib/utils";
-import { useGetProjectOverViewUserQuery } from "@/redux/service/project";
+import {
+  useDeleteProjectMutation,
+  useGetProjectOverViewUserQuery,
+} from "@/redux/service/project";
 import {
   Dialog,
   DialogClose,
@@ -48,6 +51,13 @@ export default function ScanHistoryComponent() {
     } else if (tab === "bookmark") {
       router.push("/bookmark");
     }
+  };
+
+  const [deleteProject, { isSuccess: isDeleteSuccess }] =
+    useDeleteProjectMutation();
+  // handle delete project
+  const handleDeleteProject = (projectName: string) => {
+    deleteProject({ projectName: projectName });
   };
 
   const { data: projectScanByUser, isError } = useGetProjectOverViewUserQuery({
@@ -239,11 +249,11 @@ export default function ScanHistoryComponent() {
                               type="button"
                               className="px-5 hover:bg-custom_red "
                               variant="secondary"
-                              // onClick={() =>
-                              //   handleDeleteProject(
-                              //     projectResult?.component?.component.name
-                              //   )
-                              // }
+                              onClick={() =>
+                                handleDeleteProject(
+                                  projectResult?.component?.component.name
+                                )
+                              }
                             >
                               {isLoading ? (
                                 <div className="spinner-border animate-spin  inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_dark border-t-transparent"></div>
