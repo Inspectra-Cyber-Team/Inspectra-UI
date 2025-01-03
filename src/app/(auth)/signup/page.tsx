@@ -109,14 +109,14 @@ export default function page() {
           {/* form section */}
           <div className="h-full mt-[25px] md:mt-[20px] flex flex-col justify-between ">
             {/* Title */}
-            <p className=" text-text_title_24  md:text-text_header_34 text-text_color_light font-semibold">
+            <p className=" text-text_title_24  md:text-text_header_34 text-text_color_light font-semibold mb-3">
               Sign Up
             </p>
 
             <FormSignUpComponent />
 
             {/* Line Break */}
-            <div className="flex items-center md:my-4">
+            <div className="flex items-center my-4">
               <hr className="flex-grow border-t border-gray-300" />
               <span className="mx-4 text-gray-500">or</span>
               <hr className="flex-grow border-t border-gray-300" />

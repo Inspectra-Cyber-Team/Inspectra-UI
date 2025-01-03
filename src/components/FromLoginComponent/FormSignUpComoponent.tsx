@@ -239,7 +239,7 @@ export default function FormSignUpComponent() {
                 Job Position
               </label>
               <Select value={selectedPosition} onValueChange={handleSelectChange}>
-                <SelectTrigger className="md:w-[180px] h-14 bg-background_light_mode outline-none focus:outline-none focus:ring-0 focus:ring-offset-0 focus text-text_color_light dark:text-text_color_light w-full">
+              <SelectTrigger className="md:w-[180px] h-14 bg-white outline-none border-desc-light focus:outline-none focus:ring-0 focus:ring-offset-0 text-text_color_light dark:text-text_color_light w-full">
                   <SelectValue placeholder="Position" />
                 </SelectTrigger>
                 <SelectContent className="dark:bg-background_light_mode dark:text-text_color_light dark:border-text_color_desc_light shadow-md">
