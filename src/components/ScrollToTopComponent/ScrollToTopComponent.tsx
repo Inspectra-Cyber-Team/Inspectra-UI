@@ -6,14 +6,15 @@ import { FaArrowUp } from "react-icons/fa";
 export default function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
 
-  // Show or hide the button based on scroll position
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.scrollY > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
+      const visible = window.scrollY > 300;
+      setIsVisible(visible);
+
+      // Dispatch a custom event for visibility state
+      window.dispatchEvent(
+        new CustomEvent("scrollToTopVisibilityChange", { detail: visible })
+      );
     };
 
     window.addEventListener("scroll", toggleVisibility);
@@ -21,7 +22,6 @@ export default function ScrollToTopButton() {
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
-  // Scroll to the top smoothly
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -30,7 +30,7 @@ export default function ScrollToTopButton() {
   };
 
   return (
-    <div>
+    <>
       {isVisible && (
         <button
           onClick={scrollToTop}
@@ -40,6 +40,6 @@ export default function ScrollToTopButton() {
           <FaArrowUp className="h-5 w-5" />
         </button>
       )}
-    </div>
+    </>
   );
 }

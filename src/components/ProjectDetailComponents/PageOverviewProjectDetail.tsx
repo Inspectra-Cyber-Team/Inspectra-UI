@@ -130,7 +130,7 @@ export default function PageOverviewProjectDetail({
             <li>Version not Provided</li>
             <li>
               <button
-                className="bg-primary_color text-text_color_light px-4 py-2 rounded-md hover:bg-green-600 transition-all"
+                className="bg-primary_color text-text_color_light px-4 py-2 rounded-md hover:bg-green-600 transition-all flex justify-center items-center"
                 onClick={() => handleExportPDF(nameOfProject)}
               >
                 {isloading ? (
@@ -151,11 +151,10 @@ export default function PageOverviewProjectDetail({
       <div className="w-full flex flex-col md:flex-row justify-between gap-6">
         <div className="flex items-center gap-4">
           <h2
-            className={`p-4 rounded-lg text-text_color_light text-xl ${
-              getProjectByUserUuid?.status.qualityGateStatus === "OK"
+            className={`p-4 rounded-lg text-text_color_light text-xl ${getProjectByUserUuid?.status.qualityGateStatus === "OK"
                 ? "bg-primary_color"
                 : "bg-red-500"
-            }`}
+              }`}
           >
             {getProjectByUserUuid?.status.qualityGateStatus === "OK" ? (
               <SiTicktick />
@@ -200,14 +199,14 @@ export default function PageOverviewProjectDetail({
               percentage <= 0
                 ? "A"
                 : percentage <= 20
-                ? "B"
-                : percentage <= 40
-                ? "C"
-                : percentage <= 60
-                ? "D"
-                : percentage <= 80
-                ? "E"
-                : "F";
+                  ? "B"
+                  : percentage <= 40
+                    ? "C"
+                    : percentage <= 60
+                      ? "D"
+                      : percentage <= 80
+                        ? "E"
+                        : "F";
             gradient =
               percentage > 0
                 ? `conic-gradient(lime 0% ${percentage}%, red ${percentage}% 100%)`
@@ -223,7 +222,7 @@ export default function PageOverviewProjectDetail({
           return (
             <div
               key={index}
-              className="flex flex-col gap-4 p-4 border border-gray-300 dark:border-gray-600 rounded-lg"
+              className="flex flex-col gap-4 p-4 border border-gray-300 dark:border-primary_color rounded-lg"
             >
               <p className="text-lg font-semibold text-gray-700 dark:text-white">
                 {formattedMetric}
@@ -234,17 +233,16 @@ export default function PageOverviewProjectDetail({
                   {metric.metric === "ncloc" ? "Lines of Code" : "Open Issues"}
                 </p>
                 <div
-                  className={`w-10 h-10 flex items-center justify-center border rounded-lg ${
-                    grade === "A"
+                  className={`w-10 h-10 flex items-center justify-center border rounded-lg ${grade === "A"
                       ? "border-[#B9FF66]"
                       : grade === "B"
-                      ? "border-[#60935D]"
-                      : grade === "C"
-                      ? "border-[#F7DC6F]"
-                      : grade === "D"
-                      ? "border-[#F9B800]"
-                      : "border-[#EA4335]"
-                  } text-text_color_light dark:text-text_color_dark font-bold`}
+                        ? "border-[#60935D]"
+                        : grade === "C"
+                          ? "border-[#F7DC6F]"
+                          : grade === "D"
+                            ? "border-[#F9B800]"
+                            : "border-[#EA4335]"
+                    } text-text_color_light dark:text-text_color_dark font-bold`}
                 >
                   {grade}
                 </div>
