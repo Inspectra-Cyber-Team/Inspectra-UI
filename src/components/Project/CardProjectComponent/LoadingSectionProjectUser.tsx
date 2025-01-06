@@ -17,7 +17,7 @@ const LoadingSectionProjectUser: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentStep(1); // Move to 'Analyzing Code' step
-    }, 5000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -70,7 +70,7 @@ const LoadingSectionProjectUser: React.FC = () => {
               </div>
               {index < steps.length - 1 && (
                 <motion.div
-                  className="absolute top-8 left-[calc(50%+0.5rem)] md:left-[calc(50%+4rem)] w-[calc(50%+0.2rem)] transform h-1 bg-primary_color"
+                  className="absolute top-[30px] md:top-[35px] left-[70px] md:left-[100px] transform h-1  bg-primary_color"
                   initial={{ width: "0%" }}
                   animate={{ width: currentStep > index ? "100%" : "0%" }}
                   transition={{ duration: 1.0 }}

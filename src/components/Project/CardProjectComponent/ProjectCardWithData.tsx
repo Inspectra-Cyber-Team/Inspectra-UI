@@ -1,26 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { DialogHeader } from "@/components/ui/dialog";
-import CheckGrade from "@/lib/checkGrade";
-import { timeSince, getCoverageData, getDuplicationData } from "@/lib/utils";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-  DialogClose,
-} from "@radix-ui/react-dialog";
-import {
-  HoverCard,
-  HoverCardTrigger,
-  HoverCardContent,
-} from "@radix-ui/react-hover-card";
-import router from "next/router";
-import React, { useEffect, useState } from "react";
-import { CgDanger } from "react-icons/cg";
-import { FaCheck } from "react-icons/fa";
-import { RxCross2 } from "react-icons/rx";
-import Image from "next/image";
-import { useDeleteProjectMutation } from "@/redux/service/project";
+"use client";
 import { toast } from "@/components/hooks/use-toast";
 import {
   AlertDialog,
@@ -31,10 +9,26 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import CheckGrade from "@/lib/checkGrade";
+import { getCoverageData, getDuplicationData, timeSince } from "@/lib/utils";
+import { useDeleteProjectMutation } from "@/redux/service/project";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { CgDanger } from "react-icons/cg";
+import { FaCheck } from "react-icons/fa6";
+import { RxCross2 } from "react-icons/rx";
 
 export default function ProjectCardWithData({ index, projectResult }: any) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+  const router = useRouter();
   // rtk for delete project
   const [deleteProject, { isSuccess: isDeleteSuccess }] =
     useDeleteProjectMutation();

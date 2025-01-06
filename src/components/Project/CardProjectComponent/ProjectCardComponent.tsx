@@ -114,6 +114,7 @@ export default function ProjectCardComponent() {
       setErrorNotSelectBranch("Please select a branch");
       return; // Stop further execution
     }
+    setIsOpen(true);
     try {
       setErrorNotSelectBranch(""); // Clear any branch-related errors
       const res = await createScanProject({
@@ -380,6 +381,7 @@ export default function ProjectCardComponent() {
           if (projectResult?.component.component.measures != 0) {
             return (
               <ProjectCardWithData
+                key={index}
                 index={index}
                 projectResult={projectResult}
                 isLoading={isLoading}
