@@ -20,28 +20,28 @@ export default function page({ params }: ParamProps) {
         <TabsList className="flex  w-full xl:w-[90%] mx-auto mb-10  justify-between text-center !bg-transparent overflow-x-auto scrollbar-hide overflow-y-hidden">
           <TabsTrigger
             value="Overview"
-            className=" data-[state=active]:shadow-none  data-[state=active]:rounded-none data-[state=active]:border-b-2  dark:data-[state=active]:bg-transparent data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+            className=" data-[state=active]:shadow-none dark:data-[state=active]:text-text_color_dark data-[state=active]:rounded-none data-[state=active]:border-b-2  dark:data-[state=active]:bg-transparent data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
           >
             Overview
           </TabsTrigger>
           <p className="mx-2">|</p>
           <TabsTrigger
             value="Issue"
-            className=" data-[state=active]:shadow-none  dark:data-[state=active]:bg-transparent data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+            className=" data-[state=active]:shadow-none dark:data-[state=active]:text-text_color_dark dark:data-[state=active]:bg-transparent data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
           >
             Issue
           </TabsTrigger>
           <p className="mx-2">|</p>
           <TabsTrigger
             value="Security Hotspot"
-            className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+            className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent dark:data-[state=active]:text-text_color_dark data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
           >
             Security Hotspot
           </TabsTrigger>
           <p className="mx-2">|</p>
           <TabsTrigger
             value="Code"
-            className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+            className=" data-[state=active]:shadow-none dark:data-[state=active]:bg-transparent dark:data-[state=active]:text-text_color_dark data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
           >
             Code
           </TabsTrigger>

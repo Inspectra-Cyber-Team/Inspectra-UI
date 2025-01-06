@@ -129,10 +129,10 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
   };
 
   return (
-    <section className=" sm:flex gap-10  p-4 rounded-sm h-screen overflow-y-auto scrollbar-hide">
+    <section className="flex flex-col md:flex-row gap-10 lg:p-4 rounded-sm h-full overflow-y-auto scrollbar-hide">
       <ExportButton onClick={() => handleExportPDF(projectName)} />
       {/* Sidebar with grouped data */}
-      <section className="w-full sm:w-1/2 shadow-sm p-4">
+      <section className="w-full mx-auto md:w-1/2 border rounded-2xl dark:bg-card_color_dark p-4">
         <div className="mb-4">
           <p className="font-semibold">
             Total Security Hotspots:{" "}
@@ -180,10 +180,10 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
       </section>
 
       {/* Details section */}
-      <section className="w-full shadow-sm p-4">
+      <section className="w-full border rounded-2xl dark:bg-card_color_dark p-4">
         {selectedHotspot ? (
           <section>
-            <div className="">
+            <div>
               <p className="font-bold mb-5 ">{selectedHotspot.message}</p>
               <p className="mb-2">
                 {ruleData?.[0]?.name}{" "}
@@ -215,7 +215,7 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
                 </label>
                 <select
                   id="Tab"
-                  className="w-full rounded-md border-gray-200]"
+                  className="w-full rounded-md border-gray-200"
                   value={selectedTab}
                   onChange={(e) => handleTabChange(e.target.value)}
                 >
@@ -227,9 +227,9 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
               </div>
 
               {/* Desktop View */}
-              <div className="hidden sm:block mt-3">
+              <div className="hidden sm:block mt-3 overflow-auto scrollbar-hide">
                 <div className="border-b border-gray-200">
-                  <nav className="-mb-px flex gap-10 " aria-label="Tabs">
+                  <nav className="-mb-px flex gap-10" aria-label="Tabs">
                     {[
                       "Where is the risk?",
                       "What is the risk?",
@@ -243,11 +243,10 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
                           e.preventDefault();
                           handleTabChange(tab);
                         }}
-                        className={`shrink-0 border-b-2 px-1 pb-4 text-sm font-medium ${
-                          selectedTab === tab
+                        className={`shrink-0 border-b-2 px-1 pb-4 text-sm font-medium ${selectedTab === tab
                             ? "border-primary_color text-black dark:text-white"
-                            : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                        }`}
+                            : "border-transparent text-gray-500 hover:border-gray-300 dark:hover:text-gray-50 hover:text-gray-700"
+                          }`}
                         aria-current={selectedTab === tab ? "page" : undefined}
                       >
                         {tab}

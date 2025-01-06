@@ -9,7 +9,7 @@ import NoneUserScanSkeletion from "@/components/Skeleton/NoneUserScanSkeletion";
 export default function ProjectContent() {
   const [userUUID, setUserUUID] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-
+  
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
     setIsLoading(false);
