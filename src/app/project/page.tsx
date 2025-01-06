@@ -34,7 +34,7 @@ export default function page() {
     <main className="w-[90%] mx-auto">
       {/*  for create prject */}
       <ProjectComponent />
-      {/* project */}
+      {/* project page */}
       <ProjectContent />
     </main>
   );

@@ -160,8 +160,8 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
 
   return (
     <div
-      className={`scrollbar-hide overflow-auto  text-text_color_desc_light dark:text-text_color_desc_dark transition-all duration-300 ${
-        status === false ? "h-[100px]" : "h-[300px]"
+      className={`scrollbar-hide overflow-auto h-[200px]  text-text_color_desc_light dark:text-text_color_desc_dark transition-all duration-300 ${
+        status === false ? "h-[100px]" : "h-[250px]"
       }`}
     >
       {isFetchLoading ? (

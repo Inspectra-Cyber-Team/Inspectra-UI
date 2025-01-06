@@ -1,26 +1,49 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import QualityCardComponent from "./QualityGateCardComponent";
-import ResultCardComponent from "./ResultCardComponent";
-import ProjectCardComponent from "../CardProjectComponent/ProjectCardComponent";
 import NoneUserScan from "@/components/NoneUserScanProject/NoneUserScan";
 import NoneUserScanSkeletion from "@/components/Skeleton/NoneUserScanSkeletion";
-
+import { useEffect, useState } from "react";
+import ProjectCardComponent from "../CardProjectComponent/ProjectCardComponent";
+import QualityCardComponent from "./QualityGateCardComponent";
+import ResultCardComponent from "./ResultCardComponent";
+// from next auth
+import { useSession } from "next-auth/react";
+import { ListRepoComponent } from "./ListRepoComponent";
 export default function ProjectContent() {
   const [userUUID, setUserUUID] = useState("");
+  const [isGitUser, setIsGitUser] = useState("");
+
   const [isLoading, setIsLoading] = useState(true);
-  
+
+  // check is session user is github
+  const { data: session } = useSession();
+  const userData = () => {
+    if (session) {
+      const data = (session as any).provider;
+      setIsGitUser(data);
+    } else {
+      console.log("No session found");
+    }
+  };
+  useEffect(() => {
+    userData();
+  }, [session]);
+
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
     setIsLoading(false);
   });
+
   return (
     <section>
       {userUUID === "" ? (
+        // for non user login
         <div className=" lg:w-full">
           {isLoading ? <NoneUserScanSkeletion /> : <NoneUserScan />}
         </div>
+      ) : isGitUser ? (
+        <ListRepoComponent />
       ) : (
+        // for user login
         <div className="w-full h-full flex justify-between mb-[60px] md:my-[60px]">
           <div className="w-[30%] hidden lg:block">
             <QualityCardComponent />

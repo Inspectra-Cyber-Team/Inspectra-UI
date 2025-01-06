@@ -5,8 +5,6 @@ import React, { useEffect } from "react";
 
 export default function HowToFix({ ruleKey }: any) {
   const { data: ruleIssue } = useGetRulesByRuleNameQuery({ ruleName: ruleKey });
-
-
   useEffect(() => {
     // Run Prism's highlightAll function when ruleIssue changes or component mounts
     Prism.highlightAll();
