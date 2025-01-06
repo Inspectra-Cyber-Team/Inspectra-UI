@@ -15,10 +15,10 @@ import { FaFile } from "react-icons/fa";
 import { GoFileDirectoryFill } from "react-icons/go";
 import { IoIosMore } from "react-icons/io";
 
-import Prism from "prismjs";
-
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
 import { useRouter } from "next/navigation";
+import ReactTypingEffect from "react-typing-effect";
 import {
   Accordion,
   AccordionContent,
@@ -28,8 +28,6 @@ import {
 import HowToFix from "./HowToFix";
 import WhereIssue from "./WhereIssue";
 import WhyIssue from "./WhyIssue";
-import ReactTypingEffect from "react-typing-effect";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function IusseComponent({ ...props }) {
   const router = useRouter();
@@ -79,9 +77,6 @@ export default function IusseComponent({ ...props }) {
   const resultIssueDetail = issueDetail?.data;
 
   useEffect(() => setSize(issueData?.data?.total), [issueData]);
-  useEffect(() => {
-    Prism.highlightAll();
-  });
 
   return (
     <main className="w-full h-full  flex justify-between">

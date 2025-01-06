@@ -271,7 +271,7 @@
 pre[class*="language-"],
 code[class*="language-"] {
   background: transparent !important;
-  box-shadow: none; /* Remove any shadows if present */
+  box-shadow: none; 
 }
 
 .token.keyword {
