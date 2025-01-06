@@ -23,7 +23,7 @@ const LoadingSection: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center pt-10 px-4 max-w-3xl mx-auto">
+    <div className="flex flex-col items-center justify-center pt-10 mx-auto w-[300px] md:w-[750px]">
       <div className="w-full mb-12">
         <ol className="flex items-center justify-between w-full relative">
           {steps.map((step, index) => (
