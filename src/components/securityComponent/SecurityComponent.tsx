@@ -96,13 +96,6 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
           width={400}
           height={400}
         />
-        <ReactTypingEffect
-          text={[`Congratulation! No Security hotspots found in this project`]}
-          speed={100}
-          eraseSpeed={50}
-          eraseDelay={2000}
-          typingDelay={500}
-        />
       </section>
     );
   }

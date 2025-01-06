@@ -30,7 +30,7 @@ const NetworkStatusProvider = ({ children }: { children: React.ReactNode }) => {
           <div>
             <Image
               className="flex items-center mx-auto rounded-md"
-              src={"/images/no-connection.png"}
+              src={"/images/no-connection.svg"}
               width={500}
               height={500}
               layout="responsive"
