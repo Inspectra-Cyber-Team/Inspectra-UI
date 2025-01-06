@@ -136,7 +136,7 @@ export default function CreateProjectComponent() {
               <LuPlus />
             </div>
           </AlertDialogTrigger>
-          <AlertDialogContent className=" w-[90%]  md:w-full rounded-[20px] bg-text_color_dark h-[300px] flex flex-col justify-around">
+          <AlertDialogContent className=" w-[90%]  md:w-full rounded-[20px] bg-text_color_dark h-[325px] flex flex-col justify-around">
             <AlertDialogHeader>
               <AlertDialogTitle className="flex  justify-between text-center items-center">
                 <p className="text-text_title_24 text-text_color_light">
@@ -150,6 +150,13 @@ export default function CreateProjectComponent() {
                 </AlertDialogCancel>
               </AlertDialogTitle>
             </AlertDialogHeader>
+            <p className="mt-2 text-sm text-text_color_desc_light dark:text-text_color_desc_light">
+                  Project name must:
+                  <ul className="list-disc list-inside">
+                    <li>Not contain whitespace.</li>
+                    <li>Be unique (not previously used).</li>
+                  </ul>
+                </p>
             <Formik
               initialValues={initValues}
               onSubmit={(values) => {
@@ -162,7 +169,7 @@ export default function CreateProjectComponent() {
                   id="projectName"
                   name="projectName"
                   placeholder="Enter Project Name"
-                  className={`mt-1 w-full rounded-md border  bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color 
+                  className={`mt-1 w-full rounded-md border bg-text_color_dark dark:text-text_color_light px-3 py-3 focus:outline-none focus:right-2 focus:border-primary_color 
                 `}
                 />
                 <button
@@ -170,7 +177,7 @@ export default function CreateProjectComponent() {
                   className="w-full my-[30px] py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
                 >
                   {isLoading ? (
-                    <div className="spinner-border  animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
+                    <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
                   ) : (
                     "Submit"
                   )}
