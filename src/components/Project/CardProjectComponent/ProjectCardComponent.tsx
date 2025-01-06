@@ -70,6 +70,7 @@ export default function ProjectCardComponent() {
   const [listDirectories, setListDirectories] = useState<any>();
   const [errorNotSelectBranch, setErrorNotSelectBranch] = useState("");
   const [isFetchFilesLoading, setIsFetchFilesLoading] = useState(false);
+  console.log(selectedFiles)
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });

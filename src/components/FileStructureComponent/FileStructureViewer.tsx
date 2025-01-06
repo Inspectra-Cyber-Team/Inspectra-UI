@@ -124,8 +124,10 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
       <div
         style={style}
         ref={dragHandle}
-        className={`flex items-center py-1 cursor-pointer ${
-          selectedItem === fullPath ? "bg-blue-100" : ""
+        className={`flex items-center py-1 px-2 cursor-pointer transition-colors ${
+          selectedItem === fullPath
+            ? "bg-blue-100 text-blue-900"
+            : "hover:bg-gray-100 dark:hover:bg-gray-700"
         }`}
         onClick={() => {
           onSelectItem(fullPath); // Pass the full path instead of displayName
@@ -176,7 +178,6 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
           overscanCount={5}
           paddingTop={8}
           paddingBottom={8}
-
           openByDefault={false}
         >
           {Node}
