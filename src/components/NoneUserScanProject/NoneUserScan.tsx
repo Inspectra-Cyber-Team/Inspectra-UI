@@ -9,8 +9,6 @@ import { useCreateProjectScanNonUserMutation } from "@/redux/service/project";
 import { GitUrlType } from "@/data/GitUrl";
 import { toast } from "../hooks/use-toast";
 import { ScanStepsModal } from "@/components/NoneUserScanProject/ModalCondition";
-import Lottie from "lottie-react";
-import animtionLoading from "@/components/loadingAnimation.json";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import FileStructureViewer from "@/components/FileStructureComponent/FileStructureViewer";
+import LoadingSection from "./LoadingSection";
 
 export default function NoneUserScan() {
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -37,6 +36,9 @@ export default function NoneUserScan() {
   const [isFetchFilesLoading, setIsFetchFilesLoading] = useState(false);
   const [errorGitUrlMessage, setErrorGitUrlMessage] = useState("");
   const [errorNotSelectBranch, setErrorNotSelectBranch] = useState("");
+
+  const [status, setStatus] = useState(false);
+
   useEffect(() => {
     const storedCount =
       parseInt(localStorage.getItem("scanCount") ?? "0", 10) || 1;
@@ -60,7 +62,7 @@ export default function NoneUserScan() {
   };
 
   const handleSubmit = () => {
-    if (gitResult.length === 0 || gitUrlResult === "Select Project Branch") {
+    if (gitResult.length === 0 || selectedBranch === "Select Project Branch") {
       toast({
         description: "Please Provide Git UR and Branch",
         variant: "error",
@@ -95,6 +97,7 @@ export default function NoneUserScan() {
             description: "Project Scan is Successfully",
             variant: "success",
           });
+          setStatus(true);
           router.push(`project/${response?.data?.data}`);
         })
         .catch((error) => {
@@ -223,33 +226,32 @@ export default function NoneUserScan() {
         </p>
       </div>
 
-      {/* Main content */}
-      <div className="flex lg:justify-between xl:justify-around">
-        {/* image */}
-        <div className="hidden lg:flex justify-center items-center">
-          {theme == "dark" ? (
-            <img
-              src="/images/scan-anonymouse-user.png"
-              className="h-[450px]"
-              alt="scan image"
-            />
-          ) : (
-            <img
-              src="/images/scan.png"
-              className="h-[450px]"
-              alt="scan image"
-            />
-          )}
-        </div>
-
-        {/* scanning project */}
-        <div className="h-full lg:w-[50%] p-10 rounded-[20px] flex text-start flex-col justify-between">
-          {isLoading ? (
-            <div className="h-full w-full">
-              <Lottie animationData={animtionLoading} loop={true}></Lottie>
+      <div className="container">
+        {/* Check if loading */}
+        {isLoading ? (
+          <LoadingSection />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 py-8 max-w-7xl mx-auto">
+            {/* image */}
+            <div className="hidden lg:flex justify-center items-center">
+              {!isLoading &&
+                (theme === "dark" ? (
+                  <img
+                    src="/images/scan-anonymouse-user.png"
+                    className="h-[450px]"
+                    alt="scan image"
+                  />
+                ) : (
+                  <img
+                    src="/images/scan.png"
+                    className="h-[450px]"
+                    alt="scan image"
+                  />
+                ))}
             </div>
-          ) : (
-            <div className="space-y-6">
+
+            {/* Scan Project */}
+            <div className="space-y-6 w-full max-w-md mx-auto">
               <div className="space-y-6">
                 {/* git url */}
                 <div className="space-y-2">
@@ -267,7 +269,7 @@ export default function NoneUserScan() {
                         placeholder="Enter Git URL"
                         value={gitUrlResult}
                         onChange={handleChange} // Update the state with the input value
-                        className={`mt-1 w-full rounded-md border bg-card_color_light dark:bg-card_color_light dark:text-text_color_light pl-[80px] pr-3 py-3 focus:outline-none ${
+                        className={`mt-1 w-full rounded-md border bg-card_color_light  dark:text-text_color_light pl-[80px] pr-3 py-3 focus:outline-none ${
                           errorGitUrlMessage
                             ? "border-custom_red"
                             : "border-ascend_color"
@@ -291,16 +293,16 @@ export default function NoneUserScan() {
                           Branch
                         </p>
                         <div
-                          className={`flex px-5 justify-between items-center rounded-[10px] border border-1 bg-text_color_dark ${
+                          className={`flex px-5 justify-between items-center rounded-md border ${
                             errorNotSelectBranch
                               ? "border-custom_red"
                               : "border-ascend_color"
-                          }`}
+                          } bg-card_color_light`}
                         >
                           <p className="text-text_body_16  py-3  text-text_color_desc_light">
                             {selectedBranch}
                           </p>
-                          <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
+                          <IoIosArrowDown className="text-text_color_desc_light h-5 w-5  " />
                         </div>
                         {errorNotSelectBranch && (
                           <p className="mt-1 text-text_body_16 text-custom_red">
@@ -312,19 +314,19 @@ export default function NoneUserScan() {
                   ) : (
                     <DropdownMenuTrigger disabled asChild>
                       <div className="">
-                        <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark my-2">
+                        <p className="text-text_body_16 text-text_color_light dark:text-text_color_dark  my-2">
                           Branch
                         </p>
-                        <div className="flex px-5 justify-between items-center rounded-[10px] border border-ascend_color bg-background_light_mode">
-                          <p className="text-text_body_16  py-3  text-text_color_desc_light">
+                        <div className="flex px-5 justify-between items-center rounded-md border border-ascend_color bg-background_light_mode">
+                          <p className="text-text_body_16 py-3  text-text_color_desc_light">
                             {selectedBranch}
                           </p>
-                          <IoIosArrowDown className="text-text_color_light h-5 w-5  " />
+                          <IoIosArrowDown className="text-text_color_desc_light h-5 w-5  " />
                         </div>
                       </div>
                     </DropdownMenuTrigger>
                   )}
-                  <DropdownMenuContent className=" w-[290px] md:w-[450px] lg:w-[380px] xl:w-[510px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
+                  <DropdownMenuContent className=" w-[320px] md:w-[450px] text-text_color_light text-start bg-background_light_mode border-ascend_color mt-1">
                     {gitResult?.length === 0 ? (
                       <DropdownMenuItem disabled>
                         No branch to select
@@ -351,62 +353,64 @@ export default function NoneUserScan() {
                     Filter Scan By Files & Directory{" "}
                   </p>
                   <FileStructureViewer
-
                     data={listDirectories}
-                    selectedItem={selectedFile[0] || null}
+                    selectedItems={selectedFile}
                     onSelectItem={handleSelectItem}
                     isFetchLoading={isFetchFilesLoading}
+                    status={status}
                   />
                 </div>
 
                 {/* filter scan */}
-                <div className="space-y-2">
-                  <div className="text-text_body_16 text-text_color_light dark:text-text_color_dark  ">
-                    <p className="my-5">Filter Scan</p>
-                    <div className="flex items-center space-x-2 my-5">
-                      <Checkbox
-                        id="bug"
-                        onCheckedChange={(checked) =>
-                          handleCheckboxChange("bug", checked)
-                        }
-                        className="h-5 w-5 "
-                      />
-                      <label
-                        htmlFor="bug"
-                        className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Bug
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2  my-5">
-                      <Checkbox
-                        id="Vulnerability"
-                        onCheckedChange={(checked) =>
-                          handleCheckboxChange("Vulnerability", checked)
-                        }
-                        className="h-5 w-5"
-                      />
-                      <label
-                        htmlFor="Vulnerability"
-                        className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Vulnerability
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="Code Smell"
-                        onCheckedChange={(checked) =>
-                          handleCheckboxChange("code_smell", checked)
-                        }
-                        className="h-5 w-5"
-                      />
-                      <label
-                        htmlFor="Code Smell"
-                        className="text-text_body_16  font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Code Smell
-                      </label>
+                <div className="space-y-4">
+                  <div className="text-text_body_16 text-text_color_light dark:text-text_color_dark">
+                    <p className="mb-3">Filter Scan</p>
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="bug"
+                          onCheckedChange={(checked) =>
+                            handleCheckboxChange("bug", checked)
+                          }
+                          className="h-5 w-5 "
+                        />
+                        <label
+                          htmlFor="bug"
+                          className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          Bug
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="Vulnerability"
+                          onCheckedChange={(checked) =>
+                            handleCheckboxChange("Vulnerability", checked)
+                          }
+                          className="h-5 w-5"
+                        />
+                        <label
+                          htmlFor="Vulnerability"
+                          className="text-text_body_16 font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          Vulnerability
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="Code Smell"
+                          onCheckedChange={(checked) =>
+                            handleCheckboxChange("code_smell", checked)
+                          }
+                          className="h-5 w-5"
+                        />
+                        <label
+                          htmlFor="Code Smell"
+                          className="text-text_body_16  font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          Code Smell
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -414,14 +418,14 @@ export default function NoneUserScan() {
                 {/* submit scan */}
                 <button
                   onClick={() => handleSubmit()}
-                  className="w-full mt-10 py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-md"
+                  className="w-full mt-6 py-3 bg-primary_color text-text_color_light font-medium flex justify-center items-center rounded-md hover:bg-primary_color/90 transition-colors"
                 >
                   Start Scan
                 </button>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

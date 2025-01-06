@@ -1,8 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import Lottie from "lottie-react";
-import animtionLoading from "@/components/loadingAnimation.json";
 import FileStructureViewer from "@/components/FileStructureComponent/FileStructureViewer";
+import animtionLoading from "@/components/loadingAnimation.json";
 import {
   Select,
   SelectContent,
@@ -10,6 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Lottie from "lottie-react";
+import { useEffect, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 import ReactTypingEffect from "react-typing-effect";
 
@@ -47,6 +47,11 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import CheckGrade from "@/lib/checkGrade";
 import { getCoverageData, getDuplicationData, timeSince } from "@/lib/utils";
 import { DialogTitle } from "@radix-ui/react-dialog";
@@ -56,12 +61,6 @@ import { FaCheck, FaGithub, FaGitlab } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
-import { LottiePlayer } from "@lottiefiles/lottie-player";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 export default function ProjectCardComponent() {
   const [userUUID, setUserUUID] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -70,7 +69,9 @@ export default function ProjectCardComponent() {
   const [listDirectories, setListDirectories] = useState<any>();
   const [errorNotSelectBranch, setErrorNotSelectBranch] = useState("");
   const [isFetchFilesLoading, setIsFetchFilesLoading] = useState(false);
-  console.log(selectedFiles)
+  const [status, setStatus] = useState(false);
+
+ 
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
@@ -148,26 +149,6 @@ export default function ProjectCardComponent() {
       setIsLoading(false);
     }
   };
-
-  // useEffect(() => {
-  //   if (isScanSuccess && selectedIndex !== null) {
-  //     toast({
-  //       description: "Project Scan Success",
-  //       variant: "success",
-  //     });
-  //     setIsOpen(false);
-  //     setIsLoading(false);
-  //   }
-  //   if (isScanError) {
-  //     toast({
-  //       description: "Project is Current in Use",
-  //       variant: "error",
-  //     });
-  //     setIsLoading(false);
-  //   }
-  // }, [isScanError, isScanSuccess, selectedIndex]);
-
-  // handle for git input from user and fetch api
 
   // for search
   const [filteredResults, setFilteredResults] = useState<any[]>(
@@ -292,6 +273,7 @@ export default function ProjectCardComponent() {
 
         if (response.status === 200) {
           setIsFetchFilesLoading(false); // Stop loading
+          setStatus(true);
           const data = await response.json();
           setListDirectories(data);
         }
@@ -924,15 +906,17 @@ export default function ProjectCardComponent() {
                             Configure Project
                           </p>
                         </AlertDialogTrigger>
-                        <AlertDialogContent className=" w-[90%] md:w-full rounded-[20px] bg-text_color_dark  flex flex-col   ">
+                        <AlertDialogContent className=" w-[95%] lg:max-w-[600px] xl:max-w-[600px] md:w-full rounded-[20px] bg-text_color_dark  flex flex-col   ">
                           <AlertDialogHeader>
                             <AlertDialogTitle className="flex justify-between text-center items-center">
                               <p className="text-text_title_24 text-text_color_light">
                                 {isLoading ? (
                                   <p>
-                                    Scanning on project{" "}
-                                    {projectResult?.component?.component.name}{" "}
-                                    ...
+                                    Project
+                                    {
+                                      projectResult?.component?.component.name
+                                    }{" "}
+                                    is scanning ...
                                   </p>
                                 ) : (
                                   <p>
@@ -1033,7 +1017,7 @@ export default function ProjectCardComponent() {
                                     </div>
                                   </DropdownMenuTrigger>
                                 )}
-                                <DropdownMenuContent className=" w-[290px] md:w-[450px] lg:w-[380px] xl:w-[465px] text-text_color_light text-start bg-background_light_mode border-ascend_color">
+                                <DropdownMenuContent className=" w-[340px] md:w-[460px] lg:w-[550px]  text-text_color_light text-start bg-background_light_mode border-ascend_color">
                                   {gitResult?.length === 0 ? (
                                     <DropdownMenuItem disabled>
                                       No branch to select
@@ -1065,11 +1049,13 @@ export default function ProjectCardComponent() {
                                 <p className="mt-5 text-text_body_16 text-text_color_light">
                                   Filter Scan By Files & Directory{" "}
                                 </p>
+
                                 <FileStructureViewer
                                   data={listDirectories}
-                                  selectedItem={selectedFiles}
+                                  selectedItems={selectedFiles}
                                   onSelectItem={handleSelectItem}
                                   isFetchLoading={isFetchFilesLoading}
+                                  status={status}
                                 />
                               </div>
                               {/* filter scan */}

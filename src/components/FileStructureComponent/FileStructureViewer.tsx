@@ -1,9 +1,10 @@
 import { ChevronRightIcon } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { Tree } from "react-arborist";
-import { FaFolder } from "react-icons/fa6";
+import { FaFolder, FaFolderOpen } from "react-icons/fa6";
 import { IoIosDocument } from "react-icons/io";
-import ReactTypingEffect from "react-typing-effect";
+
+import SkeletonFileExplorer from "../Skeleton/skeleton-file-explorer";
 
 interface FileStructure {
   path: string;
@@ -20,40 +21,24 @@ interface TreeNode {
 
 interface FileStructureViewerProps {
   data: FileStructure;
-  selectedItem: string | null;
+  selectedItems: string[]; // Updated to accept an array of selected paths
   onSelectItem: (item: string) => void;
   isFetchLoading: boolean;
+  status: boolean;
 }
 
 const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
   data,
-  selectedItem,
+  selectedItems, // Updated prop name to reflect it's an array
   onSelectItem,
   isFetchLoading,
+  status,
 }) => {
   const [treeData, setTreeData] = useState<TreeNode[]>([]);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
     setTreeData(transformData(data));
   }, [data]);
-
-  useEffect(() => {
-    const updateDimensions = () => {
-      const container = document.getElementById("file-structure-container");
-      if (container) {
-        setDimensions({
-          width: container.clientWidth,
-          height: container.clientHeight,
-        });
-      }
-    };
-
-    updateDimensions();
-    window.addEventListener("resize", updateDimensions);
-
-    return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
 
   function transformData(
     structure: FileStructure,
@@ -119,34 +104,54 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
     const displayName =
       node.data.name || (isFolder ? "Unnamed Folder" : "Unnamed File");
     const fullPath = node.id;
+    const isSelected = selectedItems.includes(fullPath); // Check if the item is in the selectedItems array
+
+    const handleClick = () => {
+      onSelectItem(fullPath); // Notify the parent of the selected item
+      if (isFolder && !node.isOpen) {
+        node.toggle();
+      }
+    };
 
     return (
       <div
         style={style}
         ref={dragHandle}
-        className={`flex items-center py-1 px-2 cursor-pointer transition-colors ${
-          selectedItem === fullPath
-            ? "bg-blue-100 text-blue-900"
-            : "hover:bg-gray-100 dark:hover:bg-gray-700"
+        className={`flex items-center py-1 cursor-pointer transition-colors ${
+          isSelected ? "bg-slate-200 text-black" : "hover:bg-gray-100"
         }`}
-        onClick={() => {
-          onSelectItem(fullPath); // Pass the full path instead of displayName
-          if (isFolder) {
-            node.toggle();
-          }
-        }}
+        onClick={handleClick}
       >
         {isFolder && (
           <ChevronRightIcon
             className={`w-4 h-4 mr-1 transition-transform ${
               node.isOpen ? "transform rotate-90" : ""
             }`}
+            onClick={() => {
+              node.toggle();
+            }}
           />
         )}
         {isFolder ? (
-          <FaFolder className="w-5 h-5 mr-2 text-yellow-500" />
+          node.isOpen ? (
+            <FaFolderOpen
+              className={`w-5 h-5 mr-2 ${
+                isSelected ? "text-yellow-500" : "text-yellow-500"
+              }`}
+            />
+          ) : (
+            <FaFolder
+              className={`w-5 h-5 mr-2 ${
+                isSelected ? "text-yellow-500" : "text-yellow-500"
+              }`}
+            />
+          )
         ) : (
-          <IoIosDocument className="w-5 h-5 mr-2 text-gray-500" />
+          <IoIosDocument
+            className={`w-5 h-5 mr-2 ${
+              isSelected ? "text-gray-500" : "text-gray-500"
+            }`}
+          />
         )}
         <span className="truncate">{displayName}</span>
       </div>
@@ -155,36 +160,31 @@ const FileStructureViewer: React.FC<FileStructureViewerProps> = ({
 
   return (
     <div
-      id="file-structure-container"
-      className="h-[200px]  scrollbar-default  text-text_color_desc_light dark:text-text_color_desc_dark"
+      className={`scrollbar-hide overflow-auto  text-text_color_desc_light dark:text-text_color_desc_dark transition-all duration-300 ${
+        status === false ? "h-[100px]" : "h-[300px]"
+      }`}
     >
       {isFetchLoading ? (
-        <div className="flex items-center justify-center h-full">
-          <ReactTypingEffect
-            text={[`Fetching files and folders ...`]}
-            speed={100}
-            eraseSpeed={50}
-            eraseDelay={2000}
-            typingDelay={500}
-          />
+        <div className="flex  items-center justify-center  h-full">
+          <SkeletonFileExplorer />
         </div>
       ) : treeData.length > 0 ? (
         <Tree
           data={treeData}
-          width={dimensions.width}
-          height={dimensions.height}
+          width="100vw"
           indent={24}
           rowHeight={32}
           overscanCount={5}
           paddingTop={8}
           paddingBottom={8}
           openByDefault={false}
+          className="scrollbar-hide"
         >
           {Node}
         </Tree>
       ) : (
-        <div className="flex  items-center justify-center  mt-20  text-text_color_desc_light dark:text-text_color_desc_dark">
-          No files or folders found
+        <div className="flex h-full items-center justify-center  text-center  text-text_color_desc_light dark:text-text_color_desc_dark">
+          <p> No files or folders found</p>
         </div>
       )}
     </div>

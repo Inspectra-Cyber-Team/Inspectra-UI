@@ -375,7 +375,7 @@ export const LoginAuth = () => {
         }}
         disabled={isLoading}
       >
-        <FaGithub className="text-text_title_24" />
+        <FaGithub className="text-text_title_24 dark:text-text_color_light" />
         <span className="text-text_color_light ml-3">
           {isLoading1 ? "Signing in..." : "Sign in with GitHub"}
         </span>

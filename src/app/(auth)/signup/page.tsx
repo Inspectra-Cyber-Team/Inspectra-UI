@@ -79,7 +79,7 @@ export default function page() {
         </div>
 
         {/* form */}
-        <div className=" h-screen m-[40px] md:w-[60%] md:h-[90%]  lg:w-[60%] lg:h-[70%]   xl:w-[80%]  md:my-auto md:mx-auto flex flex-col xl:h-full">
+        <div className=" h-full m-[40px] md:w-[60%] md:h-[90%]  lg:w-[60%] lg:h-[70%]   xl:w-[80%]  md:my-auto md:mx-auto flex flex-col xl:h-full">
           {/* Logo and close icon */}
           <div className="w-full flex justify-between">
             {/* Logo and name */}
