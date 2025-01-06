@@ -134,7 +134,7 @@ export const RiskComponent = ({
   };
 
   return (
-    <div className="mt-4 prose dark:text-text_color_desc_light">
+    <div className="mt-4 prose dark:text-text_color_desc_dark">
       <div dangerouslySetInnerHTML={{ __html: getContent() }} />
     </div>
   );

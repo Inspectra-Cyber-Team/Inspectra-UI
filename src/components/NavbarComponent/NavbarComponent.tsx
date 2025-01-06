@@ -38,8 +38,7 @@ export default function NavbarComponent() {
   };
 
   const { data: userData } = useGetUserDetailQuery({ uuid: userUUID }); 
-  console.log(userData)
-
+  
   const pathname = usePathname();
   const handleClick = () => {
     if (setIsOpen) {
