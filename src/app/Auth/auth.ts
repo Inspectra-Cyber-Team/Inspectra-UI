@@ -1,13 +1,13 @@
 import NextAuth, { Session } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "@auth/core/jwt";
 
 type CustomSession = {
   accessToken?: string;
   username?: string;
   email?: string;
+  provider?: string;
 } & Session;
 
 export const {
@@ -39,6 +39,7 @@ export const {
         token.accessToken = account.access_token;
         token.username = profile.email || profile.name || "";
         token.email = profile.email || "";
+        token.provider = account.provider || "";
       }
       return token;
     },
@@ -47,6 +48,7 @@ export const {
       session.accessToken = token.accessToken as string | undefined;
       session.username = token.username as string | undefined;
       session.email = token.email as string | undefined;
+      session.provider = token.provider as string | undefined;
 
       return session;
     },
