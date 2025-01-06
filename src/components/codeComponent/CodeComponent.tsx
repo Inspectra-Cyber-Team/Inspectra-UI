@@ -15,6 +15,8 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 
+import ExportButton from "../ExportComponent/ExportComponent";
+
 import {
   Table,
   TableBody,
@@ -206,6 +208,20 @@ export default function CodeComponent({ projectName }: CodeComponentProps) {
 
   const [componentName, setComponentName] = React.useState<string>("");
 
+  const handleExportPDF = async (projectName: string) => {
+    const endpoint = `${process.env.NEXT_PUBLIC_API_URL}pdf/${projectName}`;
+    const response = await fetch(endpoint);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `${projectName}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -352,6 +368,7 @@ export default function CodeComponent({ projectName }: CodeComponentProps) {
   return (
     <div>
       <div className="w-full">
+        <ExportButton onClick={() => handleExportPDF(projectName)} />
         <div className="flex items-center py-4">
           <Input
             placeholder="Filter component ..."

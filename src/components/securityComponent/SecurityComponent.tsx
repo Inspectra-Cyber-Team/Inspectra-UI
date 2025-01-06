@@ -13,7 +13,7 @@ import RiskComponent from "./RiskComponent";
 import { Hotspot } from "@/types/SecurityHostspot";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import ReactTypingEffect from "react-typing-effect";
+import ExportButton from "../ExportComponent/ExportComponent";
 
 type SecurityComponentProps = {
   projectName: string;
@@ -27,6 +27,20 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
     error: securityHotspotError,
     isLoading: securityHotspotIsLoading,
   } = useGetSecurityHotspotQuery({ projectName });
+
+  const handleExportPDF = async (projectName: string) => {
+    const endpoint = `${process.env.NEXT_PUBLIC_API_URL}pdf/${projectName}`;
+    const response = await fetch(endpoint);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `${projectName}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const [roleName, setRoleName] = useState<string>("");
   const [key, setKey] = useState<string>("");
@@ -96,13 +110,6 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
           width={400}
           height={400}
         />
-        <ReactTypingEffect
-          text={[`Congratulation! No Security hotspots found in this project`]}
-          speed={100}
-          eraseSpeed={50}
-          eraseDelay={2000}
-          typingDelay={500}
-        />
       </section>
     );
   }
@@ -123,6 +130,7 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
 
   return (
     <section className=" sm:flex gap-10  p-4 rounded-sm h-screen overflow-y-auto scrollbar-hide">
+      <ExportButton onClick={() => handleExportPDF(projectName)} />
       {/* Sidebar with grouped data */}
       <section className="w-full sm:w-1/2 shadow-sm p-4">
         <div className="mb-4">
@@ -142,7 +150,7 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
           {Object.entries(groupedData).map(([probability, items]: any) => (
             <AccordionItem key={probability} value={probability}>
               <AccordionTrigger>
-                <span className="text-black">
+                <span className="text-black dark:text-text_color_desc_dark">
                   Review Priority:{" "}
                   <span className={`${getColorClass(probability)}`}>
                     {probability}

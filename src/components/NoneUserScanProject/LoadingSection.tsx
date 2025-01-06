@@ -17,7 +17,7 @@ const LoadingSection: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentStep(1); // Move to 'Analyzing Code' step
-    }, 5000);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, []);

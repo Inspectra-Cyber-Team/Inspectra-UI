@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { FaFile } from "react-icons/fa";
 import { GoFileDirectoryFill } from "react-icons/go";
 import { IoIosMore } from "react-icons/io";
+import ExportButton from "@/components/ExportComponent/ExportComponent";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useGetRulesByRuleNameQuery } from "@/redux/service/rule";
@@ -28,6 +29,7 @@ import {
 import HowToFix from "./HowToFix";
 import WhereIssue from "./WhereIssue";
 import WhyIssue from "./WhyIssue";
+
 
 export default function IusseComponent({ ...props }) {
   const router = useRouter();
@@ -64,6 +66,20 @@ export default function IusseComponent({ ...props }) {
     cleanCodeAttributeCategories: cleanCode,
   });
 
+  const handleExportPDF = async (projectName: string) => {
+    const endpoint = `${process.env.NEXT_PUBLIC_API_URL}pdf/${projectName}`;
+    const response = await fetch(endpoint);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `${projectName}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   //  fetch detail of issue
   const { data: issueDetail } = useGetIssueDetailQuery({
     projectKey: projectKey,
@@ -80,6 +96,7 @@ export default function IusseComponent({ ...props }) {
 
   return (
     <main className="w-full h-full  flex justify-between">
+      <ExportButton onClick={() => handleExportPDF(props.props)} />
       {/* when on click issue card */}
       {activeContent === true ? (
         <div className="w-full h-full flex flex-col lg:flex-row justify-between">
@@ -509,13 +526,7 @@ export default function IusseComponent({ ...props }) {
             {issueData?.data?.issues.length === 0 ? (
               <div className="w-full mx-auto text-center text-text_title_20 text-text_color_light dark:text-text_color_dark">
                 <img src="/images/NoIssue.png" className="mx-auto" />
-                <ReactTypingEffect
-                  text={[`Congratulation! No issue found in this project`]}
-                  speed={100}
-                  eraseSpeed={50}
-                  eraseDelay={2000}
-                  typingDelay={500}
-                />
+                <p>Congratulation! No issue found in this project</p>
               </div>
             ) : (
               <section className="h-full">

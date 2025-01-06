@@ -37,7 +37,7 @@ export default function NavbarComponent() {
     setIsMenuOpen(false);
   };
 
-  const { data: userData } = useGetUserDetailQuery({ uuid: userUUID });
+  const { data: userData } = useGetUserDetailQuery({ uuid: userUUID }); 
 
   const pathname = usePathname();
   const handleClick = () => {
