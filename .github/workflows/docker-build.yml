@@ -1,6 +1,6 @@
 name: Docker Build, Push, and Deploy
 
-#push to dev
+#auto trigger when push to dev branch
 on:
   push:
     branches:
