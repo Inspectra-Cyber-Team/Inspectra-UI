@@ -17,10 +17,12 @@ export default function ProjectContent() {
   return (
     <section>
       {userUUID === "" ? (
+        // for non user login 
         <div className=" lg:w-full">
           {isLoading ? <NoneUserScanSkeletion /> : <NoneUserScan />}
         </div>
       ) : (
+        // for user login 
         <div className="w-full h-full flex justify-between mb-[60px] md:my-[60px]">
           <div className="w-[30%] hidden lg:block">
             <QualityCardComponent />
