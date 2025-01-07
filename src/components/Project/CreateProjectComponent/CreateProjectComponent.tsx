@@ -136,7 +136,7 @@ export default function CreateProjectComponent() {
               <LuPlus />
             </div>
           </AlertDialogTrigger>
-          <AlertDialogContent className=" w-[90%]  md:w-full rounded-[20px] bg-text_color_dark h-[325px] flex flex-col justify-around">
+          <AlertDialogContent className=" w-[90%]  md:w-full rounded-[20px] bg-text_color_dark h-auto p-5 flex flex-col justify-around">
             <AlertDialogHeader>
               <AlertDialogTitle className="flex  justify-between text-center items-center">
                 <p className="text-text_title_24 text-text_color_light">
