@@ -59,7 +59,13 @@ export function ListRepoComponent() {
   };
 
   const handleSubmit = () => {
-    createProject({ projectName: "test3" });
+    try {
+      createProject({ projectName: "test3" });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      console.log("error");
+    }
   };
 
   return (
