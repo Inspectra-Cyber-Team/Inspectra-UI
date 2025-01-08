@@ -134,10 +134,10 @@ export default function ProjectCardComponent() {
         });
         setIsOpen(false);
       } else {
-        toast({
-          description: "Something went wrong!",
-          variant: "error",
-        });
+        // toast({
+        //   description: "Something went wrong!",
+        //   variant: "error",
+        // });
       }
     } catch (error) {
       console.error("Error while creating scan project:", error);
