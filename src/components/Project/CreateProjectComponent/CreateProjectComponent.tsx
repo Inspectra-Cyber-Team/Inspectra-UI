@@ -33,22 +33,17 @@ export default function CreateProjectComponent() {
   const [createProjectName, { isSuccess, isError }] =
     useCreateProjectNameMutation();
 
-  type ProjectNameType = {
-    projectName: string;
-  };
-
   const [userUUID, setUserUUID] = useState("");
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") || "");
   });
 
-  const initValues: ProjectNameType = {
+  const initValues: any = {
     projectName: "",
   };
 
-  const handleSubmit = async (values: ProjectNameType) => {
+  const handleSubmit = async (values: any) => {
     setIsLoading(true);
-    setProjectName(values.projectName);
     try {
       const res = await createProjectName({ projectName: values });
       if (res?.data) {
@@ -151,12 +146,12 @@ export default function CreateProjectComponent() {
               </AlertDialogTitle>
             </AlertDialogHeader>
             <p className="mt-2 text-sm text-text_color_desc_light dark:text-text_color_desc_light">
-                  Project name must:
-                  <ul className="list-disc list-inside">
-                    <li>Not contain whitespace.</li>
-                    <li>Be unique (not previously used).</li>
-                  </ul>
-                </p>
+              Project name must:
+              <ul className="list-disc list-inside">
+                <li>Not contain whitespace.</li>
+                <li>Be unique (not previously used).</li>
+              </ul>
+            </p>
             <Formik
               initialValues={initValues}
               onSubmit={(values) => {
