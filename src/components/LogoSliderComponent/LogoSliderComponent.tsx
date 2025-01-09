@@ -59,6 +59,22 @@ export default function LogoSliderComponent() {
         <div className={styles.slide}>
           <img src="/images/next.png" alt="Next" className={styles.imageSize} />
         </div>
+        <div className={styles.slide}>
+          <img
+            src="/images/Vue.png"
+            alt="Vue"
+            className={styles.imageSize}
+            style={{ height: '60px', width: '60px' }}
+          />
+        </div>
+        <div className={styles.slide}>
+          <img
+            src="/images/Kotlin.png"
+            alt="Kotlin"
+            className={styles.imageSize}
+            style={{ height: '60px', width: '60px' }}
+          />
+        </div>
         {/* second image */}
         <div className={styles.slide}>
           <img
@@ -111,6 +127,22 @@ export default function LogoSliderComponent() {
         </div>
         <div className={styles.slide}>
           <img src="/images/next.png" alt="Next" className={styles.imageSize} />
+        </div>
+        <div className={styles.slide}>
+          <img
+            src="/images/Vue.png"
+            alt="Vue"
+            className={styles.imageSize}
+            style={{ height: '60px', width: '60px' }}
+          />
+        </div>
+        <div className={styles.slide}>
+          <img
+            src="/images/Kotlin.png"
+            alt="Kotlin"
+            className={styles.imageSize}
+            style={{ height: '60px', width: '60px' }}
+          />
         </div>
       </div>
     </div>
