@@ -24,9 +24,9 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
   console.log("Topic:", topic);
   const router = useRouter();
 
-  const [currentPage, setCurrentPage] = useState(1); 
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [likedBlogs, setLikedBlogs] = useState<string[]>([]); 
+  const [likedBlogs, setLikedBlogs] = useState<string[]>([]);
 
   // Fetch blog data for the specific topic and pagination
   const { data: blogData } = useUseGetTopicNameQuery({
@@ -55,7 +55,7 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
       if (res?.data?.success) {
         setLikedBlogs((prev) => [...prev, uuid]); // Add liked blog UUID to state
       }
-      
+
     } catch (error) {
       console.error("Error liking the blog:", error);
     }
@@ -66,7 +66,7 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
       {/* blog card */}
       <section>
         {blogList.length === 0 ? (
-          <div className="flex justify-center items-center">No data</div>
+          <div className="flex justify-center items-center my-10">No data</div>
         ) : (
           blogList?.map((blog: Blog) => (
             <div
@@ -95,8 +95,8 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
                 </h4>
 
                 {/* description */}
-                <div className="text-text_body_16  cursor-pointer  text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-1" 
-                dangerouslySetInnerHTML={{ __html: blog?.description || "" }}>
+                <div className="text-text_body_16  cursor-pointer  text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-1"
+                  dangerouslySetInnerHTML={{ __html: blog?.description || "" }}>
                 </div>
 
                 {/* created at */}
@@ -115,11 +115,10 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
                   {/* like */}
                   <div className="flex gap-2 items-center">
                     <FaHandsClapping
-                      className={`cursor-pointer ${
-                        likedBlogs.includes(blog?.uuid)
+                      className={`cursor-pointer ${likedBlogs.includes(blog?.uuid)
                           ? "text-orange-400 text-xl"
                           : "text-text_color_desc_light dark:text-text_color_desc_dark text-xl"
-                      }`}
+                        }`}
                       onClick={() => handleLike(blog?.uuid)}
                     />
                     <p>{blog?.likesCount}</p>
@@ -146,43 +145,46 @@ export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
         )}
       </section>
 
-      {/* pagination */}
-      <Pagination className="flex justify-center items-center mt-6">
-        <PaginationContent className="flex gap-2 items-center">
-          <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              onClick={() =>
-                currentPage > 1 && handlePageChange(currentPage - 1)
-              } // Go to previous page
-            />
-          </PaginationItem>
 
-          {/* Display page numbers dynamically */}
-          {[...Array(totalPages)].map((_, index) => (
-            <PaginationItem key={index}>
-              <PaginationLink
+      {/* Pagination - only display if there is data */}
+      {blogList.length > 0 && (
+        <Pagination className="flex justify-center items-center mt-6">
+          <PaginationContent className="flex gap-2 items-center">
+            <PaginationItem>
+              <PaginationPrevious
                 href="#"
-                onClick={() => handlePageChange(index + 1)}
-                className={
-                  currentPage === index + 1 ? "bg-[#B9FF66] text-black" : ""
+                onClick={() =>
+                  currentPage > 1 && handlePageChange(currentPage - 1)
                 }
-              >
-                {index + 1}
-              </PaginationLink>
+              />
             </PaginationItem>
-          ))}
 
-          <PaginationItem>
-            <PaginationNext
-              href="#"
-              onClick={() =>
-                currentPage < totalPages && handlePageChange(currentPage + 1)
-              } // Go to next page
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            {/* Display page numbers dynamically */}
+            {[...Array(totalPages)].map((_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  href="#"
+                  onClick={() => handlePageChange(index + 1)}
+                  className={
+                    currentPage === index + 1 ? "bg-[#B9FF66] text-black" : ""
+                  }
+                >
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={() =>
+                  currentPage < totalPages && handlePageChange(currentPage + 1)
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 }

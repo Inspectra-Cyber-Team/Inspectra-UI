@@ -122,7 +122,7 @@ export default function BlogComponent() {
               </div>
 
               {/* title */}
-              <h4 className="text-text_title_20 cursor-pointer line-clamp-2 text-text_color_light dark:text-text_color_dark font-semibold">
+              <h4 className="text-text_title_20 cursor-pointer line-clamp-1 text-text_color_light dark:text-text_color_dark font-semibold">
                 {blog?.title}
               </h4>
 

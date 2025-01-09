@@ -95,17 +95,6 @@ const LoadingSection: React.FC = () => {
             loop={true}
             className="mx-auto w-80 h-80"
           />
-          {currentStep === 1 && (
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Search className="w-16 h-16 text-primary_color animate-pulse" />
-            </motion.div>
-          )}
         </div>
       </motion.div>
     </div>

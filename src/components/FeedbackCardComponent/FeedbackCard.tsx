@@ -63,7 +63,7 @@ export default function FeedbackCard() {
             <div>
               <hr className="my-5" />
               <div className="w-full flex justify-between items-center">
-                <div className="text-text_color_desc_light dark:text-text_color_desc_dark text-text_body_16">
+                <div className="text-text_color_desc_light dark:text-text_color_desc_dark text-text_body_16 flex flex-col justify-start items-start">
                   {feedback?.firstName} {feedback?.lastName}
                   <p>{convertToDayMonthYear(feedback?.createdAt)}</p>
                 </div>
