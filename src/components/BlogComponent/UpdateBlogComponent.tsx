@@ -6,7 +6,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useUploadFileMutation } from "@/redux/service/faqs";
+import {
+  useUploadFileMutation,
+  useUploadMultipleFileMutation,
+} from "@/redux/service/faqs";
 import { useToast } from "@/components/hooks/use-toast";
 import {
   useUpdateBlogMutation,
@@ -43,7 +46,7 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
   const router = useRouter();
   const { data: blogUpdateData } = useGetBlogByUuidQuery({ uuid });
   const { toast } = useToast();
-  const [uploadFile] = useUploadFileMutation();
+  const [uploadFile] = useUploadMultipleFileMutation();
   const [updateBlog] = useUpdateBlogMutation();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -155,7 +158,6 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
                   ...values,
                   thumbnail: finalThumbnails,
                 };
-
                 await handleUpdateBlog(updatedValues);
               } catch (error) {
                 console.error("Error updating blog:", error);
