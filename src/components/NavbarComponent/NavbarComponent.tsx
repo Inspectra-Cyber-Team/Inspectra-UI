@@ -41,9 +41,7 @@ export default function NavbarComponent() {
 
   const pathname = usePathname();
   const handleClick = () => {
-    if (setIsOpen) {
-      setIsOpen(false); // Close menu if this prop is passed
-    }
+    setIsOpen(false); // Close menu if this prop is passed
   };
   useEffect(() => {
     const storedUUID = localStorage.getItem("userUUID") || "";
@@ -270,21 +268,40 @@ export default function NavbarComponent() {
                 )}
                 {/* menu icon */}
                 <div className="text-[25px] block lg:hidden ">
+                  {/* no account */}
                   {userUUID === "" ? (
-                    <Sheet>
+                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
                       <SheetTrigger asChild>
                         <IoMenu />
                       </SheetTrigger>
                       <SheetContent className="bg-background_light_mode dark:bg-background_dark_mode border-hidden">
                         <ul className="  text-text_color_light dark:text-text_color_dark  text-text_body_16  justify-between space-y-4 flex flex-col">
                           {navbarData.map((item, index: number) => (
-                            <Link key={index} href={item.link}>
+                            <Link
+                              key={index}
+                              href={
+                                item.link === "/document"
+                                  ? "https://inspectra-doc.istad.co/"
+                                  : item.link
+                              }
+                              target={
+                                item.link === "/document" ? "_blank" : undefined
+                              } // Open in new tab for /document
+                              rel={
+                                item.link === "/document"
+                                  ? "noopener noreferrer"
+                                  : undefined
+                              } // Add security for external links
+                            >
                               {pathname === item.link ? (
-                                <p className="text-secondary_color">
+                                <p
+                                  onClick={handleClick}
+                                  className="text-secondary_color"
+                                >
                                   {item?.name}
                                 </p>
                               ) : (
-                                <p>{item.name}</p>
+                                <p onClick={handleClick}>{item.name}</p>
                               )}
                             </Link>
                           ))}
@@ -341,22 +358,28 @@ export default function NavbarComponent() {
                               } // Add security for external links
                             >
                               {pathname === item.link ? (
-                                <p className="text-secondary_color">
+                                <p
+                                  onClick={handleClick}
+                                  className="text-secondary_color"
+                                >
                                   {item?.name}
                                 </p>
                               ) : (
-                                <p>{item.name}</p>
+                                <p onClick={handleClick}>{item.name}</p>
                               )}
                             </Link>
                           ))}
                           {navbarDataWithProfile.map((item, index: number) => (
                             <Link key={index} href={item.link}>
                               {pathname === item.link ? (
-                                <p className="text-secondary_color">
+                                <p
+                                  onClick={handleClick}
+                                  className="text-secondary_color"
+                                >
                                   {item?.name}
                                 </p>
                               ) : (
-                                <p>{item.name}</p>
+                                <p onClick={handleClick}>{item.name}</p>
                               )}
                             </Link>
                           ))}

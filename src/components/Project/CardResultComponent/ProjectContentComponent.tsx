@@ -40,6 +40,7 @@ export default function ProjectContent() {
         <div className=" lg:w-full">
           {isLoading ? <NoneUserScanSkeletion /> : <NoneUserScan />}
         </div>
+        // for git user
       ) : isGitUser === "github" ? (
         <ListRepoComponent />
       ) : (

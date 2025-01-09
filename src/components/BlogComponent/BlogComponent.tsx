@@ -27,7 +27,6 @@ export default function BlogComponent() {
     pageSize: 4,
   });
 
-
   // Adjust for zero-based page indexing
   const blogList = blogData?.content;
 
@@ -37,8 +36,6 @@ export default function BlogComponent() {
       setTotalPages(blogData?.totalPages);
     }
   }, [blogData]);
-
-
 
   // Function to handle page change
   const handlePageChange = (page: number) => {
@@ -91,7 +88,7 @@ export default function BlogComponent() {
   if (blogData?.content.length === 0) {
     return (
       <div className="w-full max-w-7xl mx-auto p-4">
-       <img src="/images/error1.png" alt="empty" className="w-1/2 mx-auto" />
+        <img src="/images/error1.png" alt="empty" className="w-1/2 mx-auto" />
       </div>
     );
   }
@@ -106,7 +103,7 @@ export default function BlogComponent() {
             onClick={() => router.push(`/blog/${blog?.uuid}`)}
             className="flex my-5 flex-wrap lg:flex-nowrap justify-center lg:justify-between cursor-pointer items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5"
           >
-            <div className="flex flex-col gap-3 lg:w-[55%]">
+            <div className="flex flex-col gap-3 lg:w-[55%] w-[100%]">
               {/* profile */}
               <div className="flex gap-3 items-center">
                 <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
@@ -122,7 +119,7 @@ export default function BlogComponent() {
               </div>
 
               {/* title */}
-              <h4 className="text-text_title_20 cursor-pointer line-clamp-1 text-text_color_light dark:text-text_color_dark font-semibold">
+              <h4 className="text-text_title_20 cursor-pointer line-clamp-2 text-text_color_light dark:text-text_color_dark font-semibold">
                 {blog?.title}
               </h4>
 

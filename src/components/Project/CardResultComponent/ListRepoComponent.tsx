@@ -1,33 +1,36 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { toast } from "@/components/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+
 import { useGetAllUserRepositoriesQuery } from "@/redux/service/git";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
-
-const FormSchema = z.object({
-  selectedRepo: z.string().min(1, "Please select a repository"),
-});
+import { useCreateProjectNameMutation } from "@/redux/service/project";
 
 export function ListRepoComponent() {
   const [isUserAccessToken, setIsUserAccessToken] = useState<any>("");
+
+  const [createProject] = useCreateProjectNameMutation();
+
+  const [selectedRepo, setSelectedRepo] = useState<any>(false);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [projectName, setProjectName] = useState<string>("");
+
   const { data: userRepo } = useGetAllUserRepositoriesQuery({
     accessToken: isUserAccessToken,
   });
+
+  type ErrorResponse = {
+    data?: {
+      error?: {
+        description?: string;
+      };
+    };
+  };
   const { data: session } = useSession();
 
   const userData = () => {
@@ -35,7 +38,6 @@ export function ListRepoComponent() {
       const accessToken = (session as any).accessToken;
       setIsUserAccessToken(accessToken);
     } else {
-      console.log("No session found");
     }
   };
 
@@ -43,68 +45,82 @@ export function ListRepoComponent() {
     userData();
   }, [session]);
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      selectedRepo: "",
-    },
-  });
+  const [selectedValues, setSelectedValues] = useState([]);
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  const handleCheckboxChange = (event: any) => {
+    const { value, checked } = event.target;
+
+    setSelectedValues((prev: any) =>
+      checked ? [...prev, value] : prev.filter((v: any) => v !== value)
+    );
+    const result = checked
+      ? [...selectedValues, value]
+      : selectedValues.filter((v) => v !== value);
+  };
+
+  type ProjectNameType = {
+    projectName: string;
+  };
+
+  const handleSubmit = async (projectName1: string) => {
+    try {
+      const projectName = projectName1.replace("/", "");
+      console.log(JSON.stringify({ projectName })); // Inspect body
+      console.log("this is projectName", projectName);
+      const res = await createProject({ projectName: projectName });
+      console.log("this is responsec", res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      console.log("error");
+    }
+  };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="my-[60px] items-end flex flex-col justify-end"
-      >
-        <FormField
-          control={form.control}
-          name="selectedRepo"
-          render={({ field }) => (
-            <FormItem className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-10 md:gap-10 bg-card_color_light dark:bg-card_color_dark p-10 rounded-[20px]">
-              {userRepo?.map((item: any) => (
-                <FormItem
-                  key={item.id}
-                  className="flex flex-row items-start space-x-3 space-y-0"
-                >
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value === item.full_name}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          field.onChange(item.full_name);
-                        } else {
-                          field.onChange("");
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <FormLabel className="text-text_body_16 text-start text-text_color_light dark:text-text_color_dark">
-                    {item?.full_name}
-                  </FormLabel>
-                </FormItem>
-              ))}
-              <FormMessage className="text-text_body_16 text-custom_red" />
-            </FormItem>
-          )}
-        />
-        <button
-          className="mt-[50px] bg-primary_color text-text_body_16 text-text_color_light rounded-tl-[14px] rounded-br-[14px] px-4 lg:px-4 py-2 lg:py-1.5"
-          type="submit"
-        >
-          Submit
-        </button>
-      </form>
-    </Form>
+    <section>
+      {selectedRepo === true ? (
+        <div className="grid grid-cols-3 gap-10">
+          <div className="w-full  h-full md:h-[150px] my-5  p-5 border border-opacity-40 border-text_color_desc_light dark:border-primary_color rounded-[20px] ">
+            <div className="flex justify-between w-full">
+              <p className="text-text_body_16 text-secondary_color dark:text-text_color_dark ">
+                test
+              </p>
+            </div>
+            <hr className="my-5 dark:border-primary_color" />
+            <p className=" text-left my-2 text-text_body_16 text-text_color_desc_light  dark:text-text_color_desc_dark ">
+              {" "}
+              Project&apos;s{" "}
+              <span className="text-secondary_color truncate">test</span> is not
+              analyzed yet.{" "}
+            </p>{" "}
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {userRepo?.map((repo: any, index: number) => (
+            <label key={index}>
+              <input
+                className="mr-2 h-4 w-4"
+                type="checkbox"
+                value={repo?.full_name}
+                checked={selectedRepo === repo?.full_name}
+                onChange={() => {
+                  setSelectedRepo(repo?.full_name);
+                  setProjectName(repo?.full_name);
+                }}
+              />
+              {repo?.full_name}
+            </label>
+          ))}
+          <button
+            type="submit"
+            onClick={() => handleSubmit(projectName)}
+            className="bg-primary_color w-[100px] text-text_color_light  rounded-tl-[14px] rounded-br-[14px] text-text_body_16  py-1.5 "
+          >
+            Submit
+          </button>
+        </div>
+      )}
+    </section>
   );
 }

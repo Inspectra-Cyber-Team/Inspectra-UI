@@ -159,7 +159,6 @@ export default function NoneUserScan() {
     }
   };
 
-  console.log(errorGitUrlMessage);
   const handleCheckboxChange = (id: any, checked: any) => {
     if (checked) {
       setSelectedCheckBox([...selectedCheckbox, id]);
@@ -202,10 +201,6 @@ export default function NoneUserScan() {
       handleFetchDirectories();
     }
   }, [selectedBranch, gitUrlResult]);
-
-  const handleGoHome = () => {
-    router.push("/"); // Redirect to the homepage when clicking "Go to Homepage"
-  };
 
   return (
     <section className="mx-auto rounded-lg justify-center items-center bg-card_color_light dark:bg-card_color_dark">
