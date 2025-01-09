@@ -106,7 +106,8 @@ export default function BlogComponent() {
             onClick={() => router.push(`/blog/${blog?.uuid}`)}
             className="flex my-5 flex-wrap lg:flex-nowrap justify-center lg:justify-between cursor-pointer items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5"
           >
-            <div className="flex flex-col gap-3 lg:w-[55%]">
+
+            <div className="flex flex-col gap-3 lg:w-[55%] w-[100%]">
               {/* profile */}
               <div className="flex gap-3 items-center">
                 <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
