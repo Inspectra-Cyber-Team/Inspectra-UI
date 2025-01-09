@@ -108,7 +108,7 @@ export function ScanStepsModal({
 
       {/* Second Modal */}
       <Dialog open={isSecondModalOpen} onOpenChange={setIsSecondModalOpen}>
-        <DialogContent className="w-full max-w-[90%] md:max-w-md lg:max-w-lg mx-auto h-min p-5 md:p-5 rounded-md">
+        <DialogContent className="w-full max-w-[90%] md:max-w-md lg:max-w-lg mx-auto h-auto p-5 md:p-5 rounded-md">
           <DialogHeader>
             <DialogTitle className="text-text_title_20">
               Privacy Policy
