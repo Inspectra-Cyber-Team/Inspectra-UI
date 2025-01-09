@@ -141,6 +141,7 @@ export default function ProjectCardComponent() {
             // return project not yet scan
             return (
               <ProjectCardWithNoData
+                key={index}
                 index={index}
                 projectResult={projectResult}
               />
@@ -162,6 +163,7 @@ export default function ProjectCardComponent() {
             // return project not yet scan
             return (
               <ProjectCardWithNoData
+                key={index}
                 index={index}
                 projectResult={filterResult}
               />

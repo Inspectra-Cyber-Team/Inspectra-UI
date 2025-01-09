@@ -5,16 +5,20 @@ import { useForm } from "react-hook-form";
 import { toast } from "@/components/hooks/use-toast";
 
 import { useGetAllUserRepositoriesQuery } from "@/redux/service/git";
-import { useCreateProjectNameMutation } from "@/redux/service/project";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { useCreateProjectNameMutation } from "@/redux/service/project";
 
 export function ListRepoComponent() {
   const [isUserAccessToken, setIsUserAccessToken] = useState<any>("");
+
   const [createProject] = useCreateProjectNameMutation();
+
   const [selectedRepo, setSelectedRepo] = useState<any>(false);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [projectName, setProjectName] = useState<string>("");
 
   const { data: userRepo } = useGetAllUserRepositoriesQuery({
     accessToken: isUserAccessToken,
@@ -58,9 +62,13 @@ export function ListRepoComponent() {
     projectName: string;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (projectName1: string) => {
     try {
-      createProject({ projectName: "test3" });
+      const projectName = projectName1.replace("/", "");
+      console.log(JSON.stringify({ projectName })); // Inspect body
+      console.log("this is projectName", projectName);
+      const res = await createProject({ projectName: projectName });
+      console.log("this is responsec", res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -95,14 +103,18 @@ export function ListRepoComponent() {
                 className="mr-2 h-4 w-4"
                 type="checkbox"
                 value={repo?.full_name}
-                onChange={handleCheckboxChange}
+                checked={selectedRepo === repo?.full_name}
+                onChange={() => {
+                  setSelectedRepo(repo?.full_name);
+                  setProjectName(repo?.full_name);
+                }}
               />
               {repo?.full_name}
             </label>
           ))}
           <button
             type="submit"
-            onClick={handleSubmit}
+            onClick={() => handleSubmit(projectName)}
             className="bg-primary_color w-[100px] text-text_color_light  rounded-tl-[14px] rounded-br-[14px] text-text_body_16  py-1.5 "
           >
             Submit
