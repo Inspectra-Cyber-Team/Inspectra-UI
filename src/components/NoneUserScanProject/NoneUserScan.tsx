@@ -107,7 +107,7 @@ export default function NoneUserScan() {
             });
             setIsLoading(false);
             // Redirect to the project page using the response data
-            router.push(`/project/${response.data.data}`);
+            router.push(`/project/${response?.data?.data}`);
           } else {
             throw new Error("Invalid API response");
           }
@@ -253,12 +253,12 @@ export default function NoneUserScan() {
         </p>
       </div>
 
-      <div >
+      <div>
         {/* Check if loading */}
         {isLoading ? (
-         <div className="container justify-center items-center lg:w-[750px] w-[300px] md:w-[550px] mx-auto">
-           <LoadingSection />
-         </div>
+          <div className="container justify-center items-center lg:w-[750px] w-[300px] md:w-[550px] mx-auto">
+            <LoadingSection />
+          </div>
         ) : (
           <div className="container grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 py-8 max-w-7xl mx-auto">
             {/* image */}

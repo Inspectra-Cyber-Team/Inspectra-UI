@@ -10,6 +10,8 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import CardProject from "../CardProjectGitUserComponent/CardProject";
 import { PiLockKeyFill } from "react-icons/pi";
+import ProjectCardWithData from "../CardProjectComponent/ProjectCardWithData";
+import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
 
 export function ListRepoComponent() {
   const [isUserAccessToken, setIsUserAccessToken] = useState<string>("");
@@ -38,7 +40,6 @@ export function ListRepoComponent() {
   });
 
   const { data: session } = useSession();
-
   useEffect(() => {
     const storedUUID = localStorage.getItem("userUUID") || "";
     setUserUUID(storedUUID);
@@ -145,6 +146,13 @@ export function ListRepoComponent() {
           >
             Project Selection
           </TabsTrigger>
+          <p className="mx-2">|</p>
+          <TabsTrigger
+            value="Project Results"
+            className=" data-[state=active]:shadow-none data-[state=active]:bg-inherit  dark:data-[state=active]:bg-transparent  data-[state=active]:rounded-none data-[state=active]:border-b-2  data-[state=active]:border-ascend_color data-[state=active]:text-acborder-ascend_color"
+          >
+            Project Results
+          </TabsTrigger>
         </TabsList>
 
         {/* tab for select repo */}
@@ -170,7 +178,7 @@ export function ListRepoComponent() {
                     </p>
                     {/* Visibility indicator */}
                     {repo?.visibility === "private" && (
-                      <div className="flex items-center text-text_body_16 text-text_color_dark mt-1">
+                      <div className="flex items-center text-text_body_16 dark:text-text_color_dark text-text_color_light mt-1">
                         <PiLockKeyFill />
                         <span className="ml-1">Private</span>
                       </div>
@@ -196,6 +204,22 @@ export function ListRepoComponent() {
         {/* Project Card */}
         <TabsContent value="Project Selection">
           <CardProject userDataProjet={userDataProjet} isError={isError} />
+        </TabsContent>
+
+        <TabsContent value="Project Results">
+          {userDataProjet?.map((project: any, index: number) => {
+            if (project?.component?.component?.measures.length !== 0) {
+              return (
+                <ProjectCardWithData
+                  key={index}
+                  projectResult={project}
+                  index={index}
+                />
+              );
+            } else {
+              <LoadProjectComponent textDisplay={"No Project Result "} />;
+            }
+          })}
         </TabsContent>
       </Tabs>
     </section>
