@@ -243,7 +243,7 @@ export default function NoneUserScan() {
       />
       {/* Top section */}
       <div className="flex flex-col items-center justify-center pt-10 ">
-        <div className="px-3 w-[300px] md:w-[500px] font-semibold bg-primary_color py-2 rounded-tl-[20px] rounded-br-[20px]">
+        <div className="px-3 font-semibold bg-primary_color py-2 rounded-tl-[20px] rounded-br-[20px]">
           <p className="text-center text-text_color_light text-text_body_16 md:text-text_title_24">
             Scan Your Project Repositories
           </p>
@@ -253,12 +253,14 @@ export default function NoneUserScan() {
         </p>
       </div>
 
-      <div className="container">
+      <div >
         {/* Check if loading */}
         {isLoading ? (
-          <LoadingSection />
+         <div className="container justify-center items-center lg:w-[750px] w-[300px] md:w-[550px] mx-auto">
+           <LoadingSection />
+         </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 py-8 max-w-7xl mx-auto">
+          <div className="container grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 py-8 max-w-7xl mx-auto">
             {/* image */}
             <div className="hidden lg:flex justify-center items-center">
               {!isLoading &&

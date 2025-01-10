@@ -3,6 +3,7 @@ import React from "react";
 export default function WorkingProcessCard() {
   return (
     <div className="w-full px-4 md:px-10 lg:px-16 py-10 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-16 md:gap-y-10 place-items-center">
+      
       {/* Card 1 */}
       <div className="w-[250px] h-[250px] md:h-[300px] bg-primary_color rounded-[50px] flex flex-col justify-center items-center self-start">
         <div className="w-full flex flex-col justify-around text-start px-5">
