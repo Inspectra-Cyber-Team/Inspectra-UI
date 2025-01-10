@@ -132,10 +132,6 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
     }
   };
 
-  // for search
-  const [filteredResults, setFilteredResults] = useState<any[]>(
-    projectResultApi || []
-  );
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
@@ -196,43 +192,6 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
 
   const [inputValue, setInputValue] = useState("");
 
-  // Handle user input change
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
-  };
-
-  // Handle Enter key press
-  const handleKeyPressforSearchProject = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Enter") {
-      const matchingResults = projectResultApi?.filter((item: any) =>
-        item.component.component.name
-          .toLowerCase()
-          .includes(inputValue.toLowerCase())
-      );
-      setFilteredResults(matchingResults);
-    } else if (event.key === "Backspace") {
-      if (inputValue === "") {
-        setFilteredResults([]); // Set to empty array if input is empty
-      } else {
-        const matchingResults = projectResultApi?.filter((item: any) =>
-          item.component.component.name
-            .toLowerCase()
-            .includes(inputValue.toLowerCase())
-        );
-        setFilteredResults(matchingResults);
-      }
-    } else {
-      // Handle other key presses (if any)
-      const matchingResults = projectResultApi?.filter((item: any) =>
-        item.component.component.name
-          .toLowerCase()
-          .includes(inputValue.toLowerCase())
-      );
-      setFilteredResults(matchingResults);
-    }
-  };
 
   const [selectedCheckbox, setSelectedCheckBox] = useState<string[]>([]);
 

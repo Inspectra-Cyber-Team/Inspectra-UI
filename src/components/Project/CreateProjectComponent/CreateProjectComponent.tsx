@@ -45,7 +45,7 @@ export default function CreateProjectComponent() {
   const handleSubmit = async (values: any) => {
     setIsLoading(true);
     try {
-      const res = await createProjectName({ projectName: values });
+      const res = await createProjectName({ projectName: values?.projectName });
       if (res?.data) {
         toast({
           description: "Project created successfully",
