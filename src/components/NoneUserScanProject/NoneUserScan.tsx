@@ -18,6 +18,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import FileStructureViewer from "@/components/FileStructureComponent/FileStructureViewer";
 import LoadingSection from "./LoadingSection";
+import axios, { AxiosError } from "axios";
 
 export default function NoneUserScan() {
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -61,19 +62,20 @@ export default function NoneUserScan() {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (gitResult.length === 0 || selectedBranch === "Select Project Branch") {
       toast({
-        description: "Please Provide Git UR and Branch",
+        description: "Please Provide Git URL and Branch",
         variant: "error",
       });
       setIsLoading(false);
+      return;
     }
 
     if (selectedBranch === "Select Project Branch") {
       setIsLoading(false);
       setErrorNotSelectBranch("Please select a branch");
-      return; // Stop further execution
+      return;
     }
 
     setIsLoading(true);
@@ -83,33 +85,49 @@ export default function NoneUserScan() {
       setCountScan(newCount);
       localStorage.setItem("scanCount", newCount.toString());
 
-      projectScanNonUser({
-        project: {
-          gitUrl: gitUrlResult,
-          branch: selectedBranch,
-          countScan: countScan,
-          issueTypes: selectedCheckbox,
-          includePaths: selectedFile,
-        },
-      })
-        .then((response) => {
+      try {
+        const response = await projectScanNonUser({
+          project: {
+            gitUrl: gitUrlResult,
+            branch: selectedBranch,
+            countScan: countScan,
+            issueTypes: selectedCheckbox,
+            includePaths: selectedFile,
+          },
+        });
+
+        toast({
+          description: "Project Scan Successfully Completed",
+          variant: "success",
+        });
+        setStatus(true);
+        router.push(`project/${response?.data?.data}`);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError;
+          if (axiosError.response?.status === 504) {
+            toast({
+              description: "Server Timeout (504). Skipping unnecessary steps.",
+              variant: "success",
+            });
+            console.warn("Skipping utility due to server timeout.");
+          } else {
+            toast({
+              description: "Something went wrong. Please try again.",
+              variant: "error",
+            });
+            console.error("Error during project scan:", error);
+          }
+        } else {
+          console.error("Unexpected error:", error);
           toast({
-            description: "Project Scan is Successfully",
-            variant: "success",
-          });
-          setStatus(true);
-          router.push(`project/${response?.data?.data}`);
-        })
-        .catch((error) => {
-          toast({
-            description: "Something went wrong. Please try again.",
+            description: "An unexpected error occurred.",
             variant: "error",
           });
-          console.error("Error during project scan:", error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+        }
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       setIsLoading(false);
       toast({
