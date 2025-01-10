@@ -3,7 +3,7 @@ import {
   useGetProjectDetailQuery,
 } from "@/redux/service/overview";
 import { Metadata } from "next";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SiTicktick } from "react-icons/si";
 import { FaCodeBranch } from "react-icons/fa";
 import { get } from "http";
@@ -30,10 +30,14 @@ export default function PageOverviewProjectDetail({
 }: OverviewProps) {
   const nameOfProject = projectName;
 
-  const [isloading, setIsLoading] = useState(false);
+  const [userUUID, setUserUUID] = useState<string>("");
 
-  const uuidOfUser =
-    typeof window !== "undefined" ? localStorage.getItem("userUUID") : null;
+  useEffect(() => {
+    const storedUUID = localStorage.getItem("userUUID") || "";
+    setUserUUID(storedUUID);
+  });
+
+  const [isloading, setIsLoading] = useState(false);
 
   const { data } = useGetProjectDetailQuery({
     projectName: nameOfProject,
@@ -68,7 +72,7 @@ export default function PageOverviewProjectDetail({
 
   // get project by user uuid
   const { data: projectUuid } = useGetProjectByUserUuidQuery({
-    uuid: uuidOfUser ?? "",
+    uuid: userUUID ?? "",
   });
   const getProjectByUserUuid = projectUuid?.[0]?.branch?.[0]?.branches?.[0];
 
@@ -151,10 +155,11 @@ export default function PageOverviewProjectDetail({
       <div className="w-full flex flex-col md:flex-row justify-between gap-6">
         <div className="flex items-center gap-4">
           <h2
-            className={`p-4 rounded-lg text-text_color_light text-xl ${getProjectByUserUuid?.status.qualityGateStatus === "OK"
+            className={`p-4 rounded-lg text-text_color_light text-xl ${
+              getProjectByUserUuid?.status.qualityGateStatus === "OK"
                 ? "bg-primary_color"
                 : "bg-red-500"
-              }`}
+            }`}
           >
             {getProjectByUserUuid?.status.qualityGateStatus === "OK" ? (
               <SiTicktick />
@@ -199,14 +204,14 @@ export default function PageOverviewProjectDetail({
               percentage <= 0
                 ? "A"
                 : percentage <= 20
-                  ? "B"
-                  : percentage <= 40
-                    ? "C"
-                    : percentage <= 60
-                      ? "D"
-                      : percentage <= 80
-                        ? "E"
-                        : "F";
+                ? "B"
+                : percentage <= 40
+                ? "C"
+                : percentage <= 60
+                ? "D"
+                : percentage <= 80
+                ? "E"
+                : "F";
             gradient =
               percentage > 0
                 ? `conic-gradient(lime 0% ${percentage}%, red ${percentage}% 100%)`
@@ -233,16 +238,17 @@ export default function PageOverviewProjectDetail({
                   {metric.metric === "ncloc" ? "Lines of Code" : "Open Issues"}
                 </p>
                 <div
-                  className={`w-10 h-10 flex items-center justify-center border rounded-lg ${grade === "A"
+                  className={`w-10 h-10 flex items-center justify-center border rounded-lg ${
+                    grade === "A"
                       ? "border-[#B9FF66]"
                       : grade === "B"
-                        ? "border-[#60935D]"
-                        : grade === "C"
-                          ? "border-[#F7DC6F]"
-                          : grade === "D"
-                            ? "border-[#F9B800]"
-                            : "border-[#EA4335]"
-                    } text-text_color_light dark:text-text_color_dark font-bold`}
+                      ? "border-[#60935D]"
+                      : grade === "C"
+                      ? "border-[#F7DC6F]"
+                      : grade === "D"
+                      ? "border-[#F9B800]"
+                      : "border-[#EA4335]"
+                  } text-text_color_light dark:text-text_color_dark font-bold`}
                 >
                   {grade}
                 </div>

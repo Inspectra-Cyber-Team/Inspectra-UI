@@ -1,0 +1,240 @@
+import { toast } from "@/components/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  useDeleteProjectMutation,
+  useGetProjectOverViewUserQuery,
+} from "@/redux/service/project";
+import { useEffect, useState } from "react";
+import { CgDanger } from "react-icons/cg";
+import { RxCross2 } from "react-icons/rx";
+import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
+import { useCreateProjectScanMutation } from "@/redux/service/project";
+import ReactTypingEffect from "react-typing-effect";
+export default function CardProject({ userDataProjet, isError }: any) {
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false); // For managing modal visibility
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeProjectIndex, setActiveProjectIndex] = useState<number>(0);
+  const [userUUID, setUserUUID] = useState<string>("");
+  const { data: projectResultApi } = useGetProjectOverViewUserQuery({
+    uuid: userUUID,
+    page: 0,
+    size: 100,
+  });
+
+  useEffect(() => {
+    setUserUUID(localStorage.getItem("userUUID") || "");
+  });
+
+  // rtk for delete project
+  const [deleteProject, { isSuccess: isDeleteSuccess }] =
+    useDeleteProjectMutation();
+
+  // rtk for scan project
+  const [createProjectScan] = useCreateProjectScanMutation();
+
+  // handle delete project
+  const handleDeleteProject = (projectName: string) => {
+    setIsDeleteLoading(true);
+    deleteProject({ projectName: projectName });
+  };
+
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      toast({
+        description: "Project Deleted Successfully",
+        variant: "success",
+      });
+      setIsDeleteOpen(false); // Close the modal on success
+      setIsDeleteLoading(false);
+    }
+  }, [isDeleteSuccess]);
+
+  // get prject name and user name and split
+  const project =
+    userDataProjet[activeProjectIndex]?.component?.component?.name;
+
+  const [userName, projectName] = project.split("--");
+
+  // handle scan project
+  const handleOnSubmit = async () => {
+    setIsLoading(true);
+    try {
+      // Step 1: Fetch project and get git URL
+      const responseProject = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}gits/repos/${userName}?projectName=${projectName}`
+      );
+      if (!responseProject.ok) {
+        throw new Error("Failed to fetch project data");
+      }
+      const projectData = await responseProject.json();
+
+      const gitUrl = projectData?.map((url: any) => url.clone_url).join(", ");
+      console.log("git url", gitUrl);
+      // Step 2: Fetch branch using the git URL
+      const responseBranch = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}gits/branches?gitUrl=${gitUrl}`
+      );
+      if (!responseBranch.ok) {
+        throw new Error("Failed to fetch branch data");
+      }
+      const branchData = await responseBranch.json();
+      const branch = branchData?.map((branch: any) => branch.name).join(", ");
+
+      //Step 3: Perform the project scan
+
+      const responseScan = await createProjectScan({
+        project: {
+          projectName: project,
+          gitUrl: gitUrl,
+          branch: branch,
+        },
+      });
+      if (responseScan?.data?.success) {
+        toast({
+          description: "Project Scan Successfully",
+          variant: "success",
+        });
+      }
+    } catch (error) {
+      console.error("Error during process:", error);
+      toast({
+        description: "An error occurred during the process",
+        variant: "error",
+      });
+    } finally {
+      setIsLoading(false); // Always stop loading indicator
+    }
+  };
+
+  return (
+    <div>
+      {isError ? (
+        <LoadProjectComponent textDisplay={"No Project Seleted "} />
+      ) : (
+        <div className="flex flex-col justify-center items-center w-full">
+          <p className="bg-primary_color my-[60px] font-medium cursor-pointer mb-10  text-text_color_light  items-center justify-center rounded-tl-[14px] rounded-br-[14px] text-text_title_24 py-1.5 h-full  px-5 inline-block">
+            Select Project To Scan
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+            {userDataProjet?.map((project: any, index: number) => (
+              <div
+                key={index}
+                onClick={() => setActiveProjectIndex(index)} // Set the selected project's index
+                className={`w-full cursor-pointer my-5 p-5 border-2 border-opacity-40 rounded-[20px] 
+                   ${
+                     activeProjectIndex === index
+                       ? "border-ascend_color dark:border-primary_color" // Active project styling
+                       : "border-text_color_desc_light"
+                   }`}
+              >
+                <div className="flex justify-between w-full">
+                  <p className="text-text_body_16 w-[90%] truncate text-secondary_color dark:text-text_color_dark">
+                    {project?.component?.component?.name}
+                  </p>
+                  {/* Trigger the delete modal */}
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <RxCross2 className="h-6 w-6 text-custom_red cursor-pointer" />
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="sm:max-w-[450px]">
+                      <AlertDialogHeader className="items-center">
+                        <div>
+                          <CgDanger className="h-[60px] w-[60px] text-custom_red" />
+                        </div>
+                      </AlertDialogHeader>
+                      <AlertDialogTitle className="text-center text-text_color_light dark:text-text_color_dark">
+                        Are you sure you want to delete project
+                        <span className="text-secondary_color">
+                          {" "}
+                          {project?.component?.component.name}
+                        </span>
+                      </AlertDialogTitle>
+                      <AlertDialogFooter className="w-full flex justify-center gap-5">
+                        <Button
+                          disabled={isDeleteLoading}
+                          type="button"
+                          className="px-5 hover:bg-custom_red"
+                          variant="secondary"
+                          onClick={() =>
+                            handleDeleteProject(
+                              project?.component?.component.name
+                            )
+                          }
+                        >
+                          {isDeleteLoading ? (
+                            <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_dark border-t-transparent"></div>
+                          ) : (
+                            "Yes"
+                          )}
+                        </Button>
+                        <AlertDialogCancel asChild>
+                          <Button
+                            disabled={isDeleteLoading}
+                            type="button"
+                            variant="secondary"
+                            className="hover:bg-custom_red"
+                          >
+                            Close
+                          </Button>
+                        </AlertDialogCancel>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+                <hr
+                  className={`my-5 border-1 ${
+                    activeProjectIndex === index
+                      ? "border-secondary_color dark:border-primary_color"
+                      : "border-text_color_desc_light"
+                  }`}
+                />
+                {isLoading && activeProjectIndex === index ? (
+                  <div className="flex justify-start items-start w-full pt-2 h-full">
+                    <ReactTypingEffect
+                      text={[`Scanning on project ${projectName} ...`]}
+                      speed={100}
+                      eraseSpeed={50}
+                      eraseDelay={2000}
+                      typingDelay={500}
+                    />
+                  </div>
+                ) : (
+                  <p className=" text-left my-2 text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
+                    Project&apos;s{" "}
+                    <span className="text-secondary_color truncate">
+                      {project?.component?.component.name}
+                    </span>{" "}
+                    is not analyzed yet.
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="w-full flex justify-items-start">
+            <button
+              onClick={handleOnSubmit}
+              className="bg-primary_color w-[100px] font-medium cursor-pointer my-10 text-text_color_light   rounded-tl-[14px] rounded-br-[14px] text-text_title_24 py-1.5 px-5 flex justify-center items-center"
+            >
+              {isLoading ? (
+                <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
+              ) : (
+                "Scan"
+              )}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

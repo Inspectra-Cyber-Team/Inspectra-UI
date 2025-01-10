@@ -98,7 +98,8 @@ export default function NoneUserScan() {
             variant: "success",
           });
           setStatus(true);
-          router.push(`project/${response?.data?.data}`);
+          console.log(response)
+          //router.push(`project/${response?.data?.data}`);
         })
         .catch((error) => {
           toast({
