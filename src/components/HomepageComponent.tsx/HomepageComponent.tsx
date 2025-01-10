@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
 import Aos from "aos";
 import LogoSliderComponent from "../LogoSliderComponent/LogoSliderComponent";
+import { motion } from "framer-motion";
 
 export default function HomepageComponent() {
   useEffect(() => {
