@@ -229,7 +229,7 @@ export default function NoneUserScan() {
       />
       {/* Top section */}
       <div className="flex flex-col items-center justify-center pt-10 ">
-        <div className="px-3 w-[300px] md:w-[500px] font-semibold bg-primary_color py-2 rounded-tl-[20px] rounded-br-[20px]">
+        <div className="px-3 font-semibold bg-primary_color py-2 rounded-tl-[20px] rounded-br-[20px]">
           <p className="text-center text-text_color_light text-text_body_16 md:text-text_title_24">
             Scan Your Project Repositories
           </p>
@@ -239,7 +239,7 @@ export default function NoneUserScan() {
         </p>
       </div>
 
-      <div className="container">
+      <div className="container justify-center items-center lg:w-[750px] w-[300px] md:w-[550px] mx-auto">
         {/* Check if loading */}
         {isLoading ? (
           <LoadingSection />
