@@ -20,6 +20,8 @@ import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponen
 import { useCreateProjectScanMutation } from "@/redux/service/project";
 import ReactTypingEffect from "react-typing-effect";
 import { useSession } from "next-auth/react";
+import { error } from "console";
+
 export default function CardProject({ userDataProjet, isError }: any) {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isUserAccessToken, setIsUserAccessToken] = useState<string>("");
@@ -60,9 +62,17 @@ export default function CardProject({ userDataProjet, isError }: any) {
     }
   }, [isDeleteSuccess]);
 
+  type ErrorResponse = {
+    data?: {
+      error?: {
+        description?: string;
+      };
+    };
+  };
   // get prject name and user name and split
   const project =
-    userDataProjet[activeProjectIndex]?.component?.component?.name;
+    userDataProjet?.[activeProjectIndex]?.component?.component?.name ??
+    "Default Project Name";
 
   const [userName, projectName] = project.split("--");
 
@@ -70,42 +80,78 @@ export default function CardProject({ userDataProjet, isError }: any) {
   const handleOnSubmit = async () => {
     setIsLoading(true);
     try {
-      // Step 1: Fetch project and get git URL
-      const responseProject = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}gits/repos/${userName}?projectName=${projectName}`
+      // Step 1: Fetch project and get git URL branch projectName
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}gits/get-repo?username=${userName}&projectName=${projectName}`
       );
-      if (!responseProject.ok) {
-        throw new Error("Failed to fetch project data");
+      // for public repo
+      if (response.status === 200) {
+        // for public repo
+        const resPublic = await response.json();
+        const gitUrl = await resPublic
+          ?.map((url: any) => url?.clone_url)
+          .join(", ");
+        const branch = await resPublic
+          ?.map((branch: any) => branch?.default_branch)
+          .join(", ");
+        // scan public repo
+        const createProjectScanResponse = await createProjectScan({
+          project: {
+            projectName: project,
+            gitUrl: gitUrl,
+            branch: branch,
+          },
+        });
+        if (createProjectScanResponse.data) {
+          toast({
+            description: "Project Scanned Successfully",
+            variant: "success",
+          });
+          setIsLoading(false);
+        } else if (createProjectScanResponse?.error) {
+          let errorMessage = "An error occurred while creating the project.";
+
+          // Check if the error is of type FetchBaseQueryError
+          if ("data" in createProjectScanResponse.error) {
+            const errorResponse =
+              createProjectScanResponse.error as ErrorResponse;
+
+            // Check if the description is an array or a string
+            if (Array.isArray(errorResponse.data?.error?.description)) {
+              // Join array elements into a single string (comma-separated or however you'd like)
+              errorMessage = errorResponse.data.error.description[0].reason;
+            } else {
+              // Handle as a string
+              errorMessage =
+                errorResponse.data?.error?.description || errorMessage;
+            }
+          }
+
+          toast({
+            description: errorMessage,
+            variant: "error",
+          });
+        } else {
+          toast({
+            description: "Something went wrong!",
+            variant: "error",
+          });
+        }
       }
-      const projectData = await responseProject.json();
-
-      const gitUrl = projectData?.map((url: any) => url.clone_url).join(", ");
-
-      console.log(gitUrl);
-
-      // extra step check git prublic or private
-      const responseGit = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}gits/check_visibility?gitUrl=${gitUrl}`
-      );
-      if (!responseGit.ok) {
-        throw new Error("Failed to check check_visibility");
-      }
-      const gitData = await responseGit.json();
-
-      // Step 2: Fetch branch using the git URL
-      const responseBranch = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}gits/branches?gitUrl=${gitUrl}`
-      );
-      if (!responseBranch.ok) {
-        throw new Error("Failed to fetch branch data");
-      }
-      const branchData = await responseBranch.json();
-      const branch = branchData?.map((branch: any) => branch.name).join(", ");
-
-      //Step 3: Perform the project scan
-
-      if (gitData.data === false) {
-        const responseScan = await createProjectScan({
+      // for private repo
+      else {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}gits/get-repo?username=${userName}&projectName=${projectName}&accessToken=${isUserAccessToken}`
+        );
+        const resPrivate = await response.json();
+        const gitUrl = await resPrivate
+          ?.map((url: any) => url?.clone_url)
+          .join(", ");
+        const branch = await resPrivate
+          ?.map((branch: any) => branch?.default_branch)
+          .join(", ");
+        // scan public repo
+        const createProjectScanResponse = await createProjectScan({
           project: {
             projectName: project,
             gitUrl: gitUrl,
@@ -113,24 +159,39 @@ export default function CardProject({ userDataProjet, isError }: any) {
             accessToken: isUserAccessToken,
           },
         });
-        if (responseScan?.data?.success) {
+        if (createProjectScanResponse.data) {
           toast({
-            description: "Project Scan Successfully",
+            description: "Project Scanned Successfully",
             variant: "success",
           });
-        }
-      } else {
-        const responseScan = await createProjectScan({
-          project: {
-            projectName: project,
-            gitUrl: gitUrl,
-            branch: branch,
-          },
-        });
-        if (responseScan?.data?.success) {
+          setIsLoading(false);
+        } else if (createProjectScanResponse?.error) {
+          let errorMessage = "An error occurred while creating the project.";
+
+          // Check if the error is of type FetchBaseQueryError
+          if ("data" in createProjectScanResponse.error) {
+            const errorResponse =
+              createProjectScanResponse.error as ErrorResponse;
+
+            // Check if the description is an array or a string
+            if (Array.isArray(errorResponse.data?.error?.description)) {
+              // Join array elements into a single string (comma-separated or however you'd like)
+              errorMessage = errorResponse.data.error.description[0].reason;
+            } else {
+              // Handle as a string
+              errorMessage =
+                errorResponse.data?.error?.description || errorMessage;
+            }
+          }
+
           toast({
-            description: "Project Scan Successfully",
-            variant: "success",
+            description: errorMessage,
+            variant: "error",
+          });
+        } else {
+          toast({
+            description: "Something went wrong!",
+            variant: "error",
           });
         }
       }
@@ -184,14 +245,17 @@ export default function CardProject({ userDataProjet, isError }: any) {
                       <p></p>
                     ) : (
                       <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <RxCross2
-                            className={`h-6 w-6 text-custom_red cursor-pointer ${
+                        <AlertDialogTrigger disabled={isLoading} asChild>
+                          <button
+                            disabled={isLoading}
+                            className={`h-6 w-6 text-custom_red ${
                               isLoading
-                                ? "cursor-not-allowed"
+                                ? "cursor-not-allowed opacity-50"
                                 : "cursor-pointer"
-                            } `}
-                          />
+                            }`}
+                          >
+                            <RxCross2 />
+                          </button>
                         </AlertDialogTrigger>
                         <AlertDialogContent className="sm:max-w-[450px]">
                           <AlertDialogHeader className="items-center">
