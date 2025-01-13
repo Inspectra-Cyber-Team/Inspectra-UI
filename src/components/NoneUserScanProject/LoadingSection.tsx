@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import Lottie from "lottie-react";
 import animationLoading from "@/components/loadingAnimation.json";
 import { Search, File, Check } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 
 const steps = [
   { icon: Check, label: "Repository Connect" },
@@ -86,9 +85,6 @@ const LoadingSection: React.FC = () => {
         transition={{ delay: 1.5, duration: 0.5 }}
         className="text-center w-full"
       >
-        <h2 className="text-2xl font-semibold mb-2  dark:text-text_color_dark">
-          Scanning your project
-        </h2>
         <div className="relative">
           <Lottie
             animationData={animationLoading}

@@ -275,7 +275,7 @@ export default function NavbarComponent() {
                         <IoMenu />
                       </SheetTrigger>
                       <SheetContent className="bg-background_light_mode dark:bg-background_dark_mode border-hidden">
-                        <ul className="  text-text_color_light dark:text-text_color_dark  text-text_body_16  justify-between space-y-4 flex flex-col">
+                        <ul className=" text-text_color_light dark:text-text_color_dark  text-text_body_16  justify-between space-y-4 flex flex-col">
                           {navbarData.map((item, index: number) => (
                             <Link
                               key={index}
@@ -296,7 +296,7 @@ export default function NavbarComponent() {
                               {pathname === item.link ? (
                                 <p
                                   onClick={handleClick}
-                                  className="text-secondary_color"
+                                  className="text-secondary_color "
                                 >
                                   {item?.name}
                                 </p>
