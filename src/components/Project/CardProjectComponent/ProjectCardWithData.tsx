@@ -321,7 +321,7 @@ export default function ProjectCardWithData({ index, projectResult }: any) {
             {/* grade */}
             {projectResult?.component?.component?.measures?.map(
               (item: any, index: number) => {
-                if (item.metric === "reliability_issues") {
+                if (item.metric === "security_hotspots") {
                   // check conditon return grade base on score
                   const parsedValue = JSON.parse(item.value);
                   return (
