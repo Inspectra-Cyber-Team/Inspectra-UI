@@ -2,23 +2,29 @@
 import BlogComponent from "@/components/BlogComponent/BlogComponent";
 import RecentPostComponent from "@/components/BlogComponent/RecentPostComponent";
 import { FaPlus } from "react-icons/fa6";
-import { commonTopicData } from "@/data/commonTopic";
 import { CommonTopic } from "@/types/CommonTopic";
 import Link from "next/link";
 import { useState } from "react";
 import BlogTopicComponent from "./BlogtopicComponent";
+import { useGetAllTopicQuery } from "@/redux/service/topic";
 
 export default function BlogPageComponent() {
   const [isLoading, setIsloading] = useState<boolean>(false);
+
   const [topic, setTopic] = useState<string>("");
 
   const handleTopicClick = (topicName: string) => {
     if (topicName === topic) {
       setTopic(""); // Clear the selected topic if clicked again
     } else {
-      setTopic(topicName); // Set the new topic
+      setTopic(topicName);
     }
   };
+
+  const { data: topicData, isLoading: topicLoading } = useGetAllTopicQuery({
+    page: 0,
+    pageSize: 25,
+  });
 
   return (
     <section>
@@ -28,28 +34,29 @@ export default function BlogPageComponent() {
         <Link
           onClick={() => setIsloading(true)}
           href={"/blog/create"}
-          className="px-3 py-2 bg-primary_color text-text_color_light flex rounded-[17px] items-center justify-center text-sm sm:text-base"
+          className="px-3 py-2 bg-primary_color hover:bg-primary_color/70 text-text_color_light flex rounded-[17px] items-center justify-center text-sm sm:text-base"
         >
           <span className="hidden sm:block">
             {isLoading ? (
               <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
             ) : (
-              "Create Blog"
+              <span className="flex items-center">
+                Create Blog <FaPlus className="ml-1" />
+              </span>
             )}
           </span>
-          <FaPlus className={"ml-1"} />
         </Link>
       </div>
 
       {/* Common Topics as Navbar */}
       <div className="py-2 flex gap-3 overflow-x-auto whitespace-nowrap lg:hidden scrollbar-hide">
-        {commonTopicData.map((common: CommonTopic) => (
+        {topicData?.content.map((common: CommonTopic) => (
           <button
-            key={common.topic}
+            key={common?.uuid}
             className="bg-card dark:bg-card_color_dark px-3 py-2 rounded-3xl cursor-pointer hover:bg-primary_color text-sm sm:text-base text-center justify-center"
-            onClick={() => handleTopicClick(common.topic)}
+            onClick={() => handleTopicClick(common?.name)}
           >
-            {common.topic}
+            {common?.name}
           </button>
         ))}
       </div>
@@ -64,18 +71,25 @@ export default function BlogPageComponent() {
           {/* Common Topics (Hidden on Smaller Screens) */}
           <div className="hidden lg:block">
             <p className="text-text_title_20 text-text_color_light dark:text-text_color_dark my-2 font-semibold">
-              Common Topics
+              Common Topic
             </p>
+            {topicLoading && (
+              <div className="flex justify-center items-center">
+                <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent "></div>
+              </div>
+            )}
             <div className="py-2 flex flex-wrap gap-3">
-              {commonTopicData.map((common: CommonTopic) => (
-                <button
-                  key={common.topic}
-                  className="bg-card dark:bg-card_color_dark px-3 py-2 rounded-3xl cursor-pointer hover:bg-primary_color text-sm sm:text-base text-center justify-center"
-                  onClick={() => handleTopicClick(common.topic)}
-                >
-                  {common.topic}
-                </button>
-              ))}
+              {topicData?.content
+                .filter((common: CommonTopic) => common?.name !== "other")
+                .map((common: CommonTopic) => (
+                  <button
+                    key={common?.uuid}
+                    className="bg-card dark:bg-card_color_dark px-3 py-2 rounded-3xl cursor-pointer hover:bg-primary_color text-sm sm:text-base text-center justify-center"
+                    onClick={() => handleTopicClick(common?.name)}
+                  >
+                    {common?.name}
+                  </button>
+                ))}
             </div>
           </div>
           {/* Recent Posts */}

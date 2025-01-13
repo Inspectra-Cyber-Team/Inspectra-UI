@@ -4,16 +4,18 @@ import React, { useEffect } from "react";
 import { useTheme } from "next-themes";
 import { useCaseData } from "@/data/useCase";
 import { useCaseType } from "@/types/UseCase";
-import { ArrowRight, Check } from "lucide-react";
-import Link from "next/link";
-import { Button } from "../ui/button";
+import { Check } from "lucide-react";
 import Aos from "aos";
+import { motion } from "framer-motion";
+import { FaArrowRight } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function UseCaseComponent() {
   const { theme } = useTheme();
   useEffect(() => {
     Aos.init({ duration: 1000 });
   }, []);
+  const router = useRouter();
 
   return (
     <div>
@@ -34,16 +36,24 @@ export default function UseCaseComponent() {
           consistent coding standards across projects, reduce bugs, and track
           areas of technical debt.
         </p>
-        <Link href="/project">
-          <Button
-            className="bg-background_dark_mode dark:bg-card_color_dark hover:bg-gray-800 dark:hover:bg-gray-600 text-white rounded-tl-[20px] rounded-br-[20px] px-5 py-2 mt-6 w-[180px] h-[50px]"
-            data-aos="fade-up"
+        <div className="mt-6 flex justify-center">
+          <motion.button
+            onClick={() => router.push("/project")}
+            className="flex justify-between items-center hover:bg-background_dark_mode/80 dark:hover:bg-background_light_mode/90 px-5 text-text_color_dark bg-background_dark_mode dark:bg-background_light_mode dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[170px] h-[50px] text-text_body_16"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
             Get Started
-            <ArrowRight className="ml-2 h-5 w-5 sm:h-6 sm:w-6" />
-          </Button>
-        </Link>
+            <motion.div
+              animate={{ x: [0, 5, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+            >
+              <FaArrowRight />
+            </motion.div>
+          </motion.button>
+        </div>
       </section>
+
       {/* Use Case Content */}
       <section className="w-[90%] mx-auto px-4 py-10">
         <h2 className="text-text_header_34 font-bold">Use Cases</h2>

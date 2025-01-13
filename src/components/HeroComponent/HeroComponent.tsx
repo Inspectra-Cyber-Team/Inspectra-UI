@@ -52,7 +52,7 @@ export default function HeroComponent() {
       {/* Content Section */}
       <motion.section className="text-center xl:text-left space-y-5" variants={itemVariants}>
         <motion.h1 
-          className="text-[30px] md:text-[40px] xl:text-[60px] px-2 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold"
+          className="text-[30px] md:text-[40px] xl:text-[60px] px-5 inline rounded-tl-[20px] text-text_color_light rounded-br-[20px] bg-primary_color font-semibold"
           variants={itemVariants}
         >
           Inspectra
@@ -75,7 +75,7 @@ export default function HeroComponent() {
         >
           <motion.button
             onClick={() => router.push("/project")}
-            className="flex justify-between items-center hover:bg-primary_color dark:hover:bg-primary_color hover:text-text_color_light px-5 text-text_color_dark bg-background_dark_mode dark:bg-background_light_mode dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[160px] h-[50px] text-text_body_16"
+            className="flex justify-between items-center hover:bg-background_dark_mode/80 dark:hover:bg-background_light_mode/90 px-5 text-text_color_dark bg-background_dark_mode dark:bg-background_light_mode dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[140px] h-[50px] text-text_body_16"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

@@ -1,3 +1,4 @@
 export type CommonTopic = {
-    topic: string;
-}
+  uuid: string;
+  name: string;
+};

@@ -19,7 +19,7 @@ export default function FAQsComponent() {
   return (
     <div>
        {/* title */}
-       <div className="text-text_title_20 md:text-text_header_34 mb-[60px] text-center rounded-tl-[20px] rounded-br-[20px] text-text_color_light  p-2 bg-primary_color w-full md:w-[500px] h-full" data-aos="fade-right">
+       <div className="text-text_title_20 md:text-text_header_34 mb-[60px] text-center rounded-tl-[20px] rounded-br-[20px] text-text_color_light  p-2 bg-primary_color w-full md:w-[500px] h-full font-semibold" data-aos="fade-right">
         Get your doubts answered
       </div>
       {result?.map((faqItem: FAQsType, index: number) => (

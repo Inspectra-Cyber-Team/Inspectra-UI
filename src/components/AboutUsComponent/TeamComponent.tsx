@@ -6,12 +6,13 @@ import { teamData } from "@/data/team";
 import Link from "next/link";
 import { AboutUs, SocialMedia } from "@/types/AboutUs";
 import Aos from "aos";
+import { motion } from "framer-motion";
 
 export default function TeamComponent() {
   const { theme } = useTheme();
-   useEffect(() => {
-                  Aos.init({ duration: 1000 });
-                }, []);
+  useEffect(() => {
+    Aos.init({ duration: 1000 });
+  }, []);
   return (
     <div>
       <section className="relative">
@@ -33,12 +34,18 @@ export default function TeamComponent() {
         <div className="w-[90%] mx-auto text-center my-10 md:pt-24">
           <div>
             <div className="text-[20px] md:text-[30px] xl:text-[40px] inline-flex px-5 font-semibold bg-primary_color dark:bg-text_color_light py-2 rounded-tl-[20px] rounded-br-[20px]">
-              <p className="text-text_color_light dark:text-primary_color" data-aos="fade-up">
+              <p
+                className="text-text_color_light dark:text-primary_color"
+                data-aos="fade-up"
+              >
                 Meet Our Teams
               </p>
             </div>
             <div className="w-[90%] mx-auto">
-              <p className="text-text_color_desc_light md:text-text_color_dark dark:text-text_color_desc_dark dark:md:text-text_color_light text-text_title_16 my-5 text-lg" data-aos="fade-up">
+              <p
+                className="text-text_color_desc_light md:text-text_color_dark dark:text-text_color_desc_dark dark:md:text-text_color_light text-text_title_16 my-5 text-lg"
+                data-aos="fade-up"
+              >
                 Meet our diverse teams of world-class Frontend and Backend
                 Developer
               </p>
@@ -47,7 +54,10 @@ export default function TeamComponent() {
 
           {/* teams card */}
           <div>
-            <div className="flex flex-wrap lg:flex-nowrap justify-center md:justify-between gap-10" data-aos="fade-up">
+            <div
+              className="flex flex-wrap lg:flex-nowrap justify-center md:justify-between gap-10"
+              data-aos="fade-up"
+            >
               {teamData.map((team: AboutUs, index) => (
                 <div
                   key={index}
@@ -63,13 +73,19 @@ export default function TeamComponent() {
                   </div>
 
                   {/* Teams Image */}
-                  <div className="my-3 overflow-hidden rounded-tl-[20px] rounded-br-[20px]">
+                  <motion.div
+                    className="my-3 overflow-hidden rounded-tl-[20px] rounded-br-[20px]"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                    whileHover={{ scale: 1.05 }}
+                  >
                     <img
                       src={team.image}
                       alt={`${team.name}'s profile`}
-                      className="w-60 h-60 mx-auto object-cover"
+                      className="w-60 h-64 mx-auto object-cover"
                     />
-                  </div>
+                  </motion.div>
 
                   {/* Social Media Links */}
                   <div className="flex justify-center space-x-4">

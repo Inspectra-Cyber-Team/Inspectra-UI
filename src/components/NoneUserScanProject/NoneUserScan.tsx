@@ -61,7 +61,6 @@ export default function NoneUserScan() {
       }
     });
   };
-
   const handleSubmit = async () => {
     if (gitResult.length === 0 || selectedBranch === "Select Project Branch") {
       toast({
@@ -85,32 +84,49 @@ export default function NoneUserScan() {
       setCountScan(newCount);
       localStorage.setItem("scanCount", newCount.toString());
 
-      try {
-        const response = await projectScanNonUser({
-          project: {
-            gitUrl: gitUrlResult,
-            branch: selectedBranch,
-            countScan: countScan,
-            issueTypes: selectedCheckbox,
-            includePaths: selectedFile,
-          },
-        });
+      let attempt = 0;
+      const maxRetries = 3;
 
-        toast({
-          description: "Project Scan Successfully Completed",
-          variant: "success",
-        });
-        setStatus(true);
-        router.push(`project/${response?.data?.data}`);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          const axiosError = error as AxiosError;
-          if (axiosError.response?.status === 504) {
+      const performScan = async () => {
+        try {
+          attempt++;
+          const response = await projectScanNonUser({
+            project: {
+              gitUrl: gitUrlResult,
+              branch: selectedBranch,
+              countScan: countScan,
+              issueTypes: selectedCheckbox,
+              includePaths: selectedFile,
+            },
+          });
+
+          if (response?.data) {
             toast({
-              description: "Server Timeout (504). Skipping unnecessary steps.",
+              description: "Project Scan Successfully Completed",
               variant: "success",
             });
-            console.warn("Skipping utility due to server timeout.");
+            setIsLoading(false);
+            // Redirect to the project page using the response data
+            router.push(`/project/${response?.data?.data}`);
+          } else {
+            throw new Error("Invalid API response");
+          }
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response?.status === 504) {
+            if (attempt < maxRetries) {
+              toast({
+                description: `Server Timeout (504). Retrying scan (${attempt}/${maxRetries})...`,
+                variant: "success",
+              });
+              await performScan(); // Retry scan
+            } else {
+              toast({
+                description:
+                  "Server Timeout (504). Scan will continue in the background.",
+                variant: "success",
+              });
+              console.warn("Scan continuing despite timeout.");
+            }
           } else {
             toast({
               description: "Something went wrong. Please try again.",
@@ -118,16 +134,14 @@ export default function NoneUserScan() {
             });
             console.error("Error during project scan:", error);
           }
-        } else {
-          console.error("Unexpected error:", error);
-          toast({
-            description: "An unexpected error occurred.",
-            variant: "error",
-          });
+        } finally {
+          if (attempt >= maxRetries) {
+            setIsLoading(false);
+          }
         }
-      } finally {
-        setIsLoading(false);
-      }
+      };
+
+      await performScan();
     } else {
       setIsLoading(false);
       toast({
@@ -229,7 +243,7 @@ export default function NoneUserScan() {
       />
       {/* Top section */}
       <div className="flex flex-col items-center justify-center pt-10 ">
-        <div className="px-3 w-[300px] md:w-[500px] font-semibold bg-primary_color py-2 rounded-tl-[20px] rounded-br-[20px]">
+        <div className="px-3 font-semibold bg-primary_color py-2 rounded-tl-[20px] rounded-br-[20px]">
           <p className="text-center text-text_color_light text-text_body_16 md:text-text_title_24">
             Scan Your Project Repositories
           </p>
@@ -239,12 +253,14 @@ export default function NoneUserScan() {
         </p>
       </div>
 
-      <div className="container">
+      <div>
         {/* Check if loading */}
         {isLoading ? (
-          <LoadingSection />
+          <div className="container justify-center items-center lg:w-[750px] w-[300px] md:w-[550px] mx-auto">
+            <LoadingSection />
+          </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 py-8 max-w-7xl mx-auto">
+          <div className="container grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 py-8 max-w-7xl mx-auto">
             {/* image */}
             <div className="hidden lg:flex justify-center items-center">
               {!isLoading &&

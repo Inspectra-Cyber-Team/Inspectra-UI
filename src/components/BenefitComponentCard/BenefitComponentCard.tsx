@@ -4,6 +4,7 @@ import { benefitData } from "@/data/Benefit";
 import { benefitType } from "@/types/BenefitType";
 import { useTheme } from "next-themes";
 import Aos from "aos";
+import { motion } from "framer-motion";
 
 
 export default function BenefitComponentCard() {
@@ -20,10 +21,11 @@ export default function BenefitComponentCard() {
       <div className="w-full  lg:my-[80px] grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-5 gap-y-5" data-aos="fade-up">
         {/* w-full my-5 flex flex-col items-center xl:flex-row xl:justify-between */}
         {benefitData.map((item: benefitType, index) => (
-          <div
+          <motion.div
             key={index}
-            className="rounded-[20px] bg-card_color_light dark:bg-card_color_dark py-5 my-5 w-full h-full items-center text-center flex flex-col justify-center"
-          >
+            className="rounded-[20px] bg-card_color_light hover:bg-[#F4FFF4] hover:ring-ascend_color hover:ring-1 dark:bg-card_color_dark py-5 my-5 w-full h-full items-center text-center flex flex-col justify-center "
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}>
             {theme === "dark" ? (
               <img
                 src={item.imageDark}
@@ -43,7 +45,7 @@ export default function BenefitComponentCard() {
             <p className="text-text_body_16 mx-5 text-text_color_desc_light dark:text-text_color_desc_dark">
               {item.description}
             </p>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

@@ -1,15 +1,19 @@
 "use client";
 import React, { useEffect } from "react";
 import WorkingProcessCard from "../WorkingProcessCard/WorkingProcessCard";
-import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
 import Aos from "aos";
 import LogoSliderComponent from "../LogoSliderComponent/LogoSliderComponent";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function HomepageComponent() {
   useEffect(() => {
     Aos.init({ duration: 1000 });
   }, []);
+
+  const router = useRouter();
+
   return (
     <section>
       {/* Our Working Process */}
@@ -39,13 +43,20 @@ export default function HomepageComponent() {
                 Inspect, Improve, Innovative
               </p>
               <section className="my-10 flex justify-center items-center xl:justify-start">
-                <Link
-                  href={"/project"}
-                  className="flex justify-between items-center bg-primary_color px-5 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[160px] hover:bg-ascend_color hover:text-white h-[50px] text-text_body_16"
-                >
-                  Try Now
-                  <FaArrowRight />
-                </Link>
+                <motion.button
+                            onClick={() => router.push("/project")}
+                            className="flex justify-between items-center hover:bg-primary_color/80  px-5 text-text_color_light bg-primary_color  rounded-tl-[20px] rounded-br-[20px] w-[140px] h-[50px] text-text_body_16"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            Try Now
+                            <motion.div
+                              animate={{ x: [0, 5, 0] }}
+                              transition={{ repeat: Infinity, duration: 1.5 }}
+                            >
+                              <FaArrowRight />
+                            </motion.div>
+                          </motion.button>
               </section>
             </section>
           </section>
@@ -53,24 +64,24 @@ export default function HomepageComponent() {
       </section>
 
       {/* Second Section */}
-      <section className="text-center lg:my-[60px] space-y-5">
+      <section className="text-center lg:my-[80px] space-y-5 lg:space-y-[60px]">
         <section className="flex w-full justify-center">
           <section
-            className="space-y-2 text-right text-text_title_24 md:text-text_header_34 pr-4 font-medium text-text_color_light dark:text-text_color_dark"
+            className="space-y-3 text-right text-text_title_24 md:text-text_header_34 pr-2 font-semibold text-text_color_light dark:text-text_color_dark"
             data-aos="fade-down"
           >
             <p>See the</p>
             <p>Secure the</p>
           </section>
-          <section className="space-y-2 text-left text-text_title_24 md:text-text_header_34">
+          <section className="space-y-3 text-left text-text_title_24 md:text-text_header_34 font-semibold">
             <p
-              className="rounded-tl-[20px] rounded-br-[20px] bg-primary_color font-medium text-text_color_light px-2 inline-block"
+              className="rounded-tl-[20px] rounded-br-[20px] bg-primary_color  text-text_color_light px-5 inline-block"
               data-aos="fade-up"
             >
               Unseen
             </p>
             <p
-              className="rounded-tl-[20px] rounded-br-[20px] bg-primary_color font-medium text-text_color_light px-2"
+              className="rounded-tl-[20px] rounded-br-[20px] bg-primary_color  text-text_color_light px-5"
               data-aos="fade-up"
             >
               Unknown
@@ -81,22 +92,24 @@ export default function HomepageComponent() {
           Through deep, intelligent scanning and proactive insights, we help you
           secure your code and protect against unseen vulnerabilities 
         </p>
-        <section className="flex w-full justify-center pt-[60px]">
+
+        <section className="flex w-full justify-center">
           <section
-            className="space-y-2 text-right text-text_title_24 md:text-text_header_34 pr-4 font-medium text-text_color_light dark:text-text_color_dark"
+            className="space-y-2 text-right text-text_title_24 md:text-text_header_34 pr-2 font-semibold text-text_color_light dark:text-text_color_dark"
             data-aos="fade-down"
-          >
+          > 
             <p>Supported</p>
           </section>
-          <section className="space-y-2 text-left text-text_title_24 md:text-text_header_34">
+          <section className="space-y-2 text-left text-text_title_24 md:text-text_header_34 font-semibold">
             <p
-              className="rounded-tl-[20px] rounded-br-[20px] bg-primary_color font-medium text-text_color_light px-2 inline-block"
+              className="rounded-tl-[20px] rounded-br-[20px] bg-primary_color text-text_color_light px-5 inline-block"
               data-aos="fade-up"
             >
               Languages
             </p>
           </section>
         </section>
+
         <LogoSliderComponent />
       </section>
     </section>

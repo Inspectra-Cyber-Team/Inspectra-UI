@@ -132,36 +132,38 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     }
   }, [isBookmarkData]);
 
-  // useEffect(() => {
-  //   const connectWebSocket = () => {
-  //     const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL as string);
+  const [socket, setSocket] = useState<WebSocket | null>(null);
 
-  //     ws.onopen = () => console.log("WebSocket connection established.");
-  //     ws.onmessage = (event) => {
-  //       try {
-  //         const newBlog = JSON.parse(event.data);
-  //         if (newBlog.uuid === uuid) {
-  //           setBlogData((prevData) => ({
-  //             ...prevData,
-  //             ...newBlog,
-  //           }));
-  //         }
-  //       } catch (error) {
-  //         console.error("Error parsing WebSocket message:", error);
-  //       }
-  //     };
-  //     ws.onerror = () => console.error("WebSocket error. Retrying...");
-  //     ws.onclose = () => console.error("WebSocket closed. Retrying...");
+  useEffect(() => {
+    const connectWebSocket = () => {
+      const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL as string);
 
-  //     setSocket(ws);
-  //   };
+      ws.onopen = () => console.log("WebSocket connection established.");
+      ws.onmessage = (event) => {
+        try {
+          const newBlog = JSON.parse(event.data);
+          if (newBlog.uuid === uuid) {
+            setBlogData((prevData) => ({
+              ...prevData,
+              ...newBlog,
+            }));
+          }
+        } catch (error) {
+          console.error("Error parsing WebSocket message:", error);
+        }
+      };
+      ws.onerror = () => console.error("WebSocket error. Retrying...");
+      ws.onclose = () => console.error("WebSocket closed. Retrying...");
 
-  //   if (!socket) connectWebSocket();
+      setSocket(ws);
+    };
 
-  //   return () => {
-  //     socket?.close();
-  //   };
-  // }, [uuid, socket]);
+    if (!socket) connectWebSocket();
+
+    return () => {
+      socket?.close();
+    };
+  }, [uuid, socket]);
 
   const handleSubmitReport = async ({ blogUuid, message }: ReportProps) => {
     try {
@@ -176,6 +178,12 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         setSubmitReport(false);
         setShowModalReport(false);
         setModalOpen(true);
+      } else {
+        toast({
+          description: "Report Message is required",
+          variant: "error",
+        });
+        setSubmitReport(false);
       }
       if (res.error && "status" in res.error) {
         if (res.error.status === 401) {

@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import Lottie from "lottie-react";
 import animationLoading from "@/components/loadingAnimation.json";
 import { Search, File, Check } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 
 const steps = [
   { icon: Check, label: "Repository Connect" },
@@ -23,13 +22,13 @@ const LoadingSection: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center pt-10 mx-auto w-[300px] md:w-[750px]">
+    <div className="flex flex-col items-center justify-center pt-10 mx-auto  ">
       <div className="w-full mb-12">
-        <ol className="flex items-center justify-between w-full relative">
+        <ol className="flex items-center justify-between relative ">
           {steps.map((step, index) => (
             <li
               key={index}
-              className="relative flex flex-col items-center z-10"
+              className="relative flex flex-col items-center z-10 "
             >
               <div className="relative flex flex-col items-center">
                 <motion.div
@@ -70,7 +69,7 @@ const LoadingSection: React.FC = () => {
               </div>
               {index < steps.length - 1 && (
                 <motion.div
-                  className="absolute top-8 left-[calc(50%+0.5rem)] md:left-[calc(50%+4rem)] w-[calc(50%+0.2rem)] transform h-1 bg-primary_color"
+                  className="absolute top-8 left-[calc(50%+0.5rem)] lg:left-[calc(50%+4rem)] w-[calc(50%+0.2rem)] transform h-1 bg-primary_color"
                   initial={{ width: "0%" }}
                   animate={{ width: currentStep > index ? "100%" : "0%" }}
                   transition={{ duration: 1.0 }}
@@ -86,9 +85,6 @@ const LoadingSection: React.FC = () => {
         transition={{ delay: 1.5, duration: 0.5 }}
         className="text-center w-full"
       >
-        <h2 className="text-2xl font-semibold mb-2 text-text dark:text-text_color_dark">
-          Scanning your project
-        </h2>
         <div className="relative">
           <Lottie
             animationData={animationLoading}

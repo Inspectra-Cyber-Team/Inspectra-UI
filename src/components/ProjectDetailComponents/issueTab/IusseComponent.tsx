@@ -522,7 +522,7 @@ export default function IusseComponent({ ...props }) {
           </div>
 
           {/* card issue */}
-          <div className=" w-full h-[1000px] scrollbar-hide overflow-y-auto lg:w-[60%] ">
+          <div className=" w-full lg:h-[1000px] scrollbar-hide overflow-y-auto lg:w-[60%] ">
             {issueData?.data?.issues.length === 0 ? (
               <div className="w-full mx-auto text-center text-text_title_20 text-text_color_light dark:text-text_color_dark">
                 <img src="/images/NoIssue.png" className="mx-auto" />
