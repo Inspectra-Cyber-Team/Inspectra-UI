@@ -12,6 +12,7 @@ import SessionWrapper from "@/app/SessionProvider";
 import { Metadata } from "next";
 import BannerComponent from "@/components/BannerComponent/BannerComponent";
 import dynamic from "next/dynamic";
+import Script from "next/script";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600"],
@@ -57,6 +58,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-B4SNTRGDDK"
+        />
+
+        <Script id="google-analytics">
+          {`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', ${"${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}"});
+  `}
+        </Script>
+      </head>
       <body
         className={`${poppins.className}  relative   overflow-y-auto scrollbar  overflow-x-hidden bg-background_light_mode  dark:bg-background_dark_mode flex flex-col justify-between  `}
       >
