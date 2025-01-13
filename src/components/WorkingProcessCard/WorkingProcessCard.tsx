@@ -1,11 +1,14 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 export default function WorkingProcessCard() {
   return (
     <div className="w-full px-4 md:px-10 lg:px-16 py-10 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-16 md:gap-y-10 place-items-center">
       
       {/* Card 1 */}
-      <div className="w-[250px] h-[250px] md:h-[300px] bg-primary_color rounded-[50px] flex flex-col justify-center items-center self-start">
+      <motion.div className="w-[250px] h-[250px] md:h-[300px] bg-primary_color rounded-[50px] flex flex-col justify-center items-center self-start " 
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}>
         <div className="w-full flex flex-col justify-around text-start px-5">
           <p className="text-text_color_light text-[40px] md:text-[60px] font-bold">
             1{" "}
@@ -18,10 +21,12 @@ export default function WorkingProcessCard() {
             Upload Your Git Project URL
           </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Card 2 */}
-      <div className="w-[250px] h-[250px] md:h-[300px] bg-text_color_dark rounded-[50px] flex flex-col justify-center items-center self-end md:translate-y-6 md:translate-x-24 xl:translate-x-0 md:mt-5">
+      <motion.div className="w-[250px] h-[250px] md:h-[300px] bg-text_color_dark rounded-[50px] flex flex-col justify-center items-center self-end md:translate-y-6 md:translate-x-24 xl:translate-x-0 md:mt-5 "
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}>
         <div className="w-full flex flex-col justify-around text-start px-5">
           <p className="text-text_color_light text-[40px] md:text-[60px] font-bold">
             2{" "}
@@ -34,10 +39,12 @@ export default function WorkingProcessCard() {
             Find Weakness Inside Your Project
           </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Card 3 */}
-      <div className="w-[250px] h-[250px] md:h-[300px] bg-text_color_dark rounded-[50px] flex flex-col justify-center items-center self-start">
+      <motion.div className="w-[250px] h-[250px] md:h-[300px] bg-text_color_dark rounded-[50px] flex flex-col justify-center items-center self-start "
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}>
         <div className="w-full flex flex-col justify-around text-start px-5">
           <p className="text-text_color_light text-[40px] md:text-[60px] font-bold">
             3{" "}
@@ -50,10 +57,12 @@ export default function WorkingProcessCard() {
             Get Detail Report and Recommendation
           </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Card 4 */}
-      <div className="w-[250px] h-[250px] md:h-[300px] bg-primary_color rounded-[50px] flex flex-col justify-center items-center self-end md:mt-5 md:translate-y-6 md:translate-x-24 xl:translate-x-0 mb-10 md:mb-0">
+      <motion.div className="w-[250px] h-[250px] md:h-[300px] bg-primary_color rounded-[50px] flex flex-col justify-center items-center self-end md:mt-5 md:translate-y-6 md:translate-x-24 xl:translate-x-0 mb-10 md:mb-0 "
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}>
         <div className="w-full flex flex-col justify-around text-start px-5">
           <p className="text-text_color_light text-[40px] md:text-[60px] font-bold">
             4{" "}
@@ -66,7 +75,7 @@ export default function WorkingProcessCard() {
             Export as PDF for easy sharing
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

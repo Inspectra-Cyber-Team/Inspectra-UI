@@ -5,6 +5,7 @@ import { feedbackType } from "@/types/Feedback";
 import Aos from "aos";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 export default function FeedbackCard() {
   const { data } = useGetAllUserFeedbackQuery({});
@@ -48,13 +49,16 @@ export default function FeedbackCard() {
         User Feedback
       </p>
       <div
-        className="grid gap-10 lg:my-[80px] grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-items-center xl:justify-items-between my-10"
+        className="grid gap-10 lg:my-[80px] grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-items-center  xl:justify-items-between my-10"
+       
         data-aos="fade-up"
       >
         {displayedItems?.map((feedback: feedbackType, index: number) => (
-          <div
+          <motion.div
             key={index}
-            className="w-full h-full rounded-[20px] p-5 text-text_color_light dark:text-text_color_dark bg-card_color_light dark:bg-card_color_dark flex flex-col justify-between"
+            className="w-full h-full rounded-[20px] p-5 text-text_color_light dark:text-text_color_dark bg-card_color_light dark:bg-card_color_dark flex flex-col justify-between hover:bg-[#F4FFF4] hover:ring-ascend_color hover:ring-1"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
             {/* Feedback content */}
             <p className="text-text_color_light text-start text-text_body_16 dark:text-text_color_dark">
@@ -82,7 +86,7 @@ export default function FeedbackCard() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

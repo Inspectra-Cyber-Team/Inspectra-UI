@@ -8,6 +8,7 @@ import { ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import Aos from "aos";
+import { motion } from "framer-motion";
 
 export default function UseCaseComponent() {
   const { theme } = useTheme();
