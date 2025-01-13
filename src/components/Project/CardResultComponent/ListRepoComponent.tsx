@@ -32,7 +32,7 @@ export function ListRepoComponent() {
   const { data: userDataProjet, isError } = useGetProjectOverViewUserQuery({
     uuid: userUUID,
     page: 0,
-    size: 10,
+    size: 100,
   });
 
   const { data: userRepo } = useGetAllUserRepositoriesQuery({
@@ -207,19 +207,23 @@ export function ListRepoComponent() {
         </TabsContent>
 
         <TabsContent value="Project Results">
-          {userDataProjet?.map((project: any, index: number) => {
-            if (project?.component?.component?.measures.length !== 0) {
-              return (
-                <ProjectCardWithData
-                  key={index}
-                  projectResult={project}
-                  index={index}
-                />
-              );
-            } else {
-              <LoadProjectComponent textDisplay={"No Project Result "} />;
-            }
-          })}
+          {isError ? (
+            <LoadProjectComponent textDisplay={"No Project Result "} />
+          ) : (
+            userDataProjet?.map((project: any, index: number) => {
+              if (project?.component?.component?.measures.length !== 0) {
+                return (
+                  <ProjectCardWithData
+                    key={index}
+                    projectResult={project}
+                    index={index}
+                  />
+                );
+              } else {
+                <LoadProjectComponent textDisplay={"No Project Result "} />;
+              }
+            })
+          )}
         </TabsContent>
       </Tabs>
     </section>

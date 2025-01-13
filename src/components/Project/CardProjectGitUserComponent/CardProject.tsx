@@ -20,6 +20,8 @@ import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponen
 import { useCreateProjectScanMutation } from "@/redux/service/project";
 import ReactTypingEffect from "react-typing-effect";
 import { useSession } from "next-auth/react";
+import { error } from "console";
+
 export default function CardProject({ userDataProjet, isError }: any) {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isUserAccessToken, setIsUserAccessToken] = useState<string>("");
@@ -69,7 +71,8 @@ export default function CardProject({ userDataProjet, isError }: any) {
   };
   // get prject name and user name and split
   const project =
-    userDataProjet[activeProjectIndex]?.component?.component?.name;
+    userDataProjet?.[activeProjectIndex]?.component?.component?.name ??
+    "Default Project Name";
 
   const [userName, projectName] = project.split("--");
 
