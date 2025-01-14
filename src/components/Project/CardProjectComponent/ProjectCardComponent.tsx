@@ -9,17 +9,12 @@ import {
 import { useEffect, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
 
-import {
-  useCreateProjectScanMutation,
-  useDeleteProjectMutation,
-  useGetProjectOverViewUserQuery,
-} from "@/redux/service/project";
+import { useGetProjectOverViewUserQuery } from "@/redux/service/project";
 
 import { toast } from "@/components/hooks/use-toast";
 import ProjectScanSkeleton from "@/components/ProjectSkeleton/ProjectScanSkeleton";
 import StaticProjectCardComponent from "../StaticProjectComponent/StaticProjectCardComponent";
 
-import { useRouter } from "next/navigation";
 import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
 import ProjectCardWithData from "./ProjectCardWithData";
 import ProjectCardWithNoData from "./ProjectCardWithNoData";
@@ -131,59 +126,59 @@ export default function ProjectCardComponent() {
         // while fetching data
         <ProjectScanSkeleton />
       ) : // check if search result is empty
-        filteredResults.length === 0 ? (
-          <>
-            {projectResultApi?.map((projectResult: any, index: number) => {
-              // check project that already scanned
-              if (projectResult?.component.component.measures !== 0) {
-                return (
-                  <ProjectCardWithData
-                    key={index}
-                    index={index}
-                    projectResult={projectResult}
-                  />
-                );
-              } else {
-                // return project not yet scanned
-                return (
-                  <ProjectCardWithNoData
-                    key={index}
-                    index={index}
-                    projectResult={projectResult}
-                  />
-                );
-              }
-            })}
-          </>
-        ) : (
-          <>
-            {filteredResults.map((filterResult: any, index: number) => {
-              // check project that already scanned
-              if (filterResult?.component.component.measures !== 0) {
-                return (
-                  <ProjectCardWithData
-                    key={index}
-                    index={index}
-                    projectResult={filterResult}
-                  />
-                );
-              } else {
-                // return project not yet scanned
-                return (
-                  <ProjectCardWithNoData
-                    key={index}
-                    index={index}
-                    projectResult={filterResult}
-                  />
-                );
-              }
-            })}
-            {/* Static card visible only for specific UUID */}
-            {userUUID === process.env.NEXT_PUBLIC_USER_UUID && (
-              <StaticProjectCardComponent />
-            )}
-          </>
-        )}
+      filteredResults.length === 0 ? (
+        <>
+          {projectResultApi?.map((projectResult: any, index: number) => {
+            // check project that already scanned
+            if (projectResult?.component.component.measures.length > 0) {
+              return (
+                <ProjectCardWithData
+                  key={index}
+                  index={index}
+                  projectResult={projectResult}
+                />
+              );
+            } else {
+              // return project not yet scanned
+              return (
+                <ProjectCardWithNoData
+                  key={index}
+                  index={index}
+                  projectResult={projectResult}
+                />
+              );
+            }
+          })}
+        </>
+      ) : (
+        <>
+          {filteredResults.map((filterResult: any, index: number) => {
+            // check project that already scanned
+            if (filterResult?.component.component.measures !== 0) {
+              return (
+                <ProjectCardWithData
+                  key={index}
+                  index={index}
+                  projectResult={filterResult}
+                />
+              );
+            } else {
+              // return project not yet scanned
+              return (
+                <ProjectCardWithNoData
+                  key={index}
+                  index={index}
+                  projectResult={filterResult}
+                />
+              );
+            }
+          })}
+          {/* Static card visible only for specific UUID */}
+          {userUUID === process.env.NEXT_PUBLIC_USER_UUID && (
+            <StaticProjectCardComponent />
+          )}
+        </>
+      )}
     </div>
   );
 }
