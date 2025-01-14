@@ -16,8 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "../hooks/use-toast";
 
 export default function FormSignUpComponent() {
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showconfirmPassword, setShowconfirmPassword] = useState(false);
@@ -33,8 +35,8 @@ export default function FormSignUpComponent() {
       .required("Email is Required"),
     password: Yup.string()
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-        "Password should be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number"
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character (@, $, !, %, *, ?, &)"
       )
       .required("Password is Required"),
     confirmPassword: Yup.string()
@@ -91,12 +93,34 @@ export default function FormSignUpComponent() {
   const handleSubmit = async (values: SigUpFormValues) => {
     setIsLoading(true);
     try {
-      register({ user: values });
-      router.push("/verify");
-      dispatch(setUserEmail(values.email));
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
+      const res = await register({ user: values });
+      if (res.data) {
+        router.push("/verify");
+        dispatch(setUserEmail(values.email));
+        setIsLoading(false);
+      } else {
+        toast({
+          description: "Something went wrong",
+          variant: "error",
+        });
+        setIsLoading(false);
+      }
+
+      // Handle error conflict
+      if (res.error && "status" in res.error) {
+        if (res.error.status === 409) {
+          toast({
+            description: "email or username already exists",
+            variant: "error",
+          });
+          setIsLoading(false);
+        }
+      }
+    } catch {
+      toast({
+        description: "Something went wrong",
+        variant: "error",
+      });
       setIsLoading(false);
     }
   };

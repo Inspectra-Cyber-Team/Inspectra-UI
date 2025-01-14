@@ -57,21 +57,23 @@ const initialValues: Email = {
 
 const initialPasswordValues = {
   newPassword: "",
-  confirmPassword: ""
-}
+  confirmPassword: "",
+};
 
 // for filed
 const validationSchemaPassword = Yup.object({
   newPassword: Yup.string()
     .required("New Password is required")
-    .min(8, "Password must be at least 8 characters"),
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character (@, $, !, %, *, ?, &)"
+    ),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("newPassword"), undefined], "Passwords must match")
     .required("Confirm Password is required"),
 });
 
 export default function FormForgetPassowrd() {
-
   const { toast } = useToast();
 
   const router = useRouter();
@@ -80,7 +82,7 @@ export default function FormForgetPassowrd() {
 
   const [openModal, setOpenModal] = useState(false);
 
-  const [alertOpen,setAlertOpen] = useState(false)
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const [otp, setOtp] = useState("");
 
@@ -91,7 +93,6 @@ export default function FormForgetPassowrd() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmitOtp = (values: OtpType) => {
-
     setIsLoading(true);
     const otp = Object.values(values).join("");
 
@@ -165,7 +166,7 @@ export default function FormForgetPassowrd() {
         });
 
         //  when success call alert modal
-        setAlertOpen(true)
+        setAlertOpen(true);
       } else {
         toast({
           description: "Failed to change password. Please try again!",
@@ -209,9 +210,9 @@ export default function FormForgetPassowrd() {
   };
 
   const handleCloseAlert = () => {
-    setAlertOpen(false)
-    router.push("/login")
-  }
+    setAlertOpen(false);
+    router.push("/login");
+  };
 
   return (
     <main className="h-screen w-full mx-auto flex ">
@@ -330,7 +331,7 @@ export default function FormForgetPassowrd() {
           <Formik
             initialValues={initialPasswordValues}
             validationSchema={validationSchemaPassword}
-            onSubmit={async (Values,{resetForm}) => {
+            onSubmit={async (Values, { resetForm }) => {
               await handleSubmitchangePassword(Values);
               resetForm();
             }}
@@ -434,7 +435,7 @@ export default function FormForgetPassowrd() {
 
       {/* Modal for OTP Input */}
       <Dialog open={openModal} onOpenChange={setOpenModal}>
-        <DialogContent className="bg-card w-full max-w-[90%] md:max-w-md lg:max-w-xl mx-auto h-fit rounded-xl">
+        <DialogContent className="bg-card w-full max-w-[90%] md:max-w-md lg:max-w-xl mx-auto h-fit rounded-xl" onInteractOutside={(e) => e.preventDefault()}>
           <DialogHeader>
             <DialogTitle>Change Password</DialogTitle>
           </DialogHeader>
@@ -445,9 +446,9 @@ export default function FormForgetPassowrd() {
           <Formik
             initialValues={initialOtpValues}
             validationSchema={validationSchemaOpt}
-            onSubmit={(values,{resetForm}) => {
-               handleSubmitOtp(values);
-               resetForm();
+            onSubmit={(values, { resetForm }) => {
+              handleSubmitOtp(values);
+              resetForm();
             }}
           >
             {({ values, handleChange }) => (
