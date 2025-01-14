@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { FaCommentDots } from "react-icons/fa";
@@ -176,48 +176,82 @@ const CommentSection = ({ uuid }: commentProp) => {
 
   const [dataComment, setDataComment] = useState<Content[]>([]);
 
-  // const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [socket, setSocket] = useState<WebSocket | null>(null);
 
-  // useEffect(() => {
-  //   const connectWebSocket = () => {
-  //     const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL as string);
+  const receivedUuidsRef = useRef<Set<string>>(new Set());
 
-  //     ws.onopen = () => console.log("WebSocket connection established.");
-  //     ws.onmessage = (event) => {
-  //       try {
-  //         const newComment = JSON.parse(event.data);
+  useEffect(() => {
+    const connectWebSocket = () => {
+      const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL as string);
 
-  //         if (
-  //           newComment &&
-  //           newComment.uuid &&
-  //           newComment.content &&
-  //           newComment.user &&
-  //           newComment.replies &&
-  //           newComment.createdAt
-  //         ) {
-  //           // Append the new comment to the existing list
-  //           setDataComment((prevData) => [...prevData, newComment]);
-  //         } else {
-  //           console.warn(
-  //             "Received comment is missing required fields:",
-  //             newComment
-  //           );
-  //         }
-  //       } catch (error) {
-  //         console.error("Error parsing WebSocket message:", error);
-  //       }
-  //     };
-  //     ws.onerror = () => console.error("WebSocket error. Retrying...");
-  //     ws.onclose = () => console.error("WebSocket closed. Retrying...");
+      ws.onopen = () => console.log("WebSocket connection established.");
+      
+      ws.onmessage = (event) => {
+        try {
+          const newComment = JSON.parse(event.data);
 
-  //     setSocket(ws);
-  //   };
-  //   if (!socket) connectWebSocket();
+          if (newComment?.data?.uuid && newComment.event == "create" && !receivedUuidsRef.current.has(newComment?.data?.uuid)) {
+            // Add unique comment to the list and track its UUID
+            setDataComment((prevData) => [...prevData, newComment.data]);
+            receivedUuidsRef.current.add(newComment?.data?.uuid);
+          }
+           else if (newComment?.data?.uuid && newComment.event === "delete") {
+            // Remove the comment with the corresponding UUID
+            setDataComment((prevData) => prevData.filter(comment => comment.uuid !== newComment.data.uuid));
 
-  //   return () => {
-  //     socket?.close();
-  //   };
-  // }, [uuid, socket]);
+            receivedUuidsRef.current.delete(newComment?.data?.uuid);
+          }
+
+          else if (newComment?.data?.uuid && newComment.event === "update") {
+            // Update the comment with the corresponding UUID
+            setDataComment((prevData) => prevData.map(comment => 
+              comment.uuid === newComment.data.uuid ? { ...comment, ...newComment.data } : comment
+            ));
+          } 
+
+          else if (newComment?.data?.uuid && newComment.event === "like") {
+            // Add a like to the comment, ensure only one like per user
+            setDataComment((prevData) => prevData.map((comment:any) => 
+              comment.uuid === newComment.data.uuid && !comment.likedBy?.includes(newComment.data.user.uuid) 
+                ? { 
+                    ...comment, 
+                    countLikes: (comment.countLikes || 0) + 1,
+                    likedBy: [...(comment.likedBy || []), newComment.data.user.uuid] // Track the user who liked
+                  } 
+                : comment
+            ));
+          } else if (newComment?.data?.uuid && newComment.event === "unlike") {
+            // Remove a like from the comment, ensure only one unlike per user
+            setDataComment((prevData) => prevData.map((comment:any) => 
+              comment.uuid === newComment.data.uuid && comment.likedBy?.includes(newComment.data.user.uuid) 
+                ? { 
+                    ...comment, 
+                    countLikes: Math.max((comment.countLikes || 0) - 1, 0),
+                    likedBy: comment.likedBy.filter((userUuid:any) => userUuid !== newComment.data.user.uuid) // Remove user from likedBy
+                  } 
+                : comment
+            ));
+          }
+
+
+        } catch (error) {
+          console.error("Error parsing WebSocket message:", error);
+        }
+      };
+
+      ws.onerror = () => console.error("WebSocket error occurred.");
+      ws.onclose = () => console.log("WebSocket closed.");
+
+      setSocket(ws);
+    };
+
+    if (!socket) connectWebSocket();
+
+    return () => {
+      socket?.close();
+    };
+  }, [socket]);
+
 
   useEffect(() => {
     if (comment) {
@@ -555,7 +589,7 @@ const CommentSection = ({ uuid }: commentProp) => {
                   <span className="ml-1 text-gray-500">
                     {comment.countLikes}
                   </span>
-                  {comment.replies.length > 0 && (
+                  {comment?.replies?.length > 0 && (
                     <>
                       <FaCommentDots
                         className="text-gray-500 cursor-pointer ml-4"
