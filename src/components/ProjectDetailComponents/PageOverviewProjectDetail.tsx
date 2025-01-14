@@ -8,6 +8,7 @@ import { SiTicktick } from "react-icons/si";
 import { FaCodeBranch } from "react-icons/fa";
 import { get } from "http";
 import { AiOutlineClose } from "react-icons/ai";
+import CheckGrade from "@/lib/checkGrade";
 
 type OverviewProps = {
   projectName: string;
@@ -76,6 +77,7 @@ export default function PageOverviewProjectDetail({
   });
   const getProjectByUserUuid = projectUuid?.[0]?.branch?.[0]?.branches?.[0];
 
+
   // check data and time
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
@@ -103,7 +105,6 @@ export default function PageOverviewProjectDetail({
         metric.value.startsWith("{") && metric.value.endsWith("}")
           ? JSON.parse(metric.value)?.total || 0
           : parseFloat(metric.value) || 0;
-      // console.log("Hel",metric,value)
       return Math.max(max, value);
     } catch (err) {
       console.error(`Error parsing metric: ${metric.metric}`, err);
@@ -224,55 +225,54 @@ export default function PageOverviewProjectDetail({
             .replace(/_/g, " ")
             .toUpperCase();
 
-          return (
-            <div
-              key={index}
-              className="flex flex-col gap-4 p-4 border border-gray-300 dark:border-primary_color rounded-lg"
-            >
-              <p className="text-lg font-semibold text-gray-700 dark:text-white">
-                {formattedMetric}
-              </p>
-              <div className="flex justify-between items-center">
-                <p className="text-base font-medium text-gray-700 dark:text-gray-300">
-                  {parsedValue?.total || 0}{" "}
-                  {metric.metric === "ncloc" ? "Lines of Code" : "Open Issues"}
+          if (metric.metric === "ncloc") {
+            // don't show card for ncloc
+          } else {
+            return (
+              <div
+                key={index}
+                className="flex flex-col gap-4 p-4 border border-gray-300 dark:border-primary_color rounded-lg"
+              >
+                <p className="text-lg font-semibold text-gray-700 dark:text-white">
+                  {formattedMetric}
                 </p>
-                <div
-                  className={`w-10 h-10 flex items-center justify-center border rounded-lg ${
-                    grade === "A"
-                      ? "border-[#B9FF66]"
-                      : grade === "B"
-                      ? "border-[#60935D]"
-                      : grade === "C"
-                      ? "border-[#F7DC6F]"
-                      : grade === "D"
-                      ? "border-[#F9B800]"
-                      : "border-[#EA4335]"
-                  } text-text_color_light dark:text-text_color_dark font-bold`}
-                >
-                  {grade}
+                <div className="flex justify-between items-center">
+                  <p className="text-base font-medium text-gray-700 dark:text-gray-300">
+                    
+                    {parsedValue?.total || 0}{" "}
+                    {metric.metric === "ncloc"
+                      ? "Lines of Code"
+                      : "Open Issues"}
+                  </p>
+                  {
+                    <CheckGrade
+                      key={index}
+                      parsedValue={parsedValue}
+                      index={index}
+                    />
+                  }
                 </div>
-              </div>
 
-              {parsedValue ? (
-                <div className="flex justify-between gap-2">
-                  <span className="px-3 py-1 bg-red-100 text-red-500 rounded-md text-sm font-medium">
-                    {parsedValue.HIGH || 0} H
-                  </span>
-                  <span className="px-3 py-1 bg-yellow-100 text-yellow-500 rounded-md text-sm font-medium">
-                    {parsedValue.MEDIUM || 0} M
-                  </span>
-                  <span className="px-3 py-1 bg-green-100 text-green-500 rounded-md text-sm font-medium">
-                    {parsedValue.LOW || 0} L
-                  </span>
-                </div>
-              ) : (
-                <p className="text-gray-500 text-sm">
-                  No additional details available
-                </p>
-              )}
-            </div>
-          );
+                {parsedValue ? (
+                  <div className="flex justify-between gap-2">
+                    <span className="px-3 py-1 bg-red-100 text-red-500 rounded-md text-sm font-medium">
+                      {parsedValue.HIGH || 0} H
+                    </span>
+                    <span className="px-3 py-1 bg-yellow-100 text-yellow-500 rounded-md text-sm font-medium">
+                      {parsedValue.MEDIUM || 0} M
+                    </span>
+                    <span className="px-3 py-1 bg-green-100 text-green-500 rounded-md text-sm font-medium">
+                      {parsedValue.LOW || 0} L
+                    </span>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-sm">
+                    No additional details available
+                  </p>
+                )}
+              </div>
+            );
+          }
         })}
       </div>
     </section>

@@ -7,7 +7,7 @@ interface CheckGradeProps {
 
 export default function CheckGrade({ parsedValue, index }: CheckGradeProps) {
   const getGrade = () => {
-    if (parsedValue.INFO > 0) {
+    if (parsedValue?.INFO > 0) {
       return (
         <div
           key={index}
@@ -17,11 +17,11 @@ export default function CheckGrade({ parsedValue, index }: CheckGradeProps) {
         </div>
       );
     } else if (
-      parsedValue.LOW > 0 &&
-      parsedValue.LOW > parsedValue.INFO &&
-      parsedValue.LOW > parsedValue.MEDIUM &&
-      parsedValue.LOW > parsedValue.HIGH &&
-      parsedValue.LOW > parsedValue.BLOCKER
+      parsedValue?.LOW > 0 &&
+      parsedValue?.LOW > parsedValue?.INFO &&
+      parsedValue?.LOW > parsedValue?.MEDIUM &&
+      parsedValue?.LOW > parsedValue?.HIGH &&
+      parsedValue?.LOW > parsedValue?.BLOCKER
     ) {
       return (
         <div
@@ -32,11 +32,11 @@ export default function CheckGrade({ parsedValue, index }: CheckGradeProps) {
         </div>
       );
     } else if (
-      parsedValue.MEDIUM > 0 &&
-      parsedValue.MEDIUM > parsedValue.INFO &&
-      parsedValue.MEDIUM > parsedValue.LOW &&
-      parsedValue.MEDIUM > parsedValue.HIGH &&
-      parsedValue.MEDIUM > parsedValue.BLOCKER
+      parsedValue?.MEDIUM > 0 &&
+      parsedValue?.MEDIUM > parsedValue?.INFO &&
+      parsedValue?.MEDIUM > parsedValue?.LOW &&
+      parsedValue?.MEDIUM > parsedValue?.HIGH &&
+      parsedValue?.MEDIUM > parsedValue?.BLOCKER
     ) {
       return (
         <div
@@ -47,11 +47,11 @@ export default function CheckGrade({ parsedValue, index }: CheckGradeProps) {
         </div>
       );
     } else if (
-      parsedValue.HIGH > 0 &&
-      parsedValue.HIGH > parsedValue.INFO &&
-      parsedValue.HIGH > parsedValue.LOW &&
-      parsedValue.HIGH > parsedValue.MEDIUM &&
-      parsedValue.HIGH > parsedValue.BLOCKER
+      parsedValue?.HIGH > 0 &&
+      parsedValue?.HIGH > parsedValue?.INFO &&
+      parsedValue?.HIGH > parsedValue?.LOW &&
+      parsedValue?.HIGH > parsedValue?.MEDIUM &&
+      parsedValue?.HIGH > parsedValue?.BLOCKER
     ) {
       return (
         <div
@@ -62,11 +62,11 @@ export default function CheckGrade({ parsedValue, index }: CheckGradeProps) {
         </div>
       );
     } else if (
-      parsedValue.BLOCKER > 0 &&
-      parsedValue.BLOCKER > parsedValue.INFO &&
-      parsedValue.BLOCKER > parsedValue.LOW &&
-      parsedValue.BLOCKER > parsedValue.MEDIUM &&
-      parsedValue.BLOCKER > parsedValue.HIGH
+      parsedValue?.BLOCKER > 0 &&
+      parsedValue?.BLOCKER > parsedValue?.INFO &&
+      parsedValue?.BLOCKER > parsedValue?.LOW &&
+      parsedValue?.BLOCKER > parsedValue?.MEDIUM &&
+      parsedValue?.BLOCKER > parsedValue?.HIGH
     ) {
       return (
         <div

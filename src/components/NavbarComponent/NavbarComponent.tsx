@@ -129,7 +129,7 @@ export default function NavbarComponent() {
                   {/* Icon to change theme */}
                   <ModeToggle />
                   {/* Sign in button */}
-                  {userUUID === "" ? (
+                  {userUUID === "" || !userData ? (
                     <Link
                       href="/login"
                       className="text-text_color_dark bg-background_dark_mode dark:bg-background_light_mode dark:text-text_color_light rounded-tl-[14px] rounded-br-[14px] text-text_body_16 px-4 lg:px-4 py-2 lg:py-1.5 hidden lg:block"
@@ -148,8 +148,8 @@ export default function NavbarComponent() {
                             alt="Profile"
                             className="object-cover cursor-pointer rounded-full w-12 h-12 border-2 border-primary_color"
                             onError={(e) =>
-                            (e.currentTarget.src =
-                              "/images/default-profile.jpg")
+                              (e.currentTarget.src =
+                                "/images/default-profile.jpg")
                             }
                           />
                         </MenubarTrigger>
@@ -247,89 +247,93 @@ export default function NavbarComponent() {
                               </div>
                             </button>
 
-                          {/* Log Out */}
-                          <button
-                            onClick={() => {
-                              // handle remove also session from next-auth
-                              signOut();
-                              handleSignOut();
-                              handleMenuClose();
-                            }}
-                            className="p-3 my-3 flex w-full justify-between items-center text-center"
-                          >
-                            <div className="flex items-center">
-                              <div className="flex items-center justify-center w-6 h-6">
-                                <IoLogOutSharp className="w-full h-full" />
-                              </div>
-                              <p className="mx-5 text-text_body_16">Log Out</p>
-                            </div>
-                          </button>
-                        </MenubarContent>
-                      )}
-                    </MenubarMenu>
-                  </Menubar>
-                )}
-                {/* menu icon */}
-                <div className="text-[25px] block lg:hidden ">
-                  {/* no account */}
-                  {userUUID === "" ? (
-                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                      <SheetTrigger asChild>
-                        <IoMenu />
-                      </SheetTrigger>
-                      <SheetContent className="bg-background_light_mode dark:bg-background_dark_mode border-hidden">
-                        <ul className=" text-text_color_light dark:text-text_color_dark  text-text_body_16  justify-between space-y-4 flex flex-col">
-                          {navbarData.map((item, index: number) => (
-                            <Link
-                              key={index}
-                              href={
-                                item.link === "/document"
-                                  ? "https://inspectra-doc.istad.co/"
-                                  : item.link
-                              }
-                              target={
-                                item.link === "/document" ? "_blank" : undefined
-                              } // Open in new tab for /document
-                              rel={
-                                item.link === "/document"
-                                  ? "noopener noreferrer"
-                                  : undefined
-                              } // Add security for external links
+                            {/* Log Out */}
+                            <button
+                              onClick={() => {
+                                // handle remove also session from next-auth
+                                signOut();
+                                handleSignOut();
+                                handleMenuClose();
+                              }}
+                              className="p-3 my-3 flex w-full justify-between items-center text-center"
                             >
-                              {pathname === item.link ? (
-                                <p
-                                  onClick={handleClick}
-                                  className="text-secondary_color "
-                                >
-                                  {item?.name}
+                              <div className="flex items-center">
+                                <div className="flex items-center justify-center w-6 h-6">
+                                  <IoLogOutSharp className="w-full h-full" />
+                                </div>
+                                <p className="mx-5 text-text_body_16">
+                                  Log Out
                                 </p>
-                              ) : (
-                                <p onClick={handleClick}>{item.name}</p>
-                              )}
+                              </div>
+                            </button>
+                          </MenubarContent>
+                        )}
+                      </MenubarMenu>
+                    </Menubar>
+                  )}
+                  {/* menu icon */}
+                  <div className="text-[25px] block lg:hidden ">
+                    {/* no account */}
+                    {userUUID === "" ? (
+                      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                        <SheetTrigger asChild>
+                          <IoMenu />
+                        </SheetTrigger>
+                        <SheetContent className="bg-background_light_mode dark:bg-background_dark_mode border-hidden">
+                          <ul className=" text-text_color_light dark:text-text_color_dark  text-text_body_16  justify-between space-y-4 flex flex-col">
+                            {navbarData.map((item, index: number) => (
+                              <Link
+                                key={index}
+                                href={
+                                  item.link === "/document"
+                                    ? "https://inspectra-doc.istad.co/"
+                                    : item.link
+                                }
+                                target={
+                                  item.link === "/document"
+                                    ? "_blank"
+                                    : undefined
+                                } // Open in new tab for /document
+                                rel={
+                                  item.link === "/document"
+                                    ? "noopener noreferrer"
+                                    : undefined
+                                } // Add security for external links
+                              >
+                                {pathname === item.link ? (
+                                  <p
+                                    onClick={handleClick}
+                                    className="text-secondary_color "
+                                  >
+                                    {item?.name}
+                                  </p>
+                                ) : (
+                                  <p onClick={handleClick}>{item.name}</p>
+                                )}
+                              </Link>
+                            ))}
+                            <Link href="/login">
+                              <p>Sign in</p>
                             </Link>
-                          ))}
-                          <Link href="/login">
-                            <p>Sign in</p>
-                          </Link>
-                        </ul>
-                      </SheetContent>
-                    </Sheet>
-                  ) : (
-                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                      <SheetTrigger asChild>
-                        <IoMenu />
-                      </SheetTrigger>
-                      <SheetContent className="bg-background_light_mode dark:bg-background_dark_mode border-hidden">
-                        <ul className=" text-text_color_light dark:text-text_color_dark  text-text_body_16   space-y-4 flex flex-col">
-                          <div className="flex space-x-3">
-                            <div className="overflow-hidden rounded-full w-12 h-12 border-2 border-primary_color">
-                              <img
-                                src={userData?.data?.profile}
-                                alt="Profile"
-                                className="object-cover cursor-pointer rounded-full w-12 h-12 "
-                                onError={(e) =>
-                                  (e.currentTarget.src =
-                                    "/images/default-profile.jpg")
+                          </ul>
+                        </SheetContent>
+                      </Sheet>
+                    ) : (
+                      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                        <SheetTrigger asChild>
+                          <IoMenu />
+                        </SheetTrigger>
+                        <SheetContent className="bg-background_light_mode dark:bg-background_dark_mode border-hidden">
+                          <ul className=" text-text_color_light dark:text-text_color_dark  text-text_body_16   space-y-4 flex flex-col">
+                            <div className="flex space-x-3">
+                              <div className="overflow-hidden rounded-full w-12 h-12 border-2 border-primary_color">
+                                <img
+                                  src={userData?.data?.profile}
+                                  alt="Profile"
+                                  className="object-cover cursor-pointer rounded-full w-12 h-12 "
+                                  onError={(e) =>
+                                    (e.currentTarget.src =
+                                      "/images/default-profile.jpg")
                                   }
                                 />
                               </div>
@@ -352,7 +356,9 @@ export default function NavbarComponent() {
                                     : item.link
                                 }
                                 target={
-                                  item.link === "/document" ? "_blank" : undefined
+                                  item.link === "/document"
+                                    ? "_blank"
+                                    : undefined
                                 } // Open in new tab for /document
                                 rel={
                                   item.link === "/document"
@@ -372,20 +378,22 @@ export default function NavbarComponent() {
                                 )}
                               </Link>
                             ))}
-                            {navbarDataWithProfile.map((item, index: number) => (
-                              <Link key={index} href={item.link}>
-                                {pathname === item.link ? (
-                                  <p
-                                    onClick={handleClick}
-                                    className="text-secondary_color"
-                                  >
-                                    {item?.name}
-                                  </p>
-                                ) : (
-                                  <p onClick={handleClick}>{item.name}</p>
-                                )}
-                              </Link>
-                            ))}
+                            {navbarDataWithProfile.map(
+                              (item, index: number) => (
+                                <Link key={index} href={item.link}>
+                                  {pathname === item.link ? (
+                                    <p
+                                      onClick={handleClick}
+                                      className="text-secondary_color"
+                                    >
+                                      {item?.name}
+                                    </p>
+                                  ) : (
+                                    <p onClick={handleClick}>{item.name}</p>
+                                  )}
+                                </Link>
+                              )
+                            )}
                             <button
                               onClick={() => {
                                 // calling auth from next auth
