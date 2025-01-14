@@ -83,8 +83,11 @@ const CommentSection = ({ uuid }: commentProp) => {
           router.push("/login");
         }
       }
-    } catch (error) {
-      console.error("Error commenting on the blog:", error);
+    } catch  {
+      toast({
+        description: "Something went wrong",
+        variant: "error",
+      });
     }
   };
 
@@ -226,9 +229,10 @@ const CommentSection = ({ uuid }: commentProp) => {
 
   const [likeReply] = useLikeReplyMutation();
 
-  const [replyContent, setReplyContent] = useState<{ [key: string]: string }>(
-    {}
-  );
+  const [replyContent, setReplyContent] = useState<{ [key: string]: string }>({});
+
+  const [replyNestedContent, setReplyNestedContent] = useState<{ [key: string]: string }>({});
+
 
   const [showReplies, setShowReplies] = useState<{ [key: string]: boolean }>(
     {}
@@ -238,9 +242,9 @@ const CommentSection = ({ uuid }: commentProp) => {
     [key: string]: boolean;
   }>({});
 
-  const [showReplyInReplyInput, setShowReplyInReplyInput] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const [showReplyInReplyInput, setShowReplyInReplyInput] = useState<{[key: string]: boolean;}>({});
+
+  const [showNesTedReplyInput, setShowNesTedReplyInput] = useState<{[key: string]: boolean;}>({});
 
   const [showComments, setShowComments] = useState(true);
 
@@ -265,15 +269,42 @@ const CommentSection = ({ uuid }: commentProp) => {
     }));
   };
 
+  const toggleNestedReplyInput = (commentUuid: string) => {
+    setShowNesTedReplyInput((prevState) => ({
+      ...prevState,
+      [commentUuid]: !prevState[commentUuid],
+    }));
+  };
+
   const handleReplySubmit = async (commentUuid: string) => {
     try {
+      const contentToReply = 
+      replyContent[commentUuid]?.trim() ? replyContent[commentUuid] 
+      : replyNestedContent[commentUuid] ?? "";
+    
+ 
+      if (!contentToReply) {
+        toast ({
+          description: "Please write a reply the comment",
+          variant: "error"
+        })
+        return;
+      }
+
       const res = await replyToComment({
-        data: { commentUuid, content: replyContent[commentUuid] },
+        data: { commentUuid, content: contentToReply },
       });
+
       setReplyContent((prevState) => ({
         ...prevState,
         [commentUuid]: "",
       }));
+
+      setReplyNestedContent((prevState) => ({
+        ...prevState,
+        [commentUuid]: "",
+      }));
+
       if (res.error && "status" in res.error) {
         if (res.error.status === 401) {
           toast({
@@ -291,6 +322,9 @@ const CommentSection = ({ uuid }: commentProp) => {
   // handle like reply comment
   const handleLikeReply = async (replyUuid: string) => {
     try {
+      
+
+
       const res = await likeReply({ replyUuid: replyUuid });
 
       if (res.data) {
@@ -649,7 +683,7 @@ const CommentSection = ({ uuid }: commentProp) => {
                           <div className="flex ml-auto text-[14px]">
                             <button
                               onClick={() =>
-                                toggleReplyInReplyInput(reply.uuid)
+                                toggleNestedReplyInput(reply.uuid)
                               }
                             >
                               Reply
@@ -696,13 +730,13 @@ const CommentSection = ({ uuid }: commentProp) => {
                       </div>
 
                       <div>
-                        {showReplyInReplyInput[reply.uuid] && (
+                        {showNesTedReplyInput[reply.uuid] && (
                           <div className="mt-2">
                             <Textarea
-                              placeholder="Write your reply here..."
-                              value={replyContent[comment.uuid] || ""}
+                              placeholder="Write your reply here1..."
+                              value={replyNestedContent[comment.uuid] || ""}
                               onChange={(e) =>
-                                setReplyContent((prevState) => ({
+                                setReplyNestedContent((prevState) => ({
                                   ...prevState,
                                   [comment.uuid]: e.target.value,
                                 }))
