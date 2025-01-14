@@ -115,10 +115,10 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
         });
         setIsOpen(false);
       } else {
-        // toast({
-        //   description: "Something went wrong!",
-        //   variant: "error",
-        // });
+        toast({
+          description: "Something went wrong!",
+          variant: "error",
+        });
       }
     } catch (error) {
       console.error("Error while creating scan project:", error);
@@ -189,9 +189,6 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
       setIsDeleteLoading(false);
     }
   }, [isDeleteSuccess]);
-
-  const [inputValue, setInputValue] = useState("");
-
 
   const [selectedCheckbox, setSelectedCheckBox] = useState<string[]>([]);
 
@@ -331,7 +328,7 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
       </div>
       <hr className="my-5 dark:border-primary_color" />
       <div className="flex  flex-col items-start md:flex-row md:items-center">
-        {isClosing && isLoading ? (
+        {isClosing && isLoading && selectedIndex === index ? (
           <div className="flex justify-start items-start w-full pt-2 h-full">
             <ReactTypingEffect
               text={[
