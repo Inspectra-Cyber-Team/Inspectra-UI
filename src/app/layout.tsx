@@ -13,7 +13,6 @@ import { Metadata } from "next";
 import BannerComponent from "@/components/BannerComponent/BannerComponent";
 import dynamic from "next/dynamic";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import Head from "next/head";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600"],
@@ -50,6 +49,9 @@ export const metadata: Metadata = {
       },
     ],
   },
+  verification: {
+    google: "8aJbxb2nySDM1wRTq0jzp9rk03yVGo0f3OLj-yA0HjM"
+  }
 };
 
 export default function RootLayout({
@@ -58,16 +60,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <Head>
-        <meta
-          name="google-site-verification"
-          content="8aJbxb2nySDM1wRTq0jzp9rk03yVGo0f3OLj-yA0HjM"
-        />
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS || ''} />
-      </Head>
+    <html lang="en" suppressHydrationWarning>z
       <body
-        className={`${poppins.className} relative overflow-y-auto scrollbar overflow-x-hidden bg-background_light_mode dark:bg-background_dark_mode flex flex-col justify-between`}
+        className={`${poppins.className}  relative   overflow-y-auto scrollbar  overflow-x-hidden bg-background_light_mode  dark:bg-background_dark_mode flex flex-col justify-between  `}
       >
         <SessionWrapper>
           <NetworkProvider>
@@ -80,10 +75,12 @@ export default function RootLayout({
               >
                 <BannerComponent />
                 <NavbarComponent />
-                <Suspense fallback={<div>Loading...</div>}>
+
+                <Suspense fallback={""}>
                   {children}
                   <Toaster />
                 </Suspense>
+
                 <ImageBackground />
                 <ScrollToTopButton />
                 <FooterComponent />
@@ -92,6 +89,7 @@ export default function RootLayout({
           </NetworkProvider>
         </SessionWrapper>
       </body>
+      <GoogleAnalytics gaId={`${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`} />
     </html>
   );
 }
