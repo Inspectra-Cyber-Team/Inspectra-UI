@@ -13,6 +13,7 @@ import { Metadata } from "next";
 import BannerComponent from "@/components/BannerComponent/BannerComponent";
 import dynamic from "next/dynamic";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import Head from "next/head";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600"],
@@ -58,6 +59,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+       <Head>
+        <meta
+          name="google-site-verification"
+          content="8aJbxb2nySDM1wRTq0jzp9rk03yVGo0f3OLj-yA0HjM"
+        />
+      </Head>
       <body
         className={`${poppins.className}  relative   overflow-y-auto scrollbar  overflow-x-hidden bg-background_light_mode  dark:bg-background_dark_mode flex flex-col justify-between  `}
       >
