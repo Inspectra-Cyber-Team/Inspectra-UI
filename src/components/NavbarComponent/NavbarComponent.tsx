@@ -130,7 +130,7 @@ export default function NavbarComponent() {
                   {/* Icon to change theme */}
                   <ModeToggle />
                   {/* Sign in button */}
-                  {userUUID === "" || !userData ? (
+                  {userUUID === "" && userData === undefined ? (
                     <Link
                       href="/login"
                       className="text-text_color_dark bg-background_dark_mode dark:bg-background_light_mode dark:text-text_color_light rounded-tl-[14px] rounded-br-[14px] text-text_body_16 px-4 lg:px-4 py-2 lg:py-1.5 hidden lg:block"
