@@ -36,8 +36,7 @@ export function ListRepoComponent() {
     page: 0,
     size: 100,
   });
-
-  console.log(userDataProjet);
+  
   const { data: userRepo, isFetching: fetchUserRepo } =
     useGetAllUserRepositoriesQuery({
       accessToken: isUserAccessToken,

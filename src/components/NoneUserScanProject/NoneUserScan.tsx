@@ -21,6 +21,7 @@ import LoadingSection from "./LoadingSection";
 import axios, { AxiosError } from "axios";
 
 export default function NoneUserScan() {
+
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showTerms, setShowTerms] = useState(true);
   const [selectedFile, setSelectedFile] = useState<string[]>([]);
@@ -148,6 +149,7 @@ export default function NoneUserScan() {
         description: "You Have Reached Scan Limit. Please Sign In",
         variant: "error",
       });
+      router.push("/login");
     }
   };
 

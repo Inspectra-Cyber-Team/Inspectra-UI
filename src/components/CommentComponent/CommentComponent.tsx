@@ -176,6 +176,7 @@ const CommentSection = ({ uuid }: commentProp) => {
 
   const [dataComment, setDataComment] = useState<Content[]>([]);
 
+
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   const receivedUuidsRef = useRef<Set<string>>(new Set());
@@ -231,8 +232,109 @@ const CommentSection = ({ uuid }: commentProp) => {
                   } 
                 : comment
             ));
-          }
+          } else if (newComment.event === "create-reply" && newComment.data ) {
+            
+            const replyData = newComment?.data;
 
+            // Ensure replies are added to the correct parent comment and prevent duplication
+            setDataComment((prevData) =>
+              prevData.map((comment) =>
+                comment.uuid === replyData.parentCommentUuid  // Ensure correct parent association
+                  ? {
+                      ...comment,
+                      replies: comment.replies?.some(reply => reply.uuid === replyData.uuid)
+                        ? comment.replies  // If the reply already exists, keep existing replies
+                        : [...(comment.replies || []), replyData],  // Otherwise, add the new reply
+                    }
+                  : comment
+              )
+            );
+            
+          } // Handle the 'delete-reply' event
+          else if (newComment?.event === "delete-reply" && newComment?.data) {
+
+            const { parentCommentUuid, uuid} = newComment?.data || {};
+      
+            setDataComment((prevData) =>
+              prevData.map((comment) =>
+                comment.uuid === parentCommentUuid  // Ensure correct parent association
+                  ? {
+                      ...comment,
+                      replies: comment.replies?.filter(reply => reply.uuid !== uuid ),  // Remove the reply
+                    }
+                  : comment
+              )
+            );
+          }
+          else if (newComment?.event === "update-reply" && newComment?.data) {
+      
+            const { parentCommentUuid, uuid } = newComment?.data || {};
+
+            setDataComment((prevData) =>
+       
+              prevData.map((comment) =>
+       
+                comment.uuid === parentCommentUuid  // Ensure correct parent association
+            ? {
+                ...comment,
+                replies: comment.replies?.map((reply:any) =>
+                  reply.uuid === uuid
+                    ? { ...reply, ...newComment?.data }  // Update the reply with new data
+                    : reply
+                ),
+              }
+            : comment
+        )
+      );
+    } else if (newComment?.event === "like-reply" && newComment?.data) {
+      const { parentCommentUuid, uuid, user } = newComment?.data || {};
+    
+      setDataComment((prevData) =>
+        prevData.map((comment) =>
+          comment.uuid === parentCommentUuid
+            ? {
+                ...comment,
+                replies: comment.replies?.map((reply: any) =>
+                  reply.uuid === uuid
+                    ? {
+                        ...reply,
+                        // Check if the user has already liked the reply
+                        countLikes: reply.likedBy?.includes(user.uuid) ? reply.countLikes : (reply.countLikes || 0) + 1,
+                        // Prevent adding the user if they already liked the reply
+                        likedBy: reply.likedBy?.includes(user.uuid)
+                          ? reply.likedBy
+                          : [...(reply.likedBy || []), user.uuid], 
+                      }
+                    : reply
+                ),
+              }
+            : comment
+        )
+      );
+    }
+     else if (newComment?.event === "unlike-reply" && newComment?.data) {
+      
+      const { parentCommentUuid, uuid, user } = newComment?.data || {};
+
+      setDataComment((prevData) =>
+        prevData.map((comment) =>
+          comment.uuid === parentCommentUuid  // Ensure correct parent association
+            ? {
+                ...comment,
+                replies: comment.replies?.map((reply:any) =>
+                  reply.uuid === uuid
+                    ? { 
+                        ...reply, 
+                        countLikes: Math.max((reply.countLikes || 0) - 1, 0),
+                        likedBy: reply.likedBy?.filter((userUuid:any) => userUuid !== user.uuid) // Remove user from likedBy
+                      } 
+                    : reply
+                ),
+              }
+            : comment
+        )
+      );
+    }
 
         } catch (error) {
           console.error("Error parsing WebSocket message:", error);
@@ -276,8 +378,6 @@ const CommentSection = ({ uuid }: commentProp) => {
     [key: string]: boolean;
   }>({});
 
-  const [showReplyInReplyInput, setShowReplyInReplyInput] = useState<{[key: string]: boolean;}>({});
-
   const [showNesTedReplyInput, setShowNesTedReplyInput] = useState<{[key: string]: boolean;}>({});
 
   const [showComments, setShowComments] = useState(true);
@@ -291,13 +391,6 @@ const CommentSection = ({ uuid }: commentProp) => {
 
   const toggleReplyInput = (commentUuid: string) => {
     setShowReplyInput((prevState) => ({
-      ...prevState,
-      [commentUuid]: !prevState[commentUuid],
-    }));
-  };
-
-  const toggleReplyInReplyInput = (commentUuid: string) => {
-    setShowReplyInReplyInput((prevState) => ({
       ...prevState,
       [commentUuid]: !prevState[commentUuid],
     }));
@@ -361,12 +454,6 @@ const CommentSection = ({ uuid }: commentProp) => {
 
       const res = await likeReply({ replyUuid: replyUuid });
 
-      if (res.data) {
-        toast({
-          description: "Reply liked successfully",
-          variant: "success",
-        });
-      }
       if (res.error && "status" in res.error) {
         if (res.error.status === 401) {
           toast({
@@ -392,23 +479,17 @@ const CommentSection = ({ uuid }: commentProp) => {
     try {
       const res = await createLikeComment({ commentUuid });
 
-      if (res.data) {
-        toast({
-          description: "Comment liked successfully",
-          variant: "success",
-        });
-      }
       if (res.error && "status" in res.error) {
         if (res.error.status === 401) {
           router.push("/login");
         }
       }
-    } catch (error) {
+    } catch  {
       toast({
         description: "Something went wrong",
         variant: "error",
       });
-      console.error("Error liking the comment:", error);
+     
     }
   };
 
