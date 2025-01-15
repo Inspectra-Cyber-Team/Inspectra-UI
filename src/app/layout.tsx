@@ -59,14 +59,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-       <Head>
+      <Head>
         <meta
           name="google-site-verification"
           content="8aJbxb2nySDM1wRTq0jzp9rk03yVGo0f3OLj-yA0HjM"
         />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS || ''} />
       </Head>
       <body
-        className={`${poppins.className}  relative   overflow-y-auto scrollbar  overflow-x-hidden bg-background_light_mode  dark:bg-background_dark_mode flex flex-col justify-between  `}
+        className={`${poppins.className} relative overflow-y-auto scrollbar overflow-x-hidden bg-background_light_mode dark:bg-background_dark_mode flex flex-col justify-between`}
       >
         <SessionWrapper>
           <NetworkProvider>
@@ -79,12 +80,10 @@ export default function RootLayout({
               >
                 <BannerComponent />
                 <NavbarComponent />
-
-                <Suspense fallback={""}>
+                <Suspense fallback={<div>Loading...</div>}>
                   {children}
                   <Toaster />
                 </Suspense>
-
                 <ImageBackground />
                 <ScrollToTopButton />
                 <FooterComponent />
@@ -93,7 +92,6 @@ export default function RootLayout({
           </NetworkProvider>
         </SessionWrapper>
       </body>
-      <GoogleAnalytics gaId={`${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`} />
     </html>
   );
 }
