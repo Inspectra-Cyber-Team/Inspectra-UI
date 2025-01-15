@@ -216,7 +216,7 @@ export default function CardProject({ userDataProjet, isError }: any) {
             Select Project To Scan
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 px-3 md:px-0 gap-y-1 md:gap-y-3 gap-x-10">
             {userDataProjet?.map((project: any, index: number) => {
               const hasMeasures =
                 project?.component?.component?.measures?.length !== 0;
@@ -232,12 +232,12 @@ export default function CardProject({ userDataProjet, isError }: any) {
                   className={`w-full  my-5 p-5 border-2 border-opacity-40 rounded-[20px] 
                    ${
                      activeProjectIndex === index
-                       ? "border-ascend_color border-3 dark:border-primary_color" // Active project styling
-                       : "border-text_color_desc_light"
+                       ? "border-secondary_color border-3 dark:border-primary_color bg-text_color_dark dark:bg-card_color_dark" // Active project styling
+                       : "border-text_color_desc_light bg-text_color_dark dark:bg-card_color_dark"
                    }  ${hasMeasures ? "cursor-default" : "cursor-pointer"} `}
                 >
                   <div className="flex justify-between w-full">
-                    <p className="text-text_body_16 w-[90%] truncate text-secondary_color dark:text-text_color_dark">
+                    <p className="text-text_body_16 w-[90%] truncate text-text_color_light dark:text-text_color_dark">
                       {project?.component?.component?.name}
                     </p>
                     {/* Trigger the delete modal */}
