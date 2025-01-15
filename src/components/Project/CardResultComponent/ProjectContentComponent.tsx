@@ -21,7 +21,6 @@ export default function ProjectContent() {
       const data = (session as any).provider;
       setIsGitUser(data);
     } else {
-      console.log("No session found");
     }
   };
   useEffect(() => {
@@ -40,8 +39,8 @@ export default function ProjectContent() {
         <div className=" lg:w-full">
           {isLoading ? <NoneUserScanSkeletion /> : <NoneUserScan />}
         </div>
-        // for git user
-      ) : isGitUser === "github" ? (
+      ) : // for git user
+      isGitUser === "github" ? (
         <ListRepoComponent />
       ) : (
         // for user login
