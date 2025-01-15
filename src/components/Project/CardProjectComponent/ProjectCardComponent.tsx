@@ -38,6 +38,14 @@ export default function ProjectCardComponent() {
 
   const [inputValue, setInputValue] = useState("");
 
+  // sort
+  const [selectedValue, setSelectedValue] = useState("light"); // Default value
+
+  const handleChange = (value: string) => {
+    setSelectedValue(value);
+    console.log("Selected value:", value); // Debugging/logging
+  };
+
   // Handle user input change
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -94,16 +102,16 @@ export default function ProjectCardComponent() {
 
         <div className="flex gap-5 items-center">
           <p>Sort By</p>
-          <Select>
+          <Select value={selectedValue} onValueChange={handleChange}>
             <SelectTrigger className="w-[180px] bg-background_light_mode dark:bg-card_color_dark border-none">
               <SelectValue placeholder="Name" />
             </SelectTrigger>
             <SelectContent className="bg-background_light_mode dark:bg-background_dark_mode">
-              <SelectItem value="light">Name</SelectItem>
+              <SelectItem value="Name">Name</SelectItem>
               <SelectItem value="dark">Last analysis date</SelectItem>
               <SelectItem value="system">Creation date</SelectItem>
               <SelectItem value="reliability">Reliability</SelectItem>
-              <SelectItem value="security">Security</SelectItem>
+              <SelectItem value="security_hotspots">Hotspots</SelectItem>
               <SelectItem value="security review">Security review</SelectItem>
               <SelectItem value="maintainability">Maintainability</SelectItem>
               <SelectItem value="coverage">Coverage</SelectItem>
