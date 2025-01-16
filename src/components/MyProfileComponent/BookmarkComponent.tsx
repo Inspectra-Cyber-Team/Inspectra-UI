@@ -47,7 +47,7 @@ export default function BookmarkComponent() {
 
     if (tab === "scanHistory") {
       router.push("/scanhistory");
-    } else if (tab === "myProfile") {
+    } else if (tab === "mYprofile") {
       router.push("/myprofile");
     } else if (tab === "blogHistory") {
       router.push("/bloghistory");

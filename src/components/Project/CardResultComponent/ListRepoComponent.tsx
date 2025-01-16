@@ -13,6 +13,7 @@ import { PiLockKeyFill } from "react-icons/pi";
 import ProjectCardWithData from "../CardProjectComponent/ProjectCardWithData";
 import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
 import RepoSkeleton from "@/components/Skeleton/RepoSkeleton";
+import SearchAndFilterComponent from "../SearchAndFilterComponent/SearchAndFilterComponent";
 
 export function ListRepoComponent() {
   const [isUserAccessToken, setIsUserAccessToken] = useState<string>("");
@@ -166,31 +167,33 @@ export function ListRepoComponent() {
             {fetchUserRepo ? (
               <RepoSkeleton />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 my-10">
-                {userRepo?.map((repo: any, index: number) => (
-                  <label key={index} className="flex items-start space-x-2">
-                    <input
-                      className="mr-2 h-5 w-5 shrink-0" // Fixed size for checkbox
-                      type="checkbox"
-                      value={repo?.full_name}
-                      checked={selectedRepos.includes(repo?.full_name)}
-                      onChange={() => handleCheckboxChange(repo?.full_name)}
-                    />
-                    <div className="flex-1">
-                      {/* Break text */}
-                      <p className="break-words text-text_body_16 text-text_color_light dark:text-text_color_dark">
-                        {repo?.full_name}
-                      </p>
-                      {/* Visibility indicator */}
-                      {repo?.visibility === "private" && (
-                        <div className="flex items-center text-text_body_16 dark:text-text_color_dark text-text_color_light mt-1">
-                          <PiLockKeyFill />
-                          <span className="ml-1">Private</span>
-                        </div>
-                      )}
-                    </div>
-                  </label>
-                ))}
+              <div className="w-full">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 my-10">
+                  {userRepo?.map((repo: any, index: number) => (
+                    <label key={index} className="flex items-start space-x-2">
+                      <input
+                        className="mr-2 h-5 w-5 shrink-0" // Fixed size for checkbox
+                        type="checkbox"
+                        value={repo?.full_name}
+                        checked={selectedRepos.includes(repo?.full_name)}
+                        onChange={() => handleCheckboxChange(repo?.full_name)}
+                      />
+                      <div className="flex-1">
+                        {/* Break text */}
+                        <p className="break-words text-text_body_16 text-text_color_light dark:text-text_color_dark">
+                          {repo?.full_name}
+                        </p>
+                        {/* Visibility indicator */}
+                        {repo?.visibility === "private" && (
+                          <div className="flex items-center text-text_body_16 dark:text-text_color_dark text-text_color_light mt-1">
+                            <PiLockKeyFill />
+                            <span className="ml-1">Private</span>
+                          </div>
+                        )}
+                      </div>
+                    </label>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -222,15 +225,17 @@ export function ListRepoComponent() {
                 (project: any) =>
                   project?.component?.component?.measures.length !== 0
               );
-
               return validProjects?.length > 0 ? (
-                validProjects.map((project: any, index: number) => (
-                  <ProjectCardWithData
-                    key={index}
-                    projectResult={project}
-                    index={index}
-                  />
-                ))
+                <div className="px-10 p-10 rounded-[20px] my-10 bg-text_color_dark dark:bg-card_color_dark">
+                  <SearchAndFilterComponent />
+                  {validProjects.map((project: any, index: number) => (
+                    <ProjectCardWithData
+                      key={index}
+                      projectResult={project}
+                      index={index}
+                    />
+                  ))}
+                </div>
               ) : (
                 <LoadProjectComponent textDisplay={"No Project Result "} />
               );

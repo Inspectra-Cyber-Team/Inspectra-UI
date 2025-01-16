@@ -142,10 +142,11 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
       ws.onmessage = (event) => {
         try {
           const newBlog = JSON.parse(event.data);
-          if (newBlog.uuid === uuid) {
+          
+          if (newBlog?.data?.uuid === uuid && newBlog.event === "like-blog" || newBlog.event === "unlike-blog") {
             setBlogData((prevData) => ({
               ...prevData,
-              ...newBlog,
+              ...newBlog.data,
             }));
           }
         } catch (error) {

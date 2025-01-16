@@ -60,7 +60,13 @@ export default function ProjectCardWithData({ index, projectResult }: any) {
           }
           className="text-text_body_16 cursor-pointer text-text_color_light dark:text-text_color_dark hover:text-ascend_color hover:underline "
         >
-          {projectResult?.component.component.name}
+          {/* Display different text based on screen size */}
+          <span className="block md:hidden">
+            {projectResult?.component.component.name.split('--')[1] || projectResult?.component.component.name}
+          </span>
+          <span className="hidden md:block">
+            {projectResult?.component.component.name}
+          </span>
         </p>
         <div className="flex">
           {projectResult?.branch?.map(
@@ -72,11 +78,10 @@ export default function ProjectCardWithData({ index, projectResult }: any) {
                     className="flex text-center items-center"
                   >
                     <div
-                      className={`w-[25px] h-[25px] flex items-center justify-center rounded-[5px] ${
-                        item.status.qualityGateStatus === "OK"
+                      className={`w-[25px] h-[25px] flex items-center justify-center rounded-[5px] ${item.status.qualityGateStatus === "OK"
                           ? "bg-primary_color"
                           : "bg-custom_red"
-                      }`}
+                        }`}
                     >
                       {item.status.qualityGateStatus === "OK" ? (
                         <FaCheck className="dark:text-text_color_light" />
@@ -84,7 +89,7 @@ export default function ProjectCardWithData({ index, projectResult }: any) {
                         <RxCross2 className="dark:text-text_color_light" />
                       )}
                     </div>
-                    <p className="px-2 text-text_body_16">
+                    <p className="px-2 text-text_body_16 hidden md:block">
                       {item.status.qualityGateStatus === "OK"
                         ? "Passed"
                         : "Failed"}

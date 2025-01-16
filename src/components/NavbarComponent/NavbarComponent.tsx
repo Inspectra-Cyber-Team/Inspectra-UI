@@ -80,7 +80,8 @@ export default function NavbarComponent() {
 
   return (
     <>
-      <ScrollProgressBarComponent />
+    {!isRender && (
+      <ScrollProgressBarComponent />)}
       <nav className="w-full mx-auto z-40 backdrop-blur-2xl sticky top-0">
         <div className="w-[90%] mx-auto ">
           {!isRender && (
