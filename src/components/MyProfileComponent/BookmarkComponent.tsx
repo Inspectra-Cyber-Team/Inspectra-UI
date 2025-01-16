@@ -45,11 +45,11 @@ export default function BookmarkComponent() {
   const handleTabClick = (tab: any) => {
     setActiveTab(tab);
 
-    if (tab === "scanhistory") {
+    if (tab === "scanHistory") {
       router.push("/scanhistory");
-    } else if (tab === "myprofile") {
+    } else if (tab === "mYprofile") {
       router.push("/myprofile");
-    } else if (tab === "bloghistory") {
+    } else if (tab === "blogHistory") {
       router.push("/bloghistory");
     }
   };
