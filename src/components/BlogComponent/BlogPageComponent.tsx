@@ -36,12 +36,17 @@ export default function BlogPageComponent() {
           href={"/blog/create"}
           className="px-3 py-2 bg-primary_color hover:bg-primary_color/70 text-text_color_light flex rounded-[17px] items-center justify-center text-sm sm:text-base"
         >
-          <span className="hidden sm:block">
+          <span className="sm:block">
             {isLoading ? (
-              <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
+              <div className="spinner-border animate-spin inline-block w-5 h-5 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
             ) : (
               <span className="flex items-center">
-                Create Blog <FaPlus className="ml-1" />
+                <span className="hidden sm:block md:flex ">
+                  Create Blog <span className="ml-2 mt-1"><FaPlus /></span>
+                </span>
+                <span className="block sm:hidden">
+                  <FaPlus />
+                </span>
               </span>
             )}
           </span>
