@@ -21,6 +21,7 @@ import { useCreateProjectScanMutation } from "@/redux/service/project";
 import ReactTypingEffect from "react-typing-effect";
 import { useSession } from "next-auth/react";
 import { error } from "console";
+import LoadingSectionProjectUser from "../CardProjectComponent/LoadingSectionProjectUser";
 
 export default function CardProject({ userDataProjet, isError }: any) {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
@@ -28,7 +29,7 @@ export default function CardProject({ userDataProjet, isError }: any) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false); // For managing modal visibility
   const [isLoading, setIsLoading] = useState(false);
   const [activeProjectIndex, setActiveProjectIndex] = useState<number>(0);
-
+  const [isCloseLoadingScan, setIsCloseLoadingScan] = useState(false);
   const { data: session } = useSession();
 
   // rtk for delete project
@@ -79,6 +80,7 @@ export default function CardProject({ userDataProjet, isError }: any) {
   // handle scan project
   const handleOnSubmit = async () => {
     setIsLoading(true);
+    setIsCloseLoadingScan(true);
     try {
       // Step 1: Fetch project and get git URL branch projectName
       const response = await fetch(
@@ -250,7 +252,7 @@ export default function CardProject({ userDataProjet, isError }: any) {
                             disabled={isLoading}
                             className={`h-6 w-6 text-custom_red ${
                               isLoading
-                                ? "cursor-not-allowed opacity-50"
+                                ? "cursor-not-allowed "
                                 : "cursor-pointer"
                             }`}
                           >
@@ -347,14 +349,32 @@ export default function CardProject({ userDataProjet, isError }: any) {
                 </div>
               );
             })}
+
+            <AlertDialog
+              open={isCloseLoadingScan}
+              onOpenChange={setIsCloseLoadingScan}
+            >
+              <AlertDialogContent className="xl:h-[95%]  w-[95%]  md:w-full lg:max-w-[600px]  items-end xl:w-full rounded-[20px] bg-text_color_dark  flex flex-col  ">
+                <button
+                  onClick={() => setIsCloseLoadingScan(false)}
+                  className="text-custom_red cursor-pointer"
+                >
+                  <RxCross2 className="h-6 w-6" />
+                </button>
+                <div className="w-full h-full">
+                  <LoadingSectionProjectUser />
+                </div>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
+          {/* button submit  */}
           <div className="w-full flex justify-items-start">
             <button
               onClick={handleOnSubmit}
-              className="bg-primary_color w-[100px] font-medium cursor-pointer my-10 text-text_color_light   rounded-tl-[14px] rounded-br-[14px] text-text_title_24 py-1.5 px-5 flex justify-center items-center"
+              className="bg-primary_color w-[100px]  cursor-pointer my-10 text-text_color_light   rounded-tl-[14px] rounded-br-[14px] text-text_title_24 py-1.5 px-5 flex justify-center items-center"
             >
               {isLoading ? (
-                <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
+                <div className="spinner-border animate-spin inline-block w-5 h-5 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
               ) : (
                 "Scan"
               )}

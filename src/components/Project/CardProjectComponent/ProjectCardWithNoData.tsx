@@ -549,12 +549,16 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
                     {/* submit scan */}
                     <button
                       key={index}
-                      disabled={isLoading}
+                      disabled={isLoading || isFetchFilesLoading} // Disable when either condition is true
                       onClick={() => handleScanProject(index)}
-                      className="w-full my-[30px] py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px]"
+                      className={`w-full my-[30px] py-3 bg-primary_color text-text_color_light font-normal flex justify-center rounded-[10px] ${
+                        isLoading || isFetchFilesLoading
+                          ? "cursor-not-allowed "
+                          : "cursor-pointer"
+                      }`}
                     >
                       {isLoading ? (
-                        <div className="spinner-border  animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
+                        <div className="spinner-border animate-spin inline-block w-6 h-6 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
                       ) : (
                         "Submit"
                       )}

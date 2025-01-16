@@ -43,7 +43,6 @@ export default function ProjectCardComponent() {
 
   const handleChange = (value: string) => {
     setSelectedValue(value);
-    console.log("Selected value:", value); // Debugging/logging
   };
 
   // Handle user input change
