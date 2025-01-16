@@ -11,7 +11,7 @@ export async function POST() {
 
   // If the refresh token is not found, return an error message to the client-side
   if (!credential) {
-    localStorage.clear();
+   
     return NextResponse.json(
       {
         message: "Token not found",
