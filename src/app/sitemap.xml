@@ -12,5 +12,24 @@
   <lastmod>2024-12-31T07:30:08+00:00</lastmod>
 </url>
 
+<url>
+  <loc>https://inspectra.istad.co/usecase</loc>
+  <lastmod>2024-12-31T07:30:08+00:00</lastmod>
+</url>
 
+  <url>
+        <loc>https://inspectra.istad.co/blog</loc>
+        <lastmod>2024-12-31T07:30:08+00:00</lastmod>
+    </url>
+
+    <url>
+        <loc>https://inspectra.istad.co/about</loc>
+        <lastmod>2024-12-31T07:30:08+00:00</lastmod>
+    </url>
+
+    <url>
+        <loc>https://inspectra.istad.co/project</loc>
+        <lastmod>2024-12-31T07:30:08+00:00</lastmod>
+    </url>
+    
 </urlset>
