@@ -42,7 +42,7 @@ export default function Home() {
       <HomepageComponent />
 
       {/* benefit section */}
-      <section className="w-full text-center lg:my-[80px]">
+      <section className="w-full text-center  lg:my-[80px]">
         <BenefitComponentCard />
       </section>
 
@@ -52,7 +52,7 @@ export default function Home() {
       </section>
 
       {/* FAQs section */}
-      <section className="w-full text-center my-[60px]">
+      <section className="w-full text-center my-[80px]">
         <HomePageFAQComponent />
       </section>
     </main>

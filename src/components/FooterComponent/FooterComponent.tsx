@@ -73,10 +73,16 @@ export default function FooterComponent() {
                       <Link
                         key={index}
                         target={
-                          featuresItem.name === "Document" ? "_blank" : "_self"
+                          featuresItem.link === "/document"
+                            ? "_blank"
+                            : undefined
                         }
                         className="my-3 block text-text_body_16 text-text_color_light dark:text-text_color_dark"
-                        href={featuresItem.link}
+                        href={
+                          featuresItem.link === "/document"
+                            ? "https://inspectra-doc.istad.co/"
+                            : featuresItem.link
+                        }
                       >
                         {featuresItem.name}
                       </Link>

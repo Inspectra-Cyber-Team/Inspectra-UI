@@ -14,6 +14,7 @@ import { Hotspot } from "@/types/SecurityHostspot";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ExportButton from "../ExportComponent/ExportComponent";
+import { useTheme } from "next-themes";
 
 type SecurityComponentProps = {
   projectName: string;
@@ -21,6 +22,8 @@ type SecurityComponentProps = {
 
 export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
   const router = useRouter();
+  const { theme } = useTheme();
+
   // calling security hotspot query
   const {
     data: securityHotspotData,
@@ -103,13 +106,23 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
 
   if (hotspots.length === 0) {
     return (
-      <section className="grid place-content-center ">
-        <Image
-          src="/images/NoIssue.png"
-          alt="No Issue"
-          width={400}
-          height={400}
-        />
+      <section className="grid place-items-center">
+        {theme === "dark" ? (
+          <Image
+            src="/images/No_Issue_White.png"
+            alt="No Issue"
+            width={400}
+            height={400}
+          />
+        ) : (
+          <Image
+            src="/images/NoIssue.png"
+            alt="No Issue"
+            width={400}
+            height={400}
+          />
+        )}
+        <p>Congratulation! No Security Hotspot found in this project</p>
       </section>
     );
   }
@@ -243,10 +256,11 @@ export const SecurityComponent = ({ projectName }: SecurityComponentProps) => {
                           e.preventDefault();
                           handleTabChange(tab);
                         }}
-                        className={`shrink-0 border-b-2 px-1 pb-4 text-sm font-medium ${selectedTab === tab
+                        className={`shrink-0 border-b-2 px-1 pb-4 text-sm font-medium ${
+                          selectedTab === tab
                             ? "border-primary_color text-black dark:text-white"
                             : "border-transparent text-gray-500 hover:border-gray-300 dark:hover:text-gray-50 hover:text-gray-700"
-                          }`}
+                        }`}
                         aria-current={selectedTab === tab ? "page" : undefined}
                       >
                         {tab}
