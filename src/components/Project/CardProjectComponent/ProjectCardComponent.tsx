@@ -39,7 +39,7 @@ export default function ProjectCardComponent() {
   const [inputValue, setInputValue] = useState("");
 
   // sort
-  const [selectedValue, setSelectedValue] = useState("light"); // Default value
+  const [selectedValue, setSelectedValue] = useState("Name"); // Default value
 
   const handleChange = (value: string) => {
     setSelectedValue(value);
@@ -106,7 +106,7 @@ export default function ProjectCardComponent() {
             <SelectTrigger className="w-[180px] bg-background_light_mode dark:bg-card_color_dark border-none">
               <SelectValue placeholder="Name" />
             </SelectTrigger>
-            <SelectContent className="bg-background_light_mode dark:bg-background_dark_mode">
+            <SelectContent className=" bg-background_light_mode dark:bg-background_dark_mode">
               <SelectItem value="Name">Name</SelectItem>
               <SelectItem value="dark">Last analysis date</SelectItem>
               <SelectItem value="system">Creation date</SelectItem>
