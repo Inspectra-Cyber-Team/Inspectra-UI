@@ -13,6 +13,7 @@ import { Metadata } from "next";
 import BannerComponent from "@/components/BannerComponent/BannerComponent";
 import dynamic from "next/dynamic";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import ScrollProgressBarComponent from "@/components/NavbarComponent/ScrollProgressBarComponent";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600"],
@@ -50,8 +51,8 @@ export const metadata: Metadata = {
     ],
   },
   verification: {
-    google: "8aJbxb2nySDM1wRTq0jzp9rk03yVGo0f3OLj-yA0HjM"
-  }
+    google: "8aJbxb2nySDM1wRTq0jzp9rk03yVGo0f3OLj-yA0HjM",
+  },
 };
 
 export default function RootLayout({
@@ -75,7 +76,6 @@ export default function RootLayout({
               >
                 <BannerComponent />
                 <NavbarComponent />
-
                 <Suspense fallback={""}>
                   {children}
                   <Toaster />

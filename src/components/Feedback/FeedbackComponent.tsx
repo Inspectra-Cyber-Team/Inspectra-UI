@@ -6,12 +6,13 @@ import { createFeedbackType } from "@/types/Feedback";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Aos from 'aos';
-
+import { useRouter } from "next/navigation";
 export default function FeedbackComponent() {
   const { theme } = useTheme();
   const { toast } = useToast();
+  const router = useRouter();
   const [createUserFeedback] = useCreateUserFeedbackMutation();
   useEffect(() => {
                 Aos.init({ duration: 1000 });
@@ -26,10 +27,7 @@ export default function FeedbackComponent() {
     message: Yup.string()
       .required("Feedback message is required")
       .min(3, "Message must be at least 3 characters")
-      .matches(
-        /^\S+(?: \S+)*$/,
-        "Message cannot contain leading, trailing, or multiple spaces"
-      ),
+
   });
 
   const handleSubmit = async (values: createFeedbackType) => {
@@ -40,11 +38,13 @@ export default function FeedbackComponent() {
           description: "Thank you for your feedback! Our team will review it.",
           variant: "success",
         });
+        values.message = "";
       } else {
         toast({
           description: "Please login to give feedback",
           variant: "error",
         });
+        router.push("/login");
       }
     } catch (error) {
       toast({
