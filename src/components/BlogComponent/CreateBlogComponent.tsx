@@ -21,7 +21,7 @@ import { useCreateBlogMutation } from "@/redux/service/blog";
 import { useToast } from "@/components/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useGetAllTopicQuery } from "@/redux/service/topic";
-import { Plus, XCircle } from "lucide-react";
+import { Plus, X, XCircle } from "lucide-react";
 import RichTextEditor from "../TextEdittor";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { MdCheckCircle } from "react-icons/md";
@@ -76,6 +76,10 @@ export default function CreateBlogComponent() {
     const updatedPreviews = [...previewImages];
     updatedPreviews.splice(index, 1);
     setPreviewImages(updatedPreviews);
+    // If no image is left, reset the state to show the input
+    if (updatedPreviews.length === 0) {
+      setIsImageSelected(false);
+    }
   };
 
   const { data: topics } = useGetAllTopicQuery({ page: 0, pageSize: 25 });
@@ -102,6 +106,7 @@ export default function CreateBlogComponent() {
   };
 
   const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [isImageSelected, setIsImageSelected] = useState<boolean>(false);
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -113,6 +118,7 @@ export default function CreateBlogComponent() {
     // Generate previews for selected images
     const previews = files.map((file) => URL.createObjectURL(file));
     setPreviewImages(previews);
+    setIsImageSelected(true);
   };
 
   const [selectedTopic, setSelectedTopic] = useState<string | null>("");
@@ -183,66 +189,72 @@ export default function CreateBlogComponent() {
                 {/* Drag-and-Drop Thumbnail Selection */}
                 <h2 className="text-center font-bold text-2xl">Create Blog</h2>
 
-                <div
-                  className="file-upload-design mt-4 p-6 rounded-lg border-2 border-dashed ransition-all duration-300 ease-in-out hover:border-blue-400 "
-                  onDragOver={handleDragOver}
-                  onDrop={handleDrop}
-                >
-                  <div className="flex flex-col items-center justify-center space-y-2 text-center">
-                    <p className="text-sm font-medium text-gray-700 dark:text-text_color_dark">
-                      Drag and Drop Thumbnail Here
-                    </p>
-                    {/* <p className="text-sm text-gray-500">or</p> */}
-                    <button
-                      type="button"
-                      className="inline-flex items-center justify-center w-10 h-10 rounded-full  text-black  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-                      onClick={() => {
-                        const thumbnailInput =
-                          document.getElementById("thumbnail");
-                        if (thumbnailInput) thumbnailInput.click();
-                      }}
-                    >
-                      <Plus className="h-6 w-6 dark:text-text_color_dark" />
-                      <span className="sr-only">Browse Files</span>
-                    </button>
-                  </div>
+                {/* Thumbnail Selection */}
+                <div>
+                  <Label htmlFor="thumbnail" className="text-md font-medium">
+                    Thumbnail
+                  </Label>
 
-                  <Input
-                    id="thumbnail"
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleFileChange(e, setFieldValue)}
-                    className="hidden"
-                  />
-                  <ErrorMessage
-                    name="thumbnail"
-                    component="p"
-                    className="text-red-500 text-sm mt-2 text-center"
-                  />
+                  <div
+                    className="file-upload-design mt-2 rounded-lg border-2 border-dashed transition-all duration-300 ease-in-out hover:border-blue-400 md:w-[500px] md:h-[200px] items-center justify-center"
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                  >
+                    <div className="flex flex-col items-center justify-center space-y-2 text-center h-full">
+                      {!isImageSelected ? (
+                        <>
+                          <p className="text-md font-medium text-text_color_desc_light dark:text-text_color_dark">
+                            Drag and Drop Thumbnail Here
+                          </p>
+                          <button
+                            type="button"
+                            className="inline-flex items-center justify-center w-10 h-10 rounded-full text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                            onClick={() => {
+                              const thumbnailInput =
+                                document.getElementById("thumbnail");
+                              if (thumbnailInput) thumbnailInput.click();
+                            }}
+                          >
+                            <Plus className="h-6 w-6 text-text_color_desc_light dark:text-text_color_dark" />
+                          </button>
+                        </>
+                      ) : (
+                        previewImages.length > 0 && (
+                          <div className="relative">
+                            <img
+                              src={previewImages[0]} // Display the first image if multiple images exist
+                              alt="Thumbnail Preview"
+                              className=" md:w-[490px] md:h-[195px] p-1 object-cover rounded-md"
+                            />
+                            <X
+                              type="button"
+                              className="absolute p-1 top-0 right-0 cursor-pointer text-white bg-red-500 rounded-full"
+                              onClick={() => removeImage(0)} // Remove image
+                            />
+                          </div>
+                        )
+                      )}
+                    </div>
+
+                    {!isImageSelected && (
+                      <input
+                        id="thumbnail"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileChange(e, setFieldValue)}
+                        className="hidden"
+                      />
+                    )}
+                    <ErrorMessage
+                      name="thumbnail"
+                      component="p"
+                      className="text-red-500 text-sm mt-2 text-center"
+                    />
+                  </div>
                 </div>
 
-                {/* Preview Selected Thumbnails */}
-                {previewImages.length > 0 && (
-                  <div className="w-1/3 mx-auto">
-                    {previewImages.map((src, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={src}
-                          alt={`Preview ${index + 1}`}
-                          className="w-full  object-container rounded-md border"
-                        />
-                        <XCircle
-                          type="button"
-                          className="absolute top-0 right-0 cursor-pointer text-destructive"
-                          onClick={() => removeImage(index)}
-                        ></XCircle>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
                 <div>
-                  <Label htmlFor="title" className="text-sm font-medium">
+                  <Label htmlFor="title" className="text-md font-medium">
                     Title
                   </Label>
                   <Field
@@ -251,7 +263,7 @@ export default function CreateBlogComponent() {
                     id="title"
                     name="title"
                     placeholder="Enter blog title"
-                    className="mt-1 p-3 border rounded-md w-full"
+                    className="mt-2 p-3 border rounded-md w-full"
                   />
                   <ErrorMessage
                     name="title"
@@ -267,7 +279,7 @@ export default function CreateBlogComponent() {
                       <div>
                         <Label
                           htmlFor="description"
-                          className="text-sm font-medium"
+                          className="text-md font-medium mb-2"
                         >
                           Description
                         </Label>
@@ -301,7 +313,7 @@ export default function CreateBlogComponent() {
                 </div>
 
                 <div>
-                  <Label htmlFor="topic" className="text-sm font-medium">
+                  <Label htmlFor="topic" className="text-md font-medium">
                     Blog Topic
                   </Label>
                   <Field name="topic">
@@ -309,7 +321,7 @@ export default function CreateBlogComponent() {
                       <Select
                         {...field}
                         id="topic"
-                        className="mt-1"
+                        className="mt-2"
                         onValueChange={(value) => {
                           form.setFieldValue("topic", value);
                           setSelectedTopic(value);
