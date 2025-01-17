@@ -179,7 +179,7 @@ export default function FooterComponent() {
             {/* Social Links Section */}
             <section className="w-full md:w-1/2 grid grid-cols-2 gap-3 md:flex md:flex-row justify-end items-center text-text_color_desc_light dark:text-text_color_desc_dark mx-auto">
               {/* GitHub Card */}
-              <Link target="blank" href={"https://github.com/MuyleangIng"}>
+              <Link target="blank" href={"https://github.com/inspectra-cyber"}>
                 <button className="flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-text_color_desc_light hover:text-text_color_dark">
                   <FaGithub className="w-5 h-5" />
                   <span>GitHub</span>
@@ -190,7 +190,7 @@ export default function FooterComponent() {
               <Link
                 target="blank"
                 href={
-                  "https://www.facebook.com/share/1XTYkShkpg/?mibextid=LQQJ4d"
+                  "https://www.facebook.com/share/1AtWk6Psh7/?mibextid=wwXIfr"
                 }
               >
                 <button className="flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-text_color_desc_light hover:text-text_color_dark">
@@ -208,7 +208,7 @@ export default function FooterComponent() {
               </Link>
 
               {/* Email Card */}
-              <Link target="blank" href={"mailto:info.istad@gmail.com"}>
+              <Link target="blank" href={"mailto:Inspectra.cyber@gmail.com"}>
                 <button className="flex items-center space-x-2 px-4 py-2 border rounded-full hover:bg-text_color_desc_light hover:text-text_color_dark">
                   <MdEmail className="w-5 h-5" />
                   <span>Email</span>
