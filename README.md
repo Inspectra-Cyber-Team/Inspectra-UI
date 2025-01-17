@@ -158,7 +158,7 @@ Deployment URL: [https://inspectra.istad.co/](https://inspectra.istad.co/)
 
 ## Documentation 🔖
 
-For detailed usage and API documentation, visit [Inspectra Documentation](http://136.228.158.126:4012/document).
+For detailed usage and API documentation, visit [Inspectra Documentation](https://inspectra-doc.istad.co/).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -194,18 +194,18 @@ For detailed usage and API documentation, visit [Inspectra Documentation](http:/
 
 ## Page URL 🌐
 
-1. [Home](http://136.228.158.126:4012/)
-2. [Sign in](http://136.228.158.126:4012/login)
-3. [Sign up](http://136.228.158.126:4012/signup)
-4. [About us](http://136.228.158.126:4012/aboutUs)
-5. [Profile](http://136.228.158.126:4012/myProfile)
-6. [Use Case](http://136.228.158.126:4012/useCase)
-7. [Project](http://136.228.158.126:4012/project)
-8. [Document](http://136.228.158.126:4012/document)
-9. [Blog](http://136.228.158.126:4012/blog)
-10. [FAQs](http://136.228.158.126:4012/faq)
-11. [Blog History](http://136.228.158.126:4012/blogHistory)
-12. [Scan History](http://136.228.158.126:4012/scanHistory)
+1. [Home](https://inspectra.istad.co/)
+2. [Sign in](https://inspectra.istad.co/login)
+3. [Sign up](https://inspectra.istad.co/signup)
+4. [About us](https://inspectra.istad.co/about)
+5. [Profile](https://inspectra.istad.co/myprofile)
+6. [Use Case](https://inspectra.istad.co/usecase)
+7. [Project](https://inspectra.istad.co/project)
+8. [Document](https://inspectra-doc.istad.co)
+9. [Blog](https://inspectra.istad.co/blog)
+10. [FAQs](https://inspectra.istad.co/faq)
+11. [Blog History](https://inspectra.istad.co/bloghistory)
+12. [Scan History](https://inspectra.istad.co/scanhistory)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
