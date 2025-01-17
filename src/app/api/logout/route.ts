@@ -7,7 +7,6 @@ export async function POST() {
   const credential = cookieStore.get(cookieName);
 
   if (!credential) {
-    localStorage.removeItem('userUUID');
     return NextResponse.json(
       {
         message: "Token not found",

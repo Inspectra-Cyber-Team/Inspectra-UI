@@ -43,6 +43,7 @@ const baseQueryWithReAuth = async (args: any, api: any, extraOptions: any) => {
         method: "POST",
         credentials: "include",
       });
+      localStorage.removeItem('userUUID');
     }
   }
 
