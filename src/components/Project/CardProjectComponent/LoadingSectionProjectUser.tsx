@@ -86,9 +86,6 @@ const LoadingSectionProjectUser: React.FC = () => {
         transition={{ delay: 1.5, duration: 0.5 }}
         className="text-center w-full"
       >
-        <h2 className="text-2xl font-semibold mb-2 text-text dark:text-text_color_dark">
-          Scanning your project
-        </h2>
         <div className="relative">
           <Lottie
             animationData={animationLoading}
