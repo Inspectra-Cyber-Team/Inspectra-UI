@@ -34,7 +34,7 @@ const ScrollProgressBarComponent = () => {
         <>
             {/* Progress Bar Container */}
             <motion.div
-                className="fixed top-16 bg-gray-200 dark:bg-card_color_dark left-0 right-0 h-2 z-50"
+                className="fixed top-0 bg-gray-200 dark:bg-card_color_dark left-0 right-0 h-2 z-50"
                 style={{
                     opacity: isVisible ? 1 : 0,
                     transition: 'opacity 0.3s ease-in-out'

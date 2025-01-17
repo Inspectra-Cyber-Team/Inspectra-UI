@@ -7,8 +7,8 @@ export const userAPI = cyberApi.injectEndpoints({
     getUserDetail: builder.query<any, { uuid: string }>({
       query: ({ uuid }) => ({
         url: `/users/${uuid}`,
-        providesTags: ["User"],
       }),
+      providesTags: [{ type: "User", id: "USERLIST" }],
     }),
     // update user profile
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,6 +18,7 @@ export const userAPI = cyberApi.injectEndpoints({
         method: "PUT",
         body: userProfile,
       }),
+      invalidatesTags: [{ type: "User", id: "USERLIST" }],
     }),
 
     uploadUserProfileImage: builder.mutation<any, { image: File }>({
@@ -30,6 +31,7 @@ export const userAPI = cyberApi.injectEndpoints({
           body: formData,
         };
       },
+      invalidatesTags: [{ type: "User", id: "USERLIST" }],
     }),
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,4 +44,9 @@ export const userAPI = cyberApi.injectEndpoints({
   }),
 });
 
-export const { useGetUserDetailQuery, useUpdateUserProfileMutation, useGetUserHistoryBlogQuery, useUploadUserProfileImageMutation } = userAPI;
+export const {
+  useGetUserDetailQuery,
+  useUpdateUserProfileMutation,
+  useGetUserHistoryBlogQuery,
+  useUploadUserProfileImageMutation,
+} = userAPI;
