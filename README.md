@@ -4,7 +4,7 @@
 
 <br />
 <div align="center">
-  <a href="http://136.228.158.126:4012/">
+  <a href="https://inspectra.istad.co/">
     <img src="./public/images/logo_round.png" alt="Logo" width="250" height="auto"/>
   </a>
 </div>
@@ -37,7 +37,7 @@
 
 ## About 🔗
 
-<a href="http://136.228.158.126:4012/">
+<a href="https://inspectra.istad.co/">
   <img src="./public/images/homepage.png" alt="Website homepage" width="auto" height="auto"/>
 </a>
 
@@ -72,7 +72,7 @@ Inspectra empowers you to uncover hidden risks with precision. Through deep, int
 
 ### 🚜 Deployment
 
-Deployment URL: [http://136.228.158.126:4012/](http://136.228.158.126:4012)
+Deployment URL: [https://inspectra.istad.co/](https://inspectra.istad.co/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

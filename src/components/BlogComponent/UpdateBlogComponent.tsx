@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import {
-  useUploadFileMutation,
   useUploadMultipleFileMutation,
 } from "@/redux/service/faqs";
 import { useToast } from "@/components/hooks/use-toast";

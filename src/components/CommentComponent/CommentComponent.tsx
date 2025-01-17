@@ -193,7 +193,7 @@ const CommentSection = ({ uuid }: commentProp) => {
 
           if (newComment?.data?.uuid && newComment.event == "create" && !receivedUuidsRef.current.has(newComment?.data?.uuid)) {
             // Add unique comment to the list and track its UUID
-            setDataComment((prevData) => [...prevData, newComment.data]);
+            setDataComment((prevData) => [newComment.data,...prevData]);
             receivedUuidsRef.current.add(newComment?.data?.uuid);
           }
            else if (newComment?.data?.uuid && newComment.event === "delete") {
@@ -244,7 +244,7 @@ const CommentSection = ({ uuid }: commentProp) => {
                       ...comment,
                       replies: comment.replies?.some(reply => reply.uuid === replyData.uuid)
                         ? comment.replies  // If the reply already exists, keep existing replies
-                        : [...(comment.replies || []), replyData],  // Otherwise, add the new reply
+                        : [...(comment.replies || []), replyData]  // Otherwise, add the new reply
                     }
                   : comment
               )

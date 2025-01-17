@@ -21,7 +21,7 @@ type BlogTopicComponentProps = Readonly<{
 }>;
 
 export default function BlogTopicComponent({ topic }: BlogTopicComponentProps) {
-  console.log("Topic:", topic);
+  
   const router = useRouter();
 
   const [currentPage, setCurrentPage] = useState(1);
