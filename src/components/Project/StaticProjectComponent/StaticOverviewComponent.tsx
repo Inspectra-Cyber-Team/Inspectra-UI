@@ -4,7 +4,12 @@ import React from 'react'
 import { useState } from 'react';
 import { FaCodeBranch } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
-import Link from 'next/link';
+import { BsPatchQuestionFill } from "react-icons/bs";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export default function StaticOverviewComponent() {
 
@@ -88,7 +93,17 @@ export default function StaticOverviewComponent() {
               <SiTicktick />
             </h2>
             <div>
+            <div className="flex gap-2 items-center">
               <p className="text-sm dark:text-gray-400">Quality Gate</p>
+              <HoverCard>
+                <HoverCardTrigger>
+                  <BsPatchQuestionFill className="text-text_color_desc_light dark:text-text_color_desc_dark" />
+                </HoverCardTrigger>
+                <HoverCardContent className="text-sm">
+                A Quality Gate is a set of measure-based Boolean conditions. It helps you know immediately whether your project is production-ready. If your current status is not Passed, you'll see which measures caused the problem and the values required to pass.
+                </HoverCardContent>
+              </HoverCard>
+            </div>
               <p className="text-lg font-semibold dark:text-white">
                 Passed
               </p>

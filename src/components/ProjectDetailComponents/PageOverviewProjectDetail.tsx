@@ -6,9 +6,14 @@ import { Metadata } from "next";
 import React, { useEffect, useRef, useState } from "react";
 import { SiTicktick } from "react-icons/si";
 import { FaCodeBranch } from "react-icons/fa";
-import { get } from "http";
+import { BsPatchQuestionFill } from "react-icons/bs";
 import { AiOutlineClose } from "react-icons/ai";
 import CheckGrade from "@/lib/checkGrade";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 type OverviewProps = {
   projectName: string;
@@ -156,11 +161,10 @@ export default function PageOverviewProjectDetail({
       <div className="w-full flex flex-col md:flex-row justify-between gap-6">
         <div className="flex items-center gap-4">
           <h2
-            className={`p-4 rounded-lg text-text_color_light text-xl ${
-              getProjectByUserUuid?.status.qualityGateStatus === "OK"
+            className={`p-4 rounded-lg text-text_color_light text-xl ${getProjectByUserUuid?.status.qualityGateStatus === "OK"
                 ? "bg-primary_color"
                 : "bg-red-500"
-            }`}
+              }`}
           >
             {getProjectByUserUuid?.status.qualityGateStatus === "OK" ? (
               <SiTicktick />
@@ -169,7 +173,17 @@ export default function PageOverviewProjectDetail({
             )}
           </h2>
           <div>
-            <p className="text-sm dark:text-gray-400">Quality Gate</p>
+            <div className="flex gap-2 items-center">
+              <p className="text-sm dark:text-gray-400">Quality Gate</p>
+              <HoverCard>
+                <HoverCardTrigger>
+                  <BsPatchQuestionFill className="text-text_color_desc_light dark:text-text_color_desc_dark" />
+                </HoverCardTrigger>
+                <HoverCardContent className="text-sm">
+                A Quality Gate is a set of measure-based Boolean conditions. It helps you know immediately whether your project is production-ready. If your current status is not Passed, you'll see which measures caused the problem and the values required to pass.
+                </HoverCardContent>
+              </HoverCard>
+            </div>
             <p className="text-lg font-semibold dark:text-white">
               {getProjectByUserUuid?.status.qualityGateStatus === "OK"
                 ? "Passed"
@@ -205,14 +219,14 @@ export default function PageOverviewProjectDetail({
               percentage <= 0
                 ? "A"
                 : percentage <= 20
-                ? "B"
-                : percentage <= 40
-                ? "C"
-                : percentage <= 60
-                ? "D"
-                : percentage <= 80
-                ? "E"
-                : "F";
+                  ? "B"
+                  : percentage <= 40
+                    ? "C"
+                    : percentage <= 60
+                      ? "D"
+                      : percentage <= 80
+                        ? "E"
+                        : "F";
             gradient =
               percentage > 0
                 ? `conic-gradient(lime 0% ${percentage}%, red ${percentage}% 100%)`
@@ -238,7 +252,7 @@ export default function PageOverviewProjectDetail({
                 </p>
                 <div className="flex justify-between items-center">
                   <p className="text-base font-medium text-gray-700 dark:text-gray-300">
-                    
+
                     {parsedValue?.total || 0}{" "}
                     {metric.metric === "ncloc"
                       ? "Lines of Code"
