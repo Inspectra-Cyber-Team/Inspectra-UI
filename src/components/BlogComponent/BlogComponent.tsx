@@ -1,9 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaCalendarAlt, FaEye, FaCommentDots } from "react-icons/fa";
 import { FaHandsClapping } from "react-icons/fa6";
 import { Blog } from "@/types/Blog";
-import { useGetAllBlogQuery, useLikeBlogMutation } from "@/redux/service/blog";
+import { useGetAllBlogQuery} from "@/redux/service/blog";
 import { convertToDayMonthYear } from "@/lib/utils";
 import {
   Pagination,
@@ -16,7 +16,9 @@ import {
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 
+
 export default function BlogComponent() {
+ 
   const router = useRouter();
 
   const [currentPage, setCurrentPage] = useState(1); // Track current page state
@@ -28,12 +30,56 @@ export default function BlogComponent() {
   });
 
   // Adjust for zero-based page indexing
-  const blogList = blogData?.content;
+  const [blogList, setBlogList] = useState<Blog[]>([]);
+
+  // calling websocket
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+   const receivedUuidsRef = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    const connectWebSocket = () => {
+      const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL as string);
+
+      ws.onopen = () => console.log("WebSocket connection established.");
+      ws.onmessage = (event) => {
+        try {
+          const newBlog = JSON.parse(event.data);
+          
+          if (newBlog?.data?.uuid && newBlog?.event === "verify-blog" && !receivedUuidsRef.current.has(newBlog?.data?.uuid)) {
+            setBlogList((prevData) => {
+              // Ensure that prevData is an array before spreading it
+              return Array.isArray(prevData)
+                ? [newBlog?.data, ...prevData]
+                : [newBlog.data];
+            });
+            receivedUuidsRef.current.add(newBlog?.data?.uuid);
+          } else if (newBlog?.data?.uuid && newBlog?.event === "delete-blog") {
+            setBlogList((prevData) => {
+              return prevData.filter((blog) => blog.uuid !== newBlog?.data?.uuid);
+            });
+          }
+        } catch (error) {
+          console.error("Error parsing WebSocket message:", error);
+        }
+      };
+      ws.onerror = () => console.error("WebSocket error. Retrying...");
+      ws.onclose = () => console.error("WebSocket closed. Retrying...");
+
+      setSocket(ws);
+    };
+
+    if (!socket) connectWebSocket();
+
+    return () => {
+      socket?.close();
+    };
+  }, [socket]);
 
   // Set total pages from the API response
   useEffect(() => {
     if (blogData) {
-      setTotalPages(blogData?.totalPages);
+      setBlogList(blogData?.content || []);
+      setTotalPages(blogData?.totalPages || 0);
     }
   }, [blogData]);
 
@@ -42,22 +88,7 @@ export default function BlogComponent() {
     setCurrentPage(page);
   };
 
-  // Calling function like this blog
-  const [likeBlog] = useLikeBlogMutation();
 
-  const [likeColor, setLikeColor] = useState(false);
-
-  const handleLike = async (uuid: string) => {
-    try {
-      const res = await likeBlog({ uuid: uuid });
-
-      setLikeColor(true);
-
-      console.log("Like blog response:", res);
-    } catch (error) {
-      console.error("Error liking the blog:", error);
-    }
-  };
 
   if (isLoading) {
     return (
@@ -144,17 +175,10 @@ export default function BlogComponent() {
 
                 {/* like */}
                 <div className="flex gap-2 items-center ">
-                  {likeColor ? (
-                    <FaHandsClapping
-                      className="text-orange-400 cursor-pointer mb-1 text-xl"
-                      onClick={() => handleLike(blog?.uuid)}
-                    />
-                  ) : (
-                    <FaHandsClapping
+                   <FaHandsClapping
                       className="cursor-pointer text-text_color_desc_light dark:text-text_color_desc_dark mb-1 text-xl"
-                      onClick={() => handleLike(blog?.uuid)}
+                  
                     />
-                  )}
 
                   <p>{blog?.likesCount}</p>
                 </div>

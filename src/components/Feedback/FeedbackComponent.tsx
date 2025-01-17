@@ -90,7 +90,6 @@ export default function FeedbackComponent() {
                 className={`mt-1 w-full border px-5 mb-2 rounded-tl-[20px] rounded-br-[20px] pb-[100px] min-h-[150px] bg-text_color_dark dark:bg-card_color_dark focus:outline-none focus:right-2 focus:border-text_color_light ${
                   errors.message && touched.message ? "border-red-500" : ""
                 }`}
-                data-aos="fade-right"
               />
               {errors.message && touched.message && (
                 <p className="text-red-500 text-sm mb-2">{errors.message}</p>
@@ -98,7 +97,7 @@ export default function FeedbackComponent() {
 
               <button
                 type="submit"
-                className="inline-block px-5 font-semibold bg-background_dark_mode py-2 rounded-tl-[20px] rounded-br-[20px] w-max" data-aos="fade-right"
+                className="inline-block px-5 font-semibold bg-background_dark_mode py-2 rounded-tl-[20px] rounded-br-[20px] w-max" 
               >
                 <p className="text-text_color_dark text-text_body_16 font-normal">
                   Submit

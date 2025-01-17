@@ -19,6 +19,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import FileStructureViewer from "@/components/FileStructureComponent/FileStructureViewer";
 import LoadingSection from "./LoadingSection";
 import axios, { AxiosError } from "axios";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function NoneUserScan() {
 
@@ -40,6 +47,29 @@ export default function NoneUserScan() {
   const [errorNotSelectBranch, setErrorNotSelectBranch] = useState("");
 
   const [status, setStatus] = useState(false);
+
+  const [allowLeave, setAllowLeave] = useState(false); // To control if the user can leave the page
+
+useEffect(() => {
+  const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+    if (isLoading && !allowLeave) {
+      event.preventDefault(); // Prevent the default browser "Are you sure you want to leave?" dialog
+      event.returnValue = ''; // For compatibility with different browsers
+    }
+  };
+
+  window.addEventListener("beforeunload", handleBeforeUnload);
+
+  return () => {
+    window.removeEventListener("beforeunload", handleBeforeUnload);
+  };
+}, [isLoading, allowLeave]);
+
+const handleLeave = () => {
+  setAllowLeave(true); // Allow the user to leave the page
+  window.location.reload(); // Reload the page after the user decides to leave
+};
+
 
   useEffect(() => {
     const storedCount =
@@ -250,7 +280,7 @@ export default function NoneUserScan() {
             Scan Your Project Repositories
           </p>
         </div>
-        <p className="mt-2 text-center px-2 text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
+        <p className="mt-4 text-center px-2 text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
           Connect your Git repository and select a branch to start scanning.
         </p>
       </div>
@@ -458,6 +488,7 @@ export default function NoneUserScan() {
           </div>
         )}
       </div>
+
     </section>
   );
 }
