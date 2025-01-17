@@ -21,6 +21,7 @@ import {
 import ScrollProgressBarComponent from "./ScrollProgressBarComponent";
 import { ModeToggle } from "../ToggleTheme/ToggleTheme";
 import { signOut } from "next-auth/react";
+import { Notification } from "../Notification";
 
 export default function NavbarComponent() {
   const router = useRouter();
@@ -138,7 +139,11 @@ export default function NavbarComponent() {
                       Sign in
                     </Link>
                   ) : (
-                    <Menubar>
+                    <div className="flex">
+                      <div>
+                        <Notification/>
+                      </div>
+                      <Menubar>
                       <MenubarMenu>
                         <MenubarTrigger
                           onClick={handleMenuToggle}
@@ -271,6 +276,7 @@ export default function NavbarComponent() {
                         )}
                       </MenubarMenu>
                     </Menubar>
+                    </div>
                   )}
                   {/* menu icon */}
                   <div className="text-[25px] block lg:hidden ">
