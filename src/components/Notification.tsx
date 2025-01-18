@@ -10,20 +10,81 @@ import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import { useGetAllNotificationQuery } from "@/redux/service/notification";
+import { NotificationType } from "@/types/Notification";
 
-const notifications = [
+const notifications1 = [
   { id: 1, title: "Reply Comment", description: "You have a new Reply Comment from Phiv Lyhou", time: "5m ago" },
   { id: 2, title: "Reply Comment", description: "You have a new Reply Comment from Naikim", time: "10m ago" },
   { id: 3, title: "Reply Comment", description: "You have a new Reply Comment from Votey", time: "1h ago" },
 ];
 
 export function Notification() {
-  const [unreadCount, setUnreadCount] = React.useState(notifications.length);
+
+
+
+  const [unreadCount, setUnreadCount] = React.useState(0);
+
   const router = useRouter();
 
-  const handleNotificationClick = () => {
-    router.push("/blog?tab=blog-request");
+  const handleNotificationClick = (uuid:string) => {
+    router.push(`/blog/${uuid}`);
   };
+
+
+  // calling notification data 
+  const {data} = useGetAllNotificationQuery({page:0,size:25});
+
+  const [notifications, setNotifications] = React.useState<NotificationType[]>([]);
+
+  React.useEffect(() => {
+    if(data){
+      setNotifications(data?.content || []);
+      setUnreadCount(data?.content?.length || 0);
+    }
+  }, [data]);
+
+  const [socket, setSocket] = React.useState<WebSocket | null>(null);
+
+   const receivedUuidsRef = React.useRef<Set<string>>(new Set()); 
+
+ 
+   React.useEffect(() => {
+     const connectWebSocket = () => {
+       const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL as string);
+ 
+       ws.onopen = () => console.log("WebSocket connection established.");
+       
+       ws.onmessage = (event) => {
+         try {
+           const newComment = JSON.parse(event.data);
+ 
+           if (newComment?.data?.uuid && newComment.event == "new-comment" && !receivedUuidsRef.current.has(newComment?.data?.uuid)) {
+             // Add unique comment to the list and track its UUID
+             setNotifications((prevData) => [newComment.data,...prevData]);
+             receivedUuidsRef.current.add(newComment?.data?.uuid);
+           }
+
+         } catch (error) {
+           console.error("Error parsing WebSocket message:", error);
+         }
+       };
+ 
+       ws.onerror = () => console.error("WebSocket error occurred.");
+       ws.onclose = () => console.log("WebSocket closed.");
+ 
+       setSocket(ws);
+     };
+ 
+     if (!socket) connectWebSocket();
+ 
+     return () => {
+       socket?.close();
+     };
+   }, [socket]);
+
+
+
 
   return (
     <DropdownMenu>
@@ -44,15 +105,13 @@ export function Notification() {
             <div className="space-y-4">
               {notifications.map((notification) => (
                 <div
-                  key={notification.id}
+                  key={notification?.uuid}
                   className="flex items-start space-x-4 cursor-pointer"
-                  onClick={handleNotificationClick} // Routes to the "Blog Request" tab
+                  onClick= {()=>handleNotificationClick(notification?.blogUuid)} // Routes to the "Blog Request" tab
                 >
                   <div className="h-2 w-2 mt-2 rounded-full bg-blue-500" />
                   <div className="flex-1 space-y-1">
-                    <p className="text-xs md:text-sm font-medium">{notification.title}</p>
-                    <p className="text-xs md:text-sm text-muted-foreground">{notification.description}</p>
-                    <p className="text-xs text-muted-foreground">{notification.time}</p>
+                    <p>You have a new Comment from {notification?.byUsername}</p>
                   </div>
                 </div>
               ))}
