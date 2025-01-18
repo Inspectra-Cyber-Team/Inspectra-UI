@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useGetAllNotificationQuery, useMarkAsReadMutation } from "@/redux/service/notification";
 import { NotificationType } from "@/types/Notification";
 import { useToast } from "./hooks/use-toast";
+import { formatDistanceToNow } from "date-fns";
 
 const notifications1 = [
   { id: 1, title: "Reply Comment", description: "You have a new Reply Comment from Phiv Lyhou", time: "5m ago" },
@@ -42,9 +43,12 @@ export function Notification() {
   React.useEffect(() => {
     if(data){
       setNotifications(data?.content || []);
-      setUnreadCount(data?.content?.length || 0);
     }
   }, [data]);
+
+  React.useEffect(() => {
+    setUnreadCount(notifications.length);
+  }, [notifications]);
 
   const [socket, setSocket] = React.useState<WebSocket | null>(null);
 
@@ -156,30 +160,47 @@ export function Notification() {
           <CardContent className="p-4">
             <h3 className="font-semibold text-lg mb-2">Notifications</h3>
             <div className="space-y-4">
-              {notifications.map((notification) => (
-                <div
-                  key={notification?.uuid}
-                  className="flex items-start space-x-4 cursor-pointer"
-                  onClick= {()=>handleNotificationClick(notification?.blogUuid, notification?.uuid)} // Routes to the "Blog details page"
-                >
-                  <div className="h-2 w-2 mt-2 rounded-full bg-blue-500" />
-                  <div className="flex-1 space-y-1">
-                    {notification?.type === "comment" ? (
-                      <p>You have a new Comment from {notification?.byUsername}</p>
-                    ) : (
-                      <p>You have a new Reply Comment from {notification?.byUsername}</p>
-                    )}
-                  </div>
+  
+          
+          {notifications.length > 0 ? (
+            notifications.map((notification) => (
+              <div
+                key={notification?.uuid}
+                className="flex items-start space-x-4 cursor-pointer"
+                onClick={() => handleNotificationClick(notification?.blogUuid, notification?.uuid)} // Routes to the "Blog details page"
+              >
+                <div className="h-2 w-2 mt-2 rounded-full bg-blue-500" />
+                <div className="flex-1 space-y-1">
+                  {notification?.type === "comment" ? (
+                    <p>You have a new Comment from {notification?.byUsername}</p>
+                  ) : (
+                    <p>You have a new Reply Comment from {notification?.byUsername}</p>
+                  )}
+                  <p className="text-xs text-text_color_light">
+                    {notification?.createdAt
+                      ? formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })
+                      : "Just now"}
+                  </p>
                 </div>
-              ))}
-            </div>
-            <Button
+              </div>
+            ))
+          ) : (
+            <p className="text-sm text-muted-foreground">No new notifications.</p>
+          )}
+         
+       
+            </div>  
+            {notifications.length > 0 && (
+
+                <Button
               variant="link"
               className="w-full mt-4 text-secondary_color"
               onClick={() => markAllRead()}
             >
               Mark all as read
             </Button>
+              )}
+         
           </CardContent>
         </Card>
       </DropdownMenuContent>
