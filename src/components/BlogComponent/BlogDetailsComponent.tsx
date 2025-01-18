@@ -100,7 +100,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
   const [likeBlog] = useLikeBlogMutation();
 
   useEffect(() => {
-    if (data) setBlogData(data.data);
+    if (data) setBlogData(data?.data);
 
     const likedBlogs = JSON.parse(localStorage.getItem("likedBlogs") || "{}");
     setLikeColor(!!likedBlogs[data?.data?.uuid]);

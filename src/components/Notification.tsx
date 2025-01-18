@@ -24,10 +24,17 @@ const notifications1 = [
 export function Notification() {
 
 
+
   const {toast} = useToast();
 
-
+  const [userUuid, setUserUuid] = React.useState("");
   const [unreadCount, setUnreadCount] = React.useState(0);
+
+  // get uuid user from localstorage
+  React.useEffect(() => {
+    const storedUUID = localStorage.getItem("userUUID") ?? "";
+    setUserUuid(storedUUID);
+  },[]);
 
   const router = useRouter();
 
@@ -54,50 +61,68 @@ export function Notification() {
 
    const receivedUuidsRef = React.useRef<Set<string>>(new Set()); 
 
- 
-   React.useEffect(() => {
-     const connectWebSocket = () => {
-       const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL as string);
- 
-       ws.onopen = () => console.log("WebSocket connection established.");
-       
-       ws.onmessage = (event) => {
-         try {
-           const newComment = JSON.parse(event.data);
- 
-           if (newComment?.data?.uuid && (newComment.event === "new-comment" || newComment?.event === "new-reply" || newComment?.event === "like" )  && !receivedUuidsRef.current.has(newComment?.data?.uuid)) {
-           
-             setNotifications((prevData) => [newComment.data,...prevData]);
+   // Ensure userUuid is available before trying to connect WebSocket
+React.useEffect(() => {
+  if (userUuid) {
+    const connectWebSocket = () => {
+      const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL as string);
 
-             receivedUuidsRef.current.add(newComment?.data?.uuid);
+      ws.onopen = () => {
+        console.log("WebSocket connection established.");
+      };
 
-           } else if (newComment?.event === "mark-read") {
+      ws.onmessage = (event) => {
+        try {
+          const newComment = JSON.parse(event.data);
+
+          // Ensure userUuid is available
+          if (!userUuid) {
+            return;
+          }
+
+          // Check if the message has the right structure and belongs to the current user
+          if (newComment?.data?.uuid && newComment?.data?.ownerUserUuid === userUuid) {
+
             
-              setNotifications((prevData) => prevData.filter((notification) => notification.uuid !== newComment?.data?.uuid));
-
+            if (
+              (newComment.event === "new-comment" ||
+                newComment.event === "new-reply" ||
+                newComment.event === "like") &&
+              !receivedUuidsRef.current.has(newComment?.data?.uuid)
+            ) {
+     
+             
+              setNotifications((prevData) => [newComment.data, ...prevData]);
+              receivedUuidsRef.current.add(newComment?.data?.uuid);
+            }
+          
+            else if (newComment?.event === "mark-read" && newComment?.data?.ownerUserUuid === userUuid) {
+     
+              setNotifications((prevData) =>
+                prevData.filter((notification) => notification.uuid !== newComment?.data?.uuid)
+              );
               receivedUuidsRef.current.delete(newComment.data.uuid);
-
               setUnreadCount((prevCount) => prevCount - 1);
+            }
+          }
+        } catch (error) {
+          console.error("Error parsing WebSocket message:", error);
+        }
+      };
 
-           }
+      ws.onerror = () => console.error("WebSocket error occurred.");
+      ws.onclose = () => console.log("WebSocket closed.");
 
-         } catch (error) {
-           console.error("Error parsing WebSocket message:", error);
-         }
-       };
- 
-       ws.onerror = () => console.error("WebSocket error occurred.");
-       ws.onclose = () => console.log("WebSocket closed.");
- 
-       setSocket(ws);
-     };
- 
-     if (!socket) connectWebSocket();
- 
-     return () => {
-       socket?.close();
-     };
-   }, [socket]);
+      setSocket(ws);
+    };
+
+    connectWebSocket();
+
+    return () => {
+      socket?.close();
+    };
+  } 
+}, [userUuid]); // Trigger when userUuid changes
 
 
   //  function mark as read
