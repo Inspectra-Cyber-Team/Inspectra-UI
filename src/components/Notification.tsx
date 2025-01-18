@@ -64,10 +64,8 @@ export function Notification() {
        ws.onmessage = (event) => {
          try {
            const newComment = JSON.parse(event.data);
-
-           console.log("new comment ",newComment);
  
-           if (newComment?.data?.uuid && (newComment.event === "new-comment" || newComment?.event === "new-reply")  && !receivedUuidsRef.current.has(newComment?.data?.uuid)) {
+           if (newComment?.data?.uuid && (newComment.event === "new-comment" || newComment?.event === "new-reply" || newComment?.event === "like" )  && !receivedUuidsRef.current.has(newComment?.data?.uuid)) {
            
              setNotifications((prevData) => [newComment.data,...prevData]);
 
@@ -171,11 +169,18 @@ export function Notification() {
               >
                 <div className="h-2 w-2 mt-2 rounded-full bg-blue-500" />
                 <div className="flex-1 space-y-1">
-                  {notification?.type === "comment" ? (
-                    <p>You have a new Comment from {notification?.byUsername}</p>
-                  ) : (
-                    <p>You have a new Reply Comment from {notification?.byUsername}</p>
-                  )}
+                {(() => {
+                  if (notification?.type === "comment") {
+                    return <p>You have a new Comment from {notification?.byUsername}</p>;
+                  } else if (notification?.type === "reply") {
+                    return <p>You have a new Reply Comment from {notification?.byUsername}</p>;
+                  } else if (notification?.type === "like") {
+                    return <p>Your blog has been liked by {notification?.byUsername}</p>;
+                  } else {
+                    return null;
+                  }
+                })()}
+
                   <p className="text-xs text-text_color_light">
                     {notification?.createdAt
                       ? formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })
