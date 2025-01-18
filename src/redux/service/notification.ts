@@ -13,7 +13,7 @@ endpoints: (builder) => ({
     markAsRead: builder.mutation<any,{  notificationUuid: string; }>({
     query: ({ notificationUuid }) => ({
         url: `/notifications/${notificationUuid}`,
-        method: 'PUT',
+        method: 'POST',
     }),
 }),
 

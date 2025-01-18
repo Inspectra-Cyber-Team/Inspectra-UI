@@ -10,8 +10,9 @@ import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { useGetAllNotificationQuery } from "@/redux/service/notification";
+import { useGetAllNotificationQuery, useMarkAsReadMutation } from "@/redux/service/notification";
 import { NotificationType } from "@/types/Notification";
+import { useToast } from "./hooks/use-toast";
 
 const notifications1 = [
   { id: 1, title: "Reply Comment", description: "You have a new Reply Comment from Phiv Lyhou", time: "5m ago" },
@@ -22,18 +23,19 @@ const notifications1 = [
 export function Notification() {
 
 
+  const {toast} = useToast();
+
 
   const [unreadCount, setUnreadCount] = React.useState(0);
 
   const router = useRouter();
 
-  const handleNotificationClick = (uuid:string) => {
-    router.push(`/blog/${uuid}`);
-  };
-
-
   // calling notification data 
   const {data} = useGetAllNotificationQuery({page:0,size:25});
+
+  // calling function mark  as read
+
+  const [handleMarkAsRead] = useMarkAsReadMutation();
 
   const [notifications, setNotifications] = React.useState<NotificationType[]>([]);
 
@@ -58,11 +60,23 @@ export function Notification() {
        ws.onmessage = (event) => {
          try {
            const newComment = JSON.parse(event.data);
+
+           console.log("new comment ",newComment);
  
-           if (newComment?.data?.uuid && newComment.event == "new-comment" && !receivedUuidsRef.current.has(newComment?.data?.uuid)) {
-             // Add unique comment to the list and track its UUID
+           if (newComment?.data?.uuid && (newComment.event === "new-comment" || newComment?.event === "new-reply")  && !receivedUuidsRef.current.has(newComment?.data?.uuid)) {
+           
              setNotifications((prevData) => [newComment.data,...prevData]);
+
              receivedUuidsRef.current.add(newComment?.data?.uuid);
+
+           } else if (newComment?.event === "mark-read") {
+            
+              setNotifications((prevData) => prevData.filter((notification) => notification.uuid !== newComment?.data?.uuid));
+
+              receivedUuidsRef.current.delete(newComment.data.uuid);
+
+              setUnreadCount((prevCount) => prevCount - 1);
+
            }
 
          } catch (error) {
@@ -84,7 +98,46 @@ export function Notification() {
    }, [socket]);
 
 
+  //  function mark as read
+  const handleNotificationMarkAsRead = async (uuid:string) => {
 
+    if (!uuid) return;
+
+    try {
+
+      await handleMarkAsRead({notificationUuid:uuid});
+  
+
+    } catch  {
+      
+      toast({
+        description: "Failed to mark as read",
+        variant: "error",
+      })
+      
+    }
+
+  }
+
+
+  const handleNotificationClick = (uuid:string,notificationUuid:string) => {
+    router.push(`/blog/${uuid}`);
+    handleNotificationMarkAsRead(notificationUuid);
+  };
+
+  const markAllRead = async () => {
+    try {
+      await Promise.all(notifications.map((notification) => handleMarkAsRead({ notificationUuid: notification?.uuid })));
+      setNotifications([]);
+      setUnreadCount(0);
+    } catch (error) {
+      toast({
+        description: "Failed to mark all as read",
+        variant: "error",
+      });
+
+    }
+  }
 
   return (
     <DropdownMenu>
@@ -107,11 +160,15 @@ export function Notification() {
                 <div
                   key={notification?.uuid}
                   className="flex items-start space-x-4 cursor-pointer"
-                  onClick= {()=>handleNotificationClick(notification?.blogUuid)} // Routes to the "Blog Request" tab
+                  onClick= {()=>handleNotificationClick(notification?.blogUuid, notification?.uuid)} // Routes to the "Blog details page"
                 >
                   <div className="h-2 w-2 mt-2 rounded-full bg-blue-500" />
                   <div className="flex-1 space-y-1">
-                    <p>You have a new Comment from {notification?.byUsername}</p>
+                    {notification?.type === "comment" ? (
+                      <p>You have a new Comment from {notification?.byUsername}</p>
+                    ) : (
+                      <p>You have a new Reply Comment from {notification?.byUsername}</p>
+                    )}
                   </div>
                 </div>
               ))}
@@ -119,7 +176,7 @@ export function Notification() {
             <Button
               variant="link"
               className="w-full mt-4 text-secondary_color"
-              onClick={() => setUnreadCount(0)}
+              onClick={() => markAllRead()}
             >
               Mark all as read
             </Button>
