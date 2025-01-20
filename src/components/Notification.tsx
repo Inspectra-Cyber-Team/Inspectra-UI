@@ -72,7 +72,7 @@ React.useEffect(() => {
       ws.onmessage = (event) => {
         try {
           const newComment = JSON.parse(event.data);
-
+          const successSound = new Audio("/sound/notification_sound.wav");
           // Ensure userUuid is available
           if (!userUuid) {
             return;
@@ -85,11 +85,12 @@ React.useEffect(() => {
             if (
               (newComment.event === "new-comment" ||
                 newComment.event === "new-reply" ||
-                newComment.event === "like") &&
+                newComment.event === "like" ||
+                newComment.event === "like-comment") &&
               !receivedUuidsRef.current.has(newComment?.data?.uuid)
             ) {
      
-             
+              successSound.play();        
               setNotifications((prevData) => [newComment.data, ...prevData]);
               receivedUuidsRef.current.add(newComment?.data?.uuid);
             }
@@ -232,7 +233,7 @@ React.useEffect(() => {
                   } else if (notification?.type === "like") {
                     return <p>Your blog has been liked by {notification?.byUsername}</p>;
                   } else {
-                    return null;
+                    return <p>Your comment has been liked by {notification?.byUsername}</p>
                   }
                 })()}
 
