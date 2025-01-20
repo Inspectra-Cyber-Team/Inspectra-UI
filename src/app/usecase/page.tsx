@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "Inspectra is design specifically for developers, offering tools to make code scannning and development more easier and secure",
   keywords:
-    "Inspectra use case, use case, Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, use case, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices",
+    "Inspectra use case, use case, Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, use case, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices, Cybersecurity tools Cambodia, cybersecurity, code scanner, white box testing, white-box tools, white-box website, white box website, scan code for vulnerabilities, vulnerabilities scan, scan for bugs, bug scan, scan for report, report from scanning code, SAST platform, sast platform, SAST, code scanning for developer, code vulnerability scanner, usecase, usecase page, usecase section, usecase website, usecase website page, usecase website section, use-case, useCase",
   authors: { name: "Inspectra Team" },
   publisher: "Inspectra",
   openGraph: {
