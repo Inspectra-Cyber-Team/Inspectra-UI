@@ -239,14 +239,6 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
       // Update local storage
       localStorage.setItem("likedBlogs", JSON.stringify(likedBlogs));
 
-      // // Notify via WebSocket
-      // socket?.send(
-      //   JSON.stringify({
-      //     type: message === "Blog liked successfully" ? "like" : "unlike",
-      //     blogUuid,
-      //     userUuid: blogData?.user?.uuid,
-      //   })
-      // );
     } catch (error) {
       console.error("Error toggling like status:", error);
     }
