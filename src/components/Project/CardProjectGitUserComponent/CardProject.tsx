@@ -10,18 +10,16 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
-  useDeleteProjectMutation,
-  useGetProjectOverViewUserQuery,
+  useCreateProjectScanMutation,
+  useDeleteProjectMutation
 } from "@/redux/service/project";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { CgDanger } from "react-icons/cg";
 import { RxCross2 } from "react-icons/rx";
-import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
-import { useCreateProjectScanMutation } from "@/redux/service/project";
 import ReactTypingEffect from "react-typing-effect";
-import { useSession } from "next-auth/react";
-import { error } from "console";
 import LoadingSectionProjectUser from "../CardProjectComponent/LoadingSectionProjectUser";
+import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
 
 export default function CardProject({ userDataProjet, isError }: any) {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
@@ -356,7 +354,7 @@ export default function CardProject({ userDataProjet, isError }: any) {
               open={isCloseLoadingScan}
               onOpenChange={setIsCloseLoadingScan}
             >
-              <AlertDialogContent className="xl:h-[95%]  w-[95%]  md:w-full lg:max-w-[600px]  items-end xl:w-full rounded-[20px] bg-text_color_dark  flex flex-col  ">
+              <AlertDialogContent className="xl:h-[95%]  w-[95%]  md:w-full lg:max-w-[500px] xl:max-w-[700px]  items-end xl:w-full rounded-[20px] bg-text_color_dark  flex flex-col  ">
                 <button
                   onClick={() => setIsCloseLoadingScan(false)}
                   className="text-custom_red cursor-pointer"

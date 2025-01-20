@@ -46,42 +46,23 @@ export default function ProjectCardComponent() {
 
   // Handle user input change
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
-  };
+    const value = event.target.value;
+    setInputValue(value);
 
-  // Handle Enter key press for search project
-  const handleKeyPressforSearchProject = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Enter") {
-      const matchingResults = projectResultApi?.filter((item: any) =>
-        item.component.component.name
-          .toLowerCase()
-          .includes(inputValue.toLowerCase())
-      );
-      setFilteredResults(matchingResults);
-    } else if (event.key === "Backspace") {
-      if (inputValue === "") {
-        setFilteredResults([]); // Set to empty array if input is empty
-      } else {
-        const matchingResults = projectResultApi?.filter((item: any) =>
-          item.component.component.name
-            .toLowerCase()
-            .includes(inputValue.toLowerCase())
-        );
-        setFilteredResults(matchingResults);
-      }
+    if (value === "") {
+      // If the input is empty, reset the filtered results
+      setFilteredResults([]);
     } else {
-      // Handle other key presses (if any)
+      // Filter the results based on the input value
       const matchingResults = projectResultApi?.filter((item: any) =>
         item.component.component.name
           .toLowerCase()
-          .includes(inputValue.toLowerCase())
+          .includes(value.toLowerCase())
       );
       setFilteredResults(matchingResults);
     }
   };
-
+ 
   return (
     <div>
       {/* search and sort */}
@@ -92,7 +73,6 @@ export default function ProjectCardComponent() {
             type="text"
             value={inputValue}
             onChange={handleInputChange}
-            onKeyPress={handleKeyPressforSearchProject}
             placeholder="Search for anything..."
             className="bg-transparent outline-none w-full text-sm placeholder:text-text_color_desc_light dark:placeholder:text-text_color_desc_dark"
           />
@@ -131,8 +111,8 @@ export default function ProjectCardComponent() {
       ) : isFetchDataProjectScan ? (
         // while fetching data
         <ProjectScanSkeleton />
-      ) : // check if search result is empty
-      filteredResults.length === 0 ? (
+      ) : null}
+      {filteredResults.length === 0 ? (
         <>
           {projectResultApi?.map((projectResult: any, index: number) => {
             // check project that already scanned
@@ -160,7 +140,7 @@ export default function ProjectCardComponent() {
         <>
           {filteredResults.map((filterResult: any, index: number) => {
             // check project that already scanned
-            if (filterResult?.component.component.measures !== 0) {
+            if (filterResult?.component.component.measures.length > 0) {
               return (
                 <ProjectCardWithData
                   key={index}
@@ -179,10 +159,6 @@ export default function ProjectCardComponent() {
               );
             }
           })}
-          {/* Static card visible only for specific UUID */}
-          {userUUID === process.env.NEXT_PUBLIC_USER_UUID && (
-            <StaticProjectCardComponent />
-          )}
         </>
       )}
     </div>

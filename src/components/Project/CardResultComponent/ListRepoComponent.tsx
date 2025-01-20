@@ -36,7 +36,7 @@ export function ListRepoComponent() {
     page: 0,
     size: 100,
   });
-  
+
   const { data: userRepo, isFetching: fetchUserRepo } =
     useGetAllUserRepositoriesQuery({
       accessToken: isUserAccessToken,
@@ -178,7 +178,7 @@ export function ListRepoComponent() {
                         checked={selectedRepos.includes(repo?.full_name)}
                         onChange={() => handleCheckboxChange(repo?.full_name)}
                       />
-                      <div className="flex-1">
+                      <div className="flex space-x-2 items-center">
                         {/* Break text */}
                         <p className="break-words text-text_body_16 text-text_color_light dark:text-text_color_dark">
                           {repo?.full_name}
@@ -187,7 +187,6 @@ export function ListRepoComponent() {
                         {repo?.visibility === "private" && (
                           <div className="flex items-center text-text_body_16 dark:text-text_color_dark text-text_color_light mt-1">
                             <PiLockKeyFill />
-                            <span className="ml-1">Private</span>
                           </div>
                         )}
                       </div>

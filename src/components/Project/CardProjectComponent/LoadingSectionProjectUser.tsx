@@ -70,10 +70,13 @@ const LoadingSectionProjectUser: React.FC = () => {
               </div>
               {index < steps.length - 1 && (
                 <motion.div
-                  className="absolute top-[30px] md:top-[35px] left-[70px] md:left-[100px] transform h-1  bg-primary_color"
-                  initial={{ width: "0%" }}
-                  animate={{ width: currentStep > index ? "100%" : "0%" }}
+                  className="absolute top-[30px] md:top-[35px] left-[70px] md:left-[100px] transform h-1 bg-primary_color w-full xl:w-[150%]"
+                  initial={{ scaleX: 0 }}
+                  animate={{
+                    scaleX: currentStep > index ? 1 : 0,
+                  }}
                   transition={{ duration: 1.0 }}
+                  style={{ transformOrigin: "left" }}
                 ></motion.div>
               )}
             </li>
