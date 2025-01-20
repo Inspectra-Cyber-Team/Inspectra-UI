@@ -119,6 +119,7 @@ const handleLeave = () => {
       const maxRetries = 3;
 
       const performScan = async () => {
+        const successSound = new Audio("/sound/notification_sound.wav");
         try {
           attempt++;
           const response = await projectScanNonUser({
@@ -136,6 +137,7 @@ const handleLeave = () => {
               description: "Project Scan Successfully Completed",
               variant: "success",
             });
+            successSound.play();
             setIsLoading(false);
             // Redirect to the project page using the response data
             router.push(`/project/${response?.data?.data}`);

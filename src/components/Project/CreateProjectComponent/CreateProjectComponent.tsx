@@ -13,7 +13,7 @@ import { LuPlus } from "react-icons/lu";
 import { RxCross2 } from "react-icons/rx";
 import { useCreateProjectNameMutation } from "@/redux/service/project";
 import { toast } from "@/components/hooks/use-toast";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type ErrorResponse = {
   data?: {
@@ -29,6 +29,8 @@ export default function CreateProjectComponent() {
   const [projectName, setProjectName] = useState("");
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const audioPlayer = useRef<HTMLAudioElement | null>(null);
 
   const [createProjectName, { isSuccess, isError }] =
     useCreateProjectNameMutation();
@@ -47,10 +49,16 @@ export default function CreateProjectComponent() {
     try {
       const res = await createProjectName({ projectName: values?.projectName });
       if (res?.data) {
+        if (audioPlayer.current) {
+          audioPlayer.current
+            .play()
+            .catch((error) => console.error("Error playing audio:", error));
+        }
         toast({
           description: "Project created successfully",
           variant: "success",
         });
+        
         setIsOpen(false);
         setIsLoading(false);
       } else if (res?.error) {
@@ -129,6 +137,7 @@ export default function CreateProjectComponent() {
             <div className="px-4 py-2 cursor-pointer rounded-2xl inline-flex w-auto md:w-[170px]  items-center text-text_color_light md:flex md:justify-around bg-text_color_dark">
               <p className="hidden md:block">Create Project</p>
               <LuPlus />
+              <audio ref={audioPlayer} src="/sound/notification_sound.wav" />
             </div>
           </AlertDialogTrigger>
           <AlertDialogContent className=" w-[90%]  md:w-full rounded-[20px] bg-text_color_dark h-auto p-5 flex flex-col justify-around">

@@ -11,7 +11,6 @@ import { IoSearchSharp } from "react-icons/io5";
 
 import { useGetProjectOverViewUserQuery } from "@/redux/service/project";
 
-import { toast } from "@/components/hooks/use-toast";
 import ProjectScanSkeleton from "@/components/ProjectSkeleton/ProjectScanSkeleton";
 import StaticProjectCardComponent from "../StaticProjectComponent/StaticProjectCardComponent";
 

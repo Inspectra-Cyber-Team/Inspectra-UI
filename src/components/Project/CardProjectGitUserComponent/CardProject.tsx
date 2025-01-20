@@ -81,6 +81,7 @@ export default function CardProject({ userDataProjet, isError }: any) {
   const handleOnSubmit = async () => {
     setIsLoading(true);
     setIsCloseLoadingScan(true);
+    const successSound = new Audio("/sound/notification_sound.wav");
     try {
       // Step 1: Fetch project and get git URL branch projectName
       const response = await fetch(
@@ -109,6 +110,7 @@ export default function CardProject({ userDataProjet, isError }: any) {
             description: "Project Scanned Successfully",
             variant: "success",
           });
+          successSound.play();
           setIsLoading(false);
         } else if (createProjectScanResponse?.error) {
           let errorMessage = "An error occurred while creating the project.";
