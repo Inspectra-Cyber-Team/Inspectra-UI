@@ -1,6 +1,6 @@
 "use client";
 import FileStructureViewer from "@/components/FileStructureComponent/FileStructureViewer";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactTypingEffect from "react-typing-effect";
 
 import {
@@ -96,6 +96,9 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
       return; // Stop further execution
     }
     setIsOpen(true);
+
+    // Play success sound (ensure the file path is correct)
+    const successSound = new Audio("/sound/notification_sound.wav");
     try {
       setErrorNotSelectBranch(""); // Clear any branch-related errors
       const res = await createScanProject({
@@ -113,6 +116,9 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
           description: "Project Scan Success",
           variant: "success",
         });
+        // Play the sound on success
+        successSound.play();
+
         setIsOpen(false);
       } else {
         toast({
