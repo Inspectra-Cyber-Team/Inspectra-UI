@@ -362,7 +362,7 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
                   Configure Project
                 </p>
               </AlertDialogTrigger>
-              <AlertDialogContent className=" xl:h-[95%] overflow-auto scrollbar-hide w-[95%]  md:w-full lg:max-w-[600px] xl:w-full rounded-[20px] bg-text_color_dark  flex flex-col   ">
+              <AlertDialogContent className=" xl:h-[95%] overflow-auto scrollbar-hide w-[95%]  md:w-full lg:max-w-[500px] xl:max-w-[700px] rounded-[20px] bg-text_color_dark  flex flex-col   ">
                 <AlertDialogHeader>
                   <AlertDialogTitle className="flex justify-between text-center items-center">
                     <p className="text-text_title_24 text-text_color_light">
@@ -467,7 +467,7 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
                           </div>
                         </DropdownMenuTrigger>
                       )}
-                      <DropdownMenuContent className=" w-[340px] md:w-[460px] lg:w-[550px]  text-text_color_light text-start bg-background_light_mode border-ascend_color">
+                      <DropdownMenuContent className=" w-[340px] md:w-[460px] lg:w-[450px] xl:w-[650px]  text-text_color_light text-start bg-background_light_mode border-ascend_color">
                         {gitResult?.length === 0 ? (
                           <DropdownMenuItem disabled>
                             No branch to select
