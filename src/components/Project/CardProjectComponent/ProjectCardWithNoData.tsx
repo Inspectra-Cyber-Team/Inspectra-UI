@@ -375,7 +375,7 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
                           is scanning ...
                         </p>
                       ) : (
-                        <p> {projectResult?.component?.component.name}</p>
+                        <p>Project {projectResult?.component?.component.name}</p>
                       )}
                     </p>
                     <AlertDialogCancel className="flex text-center items-center">
