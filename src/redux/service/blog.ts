@@ -36,6 +36,7 @@ export const blogApi = cyberApi.injectEndpoints({
         url: `/blogs/user/${uuid}?page=${page}&size=${size}`,
         method: "GET",
       }),
+      providesTags: [{ type: "Blog", id: "Blog" }],
     }),
 
     createBlog: builder.mutation<
@@ -73,6 +74,7 @@ export const blogApi = cyberApi.injectEndpoints({
         url: `blogs/${uuid}`,
         method: "GET",
       }),
+      providesTags: [{ type: "Blog", id: "Blog" }],
     }),
 
     deleteBlog: builder.mutation<any, { uuid: string }>({

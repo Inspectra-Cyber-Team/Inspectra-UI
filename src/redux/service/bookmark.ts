@@ -31,6 +31,7 @@ const bookmarkApi = cyberApi.injectEndpoints({
         url: `/bookmarks/${blogUuid}/exists`,
         method: "GET",
       }),
+      providesTags: [{ type: "Bookmark", id: "Bookmark" }],
     }),
   }),
 });

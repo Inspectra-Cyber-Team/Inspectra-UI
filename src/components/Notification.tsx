@@ -211,9 +211,9 @@ React.useEffect(() => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[250px] md:w-80">
         <Card className="border-none">
-          <CardContent className="p-4">
+          <CardContent className="p-4 h-full ">
             <h3 className="font-semibold text-lg mb-2">Notifications</h3>
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-[300px] overflow-y-auto scrollbar-hide">
   
           
           {notifications.length > 0 ? (
