@@ -473,8 +473,13 @@ const handleLeave = () => {
 
                 {/* submit scan */}
                 <button
+                  disabled={isLoading ||  isFetchFilesLoading}
                   onClick={() => handleSubmit()}
-                  className="w-full mt-6 py-3 bg-primary_color text-text_color_light font-medium flex justify-center items-center rounded-md hover:bg-primary_color/90 transition-colors"
+                  className={`w-full mt-6 py-3 bg-primary_color text-text_color_light font-medium flex justify-center items-center rounded-md hover:bg-primary_color/90 transition-colors  ${
+                        isLoading || isFetchFilesLoading
+                          ? "cursor-not-allowed "
+                          : "cursor-pointer"
+                      }`}
                 >
                   Start Scan
                 </button>
