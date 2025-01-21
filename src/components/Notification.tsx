@@ -72,7 +72,7 @@ React.useEffect(() => {
       ws.onmessage = (event) => {
         try {
           const newComment = JSON.parse(event.data);
-          const successSound = new Audio("/sound/notification_sound.wav");
+          const successSound = new Audio("/sound/notification_navbar.wav");
           // Ensure userUuid is available
           if (!userUuid) {
             return;
