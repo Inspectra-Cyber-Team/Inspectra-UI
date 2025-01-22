@@ -27,7 +27,7 @@ const NetworkStatusProvider = ({ children }: { children: React.ReactNode }) => {
       {!isOnline && (
         <div className="grid place-content-center h-screen ">
           {/* Display an image or icon */}
-          <div>
+          {/* <div>
             <Image
               className="flex items-center mx-auto rounded-md"
               src={"/images/no-connection.svg"}
@@ -37,7 +37,7 @@ const NetworkStatusProvider = ({ children }: { children: React.ReactNode }) => {
               objectFit="contain"
               alt="No connection"
             />
-          </div>
+          </div> */}
           {/* Display status message */}
           <div className="text-center my-4 ">
             <h1 className="font-bold text-text_header_34 mb-2">
