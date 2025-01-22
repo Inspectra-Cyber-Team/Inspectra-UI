@@ -173,7 +173,7 @@ export default function FooterComponent() {
           <section className="w-[95%] mx-auto flex flex-col md:flex-row border-t border-text_color_desc_light dark:border-text_color_desc_dark py-5 space-y-4 mt-5 md:space-y-0">
             {/* Left Section */}
             <div className="w-full md:w-1/2 text-center md:text-left text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark">
-              © 2024 Inspectra Inc. <br /> All rights reserved.
+              © 2025 Inspectra Inc. <br /> All rights reserved.
             </div>
 
             {/* Social Links Section */}
