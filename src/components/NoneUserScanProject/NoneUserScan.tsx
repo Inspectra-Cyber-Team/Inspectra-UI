@@ -19,19 +19,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import FileStructureViewer from "@/components/FileStructureComponent/FileStructureViewer";
 import LoadingSection from "./LoadingSection";
 import axios, { AxiosError } from "axios";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
 export default function NoneUserScan() {
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [showTerms, setShowTerms] = useState(true);
@@ -39,7 +28,7 @@ export default function NoneUserScan() {
   const [listDirectories, setListDirectories] = useState<any>();
   const { theme } = useTheme();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [countScan, setCountScan] = useState(0);
   const [projectScanNonUser] = useCreateProjectScanNonUserMutation();
   const [gitUrlResult, setGitUrl] = useState<string>("");
@@ -55,65 +44,60 @@ export default function NoneUserScan() {
   const [allowLeave, setAllowLeave] = useState(false); // To control if the user can leave the page
   const allowLeaveRef = useRef(allowLeave);
 
-  // useEffect(() => {
-  //   allowLeaveRef.current = allowLeave;
-  // }, [allowLeave]);
+  useEffect(() => {
+    allowLeaveRef.current = allowLeave;
+  }, [allowLeave]);
 
-  // useEffect(() => {
-  //   const handleLinkClick = (event: MouseEvent) => {
-  //     const target = event.target as HTMLElement;
-  //     let link: HTMLElement | null = target.closest("a[href]");
+  useEffect(() => {
+    const handleLinkClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      let link: HTMLElement | null = target.closest("a[href]");
   
-  //     // Check if the clicked element is inside a Next.js Link component
-  //     if (!link && target.closest("a") === null && target.closest("Link") !== null) {
-  //       // Look for Next.js Link component
-  //       link = (target.closest("a") as HTMLElement) || null;
-  //     }
+      // Check if the clicked element is inside a Next.js Link component
+      if (!link && target.closest("a") === null && target.closest("Link") !== null) {
+        // Look for Next.js Link component
+        link = (target.closest("a") as HTMLElement) || null;
+      }
   
-  //     if (link) {
-  //       const likeHref = link.getAttribute("href");
+      if (link) {
+        const likeHref = link.getAttribute("href");
   
-  //       if (isLoading && !allowLeave) {
-  //         // Prevent the default behavior immediately
-  //         event.preventDefault();
-  //         event.stopImmediatePropagation();
+        if (isLoading && !allowLeave) {
+          // Prevent the default behavior immediately
+          event.preventDefault();
+          event.stopImmediatePropagation();
   
-  //         const confirmLeave = window.confirm(
-  //           "A scan is currently in progress. Are you sure you want to leave?"
-  //         );
+          const confirmLeave = window.confirm(
+            "A scan is currently in progress. Are you sure you want to leave?"
+          );
   
-  //         if (confirmLeave) {
-  //           setAllowLeave(true); // Allow future navigation
-  //           // Manually navigate after confirming
-  //           router.push(likeHref || "");
-  //         }
-  //       }
-  //     }
-  //   };
+          if (confirmLeave) {
+            setAllowLeave(true); // Allow future navigation
+            // Manually navigate after confirming
+            router.push(likeHref || "");
+          }
+        }
+      }
+    };
   
-  //   // Attach the click event listener to the document
-  //   document.addEventListener("click", handleLinkClick);
+    // Attach the click event listener to the document
+    document.addEventListener("click", handleLinkClick);
   
-  //   // Cleanup the event listener when the component unmounts
-  //   return () => {
-  //     document.removeEventListener("click", handleLinkClick);
-  //   };
-  // }, [isLoading, allowLeave, router]);
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("click", handleLinkClick);
+    };
+  }, [isLoading, allowLeave, router]);
   
   
-  // Prevent tab/browser close during scan
-
-
+  
+  //Prevent tab/browser close during scan
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (isLoading && !allowLeaveRef.current) {
         
         event.preventDefault();
         event.returnValue = "";
-
-
-        setIsModalVisible(true)
-      
         return ""
         
       }
@@ -131,9 +115,6 @@ const handleLeave = () => {
   window.location.reload();
 };
 
-const handleCancel = () => {
-  setIsModalVisible(false); // Close modal and stay on page
-};
 
   useEffect(() => {
     const storedCount =
@@ -559,23 +540,6 @@ const handleCancel = () => {
           </div>
         )}
       </div>
-
-      {/* Custom Modal */}
-      <Dialog open={isModalVisible} onOpenChange={setIsModalVisible}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Are you sure you want to leave?</DialogTitle>
-            <DialogDescription>
-              A scan is currently in progress. Are you sure you want to leave? This will interrupt the scan.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <button onClick={handleCancel}>Cancel</button>
-            <button onClick={handleLeave}>Leave</button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
     </section>
   );
 }
