@@ -1,6 +1,6 @@
 "use client";
 import FileStructureViewer from "@/components/FileStructureComponent/FileStructureViewer";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactTypingEffect from "react-typing-effect";
 
 import {
@@ -37,11 +37,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { useRouter } from "next/navigation";
+import { useDispatch, UseDispatch } from "react-redux";
 import { FaGithub, FaGitlab } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import LoadingSectionProjectUser from "./LoadingSectionProjectUser";
+import { setLoading } from "@/redux/feature/loadingSlice";
+import { useAppSelector } from "@/redux/hooks";
 export default function ProjectCardWithNoData({ index, projectResult }: any) {
   const [userUUID, setUserUUID] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -64,8 +66,6 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
   const [deleteProject, { isSuccess: isDeleteSuccess }] =
     useDeleteProjectMutation();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
   const [isClosing, setIsClosing] = useState(false);
@@ -76,31 +76,31 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
 
   const [gitUrlResult, setGitUrl] = useState<string>(""); // Store the input value
   const [gitResult, setGitResult] = useState([]); // result get from git url
-
+  const dispatch = useDispatch();
+  const isLoading = useAppSelector((state) => state.project.isLoading);
   // for scan project
   const handleScanProject = async (index: number) => {
     setSelectedIndex(index);
-    setIsLoading(true);
-
-    if (gitResult.length === 0 || gitUrlResult === "Select Project Branch") {
-      toast({
-        description: "Please Provide Git UR and Branch",
-        variant: "error",
-      });
-      setIsLoading(false);
-    }
-
-    if (selectedBranch === "Select Project Branch") {
-      setIsLoading(false);
-      setErrorNotSelectBranch("Please select a branch");
-      return; // Stop further execution
-    }
-    setIsOpen(true);
-
-    // Play success sound (ensure the file path is correct)
-    const successSound = new Audio("/sound/notification_sound.wav");
+    dispatch(setLoading(true));
     try {
+      if (gitResult.length === 0 || gitUrlResult === "Select Project Branch") {
+        toast({
+          description: "Please Provide Git URL and Branch",
+          variant: "error",
+        });
+        return;
+      }
+
+      if (selectedBranch === "Select Project Branch") {
+        setErrorNotSelectBranch("Please select a branch");
+        return;
+      }
+
       setErrorNotSelectBranch(""); // Clear any branch-related errors
+      setIsOpen(true);
+
+      const successSound = new Audio("/sound/notification_sound.wav");
+
       const res = await createScanProject({
         project: {
           projectName: projectResultApi[index].component?.component.name,
@@ -110,16 +110,15 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
           includePaths: selectedFiles,
         },
       });
-      setSelectedFiles([]);
+
+      setSelectedFiles([]); // Reset selected files
+
       if (res?.data) {
         toast({
           description: "Project Scan Success",
           variant: "success",
         });
-        // Play the sound on success
         successSound.play();
-
-        setIsOpen(false);
       } else {
         toast({
           description: "Something went wrong!",
@@ -133,11 +132,13 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
         variant: "error",
       });
     } finally {
-      setIsLoading(false);
+      dispatch(setLoading(false));
       setIsOpen(false);
     }
   };
 
+ 
+ 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
@@ -228,7 +229,7 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
           variant: "error",
         });
       } finally {
-        setIsLoading(false); // Stop loading
+        dispatch(setLoading(false)); // Stop loading
       }
     } else {
       toast({
@@ -334,7 +335,7 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
       </div>
       <hr className="my-5 dark:border-primary_color" />
       <div className="flex  flex-col items-start md:flex-row md:items-center">
-        {isClosing && isLoading && selectedIndex === index ? (
+        {isClosing || isLoading || selectedIndex === index ? (
           <div className="flex justify-start items-start w-full pt-2 h-full">
             <ReactTypingEffect
               text={[
