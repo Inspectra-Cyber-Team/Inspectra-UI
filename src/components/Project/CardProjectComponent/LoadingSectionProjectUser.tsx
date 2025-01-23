@@ -96,7 +96,9 @@ const LoadingSectionProjectUser: React.FC = () => {
             className="mx-auto md:w-[400px] md:h-[400px]"
           />
         </div>
-      <p className="text-text_color_desc_light dark:text-text_color_dark">© 2025 Inpestra Team. All rights reserved.</p>
+        <p className="text-text_color_desc_light dark:text-text_color_dark">
+          © 2025 Inspestra Team. All rights reserved.
+        </p>
       </motion.div>
     </div>
   );

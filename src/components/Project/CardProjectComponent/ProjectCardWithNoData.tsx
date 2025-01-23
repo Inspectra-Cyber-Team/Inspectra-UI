@@ -70,16 +70,17 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
   const [isClosing, setIsClosing] = useState(false);
   const [errorGitUrlMessage, setErrorGitUrlMessage] = useState("");
-
+  const [isScanActive, setIsScanActive] = useState(false);
   // rtk for scan project
   const [createScanProject] = useCreateProjectScanMutation();
 
   const [gitUrlResult, setGitUrl] = useState<string>(""); // Store the input value
   const [gitResult, setGitResult] = useState([]); // result get from git url
   const dispatch = useDispatch();
-  const isLoading = useAppSelector((state) => state.project.isLoading);
+  const isLoading = useAppSelector((state: any) => state.project.isLoading);
   // for scan project
   const handleScanProject = async (index: number) => {
+    setIsScanActive(true);
     setSelectedIndex(index);
     dispatch(setLoading(true));
     try {
@@ -137,8 +138,6 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
     }
   };
 
- 
- 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
@@ -335,7 +334,7 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
       </div>
       <hr className="my-5 dark:border-primary_color" />
       <div className="flex  flex-col items-start md:flex-row md:items-center">
-        {isClosing || isLoading || selectedIndex === index ? (
+        {(isClosing && isScanActive) || isLoading || selectedIndex === index ? (
           <div className="flex justify-start items-start w-full pt-2 h-full">
             <ReactTypingEffect
               text={[
@@ -376,7 +375,9 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
                           is scanning ...
                         </p>
                       ) : (
-                        <p>Project {projectResult?.component?.component.name}</p>
+                        <p>
+                          Project {projectResult?.component?.component.name}
+                        </p>
                       )}
                     </p>
                     <AlertDialogCancel className="flex text-center items-center">
