@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "Access the Inspectra Project Dashboard, a centralized platform to scan, analyze, and review source code for vulnerabilities. Ensure secure development with advanced tools and detailed insights.",
   keywords:
-    "Inspectra project, white-box testing Cambodia, Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, secure development platform, source code analysis, cybersecurity tools, secure coding practices",
+    "Inspectra project, white-box testing Cambodia, Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, secure development platform, source code analysis, cybersecurity tools, secure coding practices, Cybersecurity tools Cambodia, cybersecurity, code scanner, white box testing, white-box tools, white-box website, white box website, scan code for vulnerabilities, vulnerabilities scan, scan for bugs, bug scan, scan for report, report from scanning code, SAST platform, sast platform, SAST, code scanning for developer, code vulnerability scanner, project, project dashboard, project scan, project analysis, project review, project vulnerability, project secure development, project advanced tools, project detailed insights",
   authors: { name: "Inspectra Team" },
   publisher: "Inspectra",
   openGraph: {

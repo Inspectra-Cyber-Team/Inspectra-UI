@@ -1,6 +1,7 @@
 import {
   useGetProjectByUserUuidQuery,
   useGetProjectDetailQuery,
+  useGetProjectOverviewUserQuery,
 } from "@/redux/service/overview";
 import { Metadata } from "next";
 import React, { useEffect, useRef, useState } from "react";
@@ -14,6 +15,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { useGetProjectOverViewUserQuery } from "@/redux/service/project";
+import { get } from "http";
 
 type OverviewProps = {
   projectName: string;
@@ -77,12 +80,21 @@ export default function PageOverviewProjectDetail({
   };
 
   // get project by user uuid
-  const { data: projectUuid } = useGetProjectByUserUuidQuery({
-    uuid: userUUID ?? "",
-  });
-  const getProjectByUserUuid = projectUuid?.[0]?.branch?.[0]?.branches?.[0];
+  const { data: projectUuid } = useGetProjectOverviewUserQuery({projectName: nameOfProject});
 
+  const [getProjectByUserUuid, setProjectByUserUuid] = useState<any>(null);
 
+  useEffect(() => {
+    if (projectUuid) {
+
+      const branch = projectUuid?.branch?.[0]?.branches?.[0]
+      
+      if (branch) {
+        setProjectByUserUuid(branch);
+      }
+    }
+  }, [projectUuid]);
+  
   // check data and time
   const formatDate = (dateString: string) => {
     if (!dateString) return "";

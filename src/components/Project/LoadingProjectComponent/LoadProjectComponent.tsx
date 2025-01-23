@@ -7,7 +7,7 @@ export default function LoadProjectComponent({ textDisplay }: any) {
     <section>
       <div className="w-full h-full flex justify-center items-center ">
         {theme === "dark" ? (
-          <img
+          <img 
             src={"/images/loading.png"}
             alt="loading"
             className=" md:h-[300px] md:w-[300px] lg:h-[400px] lg:w-[400px] object-cover"

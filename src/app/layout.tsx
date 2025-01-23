@@ -24,19 +24,18 @@ const NetworkProvider = dynamic(
   () => import("@/components/NetworkStatusProvider"),
   { ssr: false }
 );
-
 export const metadata: Metadata = {
-  title: "Inspectra",
+  title: "Inspectra: Secure Your Development with White-box Testing",
   description:
-    "Welcome to Inspectra, a cutting-edge white-box testing platform from Cambodia that ensures secure development through source code analysis and identification of security vulnerabilities.",
+    "Inspectra, Cambodia's cutting-edge white-box testing platform, ensures secure development by analyzing your source code for vulnerabilities and security flaws. Leverage our powerful tools to prevent bugs and enhance your software’s security.",
   keywords:
-    "Inspectra, inspectra, inspect, source code scan, cambodia, inspectra istad, inspectra.istad, istad, scan, code scan, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices",
+    "Inspectra, white-box testing, source code scan, vulnerabilities scan, secure development, cybersecurity, code scanner, SAST platform, software security, cybersecurity tools, bug scan, inspect source code, secure coding practices, Cambodia cybersecurity, Inspectra code scan, bug vulnerability scanner, white-box website tools, cybersecurity for developers, inspect code Cambodia, secure software development, code scanning tools, prevent security flaws, code vulnerability checker",
   authors: { name: "Inspectra Team" },
   publisher: "Inspectra",
   openGraph: {
-    title: "Inspectra",
+    title: "Inspectra - Secure Your Development with White-box Testing",
     description:
-      "Welcome to Inspectra, a cutting-edge white-box testing platform from Cambodia that ensures secure development through source code analysis and identification of security vulnerabilities.",
+      "Inspectra, Cambodia's cutting-edge white-box testing platform, ensures secure development through advanced source code analysis to uncover security vulnerabilities.",
     siteName: "Inspectra",
     locale: "en_KH",
     type: "website",
@@ -46,7 +45,7 @@ export const metadata: Metadata = {
         url: "https://api-inspectra.istad.co/images/3639a448-5eb8-43f4-bba9-a7f98c27792e.png",
         width: 1200,
         height: 630,
-        alt: "Inspectra",
+        alt: "Inspectra: Secure Development Platform",
       },
     ],
   },

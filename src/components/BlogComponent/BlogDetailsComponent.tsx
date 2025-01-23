@@ -143,12 +143,19 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         try {
           const newBlog = JSON.parse(event.data);
           
-          if (newBlog?.data?.uuid === uuid && newBlog.event === "like-blog" || newBlog.event === "unlike-blog") {
+          if (newBlog?.data?.uuid === uuid && newBlog.event === "like-blog") {
             setBlogData((prevData) => ({
               ...prevData,
-              ...newBlog.data,
+              ...newBlog.data
             }));
+          } else if (newBlog?.data?.uuid === uuid && newBlog.event === "unlike-blog") {
+            setBlogData((prevData) => ({
+              ...prevData,
+              ...newBlog.data
+            }));
+            delete localStorage.likedBlogs[uuid];
           }
+            
         } catch (error) {
           console.error("Error parsing WebSocket message:", error);
         }
@@ -206,7 +213,6 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
   const handleLike = async (blogUuid?: string) => {
     if (!blogUuid) {
-      console.error("Blog UUID is undefined");
       return;
     }
 
@@ -221,10 +227,15 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
         // Blog has been liked
         setLikeColor(true);
         likedBlogs[blogUuid] = true; // Add blogUuid to local storage
+   
+        
       } else if (message === "Blog unliked successfully") {
         // Blog has been unliked
         setLikeColor(false);
+      
         delete likedBlogs[blogUuid]; // Remove blogUuid from local storage
+
+
       }
 
       if (res.error && "status" in res.error) {
@@ -239,14 +250,9 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
       // Update local storage
       localStorage.setItem("likedBlogs", JSON.stringify(likedBlogs));
 
-      // // Notify via WebSocket
-      // socket?.send(
-      //   JSON.stringify({
-      //     type: message === "Blog liked successfully" ? "like" : "unlike",
-      //     blogUuid,
-      //     userUuid: blogData?.user?.uuid,
-      //   })
-      // );
+
+      data?.refetch();
+
     } catch (error) {
       console.error("Error toggling like status:", error);
     }

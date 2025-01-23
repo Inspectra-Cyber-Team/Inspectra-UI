@@ -23,8 +23,8 @@ const LoadingSectionProjectUser: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center pt-10 mx-auto  lg:w-full ">
-      <div className="w-full mb-12">
+    <div className="flex flex-col items-center justify-center mx-auto lg:w-full ">
+      <div className="w-full my-5">
         <ol className="flex items-center justify-between w-full relative">
           {steps.map((step, index) => (
             <li
@@ -87,7 +87,7 @@ const LoadingSectionProjectUser: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5, duration: 0.5 }}
-        className="text-center w-full"
+        className="text-center"
       >
         <div className="relative">
           <Lottie
@@ -96,6 +96,7 @@ const LoadingSectionProjectUser: React.FC = () => {
             className="mx-auto md:w-[400px] md:h-[400px]"
           />
         </div>
+      <p className="text-text_color_desc_light dark:text-text_color_dark">© 2025 Inpestra Team. All rights reserved.</p>
       </motion.div>
     </div>
   );

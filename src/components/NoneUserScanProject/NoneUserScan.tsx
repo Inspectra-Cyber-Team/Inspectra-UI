@@ -19,13 +19,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import FileStructureViewer from "@/components/FileStructureComponent/FileStructureViewer";
 import LoadingSection from "./LoadingSection";
 import axios, { AxiosError } from "axios";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
 export default function NoneUserScan() {
 

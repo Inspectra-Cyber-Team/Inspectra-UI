@@ -14,12 +14,9 @@ import { useGetAllNotificationQuery, useMarkAsReadMutation } from "@/redux/servi
 import { NotificationType } from "@/types/Notification";
 import { useToast } from "./hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
+import { Skeleton } from "./ui/skeleton";
 
-const notifications1 = [
-  { id: 1, title: "Reply Comment", description: "You have a new Reply Comment from Phiv Lyhou", time: "5m ago" },
-  { id: 2, title: "Reply Comment", description: "You have a new Reply Comment from Naikim", time: "10m ago" },
-  { id: 3, title: "Reply Comment", description: "You have a new Reply Comment from Votey", time: "1h ago" },
-];
+
 
 export function Notification() {
 
@@ -39,7 +36,8 @@ export function Notification() {
   const router = useRouter();
 
   // calling notification data 
-  const {data} = useGetAllNotificationQuery({page:0,size:25});
+  const {data, isLoading} = useGetAllNotificationQuery({page:0,size:25});
+  
 
   // calling function mark  as read
 
@@ -74,7 +72,7 @@ React.useEffect(() => {
       ws.onmessage = (event) => {
         try {
           const newComment = JSON.parse(event.data);
-
+          const successSound = new Audio("/sound/notification_navbar.wav");
           // Ensure userUuid is available
           if (!userUuid) {
             return;
@@ -87,11 +85,12 @@ React.useEffect(() => {
             if (
               (newComment.event === "new-comment" ||
                 newComment.event === "new-reply" ||
-                newComment.event === "like") &&
+                newComment.event === "like" ||
+                newComment.event === "like-comment") &&
               !receivedUuidsRef.current.has(newComment?.data?.uuid)
             ) {
      
-             
+              successSound.play();        
               setNotifications((prevData) => [newComment.data, ...prevData]);
               receivedUuidsRef.current.add(newComment?.data?.uuid);
             }
@@ -166,6 +165,38 @@ React.useEffect(() => {
     }
   }
 
+  if (isLoading) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <div className="relative m-2 cursor-pointer">
+            <Bell className="h-7 w-7" />
+            <Skeleton className="absolute -top-2 -right-1 h-4 w-4 rounded-full" />
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[250px] md:w-80">
+          <Card className="border-none">
+            <CardContent className="p-4">
+              <h3 className="font-semibold text-lg mb-2">Notifications</h3>
+              <div className="space-y-4">
+                {[...Array(3)].map((_, index) => (
+                  <div key={index} className="flex items-start space-x-4">
+                    <Skeleton className="h-2 w-2 mt-2 rounded-full" />
+                    <div className="flex-1 space-y-1">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-3 w-1/2" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Skeleton className="w-full h-9 mt-4" />
+            </CardContent>
+          </Card>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -180,9 +211,9 @@ React.useEffect(() => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[250px] md:w-80">
         <Card className="border-none">
-          <CardContent className="p-4">
+          <CardContent className="p-4 h-full ">
             <h3 className="font-semibold text-lg mb-2">Notifications</h3>
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-[300px] overflow-y-auto scrollbar-hide">
   
           
           {notifications.length > 0 ? (
@@ -202,7 +233,7 @@ React.useEffect(() => {
                   } else if (notification?.type === "like") {
                     return <p>Your blog has been liked by {notification?.byUsername}</p>;
                   } else {
-                    return null;
+                    return <p>Your comment has been liked by {notification?.byUsername}</p>
                   }
                 })()}
 

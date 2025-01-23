@@ -35,6 +35,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
+
 export default function BookmarkComponent() {
   const router = useRouter();
 
@@ -80,7 +81,7 @@ export default function BookmarkComponent() {
 
   const [deleteBookmark] = useDeleteBookmarkMutation();
 
-  const blogList = bookmarkData?.content?.[0]?.blog;
+  const blogList = bookmarkData?.content?.flatMap((item:any) => item.blog) || [];
 
   if (bookmarkData?.totalElements === 0) {
     return (
@@ -241,13 +242,13 @@ export default function BookmarkComponent() {
         </div>
       </div>
       {/* body content */}
-      <section className="bg-card_color_light dark:bg-card_color_dark rounded-[20px] my-10 p-5">
+      <section className="bg-card_color_light dark:bg-card_color_dark rounded-[20px] my-10  px-5 py-[2px] ">
         {blogList?.map((blog: Blog, index: number) => (
           <div
             key={index}
             className="flex my-5 flex-wrap lg:flex-nowrap justify-center lg:justify-between cursor-pointer items-center border-b border-b-text_color_desc_light dark:border-b-text_color_desc_dark pb-5"
           >
-            <div className="flex flex-col gap-3 lg:w-[55%]">
+            <div className="flex flex-col gap-3 w-[100%] lg:w-[55%]">
               {/* profile */}
               <div className="flex gap-3 items-center">
                 <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
@@ -272,7 +273,7 @@ export default function BookmarkComponent() {
 
               {/* description */}
               <p
-                className="text-text_body_16  cursor-pointer  text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-1"
+                className="text-text_body_16  cursor-pointer  text-text_color_desc_light dark:text-text_color_desc_dark line-clamp-1 "
                 dangerouslySetInnerHTML={{ __html: blog?.description || "" }}
               ></p>
 
@@ -356,8 +357,10 @@ export default function BookmarkComponent() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+      
+      </section>
         {/* pagination */}
-        <Pagination className="flex justify-center mt-10">
+        <Pagination className="flex justify-center -mt-5">
           <PaginationContent className="flex gap-2 items-center">
             <PaginationItem>
               <PaginationPrevious
@@ -393,7 +396,6 @@ export default function BookmarkComponent() {
             </PaginationItem>
           </PaginationContent>
         </Pagination>
-      </section>
     </section>
   );
 }

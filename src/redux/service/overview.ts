@@ -21,8 +21,14 @@ export const overviewApi = cyberApi.injectEndpoints({
       query: ({uuid}) => ({
         url: `projects/user/${uuid}`,
       }),
-    })
+    }),
+
+    getProjectOverviewUser: builder.query<any,{projectName: string}>({
+      query: ({projectName}) => ({
+        url: `projects/overview/${projectName}`,
+      }),
+    }),
   }),
 });
 
-export const { useGetProjectDetailQuery, useGetExportPdfQuery , useGetProjectByUserUuidQuery } = overviewApi;
+export const { useGetProjectDetailQuery, useGetExportPdfQuery , useGetProjectByUserUuidQuery, useGetProjectOverviewUserQuery } = overviewApi;
