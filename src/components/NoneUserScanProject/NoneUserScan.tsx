@@ -23,7 +23,7 @@ import axios, { AxiosError } from "axios";
 export default function NoneUserScan() {
 
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [showTerms, setShowTerms] = useState(true);
+  const [showTerms, setShowTerms] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string[]>([]);
   const [listDirectories, setListDirectories] = useState<any>();
   const { theme } = useTheme();
@@ -43,51 +43,54 @@ export default function NoneUserScan() {
 
   const [allowLeave, setAllowLeave] = useState(false); // To control if the user can leave the page
   const allowLeaveRef = useRef(allowLeave);
-
   useEffect(() => {
     allowLeaveRef.current = allowLeave;
   }, [allowLeave]);
-
+  
   useEffect(() => {
     const handleLinkClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      let link: HTMLElement | null = target.closest("a[href]");
   
-      // Check if the clicked element is inside a Next.js Link component
-      if (!link && target.closest("a") === null && target.closest("Link") !== null) {
-        // Look for Next.js Link component
-        link = (target.closest("a") as HTMLElement) || null;
+      // Find the closest <a> tag or <Link> component
+      let link: HTMLElement | null = target.closest("a[href]") || target.closest("a");
+  
+      if (!link && target.closest("Link") !== null) {
+        // If inside a Next.js <Link>, find the <a> tag
+        link = target.closest("Link")?.querySelector("a") || null;
       }
   
       if (link) {
-        const likeHref = link.getAttribute("href");
+        const href = link.getAttribute("href");
   
         if (isLoading && !allowLeave) {
-          // Prevent the default behavior immediately
+          // Stop the default navigation behavior immediately
           event.preventDefault();
           event.stopImmediatePropagation();
   
           const confirmLeave = window.confirm(
-            "A scan is currently in progress. Are you sure you want to leave?"
+            "A scan is currently in progress. if you leave the page, the scan will be stopped. Are you sure you want to leave?"
           );
   
           if (confirmLeave) {
             setAllowLeave(true); // Allow future navigation
-            // Manually navigate after confirming
-            router.push(likeHref || "");
+            router.push(href || "");
+            
+           
           }
         }
       }
     };
   
-    // Attach the click event listener to the document
-    document.addEventListener("click", handleLinkClick);
+    // Use the capture phase to ensure the event is intercepted before it bubbles
+    document.addEventListener("click", handleLinkClick, true);
   
-    // Cleanup the event listener when the component unmounts
+    // Cleanup the event listener on component unmount
     return () => {
-      document.removeEventListener("click", handleLinkClick);
+      document.removeEventListener("click", handleLinkClick, true);
     };
   }, [isLoading, allowLeave, router]);
+  
+  
   
   
   
@@ -97,8 +100,9 @@ export default function NoneUserScan() {
       if (isLoading && !allowLeaveRef.current) {
         
         event.preventDefault();
-        event.returnValue = "";
-        return ""
+        // write message when close the tab u will lose the scan
+        event.returnValue = ''; 
+ 
         
       }
     };
@@ -177,16 +181,24 @@ const handleLeave = () => {
             },
           });
 
-          if (response?.data) {
-            toast({
-              description: "Project Scan Successfully Completed",
-              variant: "success",
-            });
-            successSound.play();
-            setIsLoading(false);
-            // Redirect to the project page using the response data
-            router.push(`/project/${response?.data?.data}`);
-          } else {
+          if (response?.data) { 
+     
+             
+              setIsLoading(false);
+      
+              if (!allowLeaveRef.current) {
+                // Proceed to navigate to the project page after successful scan
+                toast({
+                  description: "Project Scan Successfully Completed",
+                  variant: "success",
+                });
+                successSound.play();
+                router.push(`/project/${response?.data?.data}`); // Redirect to project page
+              }
+            }
+              
+            
+          else {
             throw new Error("Invalid API response");
           }
         } catch (error) {
@@ -312,7 +324,7 @@ const handleLeave = () => {
       handleFetchDirectories();
     }
   }, [selectedBranch, gitUrlResult]);
-
+  
   return (
     <section className="mx-auto rounded-lg justify-center items-center bg-card_color_light dark:bg-card_color_dark">
       <ScanStepsModal
