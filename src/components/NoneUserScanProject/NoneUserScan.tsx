@@ -43,27 +43,27 @@ export default function NoneUserScan() {
 
   const [allowLeave, setAllowLeave] = useState(false); // To control if the user can leave the page
   const allowLeaveRef = useRef(allowLeave);
-
   useEffect(() => {
     allowLeaveRef.current = allowLeave;
   }, [allowLeave]);
-
+  
   useEffect(() => {
     const handleLinkClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      let link: HTMLElement | null = target.closest("a[href]");
   
-      // Check if the clicked element is inside a Next.js Link component
-      if (!link && target.closest("a") === null && target.closest("Link") !== null) {
-        // Look for Next.js Link component
-        link = (target.closest("a") as HTMLElement) || null;
+      // Find the closest <a> tag or <Link> component
+      let link: HTMLElement | null = target.closest("a[href]") || target.closest("a");
+  
+      if (!link && target.closest("Link") !== null) {
+        // If inside a Next.js <Link>, find the <a> tag
+        link = target.closest("Link")?.querySelector("a") || null;
       }
   
       if (link) {
-        const likeHref = link.getAttribute("href");
+        const href = link.getAttribute("href");
   
         if (isLoading && !allowLeave) {
-          // Prevent the default behavior immediately
+          // Stop the default navigation behavior immediately
           event.preventDefault();
           event.stopImmediatePropagation();
   
@@ -73,21 +73,22 @@ export default function NoneUserScan() {
   
           if (confirmLeave) {
             setAllowLeave(true); // Allow future navigation
-            // Manually navigate after confirming
-            router.push(likeHref || "");
+            router.push(href || "");
           }
         }
       }
     };
   
-    // Attach the click event listener to the document
-    document.addEventListener("click", handleLinkClick);
+    // Use the capture phase to ensure the event is intercepted before it bubbles
+    document.addEventListener("click", handleLinkClick, true);
   
-    // Cleanup the event listener when the component unmounts
+    // Cleanup the event listener on component unmount
     return () => {
-      document.removeEventListener("click", handleLinkClick);
+      document.removeEventListener("click", handleLinkClick, true);
     };
   }, [isLoading, allowLeave, router]);
+  
+  
   
   
   
@@ -97,8 +98,9 @@ export default function NoneUserScan() {
       if (isLoading && !allowLeaveRef.current) {
         
         event.preventDefault();
-        event.returnValue = "";
-        return ""
+        // write message when close the tab u will lose the scan
+        event.returnValue = ''; 
+       
         
       }
     };
