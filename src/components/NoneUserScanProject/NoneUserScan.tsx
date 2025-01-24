@@ -23,12 +23,12 @@ import axios, { AxiosError } from "axios";
 export default function NoneUserScan() {
 
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [showTerms, setShowTerms] = useState(true);
+  const [showTerms, setShowTerms] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string[]>([]);
   const [listDirectories, setListDirectories] = useState<any>();
   const { theme } = useTheme();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [countScan, setCountScan] = useState(0);
   const [projectScanNonUser] = useCreateProjectScanNonUserMutation();
   const [gitUrlResult, setGitUrl] = useState<string>("");
@@ -68,12 +68,14 @@ export default function NoneUserScan() {
           event.stopImmediatePropagation();
   
           const confirmLeave = window.confirm(
-            "A scan is currently in progress. Are you sure you want to leave?"
+            "A scan is currently in progress. if you leave the page, the scan will be stopped. Are you sure you want to leave?"
           );
   
           if (confirmLeave) {
             setAllowLeave(true); // Allow future navigation
             router.push(href || "");
+            
+           
           }
         }
       }
@@ -100,7 +102,7 @@ export default function NoneUserScan() {
         event.preventDefault();
         // write message when close the tab u will lose the scan
         event.returnValue = ''; 
-       
+ 
         
       }
     };
@@ -179,16 +181,24 @@ const handleLeave = () => {
             },
           });
 
-          if (response?.data) {
-            toast({
-              description: "Project Scan Successfully Completed",
-              variant: "success",
-            });
-            successSound.play();
-            setIsLoading(false);
-            // Redirect to the project page using the response data
-            router.push(`/project/${response?.data?.data}`);
-          } else {
+          if (response?.data) { 
+     
+             
+              setIsLoading(false);
+      
+              if (!allowLeaveRef.current) {
+                // Proceed to navigate to the project page after successful scan
+                toast({
+                  description: "Project Scan Successfully Completed",
+                  variant: "success",
+                });
+                successSound.play();
+                router.push(`/project/${response?.data?.data}`); // Redirect to project page
+              }
+            }
+              
+            
+          else {
             throw new Error("Invalid API response");
           }
         } catch (error) {
@@ -314,7 +324,7 @@ const handleLeave = () => {
       handleFetchDirectories();
     }
   }, [selectedBranch, gitUrlResult]);
-
+  
   return (
     <section className="mx-auto rounded-lg justify-center items-center bg-card_color_light dark:bg-card_color_dark">
       <ScanStepsModal
