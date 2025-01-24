@@ -89,59 +89,59 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
   const handleScanProject = async (index: number) => {
     dispatch(setSelectedIndex(index));
     dispatch(setLoading(true));
-    // try {
-    //   if (gitResult.length === 0 || gitUrlResult === "Select Project Branch") {
-    //     toast({
-    //       description: "Please Provide Git URL and Branch",
-    //       variant: "error",
-    //     });
-    //     return;
-    //   }
+    try {
+      if (gitResult.length === 0 || gitUrlResult === "Select Project Branch") {
+        toast({
+          description: "Please Provide Git URL and Branch",
+          variant: "error",
+        });
+        return;
+      }
 
-    //   if (selectedBranch === "Select Project Branch") {
-    //     setErrorNotSelectBranch("Please select a branch");
-    //     return;
-    //   }
+      if (selectedBranch === "Select Project Branch") {
+        setErrorNotSelectBranch("Please select a branch");
+        return;
+      }
 
-    //   setErrorNotSelectBranch(""); // Clear any branch-related errors
-    //   setIsOpen(true);
+      setErrorNotSelectBranch(""); // Clear any branch-related errors
+      setIsOpen(true);
 
-    //   const successSound = new Audio("/sound/notification_sound.wav");
+      const successSound = new Audio("/sound/notification_sound.wav");
 
-    //   const res = await createScanProject({
-    //     project: {
-    //       projectName: projectResultApi[index].component?.component.name,
-    //       gitUrl: gitUrlResult,
-    //       branch: selectedBranch,
-    //       issueTypes: selectedCheckbox,
-    //       includePaths: selectedFiles,
-    //     },
-    //   });
+      const res = await createScanProject({
+        project: {
+          projectName: projectResultApi[index].component?.component.name,
+          gitUrl: gitUrlResult,
+          branch: selectedBranch,
+          issueTypes: selectedCheckbox,
+          includePaths: selectedFiles,
+        },
+      });
 
-    //   setSelectedFiles([]); // Reset selected files
+      setSelectedFiles([]); // Reset selected files
 
-    //   if (res?.data) {
-    //     toast({
-    //       description: "Project Scan Success",
-    //       variant: "success",
-    //     });
-    //     successSound.play();
-    //   } else {
-    //     toast({
-    //       description: "Something went wrong!",
-    //       variant: "error",
-    //     });
-    //   }
-    // } catch (error) {
-    //   console.error("Error while creating scan project:", error);
-    //   toast({
-    //     description: "An unexpected error occurred. Please try again.",
-    //     variant: "error",
-    //   });
-    // } finally {
-    //   dispatch(setLoading(false));
-    //   setIsOpen(false);
-    // }
+      if (res?.data) {
+        toast({
+          description: "Project Scan Success",
+          variant: "success",
+        });
+        successSound.play();
+      } else {
+        toast({
+          description: "Something went wrong!",
+          variant: "error",
+        });
+      }
+    } catch (error) {
+      console.error("Error while creating scan project:", error);
+      toast({
+        description: "An unexpected error occurred. Please try again.",
+        variant: "error",
+      });
+    } finally {
+      dispatch(setLoading(false));
+      setIsOpen(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
