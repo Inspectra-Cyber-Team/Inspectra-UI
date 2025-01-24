@@ -8,6 +8,7 @@ import ResultCardComponent from "./ResultCardComponent";
 // from next auth
 import { useSession } from "next-auth/react";
 import { ListRepoComponent } from "./ListRepoComponent";
+import { useAppSelector } from "@/redux/hooks";
 export default function ProjectContent() {
   const [userUUID, setUserUUID] = useState("");
   const [isGitUser, setIsGitUser] = useState("");
@@ -31,6 +32,9 @@ export default function ProjectContent() {
     setUserUUID(localStorage.getItem("userUUID") || "");
     setIsLoading(false);
   });
+
+ 
+
 
   return (
     <section>

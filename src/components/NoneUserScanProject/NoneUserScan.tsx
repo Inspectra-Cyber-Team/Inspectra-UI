@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { FaGithub, FaGitlab } from "react-icons/fa6";
@@ -42,25 +42,77 @@ export default function NoneUserScan() {
   const [status, setStatus] = useState(false);
 
   const [allowLeave, setAllowLeave] = useState(false); // To control if the user can leave the page
+  const allowLeaveRef = useRef(allowLeave);
 
-useEffect(() => {
-  const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-    if (isLoading && !allowLeave) {
-      event.preventDefault(); // Prevent the default browser "Are you sure you want to leave?" dialog
-      event.returnValue = ''; // For compatibility with different browsers
-    }
-  };
+  useEffect(() => {
+    allowLeaveRef.current = allowLeave;
+  }, [allowLeave]);
 
-  window.addEventListener("beforeunload", handleBeforeUnload);
-
-  return () => {
-    window.removeEventListener("beforeunload", handleBeforeUnload);
-  };
-}, [isLoading, allowLeave]);
+  useEffect(() => {
+    const handleLinkClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      let link: HTMLElement | null = target.closest("a[href]");
+  
+      // Check if the clicked element is inside a Next.js Link component
+      if (!link && target.closest("a") === null && target.closest("Link") !== null) {
+        // Look for Next.js Link component
+        link = (target.closest("a") as HTMLElement) || null;
+      }
+  
+      if (link) {
+        const likeHref = link.getAttribute("href");
+  
+        if (isLoading && !allowLeave) {
+          // Prevent the default behavior immediately
+          event.preventDefault();
+          event.stopImmediatePropagation();
+  
+          const confirmLeave = window.confirm(
+            "A scan is currently in progress. Are you sure you want to leave?"
+          );
+  
+          if (confirmLeave) {
+            setAllowLeave(true); // Allow future navigation
+            // Manually navigate after confirming
+            router.push(likeHref || "");
+          }
+        }
+      }
+    };
+  
+    // Attach the click event listener to the document
+    document.addEventListener("click", handleLinkClick);
+  
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("click", handleLinkClick);
+    };
+  }, [isLoading, allowLeave, router]);
+  
+  
+  
+  //Prevent tab/browser close during scan
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (isLoading && !allowLeaveRef.current) {
+        
+        event.preventDefault();
+        event.returnValue = "";
+        return ""
+        
+      }
+    };
+  
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload); 
+    };
+  }, [isLoading]);
 
 const handleLeave = () => {
-  setAllowLeave(true); // Allow the user to leave the page
-  window.location.reload(); // Reload the page after the user decides to leave
+  setAllowLeave(true);
+  window.location.reload();
 };
 
 
@@ -473,8 +525,13 @@ const handleLeave = () => {
 
                 {/* submit scan */}
                 <button
+                  disabled={isLoading ||  isFetchFilesLoading}
                   onClick={() => handleSubmit()}
-                  className="w-full mt-6 py-3 bg-primary_color text-text_color_light font-medium flex justify-center items-center rounded-md hover:bg-primary_color/90 transition-colors"
+                  className={`w-full mt-6 py-3 bg-primary_color text-text_color_light font-medium flex justify-center items-center rounded-md hover:bg-primary_color/90 transition-colors  ${
+                        isLoading || isFetchFilesLoading
+                          ? "cursor-not-allowed "
+                          : "cursor-pointer"
+                      }`}
                 >
                   Start Scan
                 </button>
@@ -483,7 +540,6 @@ const handleLeave = () => {
           </div>
         )}
       </div>
-
     </section>
   );
 }

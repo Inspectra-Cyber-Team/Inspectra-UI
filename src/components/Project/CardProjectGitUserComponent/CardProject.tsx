@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   useCreateProjectScanMutation,
-  useDeleteProjectMutation
+  useDeleteProjectMutation,
 } from "@/redux/service/project";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -20,12 +20,14 @@ import { RxCross2 } from "react-icons/rx";
 import ReactTypingEffect from "react-typing-effect";
 import LoadingSectionProjectUser from "../CardProjectComponent/LoadingSectionProjectUser";
 import LoadProjectComponent from "../LoadingProjectComponent/LoadProjectComponent";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "@/redux/hooks";
+import { setLoading } from "@/redux/feature/loadingSlice";
 
 export default function CardProject({ userDataProjet, isError }: any) {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isUserAccessToken, setIsUserAccessToken] = useState<string>("");
   const [isDeleteOpen, setIsDeleteOpen] = useState(false); // For managing modal visibility
-  const [isLoading, setIsLoading] = useState(false);
   const [activeProjectIndex, setActiveProjectIndex] = useState<number>(0);
   const [isCloseLoadingScan, setIsCloseLoadingScan] = useState(false);
   const { data: session } = useSession();
@@ -75,9 +77,13 @@ export default function CardProject({ userDataProjet, isError }: any) {
 
   const [userName, projectName] = project.split("--");
 
+  // global loading in git user
+  const dispatch = useDispatch();
+  const isLoading = useAppSelector((state: any) => state.project.isLoading);
+
   // handle scan project
   const handleOnSubmit = async () => {
-    setIsLoading(true);
+    dispatch(setLoading(true));
     setIsCloseLoadingScan(true);
     const successSound = new Audio("/sound/notification_sound.wav");
     try {
@@ -109,7 +115,6 @@ export default function CardProject({ userDataProjet, isError }: any) {
             variant: "success",
           });
           successSound.play();
-          setIsLoading(false);
         } else if (createProjectScanResponse?.error) {
           let errorMessage = "An error occurred while creating the project.";
 
@@ -166,7 +171,6 @@ export default function CardProject({ userDataProjet, isError }: any) {
             description: "Project Scanned Successfully",
             variant: "success",
           });
-          setIsLoading(false);
         } else if (createProjectScanResponse?.error) {
           let errorMessage = "An error occurred while creating the project.";
 
@@ -204,7 +208,7 @@ export default function CardProject({ userDataProjet, isError }: any) {
         variant: "error",
       });
     } finally {
-      setIsLoading(false); // Always stop loading indicator
+      dispatch(setLoading(false));
     }
   };
 
