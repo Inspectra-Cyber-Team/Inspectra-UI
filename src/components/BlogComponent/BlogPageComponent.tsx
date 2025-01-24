@@ -58,7 +58,12 @@ export default function BlogPageComponent() {
         {topicData?.content.map((common: CommonTopic) => (
           <button
             key={common?.uuid}
-            className="bg-card dark:bg-card_color_dark px-3 py-2 rounded-3xl cursor-pointer hover:bg-primary_color text-sm sm:text-base text-center justify-center"
+            className={`bg-card dark:bg-card_color_dark px-3 py-2 rounded-3xl cursor-pointer hover:bg-primary_color text-sm sm:text-base text-center justify-center
+            ${
+                        topic === common?.name
+                          ? "bg-primary_color dark:bg-primary_color dark:text-text_color_light"
+                          : "bg-card  dark:bg-card_color_dark hover:bg-primary_color"
+                      }`}
             onClick={() => handleTopicClick(common?.name)}
           >
             {common?.name}
@@ -89,7 +94,12 @@ export default function BlogPageComponent() {
                 .map((common: CommonTopic) => (
                   <button
                     key={common?.uuid}
-                    className="bg-card dark:bg-card_color_dark px-3 py-2 rounded-3xl cursor-pointer hover:bg-primary_color text-sm sm:text-base text-center justify-center"
+                    className={`px-3 py-2 rounded-3xl cursor-pointer text-sm sm:text-base text-center justify-center 
+                      ${
+                        topic === common?.name
+                          ? "bg-primary_color dark:bg-primary_color dark:text-text_color_light"
+                          : "bg-card dark:bg-card_color_dark hover:bg-primary_color"
+                      }`}
                     onClick={() => handleTopicClick(common?.name)}
                   >
                     {common?.name}
