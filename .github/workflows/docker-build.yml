@@ -30,24 +30,24 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }} .
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }}
 
-  deploy:
-    runs-on: ubuntu-latest
-    environment: DOCKER
-    needs: build-and-push
-    steps:
-      - name: Install SSHPass
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   environment: DOCKER
+  #   needs: build-and-push
+  #   steps:
+  #     - name: Install SSHPass
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y sshpass
 
-      - name: SSH Command to Deploy
-        run: |
-          sshpass -p '${{ secrets.SSH_PASSWORD }}' ssh -o StrictHostKeyChecking=no -p 22 '${{ secrets.SSH_USER }}'@'${{ secrets.SSH_HOST }}' << EOF
-            sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-            sudo docker stop ${{ secrets.CONTAINER_NAME }} || true
-            sudo docker rm ${{ secrets.CONTAINER_NAME }} || true
-            sudo docker rmi -f ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }} || true
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }}
-            sudo docker run -d --name ${{ secrets.CONTAINER_NAME }} -p 4012:3000 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }}
-            sudo docker logout
-          EOF
+  #     - name: SSH Command to Deploy
+  #       run: |
+  #         sshpass -p '${{ secrets.SSH_PASSWORD }}' ssh -o StrictHostKeyChecking=no -p 22 '${{ secrets.SSH_USER }}'@'${{ secrets.SSH_HOST }}' << EOF
+  #           sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+  #           sudo docker stop ${{ secrets.CONTAINER_NAME }} || true
+  #           sudo docker rm ${{ secrets.CONTAINER_NAME }} || true
+  #           sudo docker rmi -f ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }} || true
+  #           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }}
+  #           sudo docker run -d --name ${{ secrets.CONTAINER_NAME }} -p 4012:3000 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_TAG }}
+  #           sudo docker logout
+  #         EOF
