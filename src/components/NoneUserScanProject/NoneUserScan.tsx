@@ -28,7 +28,7 @@ export default function NoneUserScan() {
   const [listDirectories, setListDirectories] = useState<any>();
   const { theme } = useTheme();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [countScan, setCountScan] = useState(0);
   const [projectScanNonUser] = useCreateProjectScanNonUserMutation();
   const [gitUrlResult, setGitUrl] = useState<string>("");
