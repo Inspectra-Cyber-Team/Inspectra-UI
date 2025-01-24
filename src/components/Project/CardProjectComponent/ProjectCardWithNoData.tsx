@@ -37,13 +37,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { useDispatch, UseDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { FaGithub, FaGitlab } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import LoadingSectionProjectUser from "./LoadingSectionProjectUser";
-import { setLoading } from "@/redux/feature/loadingSlice";
-import { useAppSelector } from "@/redux/hooks";
+import { setClosing, setLoading } from "@/redux/feature/loadingSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 export default function ProjectCardWithNoData({ index, projectResult }: any) {
   const [userUUID, setUserUUID] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -68,19 +68,20 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
-  const [isClosing, setIsClosing] = useState(false);
+
   const [errorGitUrlMessage, setErrorGitUrlMessage] = useState("");
-  const [isScanActive, setIsScanActive] = useState(false);
   // rtk for scan project
   const [createScanProject] = useCreateProjectScanMutation();
 
   const [gitUrlResult, setGitUrl] = useState<string>(""); // Store the input value
   const [gitResult, setGitResult] = useState([]); // result get from git url
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const isLoading = useAppSelector((state: any) => state.project.isLoading);
+  const isClosing = useAppSelector((state: any) => state.project.isClosing);
+
+  console.log("isClosing", isClosing);
   // for scan project
   const handleScanProject = async (index: number) => {
-    setIsScanActive(true);
     setSelectedIndex(index);
     dispatch(setLoading(true));
     try {
@@ -334,18 +335,32 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
       </div>
       <hr className="my-5 dark:border-primary_color" />
       <div className="flex  flex-col items-start md:flex-row md:items-center">
-        {(isClosing && isScanActive) || isLoading || selectedIndex === index ? (
-          <div className="flex justify-start items-start w-full pt-2 h-full">
-            <ReactTypingEffect
-              text={[
-                `Scanning on project ${projectResult?.component?.component.name} ...`,
-              ]}
-              speed={100}
-              eraseSpeed={50}
-              eraseDelay={2000}
-              typingDelay={500}
-            />
-          </div>
+        {isClosing && isLoading ? (
+          selectedIndex === index ? (
+            <div className="flex justify-start items-start w-full pt-2 h-full">
+              <ReactTypingEffect
+                text={[
+                  `Scanning on project ${projectResult?.component?.component.name} ...`,
+                ]}
+                speed={100}
+                eraseSpeed={50}
+                eraseDelay={2000}
+                typingDelay={500}
+              />
+            </div>
+          ) : (
+            <div className="flex justify-start items-start w-full pt-2 h-full">
+              <ReactTypingEffect
+                text={[
+                  `Scanning on project ${projectResult?.component?.component.name} ...`,
+                ]}
+                speed={100}
+                eraseSpeed={50}
+                eraseDelay={2000}
+                typingDelay={500}
+              />
+            </div>
+          )
         ) : (
           <div className="flex w-full items-center ">
             <p className=" text-left my-2 text-text_body_16 text-text_color_desc_light  dark:text-text_color_desc_dark ">
@@ -384,7 +399,7 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
                       <button
                         onClick={() => {
                           setSelectedFiles([]);
-                          setIsClosing(true);
+                          dispatch(setClosing(true));
                           setIsOpen(false);
                         }}
                       >
