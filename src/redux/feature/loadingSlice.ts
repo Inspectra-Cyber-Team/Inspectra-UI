@@ -4,11 +4,13 @@ import { set } from "date-fns";
 interface ProjectState {
   isLoading: boolean;
   isClosing: boolean;
+  selectedIndex: number | null;
 }
 
 const initialState: ProjectState = {
   isLoading: false, // Default loading state
   isClosing: false,
+  selectedIndex: null,
 };
 
 const projectSlice = createSlice({
@@ -21,8 +23,11 @@ const projectSlice = createSlice({
     setClosing(state, action: PayloadAction<boolean>) {
       state.isClosing = action.payload;
     },
+    setSelectedIndex(state, action: PayloadAction<number | null>) {
+      state.selectedIndex = action.payload; // Update selectedIndex
+    },
   },
 });
 
-export const { setLoading , setClosing} = projectSlice.actions;
+export const { setLoading, setClosing , setSelectedIndex} = projectSlice.actions;
 export default projectSlice.reducer;

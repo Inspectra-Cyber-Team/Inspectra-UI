@@ -42,7 +42,11 @@ import { FaGithub, FaGitlab } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import LoadingSectionProjectUser from "./LoadingSectionProjectUser";
-import { setClosing, setLoading } from "@/redux/feature/loadingSlice";
+import {
+  setClosing,
+  setLoading,
+  setSelectedIndex,
+} from "@/redux/feature/loadingSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 export default function ProjectCardWithNoData({ index, projectResult }: any) {
   const [userUUID, setUserUUID] = useState("");
@@ -65,7 +69,7 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
   // rtk for delete project
   const [deleteProject, { isSuccess: isDeleteSuccess }] =
     useDeleteProjectMutation();
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
 
@@ -78,11 +82,12 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector((state: any) => state.project.isLoading);
   const isClosing = useAppSelector((state: any) => state.project.isClosing);
-
-  console.log("isClosing", isClosing);
+  const selectedIndex = useAppSelector(
+    (state: any) => state.project.selectedIndex
+  );
   // for scan project
   const handleScanProject = async (index: number) => {
-    setSelectedIndex(index);
+    dispatch(setSelectedIndex(index));
     dispatch(setLoading(true));
     try {
       if (gitResult.length === 0 || gitUrlResult === "Select Project Branch") {
@@ -335,32 +340,18 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
       </div>
       <hr className="my-5 dark:border-primary_color" />
       <div className="flex  flex-col items-start md:flex-row md:items-center">
-        {isClosing && isLoading ? (
-          selectedIndex === index ? (
-            <div className="flex justify-start items-start w-full pt-2 h-full">
-              <ReactTypingEffect
-                text={[
-                  `Scanning on project ${projectResult?.component?.component.name} ...`,
-                ]}
-                speed={100}
-                eraseSpeed={50}
-                eraseDelay={2000}
-                typingDelay={500}
-              />
-            </div>
-          ) : (
-            <div className="flex justify-start items-start w-full pt-2 h-full">
-              <ReactTypingEffect
-                text={[
-                  `Scanning on project ${projectResult?.component?.component.name} ...`,
-                ]}
-                speed={100}
-                eraseSpeed={50}
-                eraseDelay={2000}
-                typingDelay={500}
-              />
-            </div>
-          )
+        {isClosing && isLoading && selectedIndex === index ? (
+          <div className="flex justify-start items-start w-full pt-2 h-full">
+            <ReactTypingEffect
+              text={[
+                `Scanning on project ${projectResult?.component?.component.name} ...`,
+              ]}
+              speed={100}
+              eraseSpeed={50}
+              eraseDelay={2000}
+              typingDelay={500}
+            />
+          </div>
         ) : (
           <div className="flex w-full items-center ">
             <p className=" text-left my-2 text-text_body_16 text-text_color_desc_light  dark:text-text_color_desc_dark ">
