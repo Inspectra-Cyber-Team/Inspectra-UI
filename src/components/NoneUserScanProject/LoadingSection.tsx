@@ -93,6 +93,7 @@ const LoadingSection: React.FC = () => {
           />
         </div>
       </motion.div>
+      <p className="text-text_color_desc_light dark:text-text_color_dark mb-2">© 2025 Inpestra Team. All rights reserved.</p>
     </div>
   );
 };

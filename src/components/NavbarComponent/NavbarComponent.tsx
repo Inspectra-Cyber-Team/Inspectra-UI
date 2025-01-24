@@ -115,12 +115,14 @@ export default function NavbarComponent() {
                           ? "noopener noreferrer"
                           : undefined
                       } // Add security for external links
+                      passHref
                     >
                       {pathname === item.link ? (
                         <p className="text-secondary_color">{item?.name}</p>
                       ) : (
                         <p>{item.name}</p>
                       )}
+                     
                     </Link>
                   ))}
                 </ul>
