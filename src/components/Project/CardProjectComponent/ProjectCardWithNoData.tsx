@@ -42,7 +42,11 @@ import { FaGithub, FaGitlab } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import LoadingSectionProjectUser from "./LoadingSectionProjectUser";
-import { setClosing, setLoading } from "@/redux/feature/loadingSlice";
+import {
+  setClosing,
+  setLoading,
+  setSelectedIndex,
+} from "@/redux/feature/loadingSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 export default function ProjectCardWithNoData({ index, projectResult }: any) {
   const [userUUID, setUserUUID] = useState("");
@@ -65,7 +69,7 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
   // rtk for delete project
   const [deleteProject, { isSuccess: isDeleteSuccess }] =
     useDeleteProjectMutation();
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("Select Project Branch");
 
@@ -78,65 +82,66 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector((state: any) => state.project.isLoading);
   const isClosing = useAppSelector((state: any) => state.project.isClosing);
-
-  console.log("isClosing", isClosing);
+  const selectedIndex = useAppSelector(
+    (state: any) => state.project.selectedIndex
+  );
   // for scan project
   const handleScanProject = async (index: number) => {
-    setSelectedIndex(index);
+    dispatch(setSelectedIndex(index));
     dispatch(setLoading(true));
-    try {
-      if (gitResult.length === 0 || gitUrlResult === "Select Project Branch") {
-        toast({
-          description: "Please Provide Git URL and Branch",
-          variant: "error",
-        });
-        return;
-      }
+    // try {
+    //   if (gitResult.length === 0 || gitUrlResult === "Select Project Branch") {
+    //     toast({
+    //       description: "Please Provide Git URL and Branch",
+    //       variant: "error",
+    //     });
+    //     return;
+    //   }
 
-      if (selectedBranch === "Select Project Branch") {
-        setErrorNotSelectBranch("Please select a branch");
-        return;
-      }
+    //   if (selectedBranch === "Select Project Branch") {
+    //     setErrorNotSelectBranch("Please select a branch");
+    //     return;
+    //   }
 
-      setErrorNotSelectBranch(""); // Clear any branch-related errors
-      setIsOpen(true);
+    //   setErrorNotSelectBranch(""); // Clear any branch-related errors
+    //   setIsOpen(true);
 
-      const successSound = new Audio("/sound/notification_sound.wav");
+    //   const successSound = new Audio("/sound/notification_sound.wav");
 
-      const res = await createScanProject({
-        project: {
-          projectName: projectResultApi[index].component?.component.name,
-          gitUrl: gitUrlResult,
-          branch: selectedBranch,
-          issueTypes: selectedCheckbox,
-          includePaths: selectedFiles,
-        },
-      });
+    //   const res = await createScanProject({
+    //     project: {
+    //       projectName: projectResultApi[index].component?.component.name,
+    //       gitUrl: gitUrlResult,
+    //       branch: selectedBranch,
+    //       issueTypes: selectedCheckbox,
+    //       includePaths: selectedFiles,
+    //     },
+    //   });
 
-      setSelectedFiles([]); // Reset selected files
+    //   setSelectedFiles([]); // Reset selected files
 
-      if (res?.data) {
-        toast({
-          description: "Project Scan Success",
-          variant: "success",
-        });
-        successSound.play();
-      } else {
-        toast({
-          description: "Something went wrong!",
-          variant: "error",
-        });
-      }
-    } catch (error) {
-      console.error("Error while creating scan project:", error);
-      toast({
-        description: "An unexpected error occurred. Please try again.",
-        variant: "error",
-      });
-    } finally {
-      dispatch(setLoading(false));
-      setIsOpen(false);
-    }
+    //   if (res?.data) {
+    //     toast({
+    //       description: "Project Scan Success",
+    //       variant: "success",
+    //     });
+    //     successSound.play();
+    //   } else {
+    //     toast({
+    //       description: "Something went wrong!",
+    //       variant: "error",
+    //     });
+    //   }
+    // } catch (error) {
+    //   console.error("Error while creating scan project:", error);
+    //   toast({
+    //     description: "An unexpected error occurred. Please try again.",
+    //     variant: "error",
+    //   });
+    // } finally {
+    //   dispatch(setLoading(false));
+    //   setIsOpen(false);
+    // }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -335,32 +340,18 @@ export default function ProjectCardWithNoData({ index, projectResult }: any) {
       </div>
       <hr className="my-5 dark:border-primary_color" />
       <div className="flex  flex-col items-start md:flex-row md:items-center">
-        {isClosing && isLoading ? (
-          selectedIndex === index ? (
-            <div className="flex justify-start items-start w-full pt-2 h-full">
-              <ReactTypingEffect
-                text={[
-                  `Scanning on project ${projectResult?.component?.component.name} ...`,
-                ]}
-                speed={100}
-                eraseSpeed={50}
-                eraseDelay={2000}
-                typingDelay={500}
-              />
-            </div>
-          ) : (
-            <div className="flex justify-start items-start w-full pt-2 h-full">
-              <ReactTypingEffect
-                text={[
-                  `Scanning on project ${projectResult?.component?.component.name} ...`,
-                ]}
-                speed={100}
-                eraseSpeed={50}
-                eraseDelay={2000}
-                typingDelay={500}
-              />
-            </div>
-          )
+        {isClosing && isLoading && selectedIndex === index ? (
+          <div className="flex justify-start items-start w-full pt-2 h-full">
+            <ReactTypingEffect
+              text={[
+                `Scanning on project ${projectResult?.component?.component.name} ...`,
+              ]}
+              speed={100}
+              eraseSpeed={50}
+              eraseDelay={2000}
+              typingDelay={500}
+            />
+          </div>
         ) : (
           <div className="flex w-full items-center ">
             <p className=" text-left my-2 text-text_body_16 text-text_color_desc_light  dark:text-text_color_desc_dark ">
