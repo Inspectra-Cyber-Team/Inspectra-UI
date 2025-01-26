@@ -5,7 +5,7 @@
 <br />
 <div align="center">
   <a href="https://inspectra.istad.co/">
-    <img src="./public/images/logo_round.png" alt="Logo" width="250" height="auto"/>
+    <img src="./public/images/logo.png" alt="Logo" width="250" height="auto"/>
   </a>
 </div>
 
