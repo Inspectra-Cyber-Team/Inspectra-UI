@@ -15,7 +15,7 @@ import {
   useGetBlogByUuidQuery,
 } from "@/redux/service/blog";
 import { useRouter } from "next/navigation";
-import { XCircle } from "lucide-react";
+import { Plus, X, XCircle } from "lucide-react";
 import RichTextEditor from "../TextEdittor";
 
 type UpdateBlogComponentProps = {
@@ -48,6 +48,7 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
   const [uploadFile] = useUploadMultipleFileMutation();
   const [updateBlog] = useUpdateBlogMutation();
   const [isLoading, setIsLoading] = useState(false);
+  const [isImageSelected, setIsImageSelected] = useState(false);
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -94,6 +95,7 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
     // Generate previews for selected images
     const previews = files.map((file) => URL.createObjectURL(file));
     setPreviewImages(previews);
+    setIsImageSelected(true);
   };
 
   const handleUpdateBlog = async (values: any) => {
@@ -119,6 +121,7 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
     if (blogUpdateData?.data?.thumbnail) {
       const previews = blogUpdateData?.data?.thumbnail;
       setPreviewImages(previews);
+      setIsImageSelected(true);
     }
   }, [blogUpdateData?.data?.thumbnail]);
 
@@ -126,6 +129,22 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
     title: blogUpdateData?.data?.title || "",
     description: blogUpdateData?.data?.description || "",
     thumbnail: [],
+  };
+
+
+  const removeImage = (index: number, setFieldValue: any) => {
+    const updatedPreviews = [...previewImages];
+    updatedPreviews.splice(index, 1);
+    setPreviewImages(updatedPreviews);
+  
+    // Update Formik field value
+    const updatedFiles = initialValues.thumbnail.filter((_, idx) => idx !== index);
+    setFieldValue("thumbnail", updatedFiles);
+  
+    // If no image is left, reset the state to show the input
+    if (updatedPreviews.length === 0) {
+      setIsImageSelected(false)
+    }
   };
 
   return (
@@ -167,59 +186,70 @@ export const UpdateBlogComponent = ({ uuid }: UpdateBlogComponentProps) => {
               <Form className="space-y-8 bg-card p-6">
                 <h2 className="text-center font-bold text-2xl">Update Blog</h2>
 
-                {/* Thumbnail Upload */}
-                <div
-                  className="file-upload-design p-6 rounded-xl border-2 border-dashed flex items-center justify-center flex-col gap-2"
-                  onDragOver={handleDragOver}
-                  onDrop={handleDrop}
-                >
-                  <p className="text-center font-medium">
-                    Drag and Drop Images Here
-                  </p>
-                  <p className="text-center text-gray-500">or</p>
-                  <span
-                    className="browse-button text-primary-foreground cursor-pointer justify-center bg-primary p-2 rounded-lg"
-                    onClick={() => {
-                      const thumbnailInput =
-                        document.getElementById("thumbnail");
-                      if (thumbnailInput) thumbnailInput.click();
-                    }}
+                 {/* Thumbnail Upload */}
+                 <div>
+                  <Label htmlFor="thumbnail" className="text-md font-medium">
+                    Thumbnail
+                  </Label>
+
+                  <div
+                    className="file-upload-design mt-2 rounded-lg border-2 border-dashed transition-all duration-300 ease-in-out hover:border-blue-400 w-[500px] h-[200px] items-center justify-center"
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
                   >
-                    Browse Files
-                  </span>
-                  {/* <Label htmlFor="thumbnail" className="block text-lg font-medium mt-4 object-contain">Thumbnail</Label> */}
-                  <Input
-                    type="file"
-                    id="thumbnail"
-                    name="thumbnail"
-                    accept="image/*"
-                    multiple
-                    onChange={(e) => handleFileChange(e, setFieldValue)}
-                    className="hidden"
-                  />
+                    <div className="flex flex-col items-center justify-center space-y-2 text-center h-full">
+                      {!isImageSelected ? (
+                        <>
+                          <p className="text-md font-medium text-text_color_desc_light dark:text-text_color_dark">
+                            Drag and Drop Thumbnail Here
+                          </p>
+                          <button
+                            type="button"
+                            className="inline-flex items-center justify-center w-10 h-10 rounded-full text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                            onClick={() => {
+                              const thumbnailInput =
+                                document.getElementById("thumbnail");
+                              if (thumbnailInput) thumbnailInput.click();
+                            }}
+                          >
+                            <Plus className="h-6 w-6 text-text_color_desc_light dark:text-text_color_dark" />
+                          </button>
+                        </>
+                      ) : (
+                        previewImages.length > 0 && (
+                          <div className="relative">
+                            <img
+                              src={previewImages[0]} // Display the first image if multiple images exist
+                              alt="Thumbnail Preview"
+                              className=" w-[490px] h-[195px] p-1 object-cover rounded-md"
+                            />
+                            <X
+                              type="button"
+                              className="absolute p-1 top-0 right-0 cursor-pointer text-white bg-red-500 rounded-full"
+                              onClick={() => removeImage(0,setFieldValue)} // Remove image
+                            />
+                          </div>
+                        )
+                      )}
+                    </div>
+
+                    {!isImageSelected && (
+                      <input
+                        id="thumbnail"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileChange(e, setFieldValue)}
+                        className="hidden"
+                      />
+                    )}
+                    <ErrorMessage
+                      name="thumbnail"
+                      component="p"
+                      className="text-red-500 text-sm mt-2 text-center"
+                    />
+                  </div>
                 </div>
 
-                {/* Preview Images */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                  {previewImages.map((src, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={src}
-                        alt={`Preview ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg border"
-                      />
-                      <XCircle
-                        type="button"
-                        className="absolute -top-2 -right-0  text-destructive  cursor-pointer"
-                        onClick={() => {
-                          const updatedFiles = [...previewImages];
-                          updatedFiles.splice(index, 1);
-                          setPreviewImages(updatedFiles);
-                        }}
-                      ></XCircle>
-                    </div>
-                  ))}
-                </div>
 
                 {/* Title */}
                 <div>
