@@ -250,7 +250,7 @@ export default function FormForgetPassowrd() {
                 className="object-cover w-full h-full"
               />
             </div>
-            <p className="font-medium text-text_color_light pl-3 text-text_title_20">
+            <p className="font-bold text-ascend_color pl-2 text-text_title_20">
               Inspectra
             </p>
           </div>
