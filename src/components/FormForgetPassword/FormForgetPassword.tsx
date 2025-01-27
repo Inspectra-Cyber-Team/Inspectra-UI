@@ -243,7 +243,7 @@ export default function FormForgetPassowrd() {
           <div className="w-full flex items-center">
             <div className="w-[40px] h-[40px] overflow-hidden rounded-full">
               <img
-                src="/images/logo.jpg"
+                src="/images/logo_no_name.png"
                 alt="Logo"
                 width={50}
                 height={50}
