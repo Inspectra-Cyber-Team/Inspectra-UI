@@ -3,32 +3,52 @@ import { Metadata } from "next";
 import { Params } from "@/types/Params";
 import BlogDetailsComponent from "@/components/BlogComponent/BlogDetailsComponent";
 
-export const metadata: Metadata = {
-    title: "Blog Details - Inspectra",
-    description:
-        "Blog details of Inspectra, a leading platform from Cambodia that strengthens secure development with advanced source code analysis tools.",
-    keywords:
-        "Inspectra Blog Details, Inspectra, inspectra, inspect, cambodia, inspectra istad, inspectra.istad, istad, source code scan, scan, code scan, white-box testing Cambodia, secure development platform, source code analysis, cybersecurity tools, secure coding practices, Cybersecurity tools Cambodia, cybersecurity, code scanner, white box testing, white-box tools, white-box website, white box website, scan code for vulnerabilities, vulnerabilities scan, scan for bugs, bug scan, scan for report, report from scanning code, SAST platform, sast platform, SAST, code scanning for developer, code vulnerability scanner, code scanner, cyber content, cyber blog, cyber security blog, cyber security content, cyber security news, cyber security articles, cyber security information, cyber security resources, cyber security tips, cyber security guide, cyber security tutorial, cyber security best practices, cyber security tools, cyber security platform, cyber security community, cyber security community blog, reply blog, like blog, comment blog",
-    authors: { name: "Inspectra Team" },
-    publisher: "Inspectra",
-    openGraph: {
-        title: "Blog Details - Inspectra",
-        description:
-            "Blog details of Inspectra, a leading platform from Cambodia that strengthens secure development with advanced source code analysis tools.",
-        siteName: "Inspectra",
-        locale: "en_KH",
-        type: "website",
-        url: 'https://inspectra.istad.co/',
-        images: [
-          {
-            url: 'https://api-inspectra.istad.co/images/1b42a22a-897f-4bd0-b4f2-ba1a9e9e3659.png',
-            width: 1200,
-            height: 630,
-            alt: 'Inspectra',
-          },
-        ],
-    },
-};
+
+export async function generateMetadata(prod:Params): Promise<Metadata> {
+
+    const blogUuid = prod?.params?.uuid;
+    // Fetch blog details based on UUID
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${blogUuid}`);
+
+    const blogResponse = await response.json();
+
+    const defaultTitle = "Blog Details - Inspectra";
+
+    const defaultDescription ="Blog details of Inspectra, a leading platform from Cambodia that strengthens secure development with advanced source code analysis tools.";
+
+    const defaultImage ="https://api-inspectra.istad.co/images/1b42a22a-897f-4bd0-b4f2-ba1a9e9e3659.png";
+
+    const blogData = blogResponse?.data || {};
+    return {
+        title: blogData.title || defaultTitle,
+        description: blogData.description
+            ? blogData.description.replace(/<[^>]+>/g, "").substring(0, 160) + "..."
+            : defaultDescription,
+        keywords: ["ChatGPT", "DeepSeek", "AI Titans", "Artificial Intelligence", "Technology"].join(", "),
+        authors: { name: `${blogData.user.firstName} ${blogData.user.lastName}` },
+        publisher: "Inspectra",
+        openGraph: {
+            title: blogData.title,
+            description: blogData.description.replace(/<[^>]+>/g, "").substring(0, 160) + "...",
+            siteName: "Inspectra",
+            locale: "en_KH",
+            type: "article",
+            url: `https://inspectra.istad.co/blog/${blogUuid}`,
+            images: blogData.thumbnail.map((url: string) => ({
+                url,
+                width: 1200,
+                height: 630,
+                alt: blogData.title,
+            })) || [{ url: defaultImage, width: 1200, height: 630, alt: defaultTitle }],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: blogData.title,
+            description: blogData.description.replace(/<[^>]+>/g, "").substring(0, 160) + "...",
+            images: blogData.thumbnail[0],
+        },
+    };
+}
 
 export default function BlogDetailsPage(props: Params) {
 
@@ -42,6 +62,3 @@ export default function BlogDetailsPage(props: Params) {
         </section>
     );
 }
-
-
-
