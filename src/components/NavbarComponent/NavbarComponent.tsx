@@ -150,7 +150,7 @@ export default function NavbarComponent() {
                             className="hidden md:block "
                           >
                             <img
-                              src={userData?.data?.profile}
+                              src={userData?.data?.profile || "/placeholder/Profile_avatar.png"}
                               alt="Profile"
                               className="object-cover cursor-pointer rounded-full w-12 h-12 border-2 border-primary_color"
                               onError={(e) =>

@@ -60,6 +60,15 @@ const CommentSection = ({ uuid }: commentProp) => {
 
   const handleCreateComment = async (blogUuid: string) => {
     try {
+
+      if (!content.trim()) {
+        toast({
+          description: "Please write a comment on the blog",
+          variant: "error",
+        });
+        return;
+      }
+
       const res = await createComment({ comment: { content, blogUuid } });
 
       if (res.data) {
@@ -98,6 +107,15 @@ const CommentSection = ({ uuid }: commentProp) => {
 
   const handleEditComment = async (uuid: string, content: string) => {
     try {
+
+      if (!content.trim()) {
+        toast({
+          description: "Please write a comment on the blog",
+          variant: "error",
+        });
+        return;
+      }
+
       const res = await editComment({ uuid, content });
 
       if (res.data) {
@@ -410,7 +428,7 @@ const CommentSection = ({ uuid }: commentProp) => {
       : replyNestedContent[commentUuid] ?? "";
     
  
-      if (!contentToReply) {
+      if (!contentToReply.trim()) {
         toast ({
           description: "Please write a reply the comment",
           variant: "error"
@@ -503,6 +521,15 @@ const CommentSection = ({ uuid }: commentProp) => {
   // handle edit reply
   const handleEditReply = async (uuid: string, content: string) => {
     try {
+
+      if (!content.trim()) {
+        toast({
+          description: "Please write a reply the comment",
+          variant: "error",
+        });
+        return;
+      }
+
       const res = await editReply({ uuid, content });
 
       if (res.data) {
@@ -642,7 +669,7 @@ const CommentSection = ({ uuid }: commentProp) => {
                   className="w-8 h-8 rounded-full"
                   width={8}
                   height={8}
-                  src={comment?.user?.profile}
+                  src={comment?.user?.profile || "/placeholder/Profile_avatar.png"}
                   alt="profile"
                 />
                 <div className={"flex justify-between w-full "}>
