@@ -21,7 +21,7 @@ export const metadata: Metadata = {
         url: 'https://inspectra.istad.co/',
         images: [
           {
-            url: 'http://136.228.158.126:4011/images/3639a448-5eb8-43f4-bba9-a7f98c27792e.png',
+            url: 'https://api-inspectra.istad.co/images/1b42a22a-897f-4bd0-b4f2-ba1a9e9e3659.png',
             width: 1200,
             height: 630,
             alt: 'Inspectra',
