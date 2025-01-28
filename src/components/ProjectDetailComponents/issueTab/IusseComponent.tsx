@@ -105,7 +105,7 @@ export default function IusseComponent({ ...props }) {
         <div className="w-full h-full flex flex-col lg:flex-row justify-between">
           {/* filter side bar */}
           <div className=" w-full flex justify-between  mb-[40px] lg:hidden ">
-            <div className="flex justify-center text-center items-center bg-primary_color px-5 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[150px] hover:bg-ascend_color h-[40px] text-text_body_16">
+            <div className="flex justify-center px-3 text-center items-center bg-primary_color  text-text_color_light rounded-tl-[20px] rounded-br-[20px]  hover:bg-ascend_color h-[40px] text-text_body_16">
               <p> Total issues {issueData?.data?.total} </p>
             </div>
             <Sheet>
