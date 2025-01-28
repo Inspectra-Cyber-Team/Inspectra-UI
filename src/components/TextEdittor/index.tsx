@@ -144,9 +144,9 @@ export default function RichTextEditor({ content, onChange }: any) {
   }, [content, editor]);
 
   return (
-    <div>
+    <section>
       <ToolBar editor={editor} />
       <EditorContent editor={editor} />
-    </div>
+    </section>
   );
 }
