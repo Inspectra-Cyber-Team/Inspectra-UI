@@ -418,7 +418,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
   const[isModalShare,setIsModalShare]=useState(false);
 
-  const blogUrl = `${process.env.NEXTAUTH_URL}/blog/${uuid}`;
+  const blogUrl = `https://inspectra.istad.co/blog/${uuid}`;
 
   // Open the modal
   const openModal = () => {
