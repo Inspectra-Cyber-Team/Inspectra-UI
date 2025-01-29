@@ -10,6 +10,13 @@ import { useReportMutation } from "@/redux/service/report";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+ 
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -47,6 +54,9 @@ import {
   useDeleteBookmarkMutation,
   useIsBookmarkedQuery,
 } from "@/redux/service/bookmark";
+import { Share, Share2, ShareIcon } from "lucide-react";
+import { PiShareBold, PiShareDuotone, PiShareFat, PiShareFatBold, PiShareFatFill } from "react-icons/pi";
+import { ShareModal } from "./ShareButton";
 
 type BlogDetailsProps = Readonly<{
   uuid: string;
@@ -406,6 +416,20 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     }
   };
 
+  const[isModalShare,setIsModalShare]=useState(false);
+
+  const blogUrl = `https://inspectra.istad.co/blog/${uuid}`;
+
+  // Open the modal
+  const openModal = () => {
+    setIsModalShare(true);
+  };
+
+  // Close the modal
+  const closeModal = () => {
+    setIsModalShare(false);
+  };
+
   return (
     <section className="w-[90%] mx-auto my-5 md:my-10">
       {/* header */}
@@ -461,24 +485,62 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
               />
               <p>{blogData?.likesCount}</p>
             </div>
-            {/* Comments */}
-            <div className="flex space-x-2 items-center">
-              <FaCommentDots
-                className="text-text_color_desc_light text-2xl cursor-pointer"
-                onClick={() => setShowSidebar(!showSidebar)}
-              />
-              <p>{blogData?.countComments}</p>
-            </div>
 
-            {/* Bookmark */}
-            <div className="text-text_color_desc_light text-2xl cursor-pointer mb-1">
-              <FaBookmark
-                onClick={() => handleBookmarkToggle()}
-                className={`${
-                  isBookmark ? "text-yellow-400" : "text-text_color_desc_light"
-                }`}
-              />
-            </div>
+
+           {/* toolip Provideer start here  */}
+            <TooltipProvider>
+            {/* Comments */}
+            <Tooltip delayDuration={250}>
+    <TooltipTrigger asChild>
+      <div className="flex space-x-2 items-center cursor-pointer">
+        <FaCommentDots
+          className="text-text_color_desc_light text-2xl"
+          onClick={() => setShowSidebar(!showSidebar)}
+        />
+        <p>{blogData?.countComments}</p>
+      </div>
+    </TooltipTrigger>
+    <TooltipContent>
+      <p>View Comments</p>
+    </TooltipContent>
+  </Tooltip>
+
+ 
+  {/* Share Icon */}
+  <Tooltip delayDuration={50}>
+    <TooltipTrigger asChild>
+      <div className="text-text_color_desc_light text-2xl cursor-pointer mb-1">
+        <PiShareFatFill
+          onClick={() => openModal()}
+          className="text-text_color_desc_light"
+        />
+      </div>
+    </TooltipTrigger>
+    <TooltipContent>
+      <p>Share this post</p>
+    </TooltipContent>
+  </Tooltip>
+
+  {/* Bookmark Icon */}
+  <Tooltip delayDuration={50}>
+    <TooltipTrigger asChild>
+      <div className="text-text_color_desc_light text-2xl cursor-pointer mb-1">
+        <FaBookmark
+          onClick={() => handleBookmarkToggle()}
+          className={`${
+            isBookmark ? "text-yellow-400" : "text-text_color_desc_light"
+          }`}
+        />
+      </div>
+    </TooltipTrigger>
+    <TooltipContent>
+      <p>{isBookmark ? "Remove Bookmark" : "Add to Bookmark"}</p>
+    </TooltipContent>
+  </Tooltip>
+
+    {/* toolip Provider end here  */}
+</TooltipProvider>
+
 
             {/* Action Buttons */}
             <div className="flex items-center justify-center">
@@ -643,6 +705,9 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ShareModal isOpen={isModalShare} onClose={closeModal} blogUrl={blogUrl} />
+
     </section>
   );
 }
