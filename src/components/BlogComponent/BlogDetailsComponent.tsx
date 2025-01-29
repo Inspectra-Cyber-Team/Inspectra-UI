@@ -418,7 +418,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
 
   const[isModalShare,setIsModalShare]=useState(false);
 
-  const blogUrl = `https://inspectra.istad.co/blog/${uuid}`;
+  const blogUrl = `${process.env.NEXTAUTH_URL}/blog/${uuid}`;
 
   // Open the modal
   const openModal = () => {
@@ -465,20 +465,20 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
               <p>{convertToDayMonthYear(blogData?.createdAt || "")}</p>
             </div>
           </div>
-          <div className="flex items-center space-x-9">
+          <div className="flex items-center space-x-6 sm:space-x-9">
             {/* Views */}
-            <div className="flex space-x-2 items-center">
-              <FaEye className="text-text_color_desc_light text-2xl" />
+            <div className="flex space-x-2 items-center justify-center">
+              <FaEye className="text-text_color_desc_light text-xl sm:text-2xl" />
               <p>{blogData?.viewsCount}</p>
             </div>
             {/* Likes */}
             <div
-              className="flex space-x-2 items-center "
+              className="flex space-x-2 items-center justify-center"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
               <FaHandsClapping
-                className={`text-2xl cursor-pointer mb-2 ${
+                className={`text-xl sm:text-2xl cursor-pointer mb-1 ${
                   likeColor ? "text-orange-400" : "text-text_color_desc_light"
                 }`}
                 onClick={() => handleLike(blogData?.uuid)}
@@ -494,7 +494,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
     <TooltipTrigger asChild>
       <div className="flex space-x-2 items-center cursor-pointer">
         <FaCommentDots
-          className="text-text_color_desc_light text-2xl"
+          className="text-text_color_desc_light text-xl sm:text-2xl"
           onClick={() => setShowSidebar(!showSidebar)}
         />
         <p>{blogData?.countComments}</p>
@@ -509,7 +509,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
   {/* Share Icon */}
   <Tooltip delayDuration={50}>
     <TooltipTrigger asChild>
-      <div className="text-text_color_desc_light text-2xl cursor-pointer mb-1">
+      <div className="text-text_color_desc_light text-xl sm:text-2xl cursor-pointer mb-1">
         <PiShareFatFill
           onClick={() => openModal()}
           className="text-text_color_desc_light"
@@ -524,7 +524,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
   {/* Bookmark Icon */}
   <Tooltip delayDuration={50}>
     <TooltipTrigger asChild>
-      <div className="text-text_color_desc_light text-2xl cursor-pointer mb-1">
+      <div className="text-text_color_desc_light text-xl sm:text-2xl cursor-pointer mb-1">
         <FaBookmark
           onClick={() => handleBookmarkToggle()}
           className={`${
@@ -584,7 +584,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
                 >
                   <DialogTrigger asChild>
                     <div>
-                      <MdReport className="text-destructive text-3xl cursor-pointer mb-1" />
+                      <MdReport className="text-destructive text-2xl sm:text-3xl cursor-pointer mb-1" />
                     </div>
                   </DialogTrigger>
                   <DialogContent className="bg-background_light_mode dark:bg-background_dark_mode max-w-md text-text_color_light dark:text-text_color_dark">
