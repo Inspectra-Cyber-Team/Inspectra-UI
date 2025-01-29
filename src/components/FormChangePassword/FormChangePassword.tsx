@@ -126,14 +126,14 @@ export default function FormChangePassowrd() {
           <div className="w-full flex items-center">
             <div className="w-[40px] h-[40px] overflow-hidden rounded-full">
               <img
-                src="/images/logo.jpg"
+                src="/images/logo_no_name.png"
                 alt="Logo"
                 width={50}
                 height={50}
                 className="object-cover w-full h-full"
               />
             </div>
-            <p className="font-medium text-text_color_light pl-3 text-text_title_20">
+            <p className="font-medium text-ascend_color pl-3 text-text_title_20">
               Inspectra
             </p>
           </div>
