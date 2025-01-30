@@ -1,7 +1,7 @@
 
 
 "use client"
-import { useState} from "react" // Added React import
+import { useEffect, useState} from "react" // Added React import
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -22,7 +22,6 @@ export default function AIComponent() {
 
   const [file, setFile] = useState<File | null>(null)
 
-//   handle get chat history 
   
 
   // Existing chat logic remains the same
@@ -61,26 +60,59 @@ export default function AIComponent() {
     const chat = model.startChat({
       generationConfig,
       safetySettings,
-      history: messages.map((msg) => ({
+      // Ensure the first message is from the user
+      history: [{ role: "user", parts: [{ text: prompt }] }, ...messages.map((msg) => ({
         role: msg.role === "user" ? "user" : "model",
         parts: [{ text: msg.text }],
-      })),
+      }))],
     });
+    
 
     const result = await chat.sendMessage(prompt);
     const response = result.response;
-    setMessages((prev) => [
-      ...prev,
-      { role: "user", text: prompt },
-      { role: "model", text: response.text() },
-    ]);
-    setLoading(false);
+   // Simulate typing effect by adding one character at a time
+   const newMessages = [
+    { role: "user", text: prompt },
+    { role: "model", text: response.text() },
+  ];
+
+  // Add each character of the model's response one by one with a delay
+  const modelMessage = newMessages[1].text;
+  let charIndex = 0;
+  const typingSpeed = 10; // Adjust the speed of typing effect (in milliseconds)
+
+  // Add user message immediately
+  setMessages((prevMessages) => [...prevMessages, newMessages[0]]);
+
+  // Gradually add model message with delay
+  const typeMessage = () => {
+    if (charIndex < modelMessage.length) {
+      setMessages((prevMessages) => [
+        ...prevMessages.slice(0, prevMessages.length - 1),
+        { role: "model", text: modelMessage.slice(0, charIndex + 1) },
+      ]);
+      charIndex++;
+      setTimeout(typeMessage, typingSpeed); // Recur until all characters are added
+    }
+  };
+
+  typeMessage(); // Start the typing effect
+
+  setLoading(false);
   }
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
    
     event.preventDefault();
     const prompt = (event.target as HTMLFormElement).prompt?.value.trim();
+
     if (!prompt) return;
+
+     // Add user's message to the state
+    setMessages((prev) => [
+    ...prev,
+    { role: "user", text: prompt }, // Add the user's message to the chat
+  ]);
+
     runChat(prompt);
     (event.target as HTMLFormElement).reset();
 
