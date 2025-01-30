@@ -30,5 +30,9 @@ export const SupportFooter = [
     {
         name: 'About',
         link: '/about'
+    },
+    {
+        name: 'Ai Chat',
+        link: '/ai'
     }
 ]

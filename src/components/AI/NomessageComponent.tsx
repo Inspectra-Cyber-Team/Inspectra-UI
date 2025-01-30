@@ -19,7 +19,7 @@ export default function NomessageComponent() {
 
   return (
     <div className="max-w-md mx-auto  p-6 bg-white rounded-2xl shadow-sm flex items-center space-x-4 border border-gray-200">
-      <div className="flex items-center justify-center  w-16 h-10 bg-primary_color text-white rounded-full">
+      <div className="flex items-center justify-center  w-16 h-10 bg-primary_color text-black rounded-full">
         AI
       </div>
       <p className="text-gray-700 line-clamp-2 font-medium ">{displayedText}</p>

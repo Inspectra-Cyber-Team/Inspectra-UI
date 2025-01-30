@@ -1,35 +1,47 @@
-
-
-"use client"
-import { useEffect, useState} from "react" // Added React import
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Plus, Settings, Send } from "lucide-react"
+'use client'
+import { useEffect, useState } from "react"; // Added React import
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Plus, Settings, Send, Copy, TicketCheck, CheckIcon } from "lucide-react";
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
-import NomessageComponent from "./NomessageComponent"
-import Image from "next/image"
+import NomessageComponent from "./NomessageComponent";
+import Image from "next/image";
+import { set } from "date-fns";
 
-
-const MODEL_NAME = "gemini-1.0-pro"
-const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string
+const MODEL_NAME = "gemini-1.0-pro";
+const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string;
 
 export default function AIComponent() {
+  const [chatHistory, setChatHistory] = useState<{ messages: { role: string; text: string }[] }[]>([]);
+  const [messages, setMessages] = useState<{ role: string; text: string }[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [activeChatIndex, setActiveChatIndex] = useState<number | null>(null);
 
-  const [messages, setMessages] = useState<{ role: string; text: string }[]>([])
+  useEffect(() => {
+    // Load chat history from localStorage when the component mounts
+    const storedChatHistory = localStorage.getItem('chatHistory');
+    if (storedChatHistory) {
+      setChatHistory(JSON.parse(storedChatHistory));
+    }
+  }, []);
 
-  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    // Save chat history to localStorage whenever it changes
+    if (chatHistory.length > 0) {
+      localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+    }
+  }, [chatHistory]);
 
-  const [file, setFile] = useState<File | null>(null)
 
-  
 
-  // Existing chat logic remains the same
   async function runChat(prompt: string) {
+
     setLoading(true);
+
     const genAI = new GoogleGenerativeAI(API_KEY);
+
     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-    
 
     const generationConfig = {
       temperature: 0.9,
@@ -60,196 +72,198 @@ export default function AIComponent() {
     const chat = model.startChat({
       generationConfig,
       safetySettings,
-      // Ensure the first message is from the user
       history: [{ role: "user", parts: [{ text: prompt }] }, ...messages.map((msg) => ({
         role: msg.role === "user" ? "user" : "model",
         parts: [{ text: msg.text }],
       }))],
     });
-    
 
     const result = await chat.sendMessage(prompt);
+    
     const response = result.response;
-   // Simulate typing effect by adding one character at a time
-   const newMessages = [
-    { role: "user", text: prompt },
-    { role: "model", text: response.text() },
-  ];
+    
+    // Simulate typing effect by adding one character at a time
+    const newMessages = [
+      { role: "user", text: prompt },
+      { role: "model", text: response?.text() || "AI is typing..."},
+    ];
 
-  // Add each character of the model's response one by one with a delay
-  const modelMessage = newMessages[1].text;
-  let charIndex = 0;
-  const typingSpeed = 10; // Adjust the speed of typing effect (in milliseconds)
 
-  // Add user message immediately
-  setMessages((prevMessages) => [...prevMessages, newMessages[0]]);
+    let charIndex = 0;
+    const typingSpeed = 10; // Adjust the speed of typing effect (in milliseconds)
 
-  // Gradually add model message with delay
-  const typeMessage = () => {
-    if (charIndex < modelMessage.length) {
-      setMessages((prevMessages) => [
-        ...prevMessages.slice(0, prevMessages.length - 1),
-        { role: "model", text: modelMessage.slice(0, charIndex + 1) },
-      ]);
-      charIndex++;
-      setTimeout(typeMessage, typingSpeed); // Recur until all characters are added
-    }
-  };
+    // Add user message immediately
+    
 
-  typeMessage(); // Start the typing effect
+    setMessages((prevMessages) => [...prevMessages, newMessages[1]]);
 
-  setLoading(false);
+    const typeMessage = () => {
+      if (charIndex < newMessages[1].text.length) {
+        setMessages((prevMessages) => [
+          ...prevMessages.slice(0, prevMessages.length - 1),
+          { role: "model", text: newMessages[1].text.slice(0, charIndex + 1) },
+        ]);
+        charIndex++;
+        setTimeout(typeMessage, typingSpeed); // Recur until all characters are added
+      }
+    };
+
+    setChatHistory(prev => {
+      const updatedChats = [...prev];
+      if (activeChatIndex !== null) {
+        updatedChats[activeChatIndex] = { messages: newMessages };
+      }
+      return updatedChats;
+    });
+
+    typeMessage();
+    setLoading(false);
   }
+
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-   
     event.preventDefault();
     const prompt = (event.target as HTMLFormElement).prompt?.value.trim();
-
+  
     if (!prompt) return;
 
-     // Add user's message to the state
-    setMessages((prev) => [
-    ...prev,
-    { role: "user", text: prompt }, // Add the user's message to the chat
-  ]);
+    const newMessages = [...messages, { role: "user", text: prompt }];
+  
+    if (activeChatIndex === null) {
+      // Create a new chat session if none exists
+      setChatHistory([{ messages: newMessages }]);
+      setActiveChatIndex(0);
+    } else {
+      // Ensure activeChatIndex is within range before updating
+      if (activeChatIndex >= 0 && activeChatIndex < chatHistory.length) {
+        setChatHistory(prev => {
+          const updatedChats = [...prev];
+          updatedChats[activeChatIndex].messages.push({ role: "user", text: prompt });
+          return updatedChats;
+        });
+      }
+    }
+  
+    setMessages(newMessages);
 
     runChat(prompt);
+
     (event.target as HTMLFormElement).reset();
-
-  }
-
-//   handle file chnage
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setFile(event.target.files[0]);
-    }
   };
-  function formatText(text: string) {
-    const lines = text.split("\n");
   
-    return lines.map((line, index) => {
-      // Bullet points (lines starting with *)
-      if (line.startsWith("*")) {
-        return (
-          <ul key={index}>
-            <li>{line.slice(1).trim()}</li>
-          </ul>
-        );
-      }
-  
-      // Bold text (handling lines containing ** for bold formatting)
-      else if (line.includes("**")) {
-        return line.split("**").map((part, idx) => 
-          idx % 2 === 1 ? <strong key={idx}>{part}</strong> : part
-        );
-      }
-  
-      // Code block (lines containing ``` for code formatting)
-      else if (line.includes("```")) {
-        const code = line.replace("```", ""); // Remove the backticks from the line
-        return <pre key={index}><code>{code}</code></pre>;
-      } 
-  
-      // Regular paragraph text
-      else {
-        return <p key={index}>{line}</p>;
-      }
-    });
-  }
-  
-  
-
-  // Clear chat history
-  const clearChat = () => {
-    setMessages([]);
-    setFile(null);
-  };
 
   // Start a new chat (reset)
   const newChat = () => {
-    setMessages([]);
-    setFile(null);
+    // Add current chat to history before starting a new one
+    if (activeChatIndex !== null) {
+      setChatHistory((prev) => [
+        ...prev,
+        { messages: [{ role: "user", text: "" }] }, // Placeholder for new chat
+      ]);
+    }
+
+    setMessages([]); // Reset messages
+    setActiveChatIndex(chatHistory.length); // Set the index to new chat
   };
 
+  const [copyText, setCopyText] = useState<boolean>(false);
+  //function copy to clipboard
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopyText(true);
+    setTimeout(() => {
+      setCopyText(false);
+    }, 2000);
+  };
+
+  const handleChatSwitch = (index: number) => {
+    
+    const chat = chatHistory[index];
+
+    setMessages(chat.messages);
+
+    setActiveChatIndex(index);
+  };
+
+
   return (
-    <section className="flex mt-6 h-screen w-[88%] mx-auto bg-white rounded-lg shadow-lg ">
+    <section className="flex mt-6 h-[800px] w-[88%] mx-auto bg-white rounded-lg shadow-lg dark:bg-background_dark_mode">
       {/* Sidebar */}
-      <div className=" w-1/2 border-r flex flex-col ">
+      <div className="w-1/2 border-r flex flex-col">
         <div className="px-8 py-8 border-b">
           <h1 className="text-xl font-bold mb-4">Inspectra Chat AI</h1>
           <Button className="w-full bg-primary_color hover:bg-secondary_color text-black" onClick={newChat}>
-            New chat <Plus className=" first-letter:h-4 w-4 text-black" /> 
+            New chat <Plus className="h-4 w-4 text-black" />
           </Button>
         </div>
         <ScrollArea className="flex-1 p-4">
-          <div className="space-y-2">
-            {messages.length > 0 && (
-              <Button variant="ghost" className="w-full justify-start text-sm" onClick={() => {}}>
-                Previous Chat
-              </Button>
-            )}
-          </div>
+          {chatHistory.map((_, index) => (
+            <Button
+              key={index}
+              className={` w-full justify-start text-sm my-[6px]  bg-transparent text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark` + (index === activeChatIndex ? " bg-primary_color text-black dark:bg-primary_color dark:text-black" : "")}
+              onClick={() => handleChatSwitch(index)}
+            >
+              {chatHistory[index].messages[0].text || "New chat"}
+            </Button>
+          ))}
         </ScrollArea>
-        <div className="p-4 border-t ">
+
+        <div className="p-4 border-t">
           <Button variant="ghost" className="w-full justify-start py-[33px]" onClick={() => {}}>
-            <Settings className="mr-2 h-4 w-4 " />
-            Settings
+            <Settings className="mr-2 h-4 w-4" /> Settings
           </Button>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-col w-full ">
+      <div className="flex flex-col w-full">
         <main className="flex-1 overflow-auto py-6 mx-[20px]">
           <ScrollArea className="h-full scrollbar-hide">
-          <div className="space-y-4">
-   {messages.length === 0 ? (
-      <div className="flex justify-center items-center h-screen">
-        <NomessageComponent/>
-    </div>
-  ) : (
-    messages.map((msg, index) => (
-      <div
-        key={index}
-        className={`flex items-start gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-      >
-        {msg.role !== "user" && (
-          <div className="w-10 h-10 rounded-full  flex items-center justify-center text-black text-sm">
-            <Image src="/images/logo_no_name.png" alt="AI" width={50} height={50} />
-          </div>
-        )}
-        <div
-          className={`rounded-lg px-4 py-2 max-w-[80%] ${
-            msg.role === "user" ? "bg-primary_color text-black" : "bg-gray-100 text-gray-900"
-          }`}
-        >
-          {formatText(msg?.text)}
-        </div>
-        {msg.role === "user" && (
-          <div className="w-8 h-8 rounded-full bg-secondary_color flex items-center justify-center">U</div>
-        )}
-      </div>
-    ))
-  )}
-</div>
-
+            <div className="space-y-4">
+              {messages.length === 0 ? (
+                <div className="flex justify-center items-center h-screen">
+                  <NomessageComponent />
+                </div>
+              ) : (
+                messages.map((msg, index) => (
+                  <div key={index} className={`flex items-start gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                    {msg.role !== "user" && (
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-black text-sm">
+                        <Image src="/images/logo_no_name.png" alt="AI" width={50} height={50} />
+                      </div>
+                    )}
+                    <div className={`rounded-lg px-4 py-3 max-w-[80%] ${msg.role === "user" ? "bg-primary_color text-black" : "bg-gray-100 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark"}`}>
+                      <p>{msg.text}</p>
+                    </div>
+                    <div>
+                      {msg.role === "model" && index === messages.length - 1 && (
+                        <button className="mt-4 text-gray-600 hover:text-gray-900" onClick={() => handleCopy(msg.text)}>
+                          {copyText ? <CheckIcon className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        </button>
+                      )}
+                    </div>
+                    {msg.role === "user" && (
+                      <div className="w-8 h-8 rounded-full bg-secondary_color flex items-center justify-center">U</div>
+                    )}
+                  </div>
+                ))
+              )}
+             
+            </div>
           </ScrollArea>
         </main>
 
         {/* Input Form */}
-        <div className="border-t p-4 ">
+        <div className="border-t p-4">
           <div className="max-w-3xl mx-auto">
-            <form onSubmit={onSubmit} className="flex gap-2">
-              <Input type="text" name="prompt" placeholder="What's in your mind..." className="flex-1 py-8 rounded-xl" />
-              <Button type="submit" className="bg-primary_color hover:opacity-70 py-8 px-6 rounded-xl" disabled={loading}>
-                <Send className="h-4 w-4 text-black " />
+            <form onSubmit={onSubmit} className=" sm:flex gap-2">
+              <Input type="text" name="prompt" placeholder="What's on your mind..." className="flex sm:flex-1 py-4 sm:py-8 rounded-xl" />
+              <Button type="submit" className="bg-primary_color hover:opacity-70 sm:py-8 max-sm:w-full mt-2 sm:mt-0 p-4  rounded-xl" disabled={loading}>
+                <Send className="sm:h-4 sm:w-4 text-black" />
               </Button>
             </form>
-            {file && <div className="mt-2 text-sm text-gray-500">Uploaded: {file.name}</div>}
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
-
