@@ -49,7 +49,7 @@ export function ShareModal({ isOpen, onClose, blogUrl }: any) {
             onClick={handleCopyLink} 
             className="flex items-center justify-center w-full"
           >
-            {copied ? <FaCopy className="mr-2 text-[#B9FF66]" /> : <FaCopy className="mr-2" />}
+            {copied ? <FaCopy className="mr-2 text-secondary_color dark:text-[#B9FF66]" /> : <FaCopy className="mr-2" />}
             {copied ? "Copied!" : "Copy Link"}
           </Button>
 
