@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Plus, Settings, Send } from "lucide-react"
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import NomessageComponent from "./NomessageComponent"
+import Image from "next/image"
 
 
 const MODEL_NAME = "gemini-1.0-pro"
@@ -138,7 +140,7 @@ export default function AIComponent() {
   };
 
   return (
-    <section className="flex h-screen w-[88%] mx-auto bg-white rounded-lg shadow-lg">
+    <section className="flex mt-6 h-screen w-[88%] mx-auto bg-white rounded-lg shadow-lg ">
       {/* Sidebar */}
       <div className=" w-1/2 border-r flex flex-col ">
         <div className="px-8 py-8 border-b">
@@ -156,9 +158,9 @@ export default function AIComponent() {
             )}
           </div>
         </ScrollArea>
-        <div className="p-4 border-t">
-          <Button variant="ghost" className="w-full justify-start" onClick={() => {}}>
-            <Settings className="mr-2 h-4 w-4" />
+        <div className="p-4 border-t ">
+          <Button variant="ghost" className="w-full justify-start py-[33px]" onClick={() => {}}>
+            <Settings className="mr-2 h-4 w-4 " />
             Settings
           </Button>
         </div>
@@ -168,44 +170,46 @@ export default function AIComponent() {
       <div className="flex flex-col w-full ">
         <main className="flex-1 overflow-auto py-6 mx-[20px]">
           <ScrollArea className="h-full scrollbar-hide">
-            <div className="space-y-4  ">
-              {messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`flex items-start gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  {msg.role !== "user" && (
-                    <div className="w-8 h-8 rounded-full bg-primary_color flex items-center justify-center text-black text-sm">
-                      AI
-                    </div>
-                  )}
-                  <div
-                    className={`rounded-lg px-4 py-2 max-w-[80%] ${
-                      msg.role === "user" ? "bg-primary_color text-black" : "bg-gray-100 text-gray-900"
-                    }`}
-                  >
-                    {formatText(msg?.text)}
-                  </div>
-                  {msg.role === "user" && (
-                    <div className="w-8 h-8 rounded-full bg-secondary_color flex items-center justify-center">U</div>
-                  )}
-                </div>
-              ))}
-              {loading && (
-                <div className="flex justify-center">
-                  <div className="animate-spin h-5 w-5 border-2 border-indigo-600 rounded-full border-t-transparent"></div>
-                </div>
-              )}
-            </div>
+          <div className="space-y-4">
+   {messages.length === 0 ? (
+      <div className="flex justify-center items-center h-screen">
+        <NomessageComponent/>
+    </div>
+  ) : (
+    messages.map((msg, index) => (
+      <div
+        key={index}
+        className={`flex items-start gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+      >
+        {msg.role !== "user" && (
+          <div className="w-10 h-10 rounded-full  flex items-center justify-center text-black text-sm">
+            <Image src="/images/logo_no_name.png" alt="AI" width={50} height={50} />
+          </div>
+        )}
+        <div
+          className={`rounded-lg px-4 py-2 max-w-[80%] ${
+            msg.role === "user" ? "bg-primary_color text-black" : "bg-gray-100 text-gray-900"
+          }`}
+        >
+          {formatText(msg?.text)}
+        </div>
+        {msg.role === "user" && (
+          <div className="w-8 h-8 rounded-full bg-secondary_color flex items-center justify-center">U</div>
+        )}
+      </div>
+    ))
+  )}
+</div>
+
           </ScrollArea>
         </main>
 
         {/* Input Form */}
-        <div className="border-t p-4">
+        <div className="border-t p-4 ">
           <div className="max-w-3xl mx-auto">
             <form onSubmit={onSubmit} className="flex gap-2">
-              <Input type="text" name="prompt" placeholder="What's in your mind..." className="flex-1" />
-              <Button type="submit" className="bg-primary_color hover:opacity-70" disabled={loading}>
+              <Input type="text" name="prompt" placeholder="What's in your mind..." className="flex-1 py-8 rounded-xl" />
+              <Button type="submit" className="bg-primary_color hover:opacity-70 py-8 px-6 rounded-xl" disabled={loading}>
                 <Send className="h-4 w-4 text-black " />
               </Button>
             </form>
