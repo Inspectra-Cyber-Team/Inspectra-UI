@@ -76,11 +76,14 @@ export default function BlogUserCardComponent({
           </p>
         </section>
        
+       {/* handle only current size bigger than 6 */}
+          {data?.totalElements > 6  && (
           <Button
             onClick={() => setCurrentSize(currentSize + 3)} className="bg-primary_color text-text_color_light rounded-2xl"
           >
             Load More
           </Button>
+                  )}
       </section>
       {/* Card blog section */}
       <section
