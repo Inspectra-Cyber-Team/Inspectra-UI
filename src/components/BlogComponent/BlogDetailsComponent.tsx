@@ -452,7 +452,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
             <div className="flex items-center space-x-2">
               <img
                 className="w-10 h-10 rounded-full"
-                src={blogData?.user?.profile}
+                src={blogData?.user?.profile || "/placeholder/Profile_avatar.png"}
                 alt="profile"
               />
               <p>
@@ -625,7 +625,7 @@ export default function BlogDetailsComponent({ uuid }: BlogDetailsProps) {
           <div className="w-full md:h-[400px]">
             <img
               className="w-full h-full object-contain"
-              src={blogData.thumbnail[0]}
+              src={blogData?.thumbnail[0] || "/placeholder/blog_placeholder.png"}
               alt="thumbnail"
             />
           </div>

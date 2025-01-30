@@ -94,7 +94,7 @@ export default function BlogUserCardComponent({
           >
             <div className="relative w-auto h-40 m-4">
               <Image
-                src={blog.thumbnail[0]} // Use the actual thumbnail URL
+                src={blog?.thumbnail[0] || "/placeholder/blog_placeholder.png"} // Use the actual thumbnail URL
                 alt={blog.title}
                 layout="fill"
                 objectFit="cover"
@@ -107,7 +107,7 @@ export default function BlogUserCardComponent({
                 <div>
                   <div className="flex items-center text-sm text-gray-500 mb-2">
                     <img
-                      src={blog.user.profile} // Use the actual profile URL
+                      src={blog?.user?.profile || "/placeholder/Profile_avatar.png"} // Use the actual profile URL
                       alt={`${blog.user.firstName} ${blog.user.lastName}`}
                       className="rounded-full h-8 w-8"
                     />

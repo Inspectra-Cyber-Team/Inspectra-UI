@@ -44,7 +44,7 @@ export default function RecentPostComponent() {
   }
 
   return (
-    <div>
+    <section>
       <p className="text-text_title_20  text-text_color_light dark:text-text_color_dark font-semibold my-2">
         Recent Posts
       </p>
@@ -59,7 +59,7 @@ export default function RecentPostComponent() {
             <div className="w-[120px] h-24">
               <img
                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                src={blog?.thumbnail[0]}
+                src={blog?.thumbnail[0] || "/placeholder/blog_placeholder.png" }
                 alt="thumbnail"
               />
             </div>
@@ -81,6 +81,6 @@ export default function RecentPostComponent() {
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
