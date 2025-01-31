@@ -22,8 +22,8 @@ import axios, { AxiosError } from "axios";
 
 export default function NoneUserScan() {
 
-  const [termsAccepted, setTermsAccepted] = useState(false);
-  const [showTerms, setShowTerms] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(true);
+  const [showTerms, setShowTerms] = useState(true);
   const [selectedFile, setSelectedFile] = useState<string[]>([]);
   const [listDirectories, setListDirectories] = useState<any>();
   const { theme } = useTheme();
