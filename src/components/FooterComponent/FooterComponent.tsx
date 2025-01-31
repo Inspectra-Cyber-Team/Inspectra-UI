@@ -123,8 +123,8 @@ export default function FooterComponent() {
                       className="flex justify-center md:justify-start xl:justify-center"
                     >
                       <img
-                        src="/images/CBRD_Logo.png"
-                        alt="CBRD logo"
+                        src="/images/MPTC-Logo.png"
+                        alt="MPTC"
                         className="object-contain w-[200px] h-auto"
                       />
                     </Link>
@@ -136,8 +136,8 @@ export default function FooterComponent() {
                       className="flex justify-center md:justify-start xl:justify-center"
                     >
                       <img
-                        src="/images/MPTC-Logo.png"
-                        alt="MPTC"
+                        src="/images/CBRD_Logo.png"
+                        alt="CBRD logo"
                         className="object-contain w-[200px] h-auto"
                       />
                     </Link>
