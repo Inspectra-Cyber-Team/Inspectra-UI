@@ -13,7 +13,7 @@ import { Metadata } from "next";
 import BannerComponent from "@/components/BannerComponent/BannerComponent";
 import dynamic from "next/dynamic";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import ScrollProgressBarComponent from "@/components/NavbarComponent/ScrollProgressBarComponent";
+import AiButtonComponent from "@/components/AI/AiButtonComponent";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600"],
@@ -82,6 +82,7 @@ export default function RootLayout({
 
                 <ImageBackground />
                 <ScrollToTopButton />
+                <AiButtonComponent/>
                 <FooterComponent />
               </ThemeProvider>
             </StoreProvider>
