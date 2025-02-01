@@ -284,7 +284,7 @@ import { useEffect, useState } from "react"; // Added React import
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Plus, Settings, Send, Copy, TicketCheck, CheckIcon } from "lucide-react";
+import { Plus, Settings, Send, Copy, TicketCheck, CheckIcon, LogOut, User, Code } from "lucide-react";
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import NomessageComponent from "./NomessageComponent";
 import Image from "next/image";
@@ -296,23 +296,35 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
   DropdownMenuItem,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { MdMoreVert } from "react-icons/md";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { useToast } from "../hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useRouter } from "next/navigation";
+import hljs from "highlight.js";
+import "highlight.js/styles/atom-one-dark.css";
+import CodeBlock from "./CodeBlock";
+
 
 const MODEL_NAME = "gemini-1.0-pro";
 const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string;
 
 export default function AIComponent() {
 
+  const router = useRouter();
+
   const {toast } = useToast();
 
   const [activeSession, setActiveSession] = useState<string | any>(null);
-
-  const [chatHistory, setChatHistory] = useState<{ messages: { role: string; text: string }[] }[]>([]);
-
-  const [chatHistory1,setChatHistory1] = useState<any>([]);
 
   const [messages, setMessages] = useState<{ role: string; text: string }[]>([]);
 
@@ -320,6 +332,9 @@ export default function AIComponent() {
 
   const [activeChatIndex, setActiveChatIndex] = useState<number | null>(null); 
 
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const [sessionUuid,setSessionUuid] = useState<string>("");
 
   // fetch all chat sessions
   const {data:sessions} = useGetAllSessionsQuery(null);
@@ -331,44 +346,46 @@ export default function AIComponent() {
     { skip: !activeSession }
   );
 
-
    // Mutations
    const [createSession] = useCreateSessionMutation();
-   const [createMessage, { isLoading }] = useCreateMessageMutation();
+
+   const [createMessage] = useCreateMessageMutation();
+
    const [deleteSession] = useDeleteSessionMutation();
 
     // Load first session automatically
-  useEffect(() => {
-    if (sessions?.data?.length > 0 && !activeSession) {
-      setActiveSession(sessions);
-    }
-  }, [sessions]);
+    const [sessionList, setSessionList] = useState<any[]>([]); // Store sessions
 
+    useEffect(() => {
+      if (sessions?.data?.length > 0) {
+        setSessionList(sessions?.data); // Update session list
+        if (!activeSession) {
+          setActiveSession(sessions.data[0].uuid); // Set default active session
+        }
+      }
+    }, [sessions]);
 
-  const [messageInput, setMessageInput] = useState<string>("");
-
-  const [repsonse,setResponse] = useState<string>("");
 
   // Handle sending messages
-  const sendMessage = async () => {
-
-    if (!messageInput.trim() || !activeSession) return;
-
+  const sendMessage = async (responseText: string,promt:string) => {
+  
     const payload = {
       sessionUuid: activeSession,
-      query: messageInput,
-      response: repsonse,
-    }
-
-    const res = await createMessage({message: payload});
-
-    if(res?.data){
-
-    setMessageInput("");
-    refetchMessages(); // Refresh messages after sending
-
+      query: promt,
+      response: responseText,
+    };
+  
+    try {
+      const res = await createMessage({ message: payload });
+      if (res?.data) {
+        
+        refetchMessages();
+      }
+    } catch (error) {
+      console.error("Failed to send message:", error);
     }
   };
+  
 
 
   // useEffect(() => {
@@ -402,20 +419,16 @@ export default function AIComponent() {
 
       setMessages(messages);
 
-      setChatHistory1(ChatMessages)
-
     }
   }, [ChatMessages]);
   
 
-  async function runChat(prompt: string) {
+const runChat = async (prompt: string) => {
+  
+  setLoading(true);
 
-    setLoading(true);
-
-   
-
+  try {
     const genAI = new GoogleGenerativeAI(API_KEY);
-
     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
     const generationConfig = {
@@ -426,22 +439,10 @@ export default function AIComponent() {
     };
 
     const safetySettings = [
-      {
-        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-      },
-      {
-        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-      },
-      {
-        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-      },
-      {
-        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-      },
+      { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+      { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+      { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+      { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
     ];
 
     const chat = model.startChat({
@@ -454,31 +455,22 @@ export default function AIComponent() {
     });
 
     const result = await chat.sendMessage(prompt);
-    
-    const response = result.response;
 
-    setResponse(response?.text());
+    const responseText = result.response?.text();
 
-    //calling function trigger save to api
-     await sendMessage();
+    // Make sure the message is only sent once we have the response
+    if (responseText) {
+      await sendMessage(responseText,prompt);  // Send the message after the response
+    }
 
-    
-    
-    // Simulate typing effect by adding one character at a time
+    // Simulate typing effect
+    let charIndex = 0;
     const newMessages = [
       { role: "user", text: prompt },
-      { role: "model", text: response?.text() || "AI is typing..."},
+      { role: "model", text: responseText || "AI is typing..." },
     ];
 
-
-    let charIndex = 0;
-    const typingSpeed = 10; // Adjust the speed of typing effect (in milliseconds)
-
-    // Add user message immediately
-    
-
     setMessages((prevMessages) => [...prevMessages, newMessages[1]]);
-
     const typeMessage = () => {
       if (charIndex < newMessages[1].text.length) {
         setMessages((prevMessages) => [
@@ -486,87 +478,61 @@ export default function AIComponent() {
           { role: "model", text: newMessages[1].text.slice(0, charIndex + 1) },
         ]);
         charIndex++;
-        setTimeout(typeMessage, typingSpeed); // Recur until all characters are added
+        setTimeout(typeMessage, 10); // Continue typing one character at a time
       }
     };
 
-    setChatHistory(prev => {
-      const updatedChats = [...prev];
-      if (activeChatIndex !== null) {
-        updatedChats[activeChatIndex] = { messages: newMessages };
-      }
-      return updatedChats;
-    });
-
     typeMessage();
+
+
+  } catch (error) {
+    console.error("Error during chat generation:", error);
+  } finally {
     setLoading(false);
   }
+};
 
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
-    event.preventDefault();
+  event.preventDefault();
 
-    const prompt = (event.target as HTMLFormElement).prompt?.value.trim();
+  const prompt = (event.target as HTMLFormElement).prompt?.value.trim();
+  if (!prompt) return;
+
+
+  const newMessages = [...messages, { role: "user", text: prompt }];
+  if (activeChatIndex === null) {
+    // Create new chat session
+ 
+    setActiveChatIndex(0);
+  } 
   
 
+  setMessages(newMessages);
 
-    if (!prompt) return;
+  // Send the generated prompt to the chat function
+  await runChat(prompt);
 
-    setMessageInput(prompt);
-
-
-    const newMessages = [...messages, { role: "user", text: prompt }];
+  (event.target as HTMLFormElement).reset();
+};
   
-    if (activeChatIndex === null) {
-      // Create a new chat session if none exists
-      setChatHistory([{ messages: newMessages }]);
-      setActiveChatIndex(0);
-    } else {
-      // Ensure activeChatIndex is within range before updating
-      if (activeChatIndex >= 0 && activeChatIndex < chatHistory.length) {
-        setChatHistory(prev => {
-          const updatedChats = [...prev];
-          updatedChats[activeChatIndex].messages.push({ role: "user", text: prompt });
-          return updatedChats;
-        });
-      }
-    }
-  
-    setMessages(newMessages);
-
-    runChat(prompt);
-
-    (event.target as HTMLFormElement).reset();
-  };
-  
-
-  const handleCreateNewSession = async () => {
-
-    const res = await createSession({});
-
-    if(res?.data){
-      setActiveSession(res?.data?.uuid);
-    }
-  }
-
   // Start a new chat (reset)
   const newChat = async () => {
 
         // call method to create new session
-       await handleCreateNewSession();
+        const res = await createSession({})
+        
+        if (res.data) {
 
-     // Add current chat to history before starting a new one
-     if (activeChatIndex !== null) {
-      setChatHistory((prev) => [
-        ...prev,
-        { messages: [{ role: "user", text: "" }] }, // Placeholder for new chat
-      ]);
-    } 
+          setActiveSession(res.data.uuid)
 
+          setActiveUuid(res?.data?.uuid)
 
+          setSessionList([...sessionList, res?.data])
 
-    setMessages([]); // Reset messages
-    setActiveChatIndex(chatHistory.length); // Set the index to new chat
+          setMessages([])
+
+        }
   };
 
   const [copyText, setCopyText] = useState<boolean>(false);
@@ -579,28 +545,17 @@ export default function AIComponent() {
     }, 2000);
   };
 
-  const handleChatSwitch = (index: number) => {
+  const [activeUuid, setActiveUuid] = useState<string>("");
 
+  const handleChatSwitch = (uuid:string,index:number) => {
+    setActiveUuid(uuid);
     const selectedSession = sessions?.data[index];
-  
-    // Ensure the selected session exists
     if (selectedSession) {
-      // Set the entire session object
-      setActiveSession(selectedSession?.uuid);
-  
-      // Fetch the messages for this session
-      refetchMessages(); // Trigger refetch of messages using the hook
-  
-      // Optionally update other states (like chat history) as needed
-      const messages = ChatMessages?.data?.flatMap((msg: any) => [
-        { role: "user", text: msg?.query },
-        { role: "model", text: msg?.response },
-      ]) || [];
-  
-      setMessages(messages); // Set messages for the active chat
-      setActiveChatIndex(index); // Update the index to reflect the active chat
+      setActiveSession(selectedSession.uuid);
+      refetchMessages();
     }
   };
+  
   
   // function handle delete session
   const handleDeleteSession = async (sessionUuid: string) => {
@@ -616,11 +571,33 @@ export default function AIComponent() {
 
       setActiveSession(null);
       setMessages([]);
-      setChatHistory([]);
+      
       setActiveChatIndex(null);
 
+      setDeleteModalOpen(false);
   }
 }
+
+
+//  fucntion handle logout
+const handleLogout = () => {
+  fetch(process.env.NEXT_PUBLIC_BASE_URL_LOCALHOST + "/logout", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  })
+    .then((res) => res.json())
+    .then(() => {
+      localStorage.clear();
+      router.push("/");
+    })
+    .catch((error) => {
+      console.error("Refresh Token error:", error);
+    });
+};
 
   return (
     <section className="flex mt-6 h-[800px] w-[88%] mx-auto bg-white rounded-lg shadow-lg dark:bg-background_dark_mode">
@@ -633,27 +610,35 @@ export default function AIComponent() {
           </Button>
         </div>
         <ScrollArea className="flex-1 p-4">
-          {activeSession?.data?.map((res:any, index:any) => (
-            <div key={index}>
-            <Button
-              key={index}
-              className={`w-full justify-start text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark` + (index === activeChatIndex ? " bg-primary_color text-black dark:bg-primary_color dark:text-black" : "")}
-              onClick={(e) => {
-                 
-                e.preventDefault();
-                handleChatSwitch(index)
+          {sessionList?.map((res:any, index:any) => (
+            <div key={res?.uuid}>
+           <div className="relative w-full group">
+   <Button
+    key={res?.uuid}
+    className={`w-full justify-start text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 
+      dark:bg-background_dark_mode dark:text-text_color_dark ${
+        res.uuid === activeUuid ? "bg-primary_color text-black dark:bg-primary_color dark:text-black" : ""
+      }`}
+    onClick={(e) => {
+      e.preventDefault();
+      handleChatSwitch(res?.uuid, index);
+    }}
+  >
+    {res?.uuid || "New chat"}
+  </Button>
 
-              }
-                 
-              }
-            >
-              {res?.uuid || "New chat"} 
-                 
-             
-            </Button>
-            <div className="flex w-full justify-end items-center ">
-               <FaTrashAlt onClick={()=> handleDeleteSession(res?.uuid)} className=" h-4 w-4  text-red-600 hover:cursor-pointer" />
-            </div>
+  {/* Delete Icon - Positioned at the end, shown only on hover */}
+  <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+    <FaTrashAlt
+      onClick={() => {
+        setDeleteModalOpen(true);
+        setSessionUuid(res?.uuid);
+      }}
+      className="h-4 w-4 text-red-600 hover:cursor-pointer"
+    />
+  </div>
+</div>
+
             
              </div>
           ))}
@@ -661,12 +646,38 @@ export default function AIComponent() {
 
         </ScrollArea>
 
-        <div className="p-4 border-t">
-          <Button variant="ghost" className="w-full justify-start py-[33px]" onClick={() => {}}>
+        <div className="p-4 border-t relative">
+      <DropdownMenu>
+        {/* Settings button acts as a trigger */}
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="w-full justify-start py-[33px]">
             <Settings className="mr-2 h-4 w-4" /> Settings
           </Button>
-        </div>
-      </div>
+        </DropdownMenuTrigger>
+
+        {/* Dropdown content - appears when Settings is clicked */}
+        <DropdownMenuContent className="w-56" align="start" forceMount>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-medium leading-none">
+                {ChatMessages?.data?.[0]?.username}
+              </p>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem className="cursor-pointer hover:bg-gray-100" onClick={() => router.push("/myprofile")}>
+            <User className="mr-2 h-4 w-4" />
+            <span>My profile</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem className="cursor-pointer hover:bg-gray-100" onClick={handleLogout}>
+            <LogOut className="mr-2 h-4 w-4 " />
+            <span>Log out</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  </div>
 
       {/* Main Content */}
       <div className="flex flex-col w-full">
@@ -686,7 +697,8 @@ export default function AIComponent() {
                       </div>
                     )}
                     <div className={`rounded-lg px-4 py-3 max-w-[80%] ${msg.role === "user" ? "bg-primary_color text-black" : "bg-gray-100 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark"}`}>
-                      <p>{msg?.text}</p>
+                      {/* <p>{msg?.text}</p> */}
+                      <CodeBlock content={msg?.text} />
                     </div>
                     <div>
                       {msg.role === "model" && index === messages.length - 1 && (
@@ -696,7 +708,7 @@ export default function AIComponent() {
                       )}
                     </div>
                     {msg.role === "user" && (
-                      <Image src={ChatMessages?.data?.[0]?.profile} alt={ChatMessages?.data?.[0]?.username}
+                      <Image src={ChatMessages?.data?.[0]?.profile || "/placeholder/Profile_avatar.png"} alt={ChatMessages?.data?.[0]?.username}
                        width={50} height={50}
                        className="w-10 h-10 rounded-full  flex items-center justify-center"/>
                     )}
@@ -720,6 +732,31 @@ export default function AIComponent() {
           </div>
         </div>
       </div>
+
+
+      {/* modal delete chat session */}
+      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+        <DialogContent className="bg-card w-full max-w-[90%] md:max-w-md lg:max-w-lg mx-auto h-fit p-6 md:p-10 rounded-xl">
+          <DialogHeader>
+            <DialogTitle>Delete Chat</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>
+            Are you sure you want to delete this chat session?
+          </DialogDescription>
+
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDeleteModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => handleDeleteSession(sessionUuid)}
+            >
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
