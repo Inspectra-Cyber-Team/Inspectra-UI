@@ -10,7 +10,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-const CodeBlock = ({ code, language }: { code: string, language?: string }) => {
+import "highlight.js/styles/atom-one-light.css";
+
+
+const CodeBlock = ({ code, language  }: { code: string, language?: string }) => {
 
   const codeRef = useRef<HTMLElement>(null);
 
@@ -60,7 +63,7 @@ const CodeBlock = ({ code, language }: { code: string, language?: string }) => {
       </div>
       
       <pre className=" sm:p-4 rounded-md bg-transparent text-black dark:bg-background_dark_mode dark:text-white relative">
-        <code className="dark:text-white " ref={codeRef}>{code}</code>
+        <code className={`language-${language} dark:text-white`}  ref={codeRef}>{code}</code>
       </pre>
       
       {/* Copy confirmation message */}
@@ -90,14 +93,17 @@ const ResponseContent = ({ content }: { content: string }) => {
     return languageMatch ? languageMatch[1] : "plaintext";
   };
 
-  // Format text with bold, italics, and lists
   const formatText = (text: string) => {
-    return text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold: **text**
-      .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic: *text*
-      .replace(/(^|\n)[*-] (.*?)/g, '<ul className="style=display: inline;"><li>$2</li></ul>') // Lists
-      .replace(/\bhttps?:\/\/[^\s]+/g, (url) => `<a href='${url}' target='_blank' class='text-blue-499 underline '>${url}</a>`); // Links
-  };
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold: **text**
+    .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic: *text*
+    .replace(/(^|\n)[*-] (.*?)/g, '<ul><li>$2</li></ul>') // Lists: - or * at the beginning
+    .replace(/\[(.*?)\]\((https?:\/\/[^\s]+)\)/g, (match, p1, p2) => {
+      return `<a href="${p2}" target="_blank" class="text-blue-499 underline">${p1}</a>`;
+    }) // Links with [text](url)
+};
+
+
 
   return (
     <section className="w-full">
