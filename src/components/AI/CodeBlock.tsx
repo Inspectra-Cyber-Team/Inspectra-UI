@@ -1,7 +1,7 @@
+'use client'
 import { useEffect, useRef, useState } from "react";
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-light.css"; // Light theme for syntax highlighting code color
-import { FaCopy } from "react-icons/fa"; // Copy icon from react-icons
 import { Copy } from "lucide-react";
 import {
   Tooltip,
@@ -96,7 +96,7 @@ const ResponseContent = ({ content }: { content: string }) => {
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold: **text**
       .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic: *text*
       .replace(/(^|\n)[*-] (.*?)/g, '<ul className="style=display: inline;"><li>$2</li></ul>') // Lists
-      .replace(/\bhttps?:\/\/[^\s]+/g, (url) => `<a href='${url}' target='_blank' class='text-blue-500 underline '>${url}</a>`); // Links
+      .replace(/\bhttps?:\/\/[^\s]+/g, (url) => `<a href='${url}' target='_blank' class='text-blue-499 underline '>${url}</a>`); // Links
   };
 
   return (
