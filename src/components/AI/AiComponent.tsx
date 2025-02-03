@@ -1,13 +1,33 @@
-'use client'
+"use client";
 import { useEffect, useRef, useState } from "react"; // Added React import
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Plus, Settings, Send, Copy, TicketCheck, CheckIcon, LogOut, User, Code } from "lucide-react";
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import {
+  Plus,
+  Settings,
+  Send,
+  Copy,
+  TicketCheck,
+  CheckIcon,
+  LogOut,
+  User,
+  Code,
+} from "lucide-react";
+import {
+  GoogleGenerativeAI,
+  HarmCategory,
+  HarmBlockThreshold,
+} from "@google/generative-ai";
 import NomessageComponent from "./NomessageComponent";
 import Image from "next/image";
-import { useCreateMessageMutation, useCreateSessionMutation, useDeleteSessionMutation, useGetAllMessageBySessionUuidQuery, useGetAllSessionsQuery } from "@/redux/service/chat-session";
+import {
+  useCreateMessageMutation,
+  useCreateSessionMutation,
+  useDeleteSessionMutation,
+  useGetAllMessageBySessionUuidQuery,
+  useGetAllSessionsQuery,
+} from "@/redux/service/chat-session";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,32 +60,32 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet";
 import Loader from "./Loader";
-
 
 const MODEL_NAME = "gemini-1.0-pro";
 
 const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string;
 
 export default function AIComponent() {
-
   const router = useRouter();
 
-  const {toast } = useToast();
+  const { toast } = useToast();
 
   const [activeSession, setActiveSession] = useState<string | any>(null);
 
-  const [messages, setMessages] = useState<{ role: string; text: string }[]>([]);
+  const [messages, setMessages] = useState<{ role: string; text: string }[]>(
+    []
+  );
 
   const [loading, setLoading] = useState(false);
 
-  const [activeChatIndex, setActiveChatIndex] = useState<number | null>(null); 
+  const [activeChatIndex, setActiveChatIndex] = useState<number | null>(null);
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const [sessionUuid,setSessionUuid] = useState<string>("");
-  
+  const [sessionUuid, setSessionUuid] = useState<string>("");
+
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const toggleSidebar = () => {
@@ -73,56 +93,51 @@ export default function AIComponent() {
   };
 
   // fetch all chat sessions
-  const {data:sessions} = useGetAllSessionsQuery(null);
-
+  const { data: sessions } = useGetAllSessionsQuery(null);
 
   // Fetch messages for the selected session
-  const { data: ChatMessages, refetch: refetchMessages } = useGetAllMessageBySessionUuidQuery(
-    { sessionUuid: activeSession! },
-    { skip: !activeSession }
-  );
+  const { data: ChatMessages, refetch: refetchMessages } =
+    useGetAllMessageBySessionUuidQuery(
+      { sessionUuid: activeSession! },
+      { skip: !activeSession }
+    );
 
-   // Mutations
-   const [createSession] = useCreateSessionMutation();
+  // Mutations
+  const [createSession] = useCreateSessionMutation();
 
-   const [createMessage] = useCreateMessageMutation();
+  const [createMessage] = useCreateMessageMutation();
 
-   const [deleteSession] = useDeleteSessionMutation();
+  const [deleteSession] = useDeleteSessionMutation();
 
-    // Load first session automatically
-    const [sessionList, setSessionList] = useState<any[]>([]); // Store sessions
+  // Load first session automatically
+  const [sessionList, setSessionList] = useState<any[]>([]); // Store sessions
 
-    useEffect(() => {
-      if (sessions?.data?.length > 0) {
-        setSessionList(sessions?.data); // Update session list
-        if (!activeSession) {
-          setActiveSession(sessions.data[0].uuid); // Set default active session
-        }
+  useEffect(() => {
+    if (sessions?.data?.length > 0) {
+      setSessionList(sessions?.data); // Update session list
+      if (!activeSession) {
+        setActiveSession(sessions.data[0].uuid); // Set default active session
       }
-    }, [sessions]);
-
-
+    }
+  }, [sessions]);
 
   // Handle sending messages
-  const sendMessage = async (responseText: string,promt:string) => {
-  
+  const sendMessage = async (responseText: string, promt: string) => {
     const payload = {
       sessionUuid: activeSession,
       query: promt,
       response: responseText,
     };
-  
+
     try {
       const res = await createMessage({ message: payload });
       if (res?.data) {
-        
         refetchMessages();
       }
     } catch (error) {
       console.error("Failed to send message:", error);
     }
   };
-
 
   useEffect(() => {
     if (ChatMessages?.data) {
@@ -134,130 +149,134 @@ export default function AIComponent() {
         {
           role: "model",
           text: msg?.response, // AI's response
-        }
+        },
       ]);
 
       setMessages(messages);
-
     }
   }, [ChatMessages]);
-  
 
-const runChat = async (prompt: string) => {
-  
-  setLoading(true);
+  const runChat = async (prompt: string) => {
+    setLoading(true);
 
-  try {
-    const genAI = new GoogleGenerativeAI(API_KEY);
-    
-    const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+    try {
+      const genAI = new GoogleGenerativeAI(API_KEY);
 
-    const generationConfig = {
-      temperature: 0.9,
-      topK: 1,
-      topP: 1,
-      maxOutputTokens: 2048,
-    };
+      const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
-    const safetySettings = [
-      { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-      { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-      { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-      { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-    ];
+      const generationConfig = {
+        temperature: 0.9,
+        topK: 1,
+        topP: 1,
+        maxOutputTokens: 2048,
+      };
 
-    const chat = model.startChat({
-      generationConfig,
-      safetySettings,
-      history: [{ role: "user", parts: [{ text: prompt }] }, ...messages.map((msg) => ({
-        role: msg.role === "user" ? "user" : "model",
-        parts: [{ text: msg.text }],
-      }))],
-    });
+      const safetySettings = [
+        {
+          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+      ];
 
-    const result = await chat.sendMessage(prompt);
+      const chat = model.startChat({
+        generationConfig,
+        safetySettings,
+        history: [
+          { role: "user", parts: [{ text: prompt }] },
+          ...messages.map((msg) => ({
+            role: msg.role === "user" ? "user" : "model",
+            parts: [{ text: msg.text }],
+          })),
+        ],
+      });
 
-    const responseText = result.response?.text();
+      const result = await chat.sendMessage(prompt);
 
-    // Make sure the message is only sent once we have the response
-    if (responseText) {
-      await sendMessage(responseText,prompt);  // Send the message after the response
-    }
+      const responseText = result.response?.text();
 
-    // Simulate typing effect
-    let charIndex = 0;
-    const newMessages = [
-      { role: "user", text: prompt },
-      { role: "model", text: responseText || "AI is typing..." },
-    ];
-
-    setMessages((prevMessages) => [...prevMessages, newMessages[1]]);
-    const typeMessage = () => {
-      if (charIndex < newMessages[1].text.length) {
-        setMessages((prevMessages) => [
-          ...prevMessages.slice(0, prevMessages.length - 1),
-          { role: "model", text: newMessages[1].text.slice(0, charIndex + 1) },
-        ]);
-        charIndex++;
-        setTimeout(typeMessage, 10); // Continue typing one character at a time
+      // Make sure the message is only sent once we have the response
+      if (responseText) {
+        await sendMessage(responseText, prompt); // Send the message after the response
       }
-    };
 
-    typeMessage();
+      // Simulate typing effect
+      let charIndex = 0;
+      const newMessages = [
+        { role: "user", text: prompt },
+        { role: "model", text: responseText || "AI is typing..." },
+      ];
 
-
-  } catch (error) {
-    console.error("Error during chat generation:", error);
-  } finally {
-    setLoading(false);
-  }
-};
-
-const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-
-  event.preventDefault();
-
-  const prompt = (event.target as HTMLFormElement).prompt?.value.trim();
-  if (!prompt) return;
-
-
-  const newMessages = [...messages, { role: "user", text: prompt }];
-  if (activeChatIndex === null) {
-    // Create new chat session
- 
-    setActiveChatIndex(0);
-  } 
-  
-
-  setMessages(newMessages);
-
-  // Send the generated prompt to the chat function
-  await runChat(prompt);
-
-  (event.target as HTMLFormElement).reset();
-};
-  
-  // Start a new chat (reset)
-  const newChat = async () => {
-
-        // call method to create new session
-        const res = await createSession({})
-        
-        if (res.data) {
-
-          setActiveSession(res.data.uuid)
-
-          setActiveUuid(res?.data?.uuid)
-
-          setSessionList([...sessionList, res?.data])
-
-          setMessages([])
-
+      setMessages((prevMessages) => [...prevMessages, newMessages[1]]);
+      const typeMessage = () => {
+        if (charIndex < newMessages[1].text.length) {
+          setMessages((prevMessages) => [
+            ...prevMessages.slice(0, prevMessages.length - 1),
+            {
+              role: "model",
+              text: newMessages[1].text.slice(0, charIndex + 1),
+            },
+          ]);
+          charIndex++;
+          setTimeout(typeMessage, 10); // Continue typing one character at a time
         }
+      };
+
+      typeMessage();
+    } catch (error) {
+      console.error("Error during chat generation:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
+    const prompt = (event.target as HTMLFormElement).prompt?.value.trim();
+    if (!prompt) return;
 
+    const newMessages = [...messages, { role: "user", text: prompt }];
+    if (activeChatIndex === null) {
+      // Create new chat session
+
+      setActiveChatIndex(0);
+    }
+
+    setMessages(newMessages);
+
+    // Send the generated prompt to the chat function
+    await runChat(prompt);
+
+    (event.target as HTMLFormElement).reset();
+  };
+
+  // Start a new chat (reset)
+  const newChat = async () => {
+    // call method to create new session
+    const res = await createSession({});
+
+    if (res.data) {
+      setActiveSession(res.data.uuid);
+
+      setActiveUuid(res?.data?.uuid);
+
+      setSessionList([...sessionList, res?.data]);
+
+      setMessages([]);
+    }
+  };
 
   const [copyText, setCopyText] = useState<boolean>(false);
   //function copy to clipboard
@@ -271,7 +290,7 @@ const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
   const [activeUuid, setActiveUuid] = useState<string>("");
 
-  const handleChatSwitch = (uuid:string,index:number) => {
+  const handleChatSwitch = (uuid: string, index: number) => {
     setActiveUuid(uuid);
     const selectedSession = sessions?.data[index];
     if (selectedSession) {
@@ -279,15 +298,12 @@ const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       refetchMessages();
     }
   };
-  
-  
+
   // function handle delete session
   const handleDeleteSession = async (sessionUuid: string) => {
+    const res = await deleteSession({ sessionUuid });
 
-    const res = await deleteSession({sessionUuid});
-
-    if(res?.data == null){
-
+    if (res?.data == null) {
       toast({
         description: "Session deleted successfully",
         variant: "success",
@@ -295,147 +311,74 @@ const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
       setActiveSession(null);
       setMessages([]);
-      
+
       setActiveChatIndex(null);
 
       setDeleteModalOpen(false);
-  }
-}
+    }
+  };
 
-
-//  fucntion handle logout
-const handleLogout = () => {
-  fetch(process.env.NEXT_PUBLIC_BASE_URL_LOCALHOST + "/logout", {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({}),
-  })
-    .then((res) => res.json())
-    .then(() => {
-      localStorage.clear();
-      router.push("/");
+  //  fucntion handle logout
+  const handleLogout = () => {
+    fetch(process.env.NEXT_PUBLIC_BASE_URL_LOCALHOST + "/logout", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
     })
-    .catch((error) => {
-      console.error("Refresh Token error:", error);
-    });
-};
-
-   
+      .then((res) => res.json())
+      .then(() => {
+        localStorage.clear();
+        router.push("/");
+      })
+      .catch((error) => {
+        console.error("Refresh Token error:", error);
+      });
+  };
 
   return (
     <section className="w-[88%] mx-auto">
-
-    {/* Toggle Button for Sidebar */}
-      <div className="lg:hidden flex justify-start">
+      {/* Toggle Button for Sidebar */}
+      <div className="lg:hidden flex justify-start ">
         <IoMenu onClick={toggleSidebar} className=" text-black cursor-pointer">
-          {sidebarVisible ? 'Hide Sidebar' : 'Show Sidebar'}
+          {sidebarVisible ? "Hide Sidebar" : "Show Sidebar"}
         </IoMenu>
       </div>
 
-    <section className="flex mt-6 h-[800px] bg-white rounded-lg shadow-lg dark:bg-background_dark_mode">
-
-      {/* Sidebar */}
-      <section className="w-1/3 border-r flex flex-col lg:flex hidden ">
-  <section className="px-8 py-8 border-b ">
-    <h1 className="text-xl font-bold mb-4">Inspectra Chat AI</h1>
-    <Button className="w-full bg-primary_color hover:bg-secondary_color text-black" onClick={newChat}>
-      New chat <Plus className="h-4 w-4 text-black" />
-    </Button>
-  </section>
-  <ScrollArea className="flex-1 p-4">
-    {sessionList?.map((res: any, index: any) => {
-      const filteredMessages = ChatMessages?.data?.filter((msg: any) => msg?.chatSessionUuid === res?.uuid);
-      const lastMessage = filteredMessages?.[filteredMessages.length - 1];
-
-      return (
-        <div key={res?.uuid}>
-          <div className="relative w-full group">
+      <section className="flex my-4 h-[600px] bg-card_color_light dark:bg-card_color_dark rounded-xl ">
+        {/* Sidebar */}
+        <section className="w-1/3 border-r flex-col lg:flex hidden ">
+          <section className="px-8 py-4 border-b">
+            <h1 className="text-text_title_24 font-bold">Inspectra Chat AI</h1>
             <Button
-              key={res?.uuid}
-              className={`w-full justify-start text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 
-                dark:bg-background_dark_mode dark:text-text_color_dark ${
-                res.uuid === activeUuid ? "bg-primary_color text-black dark:bg-primary_color dark:text-black" : ""
-              }`}
-              onClick={(e) => {
-                e.preventDefault();
-                handleChatSwitch(res?.uuid, index);
-              }}
+              className="w-full bg-primary_color hover:bg-secondary_color text-black mt-4"
+              onClick={newChat}
             >
-              {lastMessage?.query || "New chat"}
+              New chat <Plus className="h-4 w-4 text-black" />
             </Button>
+          </section>
 
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <FaTrashAlt
-                onClick={() => {
-                  setDeleteModalOpen(true);
-                  setSessionUuid(res?.uuid);
-                }}
-                className="h-4 w-4 text-red-600 hover:cursor-pointer"
-              />
-            </div>
-          </div>
-        </div>
-      );
-    })}
-  </ScrollArea>
-
-  <div className="p-4 border-t flex flex-col">
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="w-full justify-start py-[33px]">
-          <Settings className="mr-2 h-4 w-4" /> Settings
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="start" forceMount>
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
-              {ChatMessages?.data?.[0]?.username || "U"}
-            </p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light" onClick={() => router.push("/myprofile")}>
-          <User className="mr-2 h-4 w-4" />
-          <span>My profile</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light" onClick={handleLogout}>
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  </div>
-</section>
-
-
-
-
-  {/* Sidebar using Sheet component */}
-  <Sheet open={sidebarVisible} onOpenChange={setSidebarVisible}>
-        <SheetContent side="left" className="w-1/2 bg-background_light_mode border-r flex flex-col dark:bg-background_dark_mode">
-          <SheetHeader>
-            <SheetTitle className="md:text-base sm:text-sm text-[10px]">Inspectra Chat AI</SheetTitle>
-          </SheetHeader>
-          <div className="border-b">
-            <Button className="w-full text-[10px] sm:text-base  bg-primary_color hover:bg-secondary_color text-black" onClick={newChat}>
-              New chat <Plus className="sm:h-4 sm:w-4 h-2 w-2 text-black" />
-            </Button>
-          </div>
-          <ScrollArea className="flex-1">
+          <ScrollArea className="flex-1 p-4">
             {sessionList?.map((res: any, index: any) => {
-              const filteredMessages = ChatMessages?.data?.filter((msg: any) => msg?.chatSessionUuid === res?.uuid);
-              const lastMessage = filteredMessages?.[filteredMessages.length - 1];
+              const filteredMessages = ChatMessages?.data?.filter(
+                (msg: any) => msg?.chatSessionUuid === res?.uuid
+              );
+              const lastMessage =
+                filteredMessages?.[filteredMessages.length - 1];
 
               return (
                 <div key={res?.uuid}>
                   <div className="relative w-full group">
                     <Button
-                      className={`w-full justify-start text-[10px]  sm:text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark ${res.uuid === activeUuid ? "bg-primary_color text-black dark:bg-primary_color dark:text-black" : ""}`}
+                      key={res?.uuid}
+                      className={`w-full justify-start text-sm my-4 px- bg-transparent hover:bg-gray-200 text-gray-900 
+                dark:bg-background_dark_mode dark:text-text_color_dark ${
+                  res.uuid === activeUuid
+                    ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
+                    : ""
+                }`}
                       onClick={(e) => {
                         e.preventDefault();
                         handleChatSwitch(res?.uuid, index);
@@ -443,6 +386,7 @@ const handleLogout = () => {
                     >
                       {lastMessage?.query || "New chat"}
                     </Button>
+
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <FaTrashAlt
                         onClick={() => {
@@ -458,10 +402,13 @@ const handleLogout = () => {
             })}
           </ScrollArea>
 
-          <div className="p-4 border-t relative">
+          <div className="p-4 border-t flex flex-col">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="w-full justify-start py-[33px]">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start py-[33px]"
+                >
                   <Settings className="mr-2 h-4 w-4" /> Settings
                 </Button>
               </DropdownMenuTrigger>
@@ -474,137 +421,260 @@ const handleLogout = () => {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light" onClick={() => router.push("/myprofile")}>
+                <DropdownMenuItem
+                  className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                  onClick={() => router.push("/myprofile")}
+                >
                   <User className="mr-2 h-4 w-4" />
                   <span>My profile</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light" onClick={handleLogout}>
+                <DropdownMenuItem
+                  className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                  onClick={handleLogout}
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        </SheetContent>
-      </Sheet>
-      {/* end sidebar with shet here */}
+        </section>
 
-  
+        {/* Sidebar using Sheet component */}
+        <Sheet open={sidebarVisible} onOpenChange={setSidebarVisible}>
+          <SheetContent
+            side="left"
+            className="w-1/2 bg-background_light_mode border-r flex flex-col dark:bg-background_dark_mode"
+          >
+            <SheetHeader>
+              <SheetTitle className="md:text-base sm:text-sm text-[10px]">
+                Inspectra Chat AI
+              </SheetTitle>
+            </SheetHeader>
+            <div className="border-b">
+              <Button
+                className="w-full text-[10px] sm:text-base  bg-primary_color hover:bg-secondary_color text-black"
+                onClick={newChat}
+              >
+                New chat <Plus className="sm:h-4 sm:w-4 h-2 w-2 text-black" />
+              </Button>
+            </div>
+            <ScrollArea className="flex-1">
+              {sessionList?.map((res: any, index: any) => {
+                const filteredMessages = ChatMessages?.data?.filter(
+                  (msg: any) => msg?.chatSessionUuid === res?.uuid
+                );
+                const lastMessage =
+                  filteredMessages?.[filteredMessages.length - 1];
 
-      {/* Main Content */}
-      <div className="flex flex-col w-full">
-        <main className="flex-1 overflow-y-auto mx-4 sm:mx-6 md:mx-8 lg:mx-10">
-          <ScrollArea className="h-full scrollbar-hide ">
-            <div className="space-y-4 ">
-              {messages.length === 0 ? (
-                <div className="flex justify-center items-center mt-28">
-                  <NomessageComponent />
-                </div>
-              ) : (
-                messages.map((msg, index) => (
-                  <div key={index} className={`flex w-full items-start gap-2 ${msg.role === "user" ? "justify-end " : "justify-start"}`}>
-                    {msg.role !== "user" && (
-                      <div className="md:w-10 md:h-10 w-6 h-6 rounded-full flex items-center justify-center text-black text-sm">
-                        <Image src="/images/logo_no_name.png" alt="AI" width={50} height={50} />
+                return (
+                  <div key={res?.uuid}>
+                    <div className="relative w-full group">
+                      <Button
+                        className={`w-full justify-start text-[10px]  sm:text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark ${
+                          res.uuid === activeUuid
+                            ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
+                            : ""
+                        }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleChatSwitch(res?.uuid, index);
+                        }}
+                      >
+                        {lastMessage?.query || "New chat"}
+                      </Button>
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <FaTrashAlt
+                          onClick={() => {
+                            setDeleteModalOpen(true);
+                            setSessionUuid(res?.uuid);
+                          }}
+                          className="h-4 w-4 text-red-600 hover:cursor-pointer"
+                        />
                       </div>
-                    )}
-                <div
-  className={`inline-block px-3 md:px-5 text-[10px] sm:text-base py-2 md:py-3 rounded-tl-[20px] rounded-br-[20px] ${msg.role === "user" 
-    ? "bg-primary_color text-black max-w-[60%]" 
-    : "bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark max-w-[60%]"
-  }`}
->
-  <CodeBlock content={msg?.text} />
-</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </ScrollArea>
 
+            <div className="p-4 border-t relative">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start py-[33px]"
+                  >
+                    <Settings className="mr-2 h-4 w-4" /> Settings
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="start" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {ChatMessages?.data?.[0]?.username || "U"}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                    onClick={() => router.push("/myprofile")}
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    <span>My profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </SheetContent>
+        </Sheet>
+        {/* end sidebar with shet here */}
 
-                    <div>
-                      {msg.role === "model" && index === messages.length - 1 && (
-                        <button className="mt-4 text-gray-600 hover:text-text_color_light" onClick={() => handleCopy(msg.text)}>
-                          {copyText ? <CheckIcon className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                        </button>
+        {/* Main Content */}
+        <div className="flex flex-col w-full">
+          <main className="flex-1  overflow-y-auto mx-4 sm:mx-6 md:mx-8 lg:mx-10">
+            <ScrollArea className="h-full scrollbar-hide">
+              <div className="space-y-4 ">
+                {messages.length === 0 ? (
+                  <div className="flex justify-center items-center mt-28">
+                    <NomessageComponent />
+                  </div>
+                ) : (
+                  messages.map((msg, index) => (
+                    <div
+                      key={index}
+                      className={`flex mt-14 w-full items-start gap-2 scrollbar-hide ${
+                        msg.role === "user" ? "justify-end " : "justify-start"
+                      }`}
+                    >
+                      {msg.role !== "user" && (
+                        <div className="md:w-10 md:h-10 w-6 h-6 rounded-full flex items-center justify-center text-black text-sm">
+                          <Image
+                            src="/images/logo_no_name.png"
+                            alt="AI"
+                            width={50}
+                            height={50}
+                          />
+                        </div>
+                      )}
+                      <div
+                        className={`inline-block px-3 md:px-5 text-[10px] sm:text-base py-2 md:py-3 rounded-tl-[20px] rounded-br-[20px] ${
+                          msg.role === "user"
+                            ? "bg-primary_color text-black max-w-[60%]"
+                            : "bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark max-w-[60%]"
+                        }`}
+                      >
+                        <CodeBlock content={msg?.text} />
+                      </div>
+
+                      <div>
+                        {msg.role === "model" &&
+                          index === messages.length - 1 && (
+                            <button
+                              className="mt-4 text-gray-600 hover:text-text_color_light"
+                              onClick={() => handleCopy(msg.text)}
+                            >
+                              {copyText ? (
+                                <CheckIcon className="h-4 w-4" />
+                              ) : (
+                                <Copy className="h-4 w-4" />
+                              )}
+                            </button>
+                          )}
+                      </div>
+                      {msg.role === "user" && (
+                        <Image
+                          src={
+                            ChatMessages?.data?.[0]?.profile ||
+                            "/placeholder/Profile_avatar.png"
+                          }
+                          alt={ChatMessages?.data?.[0]?.username}
+                          width={50}
+                          height={50}
+                          className="md:w-10 md:h-10 w-6 h-6 rounded-full  flex items-center justify-center"
+                        />
                       )}
                     </div>
-                    {msg.role === "user" && (
-                      <Image src={ChatMessages?.data?.[0]?.profile || "/placeholder/Profile_avatar.png"} alt={ChatMessages?.data?.[0]?.username}
-                       width={50} height={50}
-                       className="md:w-10 md:h-10 w-6 h-6 rounded-full  flex items-center justify-center"/>
-                    )}
-                  </div>
-                ))
-              )}
+                  ))
+                )}
 
                 {loading && (
-              <div className="flex justify-start items-start gap-2">
-                <div className="md:w-10 md:h-10 w-6 h-6 rounded-full flex items-center justify-center text-black text-sm">
-                  <Image src="/images/logo_no_name.png" alt="AI" width={50} height={50} />
-                </div>
-                <div className="inline-block px-3 md:px-5 text-[10px] sm:text-base bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark py-2 md:py-3 rounded-tl-[20px] rounded-br-[20px]">
-                  <Loader />
-                </div>
+                  <div className="flex justify-start items-start gap-2">
+                    <div className="md:w-10 md:h-10 w-6 h-6 rounded-full flex items-center justify-center text-black text-sm">
+                      <Image
+                        src="/images/logo_no_name.png"
+                        alt="AI"
+                        width={50}
+                        height={50}
+                      />
+                    </div>
+                    <div className="inline-block px-3 md:px-5 text-[10px] sm:text-base bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark py-2 md:py-3 rounded-tl-[20px] rounded-br-[20px]">
+                      <Loader />
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-             
-            </div>
-          </ScrollArea>
-        </main>
+            </ScrollArea>
+          </main>
 
-        {/* Input Form */}
-        <div className="border-t p-4">
-          <div className="max-w-3xl mx-auto">
-            <form onSubmit={onSubmit} className=" sm:flex gap-2">
-              <Input type="text" name="prompt" placeholder="What's on your mind..." className="flex sm:flex-1 py-4 sm:py-8 rounded-xl md:text-base text-[10px]" />
-              <Button type="submit" className="bg-primary_color hover:opacity-70 sm:py-8 max-sm:w-full mt-2 sm:mt-0 p-4  rounded-xl" disabled={loading}>
-                <Send className="sm:h-4 h-2 w-2 sm:w-4  text-black" />
-              </Button>
-            </form>
+          {/* Input Form */}
+          <div className="border-t p-4">
+            <div className="max-w-3xl mx-auto">
+              <form onSubmit={onSubmit} className=" sm:flex gap-2">
+                <Input
+                  type="text"
+                  name="prompt"
+                  placeholder="What's on your mind..."
+                  className="flex sm:flex-1 focus:ring-none focus:border-primary_color sm:py-8 rounded-xl md:text-text_body_16 text-sm"
+                  
+                />
+                <Button
+                  type="submit"
+                  className=" sm:py-8 bg-card_color_light dark:bg-card_color_dark max-sm:w-full mt-2 sm:mt-0 p-4  rounded-xl"
+                  disabled={loading}
+                >
+                  <Send className="sm:h-4 h-5 w-5 sm:w-4  text-black dark:text-text_color_dark" />
+                </Button>
+                
+              </form>
+            </div>
           </div>
         </div>
-      </div>
 
+        {/* modal delete chat session */}
+        <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+          <DialogContent className="bg-card w-full max-w-[90%] md:max-w-md lg:max-w-lg mx-auto h-fit p-6 md:p-10 rounded-xl">
+            <DialogHeader>
+              <DialogTitle>Delete Chat</DialogTitle>
+            </DialogHeader>
+            <DialogDescription>
+              Are you sure you want to delete this chat session?
+            </DialogDescription>
 
-      {/* modal delete chat session */}
-      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-        <DialogContent className="bg-card w-full max-w-[90%] md:max-w-md lg:max-w-lg mx-auto h-fit p-6 md:p-10 rounded-xl">
-          <DialogHeader>
-            <DialogTitle>Delete Chat</DialogTitle>
-          </DialogHeader>
-          <DialogDescription>
-            Are you sure you want to delete this chat session?
-          </DialogDescription>
-
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setDeleteModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => handleDeleteSession(sessionUuid)}
-            >
-              Confirm
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-    </section>
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setDeleteModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => handleDeleteSession(sessionUuid)}
+              >
+                Confirm
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </section>
     </section>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
