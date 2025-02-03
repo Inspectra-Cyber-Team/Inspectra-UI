@@ -335,7 +335,7 @@ const handleLogout = () => {
         </IoMenu>
       </div>
 
-    <section className="flex mt-6 h-[800px]  bg-white rounded-lg shadow-lg dark:bg-background_dark_mode">
+    <section className="flex mt-6 h-[800px] bg-white rounded-lg shadow-lg dark:bg-background_dark_mode">
 
       {/* Sidebar */}
       <section className="w-1/3 border-r flex flex-col lg:flex hidden ">
@@ -493,12 +493,12 @@ const handleLogout = () => {
   
 
       {/* Main Content */}
-      <div className="flex flex-col w-full ">
-        <main className="flex-1 overflow-y-auto py-6 mx-4 sm:mx-6 md:mx-8 lg:mx-10">
+      <div className="flex flex-col w-full">
+        <main className="flex-1 overflow-y-auto mx-4 sm:mx-6 md:mx-8 lg:mx-10">
           <ScrollArea className="h-full scrollbar-hide ">
             <div className="space-y-4 ">
               {messages.length === 0 ? (
-                <div className="flex justify-center items-center h-screen">
+                <div className="flex justify-center items-center mt-28">
                   <NomessageComponent />
                 </div>
               ) : (
