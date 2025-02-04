@@ -22,8 +22,8 @@ export default function NomessageComponent() {
   }, [])
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="w-full max-w-md space-y-8q">
+    <div className="flex flex-col items-center justify-center px-3">
+      <div className="w-full max-w-md space-y-8 ">
         <div className="text-center">
           <h2 className="text-xl md:text-3xl font-extrabold text-text_color_light dark:text-text_color_dark">Welcome to Inspectra AI</h2>
           <p className="my-2 text-sm md:text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark h-16">{displayedText}</p>
