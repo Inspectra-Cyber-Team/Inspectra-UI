@@ -111,7 +111,7 @@ const ResponseContent = ({ content }: { content: string }) => {
       blocks.push(
         <p
           key={`text-end`}
-          className="mb-2  p-2 rounded-md"
+          className="p-2 rounded-md"
           dangerouslySetInnerHTML={{ __html: formatText(text.slice(lastIndex)) }}
         />
       );

@@ -572,7 +572,7 @@ export default function AIComponent() {
                         </div>
                       )}
                       <div
-                        className={`inline-block px-3 md:px-5 text-[10px] sm:text-base py-2 md:py-3 rounded-tl-[20px] rounded-br-[20px] ${
+                        className={`inline-block px-3 md:px-5 text-[10px] sm:text-base py-1 rounded-tl-[20px] rounded-br-[20px] ${
                           msg.role === "user"
                             ? "bg-primary_color dark:text-black text-black max-w-[60%]"
                             : "bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark max-w-[60%] "
@@ -614,7 +614,7 @@ export default function AIComponent() {
 
                 {loading && (
                   <div className="flex justify-start items-start gap-2">
-                    <div className="md:w-10 md:h-10 w-6 h-6 rounded-full flex items-center justify-center text-black text-sm px-5">
+                    <div className="md:w-10 md:h-10 w-6 h-6 rounded-full flex items-center justify-center text-black text-sm p-5">
                       <Image
                         src="/images/logo_no_name.png"
                         alt="AI"
@@ -622,7 +622,7 @@ export default function AIComponent() {
                         height={50}
                       />
                     </div>
-                    <div className="inline-block px-3 md:px-5 text-[10px] sm:text-base bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark py-2 md:py-3 rounded-tl-[20px] rounded-br-[20px]">
+                    <div className="inline-block px-10 py-4 text-[10px] sm:text-base bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark rounded-tl-[20px] rounded-br-[20px]">
                       <Loader />
                     </div>
                   </div>
