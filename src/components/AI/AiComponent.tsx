@@ -357,7 +357,7 @@ export default function AIComponent() {
         </IoMenu>
       </div>
 
-      <section className="flex my-4 h-[600px] bg-card_color_light dark:bg-card_color_dark rounded-xl ">
+      <section className="flex my-4  h-[600px] bg-card_color_light dark:bg-card_color_dark rounded-xl ">
 
         {/* Sidebar */}
         <section className="w-1/3 border-r flex-col lg:flex hidden ">
@@ -576,19 +576,19 @@ export default function AIComponent() {
         {/* end sidebar with shet here */}
 
         {/* Main Content */}
-        <div className="flex flex-col w-full">
-          <main className="flex-1  overflow-y-auto  scrollbar-hide">
-            <div className="h-full ">
+        <div className="flex flex-col w-full h-full">
+          <main className="flex-1  overflow-y-auto scrollbar-hide">
+            <div className="h-full overflow-y-auto scrollbar-hide">
               <div className="space-y-4 ">
                 {messages.length === 0 ? (
-                  <div className="flex justify-center items-center mt-28">
+                  <div className="flex justify-center overflow-hidden items-center mt-28 ">
                     <NomessageComponent />
                   </div>
                 ) : (
                   messages.map((msg, index) => (
                     <div
                       key={index}
-                      className={`flex mt-8 pb-2 px-5 w-full items-start gap-2 scrollbar-hide ${
+                      className={`flex mt-8 pb-2 px-5 w-full items-start gap-2  ${
                         msg.role === "user" ? "justify-end " : "justify-start"
                       }`}
                     >
@@ -603,7 +603,7 @@ export default function AIComponent() {
                         </div>
                       )}
                       <div
-                        className={`inline-block px-3 md:px-5 text-[10px] sm:text-base py-2 md:py-3 rounded-tl-[20px] rounded-br-[20px] ${
+                        className={`inline-block px-3 md:px-5 text-[10px] sm:text-base py-1 md:py-2 rounded-tl-[20px] rounded-br-[20px] ${
                           msg.role === "user"
                             ? "bg-primary_color dark:text-black text-black max-w-[60%]"
                             : "bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark max-w-[60%] "
