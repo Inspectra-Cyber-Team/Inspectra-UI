@@ -2,10 +2,11 @@
 
 import { Plus } from "lucide-react"
 import { useEffect, useState } from "react"
+import { Button } from "../ui/button"
 
 export default function NomessageComponent() {
   const [displayedText, setDisplayedText] = useState("")
-  const welcomeMessage = "Greetings! Inspectra is ready to assist. Let's dive into what you need!"
+  const welcomeMessage = "Get started by ask a question and Inspectra Chat AI can do the rest."
 
   useEffect(() => {
     let i = 0
@@ -24,33 +25,25 @@ export default function NomessageComponent() {
     <div className="flex flex-col items-center justify-center">
       <div className="w-full max-w-md space-y-8q">
         <div className="text-center">
-          <h2 className=" text-3xl font-extrabold text-text_color_light dark:text-text_color_dark">Welcome to Inspectra AI</h2>
-          <p className="my-2 text-sm text-gray-600 h-16">{displayedText}</p>
+          <h2 className="text-xl md:text-3xl font-extrabold text-text_color_light dark:text-text_color_dark">Welcome to Inspectra AI</h2>
+          <p className="my-2 text-sm md:text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark h-16">{displayedText}</p>
         </div>
-        <div className="mt-4 border border-gray-200 p-2 gap-2 rounded-lg overflow-hidden">
-          <div className="px-4 py-2 sm:p-2">
-            <div className="flex items-center space-x-4 ">
-              <div className="flex-shrink-0">
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary_color text-text_color_light font-semibold text-lg">
-                  AI
-                </div>
+
+
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
+            <button  className="border h-24 justify-start items-start p-4 hover:bg-primary_color/10 rounded-lg">
+              <div className="flex">
+                <div className="w-10 h-10 rounded-lg bg-green-100 mb-2 flex items-center justify-center">📝</div>
+               <p className="mt-3 ml-3"> Ask Question</p>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-lg font-medium text-text dark:text-text_color_dark truncate">Ask Anything</p>
-                <p className="text-sm text-gray-500">Start a conversation with Inspectra AI</p>
+            </button>
+            <button  className=" border h-24 justify-start items-start p-4 hover:bg-primary_color/10 rounded-lg">
+              <div className="flex">
+                <div className="w-10 h-10 rounded-lg bg-pink-100 mb-2 flex items-center justify-center">💻</div>
+                <p className="mt-3 ml-3"> Generate Code</p>
               </div>
-              <div className="flex-shrink-0">
-                <button
-                  type="button"
-                  className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-text_color_light bg-primary_color "
-                >
-                  <Plus className="h-5 w-5 mr-2" />
-                  New Chat
-                </button>
-              </div>
-            </div>
+            </button>
           </div>
-        </div>
       </div>
     </div>
   )

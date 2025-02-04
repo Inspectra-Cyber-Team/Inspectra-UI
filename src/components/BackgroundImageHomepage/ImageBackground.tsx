@@ -26,7 +26,8 @@ export default function ImageBackground() {
     pathname === '/change-password' ||
     pathname === '/forget-password' ||
     pathname === '/myprofile' ||
-    pathname === '/bookmark'
+    pathname === '/bookmark' ||
+    pathname === '/ai'
 
 
 
