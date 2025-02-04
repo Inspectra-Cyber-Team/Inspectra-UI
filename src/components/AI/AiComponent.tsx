@@ -531,31 +531,43 @@ export default function AIComponent() {
                     <Settings className="mr-2 h-4 w-4 " /> Settings
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="start" forceMount>
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {ChatMessages?.data?.[0]?.username || "U"}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
-                    onClick={() => router.push("/myprofile")}
-                  >
-                    <User className="mr-2 h-4 w-4" />
-                    <span>My profile</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
-                    onClick={handleLogout}
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
+                <DropdownMenuContent className="w-30 sm:w-56" align="start" forceMount>
+      {userUUID ? (
+        <>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-medium leading-none">
+                {ChatMessages?.data?.[0]?.username || "U"}
+              </p>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+            onClick={() => router.push("/myprofile")}
+          >
+            <User className="mr-2 h-4 w-4" />
+            <span>My profile</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+            onClick={handleLogout}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+          </DropdownMenuItem>
+        </>
+         ) : (
+        <DropdownMenuItem
+          className="cursor-pointer  hover:bg-gray-100 dark:hover:text-text_color_light"
+          onClick={() => router.push("/login")}
+        >
+          <LogIn className="mr-2 h-4 w-4" />
+          <span>Login</span>
+        </DropdownMenuItem>
+      )}
+    </DropdownMenuContent>
               </DropdownMenu>
             </div>
 
