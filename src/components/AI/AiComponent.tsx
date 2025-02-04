@@ -449,7 +449,7 @@ export default function AIComponent() {
             className="w-1/2 bg-background_light_mode border-r flex flex-col dark:bg-background_dark_mode"
           >
             <SheetHeader>
-              <SheetTitle className="md:text-base sm:text-sm text-[10px]">
+              <SheetTitle className="md:text-base text-sm text-start">
                 Inspectra Chat AI
               </SheetTitle>
             </SheetHeader>
@@ -461,7 +461,7 @@ export default function AIComponent() {
                 New chat <Plus className="sm:h-4 sm:w-4 h-2 w-2 text-black" />
               </Button>
             </div>
-            <ScrollArea className="flex-1">
+            <ScrollArea className="flex-1 border-b border-t">
               {sessionList?.map((res: any, index: any) => {
                 const filteredMessages = ChatMessages?.data?.filter(
                   (msg: any) => msg?.chatSessionUuid === res?.uuid
@@ -500,14 +500,14 @@ export default function AIComponent() {
               })}
             </ScrollArea>
 
-            <div className="p-4 border-t relative">
+            <div className="relative">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="w-full justify-start py-[33px]"
+                    className="w-full justify-start"
                   >
-                    <Settings className="mr-2 h-4 w-4" /> Settings
+                    <Settings className="mr-2 h-4 w-4 " /> Settings
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="start" forceMount>
@@ -537,6 +537,7 @@ export default function AIComponent() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
+
           </SheetContent>
         </Sheet>
         {/* end sidebar with shet here */}
