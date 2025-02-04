@@ -2,11 +2,15 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useGetBannerQuery } from "@/redux/service/banner";
+
 
 export default function BannerComponent() {
   const pathname = usePathname(); // Get the current path.
 
   const [isScrolled, setIsScrolled] = useState(false); // Track scroll position.
+
+  const {data} = useGetBannerQuery({});
 
   const isRender =
     pathname === "/login" ||
@@ -42,7 +46,7 @@ export default function BannerComponent() {
         } flex justify-center items-center text-[12px] transition-colors duration-300`}
       >
           <img src="/images/Announcement.svg" className="h-5 w-5 mx-2 hidden md:block"></img>
-          <p><span className="hidden md:inline-block">Announcement :</span> We have updated our project! Check it out !</p>
+          <p><span className="hidden md:inline-block">Announcement :</span> {data?.content?.[0]?.title || "We have updated our project! Check it out!"}</p>
           <img
             src="/images/Announcement.svg"
             className="h-5 w-5 mx-2 scale-x-[-1] hidden md:block"

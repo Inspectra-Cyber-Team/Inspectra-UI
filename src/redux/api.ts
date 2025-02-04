@@ -62,6 +62,7 @@ export const cyberApi = createApi({
     "Blog",
     "Bookmark",
     "ChatSession",
+    "Banner"
   ],
   endpoints: () => ({}),
 });
