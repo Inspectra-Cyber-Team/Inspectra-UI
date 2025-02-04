@@ -653,7 +653,7 @@ export default function AIComponent() {
                         height={50}
                       />
                     </div>
-                    <div className="inline-block px-3 md:px-5 text-[10px] sm:text-base bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark py-2 md:py-3 rounded-tl-[20px] rounded-br-[20px]">
+                    <div className="inline-block px-10 py-4 text-[10px] sm:text-base bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark rounded-tl-[20px] rounded-br-[20px]">
                       <Loader />
                     </div>
                   </div>
