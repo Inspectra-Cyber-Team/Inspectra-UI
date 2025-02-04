@@ -13,6 +13,7 @@ import {
   LogOut,
   User,
   Code,
+  SendHorizonalIcon,
 } from "lucide-react";
 import {
   GoogleGenerativeAI,
@@ -116,7 +117,7 @@ export default function AIComponent() {
     if (sessions?.data?.length > 0) {
       setSessionList(sessions?.data); // Update session list
       if (!activeSession) {
-        setActiveSession(sessions.data[0].uuid); // Set default active session
+        setActiveSession(sessions?.data[0]?.uuid); // Set default active session
       }
     }
   }, [sessions]);
@@ -275,6 +276,8 @@ export default function AIComponent() {
       setSessionList([...sessionList, res?.data]);
 
       setMessages([]);
+    } else {
+      setMessages([]);
     }
   };
 
@@ -342,15 +345,16 @@ export default function AIComponent() {
     <section className="w-[88%] mx-auto">
       {/* Toggle Button for Sidebar */}
       <div className="lg:hidden flex justify-start ">
-        <IoMenu onClick={toggleSidebar} className=" text-black cursor-pointer">
+        <IoMenu onClick={toggleSidebar} className=" text-text_color_light dark:text-text_color_dark cursor-pointer">
           {sidebarVisible ? "Hide Sidebar" : "Show Sidebar"}
         </IoMenu>
       </div>
 
       <section className="flex my-4 h-[600px] bg-card_color_light dark:bg-card_color_dark rounded-xl ">
+
         {/* Sidebar */}
         <section className="w-1/3 border-r flex-col lg:flex hidden ">
-          <section className="px-8 py-4 border-b">
+          <section className="px-4 py-4 border-b">
             <h1 className="text-text_title_24 font-bold">Inspectra Chat AI</h1>
             <Button
               className="w-full bg-primary_color hover:bg-secondary_color text-black mt-4"
@@ -373,8 +377,7 @@ export default function AIComponent() {
                   <div className="relative w-full group">
                     <Button
                       key={res?.uuid}
-                      className={`w-full justify-start text-sm my-4 px- bg-transparent hover:bg-gray-200 text-gray-900 
-                dark:bg-background_dark_mode dark:text-text_color_dark ${
+                      className={`w-full justify-start text-sm  bg-transparent hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-900  dark:text-text_color_dark ${
                   res.uuid === activeUuid
                     ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
                     : ""
@@ -402,7 +405,7 @@ export default function AIComponent() {
             })}
           </ScrollArea>
 
-          <div className="p-4 border-t flex flex-col">
+          <div className="border-t flex flex-col">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -448,7 +451,7 @@ export default function AIComponent() {
             className="w-1/2 bg-background_light_mode border-r flex flex-col dark:bg-background_dark_mode"
           >
             <SheetHeader>
-              <SheetTitle className="md:text-base sm:text-sm text-[10px]">
+              <SheetTitle className="md:text-base text-sm text-start">
                 Inspectra Chat AI
               </SheetTitle>
             </SheetHeader>
@@ -460,7 +463,7 @@ export default function AIComponent() {
                 New chat <Plus className="sm:h-4 sm:w-4 h-2 w-2 text-black" />
               </Button>
             </div>
-            <ScrollArea className="flex-1">
+            <ScrollArea className="flex-1 border-b border-t">
               {sessionList?.map((res: any, index: any) => {
                 const filteredMessages = ChatMessages?.data?.filter(
                   (msg: any) => msg?.chatSessionUuid === res?.uuid
@@ -499,14 +502,14 @@ export default function AIComponent() {
               })}
             </ScrollArea>
 
-            <div className="p-4 border-t relative">
+            <div className="relative">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="w-full justify-start py-[33px]"
+                    className="w-full justify-start"
                   >
-                    <Settings className="mr-2 h-4 w-4" /> Settings
+                    <Settings className="mr-2 h-4 w-4 " /> Settings
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="start" forceMount>
@@ -536,14 +539,15 @@ export default function AIComponent() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
+
           </SheetContent>
         </Sheet>
         {/* end sidebar with shet here */}
 
         {/* Main Content */}
         <div className="flex flex-col w-full">
-          <main className="flex-1  overflow-y-auto mx-4 sm:mx-6 md:mx-8 lg:mx-10">
-            <ScrollArea className="h-full scrollbar-hide">
+          <main className="flex-1  overflow-y-auto  scrollbar-hide">
+            <div className="h-full ">
               <div className="space-y-4 ">
                 {messages.length === 0 ? (
                   <div className="flex justify-center items-center mt-28">
@@ -553,7 +557,7 @@ export default function AIComponent() {
                   messages.map((msg, index) => (
                     <div
                       key={index}
-                      className={`flex mt-14 w-full items-start gap-2 scrollbar-hide ${
+                      className={`flex mt-8 pb-2 px-5 w-full items-start gap-2 scrollbar-hide ${
                         msg.role === "user" ? "justify-end " : "justify-start"
                       }`}
                     >
@@ -570,8 +574,8 @@ export default function AIComponent() {
                       <div
                         className={`inline-block px-3 md:px-5 text-[10px] sm:text-base py-2 md:py-3 rounded-tl-[20px] rounded-br-[20px] ${
                           msg.role === "user"
-                            ? "bg-primary_color text-black max-w-[60%]"
-                            : "bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark max-w-[60%]"
+                            ? "bg-primary_color dark:text-black text-black max-w-[60%]"
+                            : "bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark max-w-[60%] "
                         }`}
                       >
                         <CodeBlock content={msg?.text} />
@@ -610,7 +614,7 @@ export default function AIComponent() {
 
                 {loading && (
                   <div className="flex justify-start items-start gap-2">
-                    <div className="md:w-10 md:h-10 w-6 h-6 rounded-full flex items-center justify-center text-black text-sm">
+                    <div className="md:w-10 md:h-10 w-6 h-6 rounded-full flex items-center justify-center text-black text-sm px-5">
                       <Image
                         src="/images/logo_no_name.png"
                         alt="AI"
@@ -624,28 +628,27 @@ export default function AIComponent() {
                   </div>
                 )}
               </div>
-            </ScrollArea>
+            </div>
           </main>
 
           {/* Input Form */}
-          <div className="border-t p-4">
+          <div className="p-4">
             <div className="max-w-3xl mx-auto">
-              <form onSubmit={onSubmit} className=" sm:flex gap-2">
-                <Input
-                  type="text"
-                  name="prompt"
-                  placeholder="What's on your mind..."
-                  className="flex sm:flex-1 focus:ring-none focus:border-primary_color sm:py-8 rounded-xl md:text-text_body_16 text-sm"
-                  
-                />
-                <Button
-                  type="submit"
-                  className=" sm:py-8 bg-card_color_light dark:bg-card_color_dark max-sm:w-full mt-2 sm:mt-0 p-4  rounded-xl"
-                  disabled={loading}
-                >
-                  <Send className="sm:h-4 h-5 w-5 sm:w-4  text-black dark:text-text_color_dark" />
-                </Button>
-                
+              <form onSubmit={onSubmit} className="sm:flex gap-2 relative">
+                <div className="relative w-full">
+                  <Input
+                    type="text"
+                    name="prompt"
+                    placeholder="What's on your mind..."
+                    className="flex sm:flex-1 focus:ring-none focus:border-primary_color sm:py-8 rounded-xl md:text-text_body_16 text-sm pr-12"
+                  />
+                  <button
+                    type="submit"
+                    className="absolute inset-y-0 right-5 flex items-center"
+                  >
+                    <SendHorizonalIcon className="h-5 w-5 text-black dark:text-text_color_dark" />
+                  </button>
+                </div>
               </form>
             </div>
           </div>
