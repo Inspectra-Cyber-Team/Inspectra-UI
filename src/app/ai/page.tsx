@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     "Interact with Inspectra's AI Chat to get instant support, guidance, and insights on code security and vulnerabilities. Harness the power of AI to improve your development process and protect your applications.",
   keywords:
-    "Inspectra AI Chat, AI assistant, code security, vulnerability detection, AI support, secure coding, AI-powered chat, developer tools, cybersecurity chat, instant support",
+    "Inspectra AI Chat, AI assistant,ai chatbot, ai, ai chat, Ai chatbot, Ai chat, inspectra ai, inspectra ai chat , code security, vulnerability detection, AI support, secure coding, AI-powered chat, developer tools, cybersecurity chat, instant support",
   authors: { name: "Inspectra Team" },
   publisher: "Inspectra",
   openGraph: {

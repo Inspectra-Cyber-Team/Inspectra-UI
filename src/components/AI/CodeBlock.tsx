@@ -61,7 +61,7 @@ const CodeBlock = ({ code, language }: { code: string; language?: string }) => {
         </code>
       </pre>
       {copySuccess && (
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 mt-2 px-3 py-1 text-sm bg-blue-500 text-white rounded-md shadow-md z-20">
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 mt-2 px-3 py-1 text-sm bg-secondary_color text-black rounded-md shadow-md z-20">
           Copied!
         </div>
       )}
