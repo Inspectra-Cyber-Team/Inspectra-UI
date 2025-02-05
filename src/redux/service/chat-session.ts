@@ -39,7 +39,7 @@ export const chatApi = cyberApi.injectEndpoints({
                 method: "POST",
                 body:  message ,
             }),
-            invalidatesTags: [{ type: "ChatSession", id: "ChatSession" }],
+            // invalidatesTags: [{ type: "ChatSession", id: "ChatSession" }],
         }),
 
         deleteSession: builder.mutation<any,{ sessionUuid: string }>({

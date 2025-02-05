@@ -6,7 +6,7 @@ import { Button } from "../ui/button"
 
 export default function NomessageComponent() {
   const [displayedText, setDisplayedText] = useState("")
-  const welcomeMessage = '  Get started by asking a question and Inspectra Chat AI can do the rest.'
+  const welcomeMessage = '   Get started by asking a question and Inspectra Chat AI can do the rest.'
 
   useEffect(() => {
     let i = 0;

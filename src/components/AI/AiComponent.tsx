@@ -1,18 +1,15 @@
 "use client";
-import { useEffect, useRef, useState } from "react"; // Added React import
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Plus,
   Settings,
-  Send,
   Copy,
-  TicketCheck,
   CheckIcon,
   LogOut,
   User,
-  Code,
   SendHorizonalIcon,
   LogIn,
 } from "lucide-react";
@@ -38,7 +35,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { MdMoreVert } from "react-icons/md";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { useToast } from "../hooks/use-toast";
 import {
@@ -55,32 +51,34 @@ import CodeBlock from "./CodeBlock";
 import { IoMenu } from "react-icons/io5";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import Loader from "./Loader";
+import { BsStopCircleFill } from "react-icons/bs";
 
 const MODEL_NAME = "gemini-1.0-pro";
 
 const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string;
 
 export default function AIComponent() {
+
+  const messageEndRef = useRef<HTMLDivElement>(null);
+
   const router = useRouter();
 
   const { toast } = useToast();
 
   const [activeSession, setActiveSession] = useState<string | any>(null);
 
-  const [messages, setMessages] = useState<{ role: string; text: string }[]>(
-    []
-  );
+  const [messages, setMessages] = useState<{ role: string; text: string }[]>([]);
+
+  const [inputValue , setInputValue] = useState<string>("");
 
   const [loading, setLoading] = useState(false);
+
+  const [buttonLoading,setButtonLoading] = useState(false);
 
   const [activeChatIndex, setActiveChatIndex] = useState<number | null>(null);
 
@@ -90,7 +88,7 @@ export default function AIComponent() {
 
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
-   const [userUUID, setUserUUID] = useState<string>("");
+  const [userUUID, setUserUUID] = useState<string>("");
   
     useEffect(() => {
       setUserUUID(localStorage.getItem("userUUID") ?? "");
@@ -99,6 +97,16 @@ export default function AIComponent() {
   const toggleSidebar = () => {
     setSidebarVisible((prevState) => !prevState);
   };
+
+  //trigger when message changes make content grow to bottom auto scroll automatically
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollTo({
+        top: messageEndRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages]);
 
   // fetch all chat sessions
   const { data: sessions } = useGetAllSessionsQuery(null);
@@ -109,6 +117,7 @@ export default function AIComponent() {
       { sessionUuid: activeSession! },
       { skip: !activeSession }
     );
+
 
   // Mutations
   const [createSession] = useCreateSessionMutation();
@@ -138,10 +147,14 @@ export default function AIComponent() {
     };
 
     try {
+
       const res = await createMessage({ message: payload });
-      if (res?.data) {
-        refetchMessages();
-      }
+
+      // if (res?.data) {
+
+      //   refetchMessages();
+        
+      // }
     } catch (error) {
       console.error("Failed to send message:", error);
     }
@@ -164,9 +177,12 @@ export default function AIComponent() {
     }
   }, [ChatMessages]);
 
+
+  
+
   const runChat = async (prompt: string) => {
     setLoading(true);
-
+    setButtonLoading(true);
     try {
       const genAI = new GoogleGenerativeAI(API_KEY);
 
@@ -227,6 +243,8 @@ export default function AIComponent() {
       ];
 
       setMessages((prevMessages) => [...prevMessages, newMessages[1]]);
+
+
       const typeMessage = () => {
         if (charIndex < newMessages[1].text.length) {
           setMessages((prevMessages) => [
@@ -238,22 +256,31 @@ export default function AIComponent() {
           ]);
           charIndex++;
           setTimeout(typeMessage, 10); // Continue typing one character at a time
+        } else {
+          setButtonLoading(false);
         }
       };
-
-      typeMessage();
+   
+       typeMessage();
     } catch (error) {
       console.error("Error during chat generation:", error);
-    } finally {
+     } 
+    finally {
       setLoading(false);
     }
   };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+
     event.preventDefault();
 
+    setInputValue("");
+
     const prompt = (event.target as HTMLFormElement).prompt?.value.trim();
-    if (!prompt) return;
+
+    if (!prompt) {
+      return ;
+    };
 
     const newMessages = [...messages, { role: "user", text: prompt }];
     if (activeChatIndex === null) {
@@ -268,6 +295,7 @@ export default function AIComponent() {
     await runChat(prompt);
 
     (event.target as HTMLFormElement).reset();
+
   };
 
   // Start a new chat (reset)
@@ -301,16 +329,21 @@ export default function AIComponent() {
   const [activeUuid, setActiveUuid] = useState<string>("");
 
   const handleChatSwitch = (uuid: string, index: number) => {
+
     setActiveUuid(uuid);
+
     const selectedSession = sessions?.data[index];
+
     if (selectedSession) {
       setActiveSession(selectedSession.uuid);
       refetchMessages();
     }
+
   };
 
   // function handle delete session
   const handleDeleteSession = async (sessionUuid: string) => {
+
     const res = await deleteSession({ sessionUuid });
 
     if (res?.data == null) {
@@ -532,8 +565,9 @@ export default function AIComponent() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-30 sm:w-56" align="start" forceMount>
-      {userUUID ? (
-        <>
+     
+        {userUUID ? (
+           <>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium leading-none">
@@ -576,10 +610,10 @@ export default function AIComponent() {
         {/* end sidebar with shet here */}
 
         {/* Main Content */}
-        <div className="flex flex-col w-full h-full">
+        <div className="flex flex-col w-full h-full ">
           <main className="flex-1  overflow-y-auto scrollbar-hide">
-            <div className="h-full overflow-y-auto scrollbar-hide">
-              <div className="space-y-4 ">
+            <div ref={messageEndRef}  className="h-full overflow-y-auto scrollbar-hide" >
+              <div className="space-y-4 "        >
                 {messages.length === 0 ? (
                   <div className="flex justify-center overflow-hidden items-center mt-28 ">
                     <NomessageComponent />
@@ -658,6 +692,7 @@ export default function AIComponent() {
                     </div>
                   </div>
                 )}
+
               </div>
             </div>
           </main>
@@ -671,13 +706,16 @@ export default function AIComponent() {
                     type="text"
                     name="prompt"
                     placeholder="What's on your mind..."
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)} 
                     className="flex sm:flex-1 focus:ring-none focus:border-primary_color sm:py-8 rounded-xl md:text-text_body_16 text-sm pr-12"
                   />
                   <button
                     type="submit"
-                    className="absolute inset-y-0 right-5 flex items-center"
+                    className={`absolute inset-y-0 right-5 flex items-center ${loading || !inputValue.trim() ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                    disabled={loading || !inputValue.trim()}
                   >
-                    <SendHorizonalIcon className="h-5 w-5 text-black dark:text-text_color_dark" />
+                  {buttonLoading ? <BsStopCircleFill size={20} /> : <SendHorizonalIcon className="h-5 w-5 text-black dark:text-text_color_dark" />}
                   </button>
                 </div>
               </form>
