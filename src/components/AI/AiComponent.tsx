@@ -637,7 +637,7 @@ export default function AIComponent() {
                         </div>
                       )}
                       <div
-                        className={`inline-block px-3 md:px-5 text-[10px] sm:text-base py-1 md:py-2 rounded-tl-[20px] rounded-br-[20px] ${
+                        className={`inline-block px-3 md:px-5 text-text_body_16 sm:text-base py-1 md:py-2 rounded-tl-[20px] rounded-br-[20px] ${
                           msg.role === "user"
                             ? "bg-primary_color dark:text-black text-black max-w-[60%]"
                             : "bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark max-w-[60%] "
