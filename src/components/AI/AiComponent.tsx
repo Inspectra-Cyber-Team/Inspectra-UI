@@ -74,11 +74,11 @@ export default function AIComponent() {
 
   const [messages, setMessages] = useState<{ role: string; text: string }[]>([]);
 
-  const [inputValue , setInputValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState<string>("");
 
   const [loading, setLoading] = useState(false);
 
-  const [buttonLoading,setButtonLoading] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   const [activeChatIndex, setActiveChatIndex] = useState<number | null>(null);
 
@@ -89,10 +89,10 @@ export default function AIComponent() {
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const [userUUID, setUserUUID] = useState<string>("");
-  
-    useEffect(() => {
-      setUserUUID(localStorage.getItem("userUUID") ?? "");
-    });
+
+  useEffect(() => {
+    setUserUUID(localStorage.getItem("userUUID") ?? "");
+  });
 
   const toggleSidebar = () => {
     setSidebarVisible((prevState) => !prevState);
@@ -153,7 +153,7 @@ export default function AIComponent() {
       // if (res?.data) {
 
       //   refetchMessages();
-        
+
       // }
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -178,7 +178,7 @@ export default function AIComponent() {
   }, [ChatMessages]);
 
 
-  
+
 
   const runChat = async (prompt: string) => {
     setLoading(true);
@@ -260,11 +260,11 @@ export default function AIComponent() {
           setButtonLoading(false);
         }
       };
-   
-       typeMessage();
+
+      typeMessage();
     } catch (error) {
       console.error("Error during chat generation:", error);
-     } 
+    }
     finally {
       setLoading(false);
     }
@@ -274,12 +274,18 @@ export default function AIComponent() {
 
     event.preventDefault();
 
+    if (!inputValue.trim()) return;
+
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"; // Reset height
+    }
+
     setInputValue("");
 
     const prompt = (event.target as HTMLFormElement).prompt?.value.trim();
 
     if (!prompt) {
-      return ;
+      return;
     };
 
     const newMessages = [...messages, { role: "user", text: prompt }];
@@ -361,6 +367,19 @@ export default function AIComponent() {
     }
   };
 
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"; // Reset height
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = `${Math.min(scrollHeight, 120)}px`;
+
+      // Show scrollbar only when exceeding 120px
+      textareaRef.current.style.overflowY = scrollHeight > 120 ? "auto" : "hidden";
+    }
+  }, [inputValue]);
+
   //  fucntion handle logout
   const handleLogout = () => {
     fetch(process.env.NEXT_PUBLIC_BASE_URL_LOCALHOST + "/logout", {
@@ -417,11 +436,10 @@ export default function AIComponent() {
                   <div className="relative w-full group">
                     <Button
                       key={res?.uuid}
-                      className={`w-full justify-start text-sm  bg-transparent hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-900  dark:text-text_color_dark ${
-                  res.uuid === activeUuid
-                    ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
-                    : ""
-                }`}
+                      className={`w-full justify-start text-sm  bg-transparent hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-900  dark:text-text_color_dark ${res.uuid === activeUuid
+                        ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
+                        : ""
+                        }`}
                       onClick={(e) => {
                         e.preventDefault();
                         handleChatSwitch(res?.uuid, index);
@@ -456,42 +474,42 @@ export default function AIComponent() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="start" forceMount>
-      {userUUID ? (
-        <>
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">
-                {ChatMessages?.data?.[0]?.username || "U"}
-              </p>
-            </div>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
-            onClick={() => router.push("/myprofile")}
-          >
-            <User className="mr-2 h-4 w-4" />
-            <span>My profile</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
-            onClick={handleLogout}
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
-          </DropdownMenuItem>
-        </>
-         ) : (
-        <DropdownMenuItem
-          className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
-          onClick={() => router.push("/login")}
-        >
-          <LogIn className="mr-2 h-4 w-4" />
-          <span>Login</span>
-        </DropdownMenuItem>
-      )}
-    </DropdownMenuContent>
+                {userUUID ? (
+                  <>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {ChatMessages?.data?.[0]?.username || "U"}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                      onClick={() => router.push("/myprofile")}
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      <span>My profile</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuItem
+                    className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                    onClick={() => router.push("/login")}
+                  >
+                    <LogIn className="mr-2 h-4 w-4" />
+                    <span>Login</span>
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </section>
@@ -527,11 +545,10 @@ export default function AIComponent() {
                   <div key={res?.uuid}>
                     <div className="relative w-full group">
                       <Button
-                        className={`w-full justify-start text-[10px]  sm:text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark ${
-                          res.uuid === activeUuid
-                            ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
-                            : ""
-                        }`}
+                        className={`w-full justify-start text-[10px]  sm:text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark ${res.uuid === activeUuid
+                          ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
+                          : ""
+                          }`}
                         onClick={(e) => {
                           e.preventDefault();
                           handleChatSwitch(res?.uuid, index);
@@ -565,43 +582,43 @@ export default function AIComponent() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-30 sm:w-56" align="start" forceMount>
-     
-        {userUUID ? (
-           <>
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">
-                {ChatMessages?.data?.[0]?.username || "U"}
-              </p>
-            </div>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
-            onClick={() => router.push("/myprofile")}
-          >
-            <User className="mr-2 h-4 w-4" />
-            <span>My profile</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
-            onClick={handleLogout}
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
-          </DropdownMenuItem>
-        </>
-         ) : (
-        <DropdownMenuItem
-          className="cursor-pointer  hover:bg-gray-100 dark:hover:text-text_color_light"
-          onClick={() => router.push("/login")}
-        >
-          <LogIn className="mr-2 h-4 w-4" />
-          <span>Login</span>
-        </DropdownMenuItem>
-      )}
-    </DropdownMenuContent>
+
+                  {userUUID ? (
+                    <>
+                      <DropdownMenuLabel className="font-normal">
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm font-medium leading-none">
+                            {ChatMessages?.data?.[0]?.username || "U"}
+                          </p>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                        onClick={() => router.push("/myprofile")}
+                      >
+                        <User className="mr-2 h-4 w-4" />
+                        <span>My profile</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                        onClick={handleLogout}
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                      </DropdownMenuItem>
+                    </>
+                  ) : (
+                    <DropdownMenuItem
+                      className="cursor-pointer  hover:bg-gray-100 dark:hover:text-text_color_light"
+                      onClick={() => router.push("/login")}
+                    >
+                      <LogIn className="mr-2 h-4 w-4" />
+                      <span>Login</span>
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
               </DropdownMenu>
             </div>
 
@@ -612,7 +629,7 @@ export default function AIComponent() {
         {/* Main Content */}
         <div className="flex flex-col w-full h-full ">
           <main className="flex-1  overflow-y-auto scrollbar-hide">
-            <div ref={messageEndRef}  className="h-full overflow-y-auto scrollbar-hide" >
+            <div ref={messageEndRef} className="h-full overflow-y-auto scrollbar-hide" >
               <div className="space-y-4 "        >
                 {messages.length === 0 ? (
                   <div className="flex justify-center overflow-hidden items-center mt-28 ">
@@ -622,9 +639,8 @@ export default function AIComponent() {
                   messages.map((msg, index) => (
                     <div
                       key={index}
-                      className={`flex mt-8 pb-2 px-5 w-full items-start gap-2  ${
-                        msg.role === "user" ? "justify-end " : "justify-start"
-                      }`}
+                      className={`flex mt-8 pb-2 px-5 w-full items-start gap-2  ${msg.role === "user" ? "justify-end " : "justify-start"
+                        }`}
                     >
                       {msg.role !== "user" && (
                         <div className="md:w-10 md:h-10 w-6 h-6 rounded-full flex items-center justify-center text-black text-sm">
@@ -637,11 +653,10 @@ export default function AIComponent() {
                         </div>
                       )}
                       <div
-                        className={`inline-block px-3 md:px-5 text-text_body_16 sm:text-base py-1 md:py-2 rounded-tl-[20px] rounded-br-[20px] ${
-                          msg.role === "user"
-                            ? "bg-primary_color dark:text-black text-black max-w-[60%]"
-                            : "bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark max-w-[60%] "
-                        }`}
+                        className={`inline-block px-3 md:px-5 text-text_body_16 sm:text-base py-1 md:py-2 rounded-tl-[20px] rounded-br-[20px] ${msg.role === "user"
+                          ? "bg-primary_color dark:text-black text-black max-w-[60%]"
+                          : "bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark max-w-[60%] "
+                          }`}
                       >
                         <CodeBlock content={msg?.text} />
                       </div>
@@ -702,20 +717,26 @@ export default function AIComponent() {
             <div className="max-w-3xl mx-auto">
               <form onSubmit={onSubmit} className="sm:flex gap-2 relative">
                 <div className="relative w-full">
-                  <Input
-                    type="text"
+                  <textarea
+                    ref={textareaRef}
                     name="prompt"
                     placeholder="What's on your mind..."
                     value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)} 
-                    className="flex sm:flex-1 focus:ring-none focus:border-primary_color sm:py-8 rounded-xl md:text-text_body_16 text-sm pr-12"
+                    onChange={(e) => setInputValue(e.target.value)}
+                    rows={1}
+                    className="flex sm:flex-1 focus:ring-none scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 
+  focus:border-primary_color rounded-xl text-sm pr-12 p-3 w-full resize-none bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 
+  placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200 ease-in-out"
                   />
+
+
                   <button
                     type="submit"
-                    className={`absolute inset-y-0 right-5 flex items-center ${loading || !inputValue.trim() ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-                    disabled={loading || !inputValue.trim()}
+                    className={`absolute inset-y-0 right-5 flex items-center ${!inputValue.trim() ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                      }`}
+                    disabled={!inputValue.trim()}
                   >
-                  {buttonLoading ? <BsStopCircleFill size={20} /> : <SendHorizonalIcon className="h-5 w-5 text-black dark:text-text_color_dark" />}
+                    {false ? <BsStopCircleFill size={20} /> : <SendHorizonalIcon className="h-5 w-5 text-black dark:text-text_color_dark" />}
                   </button>
                 </div>
               </form>
