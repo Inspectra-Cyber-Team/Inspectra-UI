@@ -423,7 +423,7 @@ export default function AIComponent() {
             </Button>
           </section>
 
-          <ScrollArea className="flex-1 p-4">
+          <div className="flex-1 p-4 ">
             {sessionList?.map((res: any, index: any) => {
               const filteredMessages = ChatMessages?.data?.filter(
                 (msg: any) => msg?.chatSessionUuid === res?.uuid
@@ -436,16 +436,17 @@ export default function AIComponent() {
                   <div className="relative w-full group">
                     <Button
                       key={res?.uuid}
-                      className={`w-full justify-start text-sm  bg-transparent hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-900  dark:text-text_color_dark ${res.uuid === activeUuid
-                        ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
-                        : ""
-                        }`}
+                      className={`w-full overflow-y-auto justify-start text-sm  bg-transparent hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-900  dark:text-text_color_dark ${
+                  res.uuid === activeUuid
+                    ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
+                    : ""
+                }`}
                       onClick={(e) => {
                         e.preventDefault();
                         handleChatSwitch(res?.uuid, index);
                       }}
                     >
-                      {lastMessage?.query || "New chat"}
+                      <span className="truncate max-w-[300px] line-clamp-1 flex items-start">{lastMessage?.query || "New chat"}</span>
                     </Button>
 
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -461,7 +462,7 @@ export default function AIComponent() {
                 </div>
               );
             })}
-          </ScrollArea>
+          </div>
 
           <div className="border-t flex flex-col">
             <DropdownMenu>
@@ -533,7 +534,7 @@ export default function AIComponent() {
                 New chat <Plus className="sm:h-4 sm:w-4 h-2 w-2 text-black" />
               </Button>
             </div>
-            <ScrollArea className="flex-1 border-b border-t">
+            <div className="flex-1 border-b border-t">
               {sessionList?.map((res: any, index: any) => {
                 const filteredMessages = ChatMessages?.data?.filter(
                   (msg: any) => msg?.chatSessionUuid === res?.uuid
@@ -542,19 +543,20 @@ export default function AIComponent() {
                   filteredMessages?.[filteredMessages.length - 1];
 
                 return (
-                  <div key={res?.uuid}>
+                  <div  key={res?.uuid}>
                     <div className="relative w-full group">
                       <Button
-                        className={`w-full justify-start text-[10px]  sm:text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark ${res.uuid === activeUuid
-                          ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
-                          : ""
-                          }`}
+                        className={`w-full overflow-y-auto  justify-start text-[10px]  sm:text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark ${
+                          res.uuid === activeUuid
+                            ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
+                            : ""
+                        }`}
                         onClick={(e) => {
                           e.preventDefault();
                           handleChatSwitch(res?.uuid, index);
                         }}
                       >
-                        {lastMessage?.query || "New chat"}
+                         <span className="truncate max-w-[200px] line-clamp-1 flex items-start">{lastMessage?.query || "New chat"}</span>
                       </Button>
                       <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <FaTrashAlt
@@ -569,7 +571,7 @@ export default function AIComponent() {
                   </div>
                 );
               })}
-            </ScrollArea>
+            </div>
 
             <div className="relative">
               <DropdownMenu>

@@ -1,36 +1,27 @@
 "use client"
 
-import { Plus } from "lucide-react"
-import { useEffect, useState } from "react"
-import { Button } from "../ui/button"
+import { useTypewriter } from "react-simple-typewriter";
 
 export default function NomessageComponent() {
-  const [displayedText, setDisplayedText] = useState("")
-  const welcomeMessage = '   Get started by asking a question and Inspectra Chat AI can do the rest.'
 
-  useEffect(() => {
-    let i = 0;
-    setDisplayedText("");
-    const interval = setInterval(() => {
-      if (i < welcomeMessage.length) {
-        setDisplayedText((prev) => prev + welcomeMessage.charAt(i)); 
-        i++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 50); // Adjust speed here
-    
-    return () => clearInterval(interval);
-  }, []);
+  const [text] = useTypewriter({
+    words: ["Get started by asking a question and Inspectra Chat AI can do the rest."],
+    loop: 1,
+    typeSpeed: 50,
+    deleteSpeed: 0,
+  });
 
   return (
-    <div className="flex flex-col items-center justify-center ">
-      <div className="w-full max-w-md space-y-8 ">
+    <div className="flex flex-col items-center justify-center">
+      <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h2 className="text-xl md:text-3xl font-extrabold text-text_color_light dark:text-text_color_dark">Welcome to Inspectra AI</h2>
-          <p className="my-2 text-sm px-2 md:px-0 md:text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark h-16">{displayedText}</p>
+          <h2 className="text-xl md:text-3xl font-extrabold text-text_color_light dark:text-text_color_dark">
+            Welcome to Inspectra AI
+          </h2>
+          <p className="my-2 text-sm px-2 md:px-0 md:text-text_body_16 text-text_color_desc_light dark:text-text_color_desc_dark h-16">
+            {text}
+          </p>
         </div>
-
 
          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
             <button className="border dark:border-text_color_desc_dark h-24 justify-start items-start mx-5 md:mx-0 p-4 hover:bg-primary_color/10 rounded-lg cursor-auto">
@@ -48,6 +39,6 @@ export default function NomessageComponent() {
           </div>
       </div>
     </div>
-  )
+  );
 }
 
