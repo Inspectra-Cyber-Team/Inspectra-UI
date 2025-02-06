@@ -18,7 +18,7 @@ const CodeBlock = ({ code, language }: { code: string; language?: string }) => {
     if (codeRef.current) {
       hljs.highlightElement(codeRef.current);
     }
-  });
+  },[code]);
 
   const copyToClipboard = async () => {
     try {

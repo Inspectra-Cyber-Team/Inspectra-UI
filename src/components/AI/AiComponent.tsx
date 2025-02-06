@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Plus,
   Settings,
@@ -58,7 +56,7 @@ import {
 import Loader from "./Loader";
 import { BsStopCircleFill } from "react-icons/bs";
 
-const MODEL_NAME = "gemini-1.0-pro";
+const MODEL_NAME = "gemini-1.5-flash"  //"gemini-1.0-pro";
 
 const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string;
 
@@ -79,6 +77,12 @@ export default function AIComponent() {
   const [loading, setLoading] = useState(false);
 
   const [buttonLoading, setButtonLoading] = useState(false);
+
+  const [isTyping, setIsTyping] = useState(false);
+
+  const [controller , setController] = useState<AbortController | null>(null);
+
+  // const abortController = new AbortController();
 
   const [activeChatIndex, setActiveChatIndex] = useState<number | null>(null);
 
@@ -140,6 +144,7 @@ export default function AIComponent() {
 
   // Handle sending messages
   const sendMessage = async (responseText: string, promt: string) => {
+    console.log("responseText", responseText);
     const payload = {
       sessionUuid: activeSession,
       query: promt,
@@ -178,11 +183,40 @@ export default function AIComponent() {
   }, [ChatMessages]);
 
 
+  const stopTyping = () => {
 
+    setIsTyping(true); // Stop typing
+  
+    if (controller) {
+      controller.abort();
+    }
+
+    setButtonLoading(false); // Reset the button state
+  
+    setIsTyping(false); // Reset the typing state
+
+    setController(null);
+  
+    toast({
+      title: "Typing Stopped",
+      description: "The message generation was stopped.",
+      variant: "success",
+    });
+
+
+  };
 
   const runChat = async (prompt: string) => {
+    
     setLoading(true);
+
     setButtonLoading(true);
+
+    const abortController = new AbortController();
+
+    setController(abortController);
+ 
+
     try {
       const genAI = new GoogleGenerativeAI(API_KEY);
 
@@ -226,14 +260,31 @@ export default function AIComponent() {
         ],
       });
 
-      const result = await chat.sendMessage(prompt);
+      const result = await chat.sendMessage(prompt, {signal: abortController.signal});
+
+      if (abortController.signal.aborted) {
+        setIsTyping(false);
+        toast ({
+          title: "Request Aborted",
+          description: "Request has been aborted1",
+          variant: "success",
+        })
+        setButtonLoading(false);
+        return
+      }
 
       const responseText = result.response?.text();
+      
 
-      // Make sure the message is only sent once we have the response
-      if (responseText) {
-        await sendMessage(responseText, prompt); // Send the message after the response
+      if (abortController.signal.aborted) {
+        setIsTyping(false)
+        setButtonLoading(false);
+        return;
       }
+
+      // if (responseText) {
+      //   await sendMessage(responseText, prompt); // Send the message after the response
+      // }
 
       // Simulate typing effect
       let charIndex = 0;
@@ -242,11 +293,20 @@ export default function AIComponent() {
         { role: "model", text: responseText || "AI is typing..." },
       ];
 
+      if(!abortController.signal.aborted) {
       setMessages((prevMessages) => [...prevMessages, newMessages[1]]);
+      }
 
 
-      const typeMessage = () => {
+      const typeMessage = async () => {
+
+        if (abortController.signal.aborted) {
+          await sendMessage(newMessages[1].text.slice(0, charIndex), prompt);
+          setButtonLoading(false);
+          return; // Stop typing if request is aborted
+        }
         if (charIndex < newMessages[1].text.length) {
+
           setMessages((prevMessages) => [
             ...prevMessages.slice(0, prevMessages.length - 1),
             {
@@ -257,6 +317,10 @@ export default function AIComponent() {
           charIndex++;
           setTimeout(typeMessage, 10); // Continue typing one character at a time
         } else {
+          // Once typing is complete, send the message
+        if (newMessages[1].text) {
+          await sendMessage(newMessages[1].text, prompt); // Send the response message from the typing effect
+        }
           setButtonLoading(false);
         }
       };
@@ -400,6 +464,25 @@ export default function AIComponent() {
       });
   };
 
+  // handle function enter key press on text area instad of click icoon send
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); 
+      if (inputValue.trim()) {
+        const form = e.currentTarget.closest("form");
+        if (form) {
+          form.requestSubmit(); 
+        }
+      }
+    }
+  };
+
+
+  
+  
+  
+  
+
   return (
     <section className="w-[88%] mx-auto">
       {/* Toggle Button for Sidebar */}
@@ -436,11 +519,10 @@ export default function AIComponent() {
                   <div className="relative w-full group">
                     <Button
                       key={res?.uuid}
-                      className={`w-full overflow-y-auto justify-start text-sm  bg-transparent hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-900  dark:text-text_color_dark ${
-                  res.uuid === activeUuid
-                    ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
-                    : ""
-                }`}
+                      className={`w-full justify-start text-sm  bg-transparent hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-900  dark:text-text_color_dark ${res.uuid === activeUuid
+                        ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
+                        : ""
+                        }`}
                       onClick={(e) => {
                         e.preventDefault();
                         handleChatSwitch(res?.uuid, index);
@@ -546,11 +628,10 @@ export default function AIComponent() {
                   <div  key={res?.uuid}>
                     <div className="relative w-full group">
                       <Button
-                        className={`w-full overflow-y-auto  justify-start text-[10px]  sm:text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark ${
-                          res.uuid === activeUuid
-                            ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
-                            : ""
-                        }`}
+                        className={`w-full justify-start text-[10px]  sm:text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark ${res.uuid === activeUuid
+                          ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
+                          : ""
+                          }`}
                         onClick={(e) => {
                           e.preventDefault();
                           handleChatSwitch(res?.uuid, index);
@@ -724,6 +805,7 @@ export default function AIComponent() {
                     name="prompt"
                     placeholder="What's on your mind..."
                     value={inputValue}
+                    onKeyDown={handleKeyDown}
                     onChange={(e) => setInputValue(e.target.value)}
                     rows={1}
                     className="flex sm:flex-1 focus:ring-none scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 
@@ -733,12 +815,12 @@ export default function AIComponent() {
 
 
                   <button
-                    type="submit"
-                    className={`absolute inset-y-0 right-5 flex items-center ${!inputValue.trim() ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                    type={buttonLoading ? "button" : "submit"}
+                    className={`absolute inset-y-0 right-5 flex items-center ${loading || !inputValue.trim() ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
                       }`}
-                    disabled={!inputValue.trim()}
+                    // disabled={loading || !inputValue.trim()}
                   >
-                    {false ? <BsStopCircleFill size={20} /> : <SendHorizonalIcon className="h-5 w-5 text-black dark:text-text_color_dark" />}
+                    {buttonLoading ? <BsStopCircleFill className="cursor-pointer" onClick={() => stopTyping()} size={20} /> : <SendHorizonalIcon className="h-5 w-5 text-black dark:text-text_color_dark" />}
                   </button>
                 </div>
               </form>
@@ -770,6 +852,11 @@ export default function AIComponent() {
           </DialogContent>
         </Dialog>
       </section>
+
+
+
+
+
     </section>
   );
 }
