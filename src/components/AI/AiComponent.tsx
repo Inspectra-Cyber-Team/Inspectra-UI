@@ -58,7 +58,7 @@ import {
 import Loader from "./Loader";
 import { BsStopCircleFill } from "react-icons/bs";
 
-const MODEL_NAME = "gemini-1.0-pro";
+const MODEL_NAME = "gemini-1.5-flash"  //"gemini-1.0-pro";
 
 const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string;
 
@@ -360,6 +360,113 @@ export default function AIComponent() {
       setDeleteModalOpen(false);
     }
   };
+
+
+  const [extractedText, setExtractedText] = useState(""); // State to store the extracted text
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    setSelectedImage(file);
+    if (file) {
+      generateImageText(file); // Call the function to extract text
+    }
+  };
+  
+  const generateImageText = async (image: File, retryCount: number = 0) => {
+    const maxRetries = 10; // Max retries to avoid infinite loops
+    const delay = 2000; // Delay in milliseconds between retries (2 seconds)
+
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+
+    const generationConfig = {
+      temperature: 0.9,
+      topK: 1,
+      topP: 1,
+      maxOutputTokens: 2048,
+    };
+
+    const safetySettings = [
+      {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+    ];
+
+    const reader = new FileReader();
+
+    reader.onloadend = async () => {
+      const base64String = reader.result as string;
+
+      const request = {
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: "Write code like this images", // Your prompt
+              },
+              {
+                inlineData: {
+                  mimeType: image.type, // Important: Set the correct MIME type
+                  data: base64String.split(",")[1], // Remove the data URL prefix
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      try {
+        const result = await model.generateContent(request, {
+          generationConfig,
+          safetySettings,
+        });
+
+        console.log("Full API Response:", JSON.stringify(result, null, 2)); // For debugging
+
+        const responseText = result.response?.candidates[0]?.content?.parts[0]?.text || "";
+
+        console.log("Extracted Text:", responseText); // Log the extracted text
+
+        if (responseText) {
+          // Set the extracted text in state (assuming you have a state management solution)
+          // Example with useState hook:
+          setExtractedText(responseText);
+        }
+
+      } catch (error) {
+        if (retryCount < maxRetries) {
+          console.log(`Error: ${error.message}. Retrying in ${delay / 1000} seconds...`);
+          setTimeout(() => generateImageText(image, retryCount + 1), delay);
+        } else {
+          console.error("Error extracting text from image:", error);
+          // Handle the error case (e.g., display an error message to the user)
+        }
+      }
+    };
+
+    if (image) {
+      reader.readAsDataURL(image);
+    }
+  };
+  
+
+
+  // ... (rest of your component code)
 
   //  fucntion handle logout
   const handleLogout = () => {
@@ -747,6 +854,11 @@ export default function AIComponent() {
           </DialogContent>
         </Dialog>
       </section>
+
+
+
+
+
     </section>
   );
 }
