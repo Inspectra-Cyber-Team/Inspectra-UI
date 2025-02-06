@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Plus,
   Settings,
@@ -74,11 +72,17 @@ export default function AIComponent() {
 
   const [messages, setMessages] = useState<{ role: string; text: string }[]>([]);
 
-  const [inputValue , setInputValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState<string>("");
 
   const [loading, setLoading] = useState(false);
 
-  const [buttonLoading,setButtonLoading] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
+
+  const [isTyping, setIsTyping] = useState(false);
+
+  const [controller , setController] = useState<AbortController | null>(null);
+
+  // const abortController = new AbortController();
 
   const [activeChatIndex, setActiveChatIndex] = useState<number | null>(null);
 
@@ -89,10 +93,10 @@ export default function AIComponent() {
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const [userUUID, setUserUUID] = useState<string>("");
-  
-    useEffect(() => {
-      setUserUUID(localStorage.getItem("userUUID") ?? "");
-    });
+
+  useEffect(() => {
+    setUserUUID(localStorage.getItem("userUUID") ?? "");
+  });
 
   const toggleSidebar = () => {
     setSidebarVisible((prevState) => !prevState);
@@ -140,6 +144,7 @@ export default function AIComponent() {
 
   // Handle sending messages
   const sendMessage = async (responseText: string, promt: string) => {
+    console.log("responseText", responseText);
     const payload = {
       sessionUuid: activeSession,
       query: promt,
@@ -153,7 +158,7 @@ export default function AIComponent() {
       // if (res?.data) {
 
       //   refetchMessages();
-        
+
       // }
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -178,11 +183,40 @@ export default function AIComponent() {
   }, [ChatMessages]);
 
 
+  const stopTyping = () => {
+
+    setIsTyping(true); // Stop typing
   
+    if (controller) {
+      controller.abort();
+    }
+
+    setButtonLoading(false); // Reset the button state
+  
+    setIsTyping(false); // Reset the typing state
+
+    setController(null);
+  
+    toast({
+      title: "Typing Stopped",
+      description: "The message generation was stopped.",
+      variant: "success",
+    });
+
+
+  };
 
   const runChat = async (prompt: string) => {
+    
     setLoading(true);
+
     setButtonLoading(true);
+
+    const abortController = new AbortController();
+
+    setController(abortController);
+ 
+
     try {
       const genAI = new GoogleGenerativeAI(API_KEY);
 
@@ -226,14 +260,31 @@ export default function AIComponent() {
         ],
       });
 
-      const result = await chat.sendMessage(prompt);
+      const result = await chat.sendMessage(prompt, {signal: abortController.signal});
+
+      if (abortController.signal.aborted) {
+        setIsTyping(false);
+        toast ({
+          title: "Request Aborted",
+          description: "Request has been aborted1",
+          variant: "success",
+        })
+        setButtonLoading(false);
+        return
+      }
 
       const responseText = result.response?.text();
+      
 
-      // Make sure the message is only sent once we have the response
-      if (responseText) {
-        await sendMessage(responseText, prompt); // Send the message after the response
+      if (abortController.signal.aborted) {
+        setIsTyping(false)
+        setButtonLoading(false);
+        return;
       }
+
+      // if (responseText) {
+      //   await sendMessage(responseText, prompt); // Send the message after the response
+      // }
 
       // Simulate typing effect
       let charIndex = 0;
@@ -242,11 +293,20 @@ export default function AIComponent() {
         { role: "model", text: responseText || "AI is typing..." },
       ];
 
+      if(!abortController.signal.aborted) {
       setMessages((prevMessages) => [...prevMessages, newMessages[1]]);
+      }
 
 
-      const typeMessage = () => {
+      const typeMessage = async () => {
+
+        if (abortController.signal.aborted) {
+          await sendMessage(newMessages[1].text.slice(0, charIndex), prompt);
+          setButtonLoading(false);
+          return; // Stop typing if request is aborted
+        }
         if (charIndex < newMessages[1].text.length) {
+
           setMessages((prevMessages) => [
             ...prevMessages.slice(0, prevMessages.length - 1),
             {
@@ -257,14 +317,18 @@ export default function AIComponent() {
           charIndex++;
           setTimeout(typeMessage, 10); // Continue typing one character at a time
         } else {
+          // Once typing is complete, send the message
+        if (newMessages[1].text) {
+          await sendMessage(newMessages[1].text, prompt); // Send the response message from the typing effect
+        }
           setButtonLoading(false);
         }
       };
-   
-       typeMessage();
+
+      typeMessage();
     } catch (error) {
       console.error("Error during chat generation:", error);
-     } 
+    }
     finally {
       setLoading(false);
     }
@@ -274,12 +338,18 @@ export default function AIComponent() {
 
     event.preventDefault();
 
+    if (!inputValue.trim()) return;
+
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"; // Reset height
+    }
+
     setInputValue("");
 
     const prompt = (event.target as HTMLFormElement).prompt?.value.trim();
 
     if (!prompt) {
-      return ;
+      return;
     };
 
     const newMessages = [...messages, { role: "user", text: prompt }];
@@ -361,112 +431,18 @@ export default function AIComponent() {
     }
   };
 
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const [extractedText, setExtractedText] = useState(""); // State to store the extracted text
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    setSelectedImage(file);
-    if (file) {
-      generateImageText(file); // Call the function to extract text
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"; // Reset height
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = `${Math.min(scrollHeight, 120)}px`;
+
+      // Show scrollbar only when exceeding 120px
+      textareaRef.current.style.overflowY = scrollHeight > 120 ? "auto" : "hidden";
     }
-  };
-  
-  const generateImageText = async (image: File, retryCount: number = 0) => {
-    const maxRetries = 10; // Max retries to avoid infinite loops
-    const delay = 2000; // Delay in milliseconds between retries (2 seconds)
-
-    const genAI = new GoogleGenerativeAI(API_KEY);
-    const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-
-    const generationConfig = {
-      temperature: 0.9,
-      topK: 1,
-      topP: 1,
-      maxOutputTokens: 2048,
-    };
-
-    const safetySettings = [
-      {
-        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-      },
-      {
-        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-      },
-      {
-        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-      },
-      {
-        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-      },
-    ];
-
-    const reader = new FileReader();
-
-    reader.onloadend = async () => {
-      const base64String = reader.result as string;
-
-      const request = {
-        contents: [
-          {
-            role: "user",
-            parts: [
-              {
-                text: "Write code like this images", // Your prompt
-              },
-              {
-                inlineData: {
-                  mimeType: image.type, // Important: Set the correct MIME type
-                  data: base64String.split(",")[1], // Remove the data URL prefix
-                },
-              },
-            ],
-          },
-        ],
-      };
-
-      try {
-        const result = await model.generateContent(request, {
-          generationConfig,
-          safetySettings,
-        });
-
-        console.log("Full API Response:", JSON.stringify(result, null, 2)); // For debugging
-
-        const responseText = result.response?.candidates[0]?.content?.parts[0]?.text || "";
-
-        console.log("Extracted Text:", responseText); // Log the extracted text
-
-        if (responseText) {
-          // Set the extracted text in state (assuming you have a state management solution)
-          // Example with useState hook:
-          setExtractedText(responseText);
-        }
-
-      } catch (error) {
-        if (retryCount < maxRetries) {
-          console.log(`Error: ${error.message}. Retrying in ${delay / 1000} seconds...`);
-          setTimeout(() => generateImageText(image, retryCount + 1), delay);
-        } else {
-          console.error("Error extracting text from image:", error);
-          // Handle the error case (e.g., display an error message to the user)
-        }
-      }
-    };
-
-    if (image) {
-      reader.readAsDataURL(image);
-    }
-  };
-  
-
-
-  // ... (rest of your component code)
+  }, [inputValue]);
 
   //  fucntion handle logout
   const handleLogout = () => {
@@ -487,6 +463,25 @@ export default function AIComponent() {
         console.error("Refresh Token error:", error);
       });
   };
+
+  // handle function enter key press on text area instad of click icoon send
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); 
+      if (inputValue.trim()) {
+        const form = e.currentTarget.closest("form");
+        if (form) {
+          form.requestSubmit(); 
+        }
+      }
+    }
+  };
+
+
+  
+  
+  
+  
 
   return (
     <section className="w-[88%] mx-auto">
@@ -524,11 +519,10 @@ export default function AIComponent() {
                   <div className="relative w-full group">
                     <Button
                       key={res?.uuid}
-                      className={`w-full overflow-y-auto justify-start text-sm  bg-transparent hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-900  dark:text-text_color_dark ${
-                  res.uuid === activeUuid
-                    ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
-                    : ""
-                }`}
+                      className={`w-full justify-start text-sm  bg-transparent hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-900  dark:text-text_color_dark ${res.uuid === activeUuid
+                        ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
+                        : ""
+                        }`}
                       onClick={(e) => {
                         e.preventDefault();
                         handleChatSwitch(res?.uuid, index);
@@ -563,42 +557,42 @@ export default function AIComponent() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="start" forceMount>
-      {userUUID ? (
-        <>
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">
-                {ChatMessages?.data?.[0]?.username || "U"}
-              </p>
-            </div>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
-            onClick={() => router.push("/myprofile")}
-          >
-            <User className="mr-2 h-4 w-4" />
-            <span>My profile</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
-            onClick={handleLogout}
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
-          </DropdownMenuItem>
-        </>
-         ) : (
-        <DropdownMenuItem
-          className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
-          onClick={() => router.push("/login")}
-        >
-          <LogIn className="mr-2 h-4 w-4" />
-          <span>Login</span>
-        </DropdownMenuItem>
-      )}
-    </DropdownMenuContent>
+                {userUUID ? (
+                  <>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {ChatMessages?.data?.[0]?.username || "U"}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                      onClick={() => router.push("/myprofile")}
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      <span>My profile</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuItem
+                    className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                    onClick={() => router.push("/login")}
+                  >
+                    <LogIn className="mr-2 h-4 w-4" />
+                    <span>Login</span>
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </section>
@@ -634,11 +628,10 @@ export default function AIComponent() {
                   <div  key={res?.uuid}>
                     <div className="relative w-full group">
                       <Button
-                        className={`w-full overflow-y-auto  justify-start text-[10px]  sm:text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark ${
-                          res.uuid === activeUuid
-                            ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
-                            : ""
-                        }`}
+                        className={`w-full justify-start text-[10px]  sm:text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark ${res.uuid === activeUuid
+                          ? "bg-primary_color text-black dark:bg-primary_color dark:text-black"
+                          : ""
+                          }`}
                         onClick={(e) => {
                           e.preventDefault();
                           handleChatSwitch(res?.uuid, index);
@@ -672,43 +665,43 @@ export default function AIComponent() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-30 sm:w-56" align="start" forceMount>
-     
-        {userUUID ? (
-           <>
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">
-                {ChatMessages?.data?.[0]?.username || "U"}
-              </p>
-            </div>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
-            onClick={() => router.push("/myprofile")}
-          >
-            <User className="mr-2 h-4 w-4" />
-            <span>My profile</span>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
-            onClick={handleLogout}
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
-          </DropdownMenuItem>
-        </>
-         ) : (
-        <DropdownMenuItem
-          className="cursor-pointer  hover:bg-gray-100 dark:hover:text-text_color_light"
-          onClick={() => router.push("/login")}
-        >
-          <LogIn className="mr-2 h-4 w-4" />
-          <span>Login</span>
-        </DropdownMenuItem>
-      )}
-    </DropdownMenuContent>
+
+                  {userUUID ? (
+                    <>
+                      <DropdownMenuLabel className="font-normal">
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm font-medium leading-none">
+                            {ChatMessages?.data?.[0]?.username || "U"}
+                          </p>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                        onClick={() => router.push("/myprofile")}
+                      >
+                        <User className="mr-2 h-4 w-4" />
+                        <span>My profile</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="cursor-pointer hover:bg-gray-100 dark:hover:text-text_color_light"
+                        onClick={handleLogout}
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                      </DropdownMenuItem>
+                    </>
+                  ) : (
+                    <DropdownMenuItem
+                      className="cursor-pointer  hover:bg-gray-100 dark:hover:text-text_color_light"
+                      onClick={() => router.push("/login")}
+                    >
+                      <LogIn className="mr-2 h-4 w-4" />
+                      <span>Login</span>
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
               </DropdownMenu>
             </div>
 
@@ -719,7 +712,7 @@ export default function AIComponent() {
         {/* Main Content */}
         <div className="flex flex-col w-full h-full ">
           <main className="flex-1  overflow-y-auto scrollbar-hide">
-            <div ref={messageEndRef}  className="h-full overflow-y-auto scrollbar-hide" >
+            <div ref={messageEndRef} className="h-full overflow-y-auto scrollbar-hide" >
               <div className="space-y-4 "        >
                 {messages.length === 0 ? (
                   <div className="flex justify-center overflow-hidden items-center mt-28 ">
@@ -729,9 +722,8 @@ export default function AIComponent() {
                   messages.map((msg, index) => (
                     <div
                       key={index}
-                      className={`flex mt-8 pb-2 px-5 w-full items-start gap-2  ${
-                        msg.role === "user" ? "justify-end " : "justify-start"
-                      }`}
+                      className={`flex mt-8 pb-2 px-5 w-full items-start gap-2  ${msg.role === "user" ? "justify-end " : "justify-start"
+                        }`}
                     >
                       {msg.role !== "user" && (
                         <div className="md:w-10 md:h-10 w-6 h-6 rounded-full flex items-center justify-center text-black text-sm">
@@ -744,11 +736,10 @@ export default function AIComponent() {
                         </div>
                       )}
                       <div
-                        className={`inline-block px-3 md:px-5 text-text_body_16 sm:text-base py-1 md:py-2 rounded-tl-[20px] rounded-br-[20px] ${
-                          msg.role === "user"
-                            ? "bg-primary_color dark:text-black text-black max-w-[60%]"
-                            : "bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark max-w-[60%] "
-                        }`}
+                        className={`inline-block px-3 md:px-5 text-text_body_16 sm:text-base py-1 md:py-2 rounded-tl-[20px] rounded-br-[20px] ${msg.role === "user"
+                          ? "bg-primary_color dark:text-black text-black max-w-[60%]"
+                          : "bg-background_light_mode text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark max-w-[60%] "
+                          }`}
                       >
                         <CodeBlock content={msg?.text} />
                       </div>
@@ -809,20 +800,27 @@ export default function AIComponent() {
             <div className="max-w-3xl mx-auto">
               <form onSubmit={onSubmit} className="sm:flex gap-2 relative">
                 <div className="relative w-full">
-                  <Input
-                    type="text"
+                  <textarea
+                    ref={textareaRef}
                     name="prompt"
                     placeholder="What's on your mind..."
                     value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)} 
-                    className="flex sm:flex-1 focus:ring-none focus:border-primary_color sm:py-8 rounded-xl md:text-text_body_16 text-sm pr-12"
+                    onKeyDown={handleKeyDown}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    rows={1}
+                    className="flex sm:flex-1 focus:ring-none scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 
+  focus:border-primary_color rounded-xl text-sm pr-12 p-3 w-full resize-none bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 
+  placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200 ease-in-out"
                   />
+
+
                   <button
-                    type="submit"
-                    className={`absolute inset-y-0 right-5 flex items-center ${loading || !inputValue.trim() ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-                    disabled={loading || !inputValue.trim()}
+                    type={buttonLoading ? "button" : "submit"}
+                    className={`absolute inset-y-0 right-5 flex items-center ${loading || !inputValue.trim() ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                      }`}
+                    // disabled={loading || !inputValue.trim()}
                   >
-                  {buttonLoading ? <BsStopCircleFill size={20} /> : <SendHorizonalIcon className="h-5 w-5 text-black dark:text-text_color_dark" />}
+                    {buttonLoading ? <BsStopCircleFill className="cursor-pointer" onClick={() => stopTyping()} size={20} /> : <SendHorizonalIcon className="h-5 w-5 text-black dark:text-text_color_dark" />}
                   </button>
                 </div>
               </form>

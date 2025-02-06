@@ -23,20 +23,20 @@ export default function NomessageComponent() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
-          <button className="border h-24 justify-start items-start mx-5 md:mx-0 p-4 hover:bg-primary_color/10 rounded-lg cursor-auto">
-            <div className="flex justify-center items-center">
-              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">📝</div>
-              <p className="ml-3">Ask Question</p>
-            </div>
-          </button>
-          <button className="border h-24 justify-start items-start mx-5 md:mx-0 p-4 hover:bg-primary_color/10 rounded-lg cursor-auto">
-            <div className="flex justify-center items-center">
-              <div className="w-10 h-10 rounded-lg bg-pink-100 flex items-center justify-center">💻</div>
-              <p className="ml-3">Generate Code</p>
-            </div>
-          </button>
-        </div>
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
+            <button className="border dark:border-text_color_desc_dark h-24 justify-start items-start mx-5 md:mx-0 p-4 hover:bg-primary_color/10 rounded-lg cursor-auto">
+              <div className="flex justify-center items-center">
+                <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">📝</div>
+               <p className="ml-3"> Ask Question</p>
+              </div>
+            </button>
+            <button className=" border dark:border-text_color_desc_dark h-24 justify-start items-start mx-5 md:mx-0 p-4 hover:bg-primary_color/10 rounded-lg cursor-auto">
+              <div className="flex justify-center items-center">
+                <div className="w-10 h-10 rounded-lg bg-pink-100 flex items-center justify-center">💻</div>
+                <p className="ml-3"> Generate Code</p>
+              </div>
+            </button>
+          </div>
       </div>
     </div>
   );
