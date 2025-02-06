@@ -477,12 +477,6 @@ export default function AIComponent() {
     }
   };
 
-
-  
-  
-  
-  
-
   return (
     <section className="w-[88%] mx-auto">
       {/* Toggle Button for Sidebar */}
