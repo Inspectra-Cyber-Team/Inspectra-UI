@@ -142,9 +142,11 @@ export default function AIComponent() {
     }
   }, [sessions]);
 
+  console.log("activeSession", sessionList);
+
   // Handle sending messages
   const sendMessage = async (responseText: string, promt: string) => {
-    console.log("responseText", responseText);
+    
     const payload = {
       sessionUuid: activeSession,
       query: promt,
@@ -502,11 +504,11 @@ export default function AIComponent() {
 
           <div className="flex-1 p-4 ">
             {sessionList?.map((res: any, index: any) => {
-              const filteredMessages = ChatMessages?.data?.filter(
-                (msg: any) => msg?.chatSessionUuid === res?.uuid
-              );
-              const lastMessage =
-                filteredMessages?.[filteredMessages.length - 1];
+              // const filteredMessages = ChatMessages?.data?.filter(
+              //   (msg: any) => msg?.chatSessionUuid === res?.uuid
+              // );
+              // const lastMessage =
+              //   filteredMessages?.[filteredMessages.length - 1];
 
               return (
                 <div key={res?.uuid}>
@@ -522,7 +524,7 @@ export default function AIComponent() {
                         handleChatSwitch(res?.uuid, index);
                       }}
                     >
-                      <span className="truncate max-w-[300px] line-clamp-1 flex items-start">{lastMessage?.query || "New chat"}</span>
+                      <span className="truncate max-w-[300px] line-clamp-1 flex items-start">{res?.sessionName || "New chat"}</span>
                     </Button>
 
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -612,11 +614,11 @@ export default function AIComponent() {
             </div>
             <div className="flex-1 border-b border-t">
               {sessionList?.map((res: any, index: any) => {
-                const filteredMessages = ChatMessages?.data?.filter(
-                  (msg: any) => msg?.chatSessionUuid === res?.uuid
-                );
-                const lastMessage =
-                  filteredMessages?.[filteredMessages.length - 1];
+                // const filteredMessages = ChatMessages?.data?.filter(
+                //   (msg: any) => msg?.chatSessionUuid === res?.uuid
+                // );
+                // const lastMessage =
+                //   filteredMessages?.[filteredMessages.length - 1];
 
                 return (
                   <div  key={res?.uuid}>
@@ -631,7 +633,7 @@ export default function AIComponent() {
                           handleChatSwitch(res?.uuid, index);
                         }}
                       >
-                         <span className="truncate max-w-[200px] line-clamp-1 flex items-start">{lastMessage?.query || "New chat"}</span>
+                         <span className="truncate max-w-[200px] line-clamp-1 flex items-start">{res?.sessionName || "New chat"}</span>
                       </Button>
                       <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <FaTrashAlt
