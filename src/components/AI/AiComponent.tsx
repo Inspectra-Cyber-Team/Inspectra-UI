@@ -57,7 +57,13 @@ import Loader from "./Loader";
 import { BsStopCircleFill } from "react-icons/bs";
 import { CgAttachment } from "react-icons/cg";
 import { useUploadFileMutation } from "@/redux/service/faqs";
-import { set } from "date-fns";
+
+interface GenerationConfig {
+  temperature: number;
+  topK: number;
+  topP: number;
+  maxOutputTokens: number;
+}
 
 
 // ai model
@@ -238,7 +244,8 @@ export default function AIComponent() {
         const genAI = new GoogleGenerativeAI(API_KEY);
         const model = genAI.getGenerativeModel({ model: MODEL_NAME });
     
-        const generationConfig:any = {
+        //ts-ignore
+        const generationConfig:GenerationConfig = {
           temperature: 0.9,
           topK: 1,
           topP: 1,
@@ -290,9 +297,8 @@ export default function AIComponent() {
     
           try {
             
-           
             const result = await model.generateContent(request, {
-               // @ts-ignore
+             // @ts-expect-error: TypeScript does not recognize the shape of generationConfig and safetySettings
               generationConfig,
               safetySettings,
             });
