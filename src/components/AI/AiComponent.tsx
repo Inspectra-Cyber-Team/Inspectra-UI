@@ -10,6 +10,7 @@ import {
   User,
   SendHorizonalIcon,
   LogIn,
+  X
 } from "lucide-react";
 import {
   GoogleGenerativeAI,
@@ -81,7 +82,7 @@ export default function AIComponent() {
 
   const [activeSession, setActiveSession] = useState<string | any>(null);
 
-  const [messages, setMessages] = useState<{ role: string; text: string; images?:any}[]>([]);
+  const [messages, setMessages] = useState<{ role: string; text: string; images?: any }[]>([]);
 
   const [inputValue, setInputValue] = useState<string>("");
 
@@ -91,7 +92,7 @@ export default function AIComponent() {
 
   const [isTyping, setIsTyping] = useState(false);
 
-  const [controller , setController] = useState<AbortController | null>(null);
+  const [controller, setController] = useState<AbortController | null>(null);
 
   // const abortController = new AbortController();
 
@@ -143,7 +144,7 @@ export default function AIComponent() {
 
   // upload file mutation
   const [uploadSingleFile] = useUploadFileMutation();
-      
+
 
   // Load first session automatically
   const [sessionList, setSessionList] = useState<any[]>([]); // Store sessions
@@ -159,7 +160,7 @@ export default function AIComponent() {
 
   // Handle sending messages
   const sendMessage = async (responseText: string, promt: string) => {
-    
+
     const payload = {
       sessionUuid: activeSession,
       query: promt,
@@ -176,8 +177,8 @@ export default function AIComponent() {
       //   refetchMessages();
 
       // }
-    } catch  {
-      
+    } catch {
+
       toast({
         title: "Error",
         description: "An error occurred while sending the message.",
@@ -209,17 +210,17 @@ export default function AIComponent() {
   const stopTyping = () => {
 
     setIsTyping(true); // Stop typing
-  
+
     if (controller) {
       controller.abort();
     }
 
     setButtonLoading(false); // Reset the button state
-  
+
     setIsTyping(false); // Reset the typing state
 
     setController(null);
-  
+
     toast({
       title: "Typing Stopped",
       description: "The message generation was stopped.",
@@ -228,217 +229,217 @@ export default function AIComponent() {
 
 
   };
-  
-        
+
+
   const [preViewImage, setPreViewImag] = useState<string>("");
-  
+
 
   // function generate text from images
-  const generateImageText = async (image: File,promt: string) => {
+  const generateImageText = async (image: File, promt: string) => {
 
-       setLoading(true);
+    setLoading(true);
 
-       setButtonLoading(true);
+    setButtonLoading(true);
 
     try {
-        const genAI = new GoogleGenerativeAI(API_KEY);
-        const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-    
-        //ts-ignore
-        const generationConfig:GenerationConfig = {
-          temperature: 0.9,
-          topK: 1,
-          topP: 1,
-          maxOutputTokens: 2048,
+      const genAI = new GoogleGenerativeAI(API_KEY);
+      const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+
+      //ts-ignore
+      const generationConfig: GenerationConfig = {
+        temperature: 0.9,
+        topK: 1,
+        topP: 1,
+        maxOutputTokens: 2048,
+      };
+
+      const safetySettings = [
+        {
+          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+      ];
+
+      const reader = new FileReader();
+
+      reader.onloadend = async () => {
+        const base64String = reader.result as string;
+
+        const request = {
+          contents: [
+            {
+              role: "user",
+              parts: [
+                {
+                  text: promt,
+                },
+                {
+                  inlineData: {
+                    mimeType: image.type,
+                    data: base64String.split(",")[1],
+                  },
+                },
+              ],
+            },
+          ],
         };
-    
-        const safetySettings = [
-          {
-            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-          },
-        ];
-    
-        const reader = new FileReader();
-    
-        reader.onloadend = async () => {
-          const base64String = reader.result as string;
-    
-          const request = {
-            contents: [
-              {
-                role: "user",
-                parts: [
-                  {
-                    text: promt,
-                  },
-                  {
-                    inlineData: {
-                      mimeType: image.type, 
-                      data: base64String.split(",")[1], 
-                    },
-                  },
-                ],
-              },
-            ],
-          };
-    
-          try {
-            
-            const result = await model.generateContent(request, {
-             // @ts-expect-error: TypeScript does not recognize the shape of generationConfig and safetySettings
-              generationConfig,
-              safetySettings,
-            });
-    
-            const responseText = result?.response?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-  
-            let charIndex = 0;
-            const newMessage = [
-              { role: "user", text: promt, images: preViewImage},
-              { role: "model", text: responseText || "AI is typing...",images: preViewImage },
-            ]
 
-            setMessages((prevMessages) => [...prevMessages, newMessage[1]]);
+        try {
 
-            const typeMessage = async () => {
+          const result = await model.generateContent(request, {
+            // @ts-expect-error: TypeScript does not recognize the shape of generationConfig and safetySettings
+            generationConfig,
+            safetySettings,
+          });
 
-              // if (abortController.signal.aborted) {
-              //   await sendMessage(newMessages[1].text.slice(0, charIndex), prompt);
-              //   setButtonLoading(false);
-              //   return; // Stop typing if request is aborted
-              // }
-              if (charIndex < newMessage[1].text.length) {
-      
-                setMessages((prevMessages) => [
-                  ...prevMessages.slice(0, prevMessages.length - 1),
-                  {
-                    role: "model",
-                    text: newMessage[1].text.slice(0, charIndex + 1),
-                  },
-                ]);
-                charIndex++;
-                setTimeout(typeMessage, 10); // Continue typing one character at a time
-              } else {
-                // Once typing is complete, send the message
+          const responseText = result?.response?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+          let charIndex = 0;
+          const newMessage = [
+            { role: "user", text: promt, images: preViewImage },
+            { role: "model", text: responseText || "AI is typing...", images: preViewImage },
+          ]
+
+          setMessages((prevMessages) => [...prevMessages, newMessage[1]]);
+
+          const typeMessage = async () => {
+
+            // if (abortController.signal.aborted) {
+            //   await sendMessage(newMessages[1].text.slice(0, charIndex), prompt);
+            //   setButtonLoading(false);
+            //   return; // Stop typing if request is aborted
+            // }
+            if (charIndex < newMessage[1].text.length) {
+
+              setMessages((prevMessages) => [
+                ...prevMessages.slice(0, prevMessages.length - 1),
+                {
+                  role: "model",
+                  text: newMessage[1].text.slice(0, charIndex + 1),
+                },
+              ]);
+              charIndex++;
+              setTimeout(typeMessage, 10); // Continue typing one character at a time
+            } else {
+              // Once typing is complete, send the message
               if (newMessage[1].text) {
                 await sendMessage(newMessage[1].text, promt); // Send the response message from the typing effect
               }
-               
-                setButtonLoading(false);
-                setPreViewImag("");
-                setSendImage("");
-              }
-            };
-      
-            typeMessage();
-        
 
-            // if (responseText) {
-            //   setLoading(false);
-            //   setButtonLoading(false);
-            //   await sendMessage(responseText, promt); // Send the message after the response
-            // }
-    
-          } catch  {
-
-            toast({
-              title: "Error",
-              description: "An error occurred while generating text from the image.",
-              variant: "error",
-            });
-
-          }
-        };
-    
-        if (image) {
-          reader.readAsDataURL(image);
-        }
-
-      } catch (error) {
-        console.error("Error during chat generation:", error);
-      }
-      finally {
-        setLoading(false);
-     
-
-      }
-
-      };
-      
-   
-      
-        const handleFileSingleUpload = async (file: any) => {
-
-          const formData = new FormData();
-      
-          formData.append("file", file);
-      
-          try {
-            const response = await uploadSingleFile({ file: formData }).unwrap();
-      
-            // Check the response structure to ensure `fullUrl` exists
-            if (response?.data?.fullUrl) {
-              return response.data.fullUrl; // Return the full URL
+              setButtonLoading(false);
+              setPreViewImag("");
+              setSendImage("");
             }
-          } catch {
-           
-            toast({
-              title: "Error",
-              description: "An error occurred while uploading the file.",
-              variant: "error",
-            });
+          };
 
-          }
-     
-        };
-      
-         const fileInputRef = useRef<HTMLInputElement>(null);
+          typeMessage();
 
 
-         const [fileImage, setFileImage] = useState<File | null>(null);
+          // if (responseText) {
+          //   setLoading(false);
+          //   setButtonLoading(false);
+          //   await sendMessage(responseText, promt); // Send the message after the response
+          // }
 
-         const [sendImage, setSendImage] = useState<string>("");
-      
-      
-        // file upload in this 
-         const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-          
-              const file = event.target.files?.[0];
-              if (file) {
-              
-                const fullUrl = await handleFileSingleUpload(file);
-               
-                setFileImage(file);
-                setPreViewImag(fullUrl);
-                setSendImage(URL.createObjectURL(file));
-      
-  
-              }
-            };
-        
-            // Trigger file input click on icon click
-        const handleClick = () => {
-          fileInputRef.current?.click();
-        };
+        } catch {
+
+          toast({
+            title: "Error",
+            description: "An error occurred while generating text from the image.",
+            variant: "error",
+          });
+
+        }
+      };
+
+      if (image) {
+        reader.readAsDataURL(image);
+      }
+
+    } catch (error) {
+      console.error("Error during chat generation:", error);
+    }
+    finally {
+      setLoading(false);
+
+
+    }
+
+  };
+
+
+
+  const handleFileSingleUpload = async (file: any) => {
+
+    const formData = new FormData();
+
+    formData.append("file", file);
+
+    try {
+      const response = await uploadSingleFile({ file: formData }).unwrap();
+
+      // Check the response structure to ensure `fullUrl` exists
+      if (response?.data?.fullUrl) {
+        return response.data.fullUrl; // Return the full URL
+      }
+    } catch {
+
+      toast({
+        title: "Error",
+        description: "An error occurred while uploading the file.",
+        variant: "error",
+      });
+
+    }
+
+  };
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+
+  const [fileImage, setFileImage] = useState<File | null>(null);
+
+  const [sendImage, setSendImage] = useState<string>("");
+
+
+  // file upload in this 
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+
+    const file = event.target.files?.[0];
+    if (file) {
+
+      const fullUrl = await handleFileSingleUpload(file);
+
+      setFileImage(file);
+      setPreViewImag(fullUrl);
+      setSendImage(URL.createObjectURL(file));
+
+
+    }
+  };
+
+  // Trigger file input click on icon click
+  const handleClick = () => {
+    fileInputRef.current?.click();
+  };
 
 
 
   // fucntion generate text simple chat
   const runChat = async (prompt: string) => {
-    
+
     setLoading(true);
 
     setButtonLoading(true);
@@ -446,7 +447,7 @@ export default function AIComponent() {
     const abortController = new AbortController();
 
     setController(abortController);
- 
+
 
     try {
       const genAI = new GoogleGenerativeAI(API_KEY);
@@ -491,11 +492,11 @@ export default function AIComponent() {
         ],
       });
 
-      const result = await chat.sendMessage(prompt, {signal: abortController.signal});
+      const result = await chat.sendMessage(prompt, { signal: abortController.signal });
 
       if (abortController.signal.aborted) {
         setIsTyping(false);
-        toast ({
+        toast({
           title: "Request Aborted",
           description: "Request has been aborted1",
           variant: "success",
@@ -505,7 +506,7 @@ export default function AIComponent() {
       }
 
       const responseText = result.response?.text();
-      
+
 
       if (abortController.signal.aborted) {
         setIsTyping(false)
@@ -524,8 +525,8 @@ export default function AIComponent() {
         { role: "model", text: responseText || "AI is typing..." },
       ];
 
-      if(!abortController.signal.aborted) {
-      setMessages((prevMessages) => [...prevMessages, newMessages[1]]);
+      if (!abortController.signal.aborted) {
+        setMessages((prevMessages) => [...prevMessages, newMessages[1]]);
       }
 
 
@@ -549,16 +550,16 @@ export default function AIComponent() {
           setTimeout(typeMessage, 10); // Continue typing one character at a time
         } else {
           // Once typing is complete, send the message
-        if (newMessages[1].text) {
-          await sendMessage(newMessages[1].text, prompt); // Send the response message from the typing effect
-        }
+          if (newMessages[1].text) {
+            await sendMessage(newMessages[1].text, prompt); // Send the response message from the typing effect
+          }
           setButtonLoading(false);
         }
       };
 
       typeMessage();
-    } catch  {
-      
+    } catch {
+
       toast({
         title: "Error",
         description: "An error occurred while generating text.",
@@ -600,7 +601,7 @@ export default function AIComponent() {
       newMessages = [...messages, { role: "user", text: prompt, images: preViewImage }];
 
     } else {
-        newMessages = [...messages, { role: "user", text: prompt }];
+      newMessages = [...messages, { role: "user", text: prompt }];
     }
 
     if (activeChatIndex === null) {
@@ -612,12 +613,12 @@ export default function AIComponent() {
     setMessages(newMessages);
 
     if (prompt && fileImage) {
-       
+
       await generateImageText(fileImage!, prompt);
-  } else if (prompt) {
-    
+    } else if (prompt) {
+
       await runChat(prompt);
-  }
+    }
 
 
     (event.target as HTMLFormElement).reset();
@@ -723,18 +724,18 @@ export default function AIComponent() {
   // handle function enter key press on text area instad of click icoon send
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); 
+      e.preventDefault();
       if (inputValue.trim()) {
         const form = e.currentTarget.closest("form");
         if (form) {
-          form.requestSubmit(); 
+          form.requestSubmit();
         }
       }
     }
   };
 
 
- 
+
   return (
     <section className="w-[88%] mx-auto">
       {/* Toggle Button for Sidebar */}
@@ -877,7 +878,7 @@ export default function AIComponent() {
                 //   filteredMessages?.[filteredMessages.length - 1];
 
                 return (
-                  <div  key={res?.uuid}>
+                  <div key={res?.uuid}>
                     <div className="relative w-full group">
                       <Button
                         className={`w-full justify-start text-[10px]  sm:text-sm my-[6px] bg-transparent hover:bg-gray-200 text-gray-900 dark:bg-background_dark_mode dark:text-text_color_dark ${res.uuid === activeUuid
@@ -889,7 +890,7 @@ export default function AIComponent() {
                           handleChatSwitch(res?.uuid, index);
                         }}
                       >
-                         <span className="truncate max-w-[200px] line-clamp-1 flex items-start">{res?.sessionName || "New chat"}</span>
+                        <span className="truncate max-w-[200px] line-clamp-1 flex items-start">{res?.sessionName || "New chat"}</span>
                       </Button>
                       <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <FaTrashAlt
@@ -994,15 +995,15 @@ export default function AIComponent() {
                           }`}
                       >
                         <CodeBlock content={msg?.text} />
-                      
-                      {/* images send preview here */}
-                       {msg?.role === "user" && msg?.images && (
-                         <img src={msg?.images} alt="preview" className="w-1/2" />
-                       )}
-                      
-                      
+
+                        {/* images send preview here */}
+                        {msg?.role === "user" && msg?.images && (
+                          <img src={msg?.images} alt="preview" className="w-1/2" />
+                        )}
+
+
                       </div>
-                     
+
                       <div>
                         {msg.role === "model" &&
                           index === messages.length - 1 && (
@@ -1053,61 +1054,57 @@ export default function AIComponent() {
               </div>
             </div>
           </main>
-       
+
           {/* Image Preview */}
           <div className="relative">
-          {sendImage && (
-  <div className="w-20 top-4  bottom-14 left-[116px] relative">
-    <Image
-      src={sendImage || ""}
-      alt="Preview"
-      width={50}
-      height={50}
-      className="w-full h-auto rounded-xl mb-3"
-    />
-    <button
-      className="absolute top-0 right-0  text-primary p-1 rounded-full hover:bg-secondary_color"
-      onClick={() => {
+            {sendImage && (
+              <div className="w-20 top-4  bottom-14 left-[116px] relative">
+                <Image
+                  src={sendImage || ""}
+                  alt="Preview"
+                  width={50}
+                  height={50}
+                  className="w-full h-auto rounded-xl mb-3"
+                />
+                <X
+                  type="button"
+                  className="absolute p-1 top-0 right-0 cursor-pointer text-white bg-red-500 hover:bg-red-700 rounded-full"
+                  onClick={() => {
 
-      setSendImage("")
-      setPreViewImag("");
+                    setSendImage("")
+                    setPreViewImag("");
 
-      }
-    } // Function to clear the image
-    >
-      X
-    </button>
-  </div>
-)}
-</div>
+                  }
+                  } // Function to clear the image
+                />
+              </div>
+            )}
+          </div>
 
 
           {/* Input Form */}
           <div className="p-4 ">
 
-            
             <div className="max-w-3xl mx-auto relative">
-               
-              <form onSubmit={onSubmit} className="sm:flex gap-2 relative">
 
-              <div className="absolute top-0 hover:opacity-60 -left-7 mr-4 mt-3">
-               <CgAttachment onClick={handleClick} className=" w-5 h-5 cursor-pointer "/>
-                          {/* Hidden file input */}
-                <input
-                  ref={fileInputRef}
-                  name="image"
-                  onChange={handleImageChange}
-                  type="file"// Handle file selection
-                  className="hidden" // Hide the input element
-                />
-        
-                 </div>
+              <form onSubmit={onSubmit} className="flex gap-2 relative">
+
+                <div className="top-2 left-2 static flex items-center">
+                  <CgAttachment
+                    onClick={handleClick}
+                    className="w-5 h-5 cursor-pointer hover:opacity-60 transition-all"
+                  />
+                  {/* Hidden file input */}
+                  <input
+                    ref={fileInputRef}
+                    name="image"
+                    onChange={handleImageChange}
+                    type="file"
+                    className="hidden"
+                  />
+                </div>
                 <div className="relative w-full">
-    
-            
-  
                   <textarea
-
                     ref={textareaRef}
                     name="prompt"
                     placeholder="What's on your mind..."
@@ -1118,7 +1115,7 @@ export default function AIComponent() {
                     className="flex sm:flex-1 focus:ring-none scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800 
                    focus:border-primary_color rounded-xl text-sm pr-12 p-3 w-full resize-none bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 
                   placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200 ease-in-out"
-                  
+
                   />
 
 
@@ -1126,14 +1123,14 @@ export default function AIComponent() {
                     type={buttonLoading ? "button" : "submit"}
                     className={`absolute inset-y-0 right-5 flex items-center ${loading || !inputValue.trim() ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
                       }`}
-                    // disabled={loading || !inputValue.trim()}
+                  // disabled={loading || !inputValue.trim()}
                   >
                     {buttonLoading ? <BsStopCircleFill className="cursor-pointer" onClick={() => stopTyping()} size={20} /> : <SendHorizonalIcon className="h-5 w-5 text-black dark:text-text_color_dark" />}
                   </button>
                 </div>
               </form>
             </div>
-            
+
           </div>
         </div>
 
@@ -1161,7 +1158,7 @@ export default function AIComponent() {
           </DialogContent>
         </Dialog>
       </section>
-  
+
     </section>
   );
 }
