@@ -340,6 +340,7 @@ export default function AIComponent() {
 
               setButtonLoading(false);
               setPreViewImag("");
+              setFileImage(null);
               setSendImage("");
             }
           };
@@ -578,7 +579,6 @@ export default function AIComponent() {
 
     setSendImage("");
 
-    const image = (event.target as HTMLFormElement).image?.value.trim();
 
     if (!inputValue.trim()) return;
 
@@ -639,6 +639,8 @@ export default function AIComponent() {
 
       setMessages([]);
     } else {
+      setSendImage("");
+      setFileImage(null);
       setMessages([]);
     }
   };
@@ -663,6 +665,7 @@ export default function AIComponent() {
 
     if (selectedSession) {
       setActiveSession(selectedSession.uuid);
+      setSendImage("");
       refetchMessages();
     }
 
@@ -683,7 +686,7 @@ export default function AIComponent() {
       setMessages([]);
 
       setActiveChatIndex(null);
-
+      setSendImage("");
       setDeleteModalOpen(false);
     }
   };
