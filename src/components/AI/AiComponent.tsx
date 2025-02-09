@@ -55,7 +55,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import Loader from "./Loader";
-import { BsStopCircleFill } from "react-icons/bs";
+import { BsArrowDownCircle, BsStopCircleFill } from "react-icons/bs";
 import { CgAttachment } from "react-icons/cg";
 import { useUploadFileMutation } from "@/redux/service/faqs";
 
@@ -105,6 +105,10 @@ export default function AIComponent() {
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const [userUUID, setUserUUID] = useState<string>("");
+
+  const [isVisible, setIsVisible] = useState(false);
+
+
 
   useEffect(() => {
     setUserUUID(localStorage.getItem("userUUID") ?? "");
@@ -737,10 +741,10 @@ export default function AIComponent() {
     }
   };
 
-
-
   return (
     <section className="w-[88%] mx-auto">
+
+
       {/* Toggle Button for Sidebar */}
       <div className="lg:hidden flex justify-start ">
         <IoMenu onClick={toggleSidebar} className=" text-text_color_light dark:text-text_color_dark cursor-pointer">
@@ -1058,6 +1062,8 @@ export default function AIComponent() {
             </div>
           </main>
 
+          
+
           {/* Image Preview */}
           <div className="relative">
             {sendImage && (
@@ -1161,6 +1167,7 @@ export default function AIComponent() {
           </DialogContent>
         </Dialog>
       </section>
+
 
     </section>
   );
