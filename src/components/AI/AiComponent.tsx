@@ -382,30 +382,29 @@ export default function AIComponent() {
 
 
 
-  const handleFileSingleUpload = async (file: any) => {
-
+  const handleFileSingleUpload = async (file: File) => {
     const formData = new FormData();
-
     formData.append("file", file);
 
     try {
+      setIsUploading(true); // Start loading state
+
       const response = await uploadSingleFile({ file: formData }).unwrap();
 
-      // Check the response structure to ensure `fullUrl` exists
       if (response?.data?.fullUrl) {
         return response.data.fullUrl; // Return the full URL
       }
     } catch {
-
       toast({
         title: "Error",
         description: "An error occurred while uploading the file.",
         variant: "error",
       });
-
+    } finally {
+      setIsUploading(false); // Stop loading state
     }
-
   };
+
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -413,6 +412,8 @@ export default function AIComponent() {
   const [fileImage, setFileImage] = useState<File | null>(null);
 
   const [sendImage, setSendImage] = useState<string>("");
+
+  const [isUploading, setIsUploading] = useState(false);
 
 
   // file upload in this 
@@ -1060,10 +1061,12 @@ export default function AIComponent() {
 
           {/* Image Preview */}
           <div className="relative">
-            {sendImage && (
-              <div className="w-20 top-4  bottom-14 left-[116px] relative">
+            {isUploading ? (
+              <div className="w-20 h-20 top-0 bottom-14 mt-5 ml-12 lg:ml-15 xl:ml-24 relative animate-pulse bg-gray-300 rounded-xl"></div>
+            ) : sendImage ? (
+              <div className="w-20 top-4 bottom-14 ml-12 lg:ml-15 xl:ml-24 relative">
                 <Image
-                  src={sendImage || ""}
+                  src={sendImage}
                   alt="Preview"
                   width={50}
                   height={50}
@@ -1073,15 +1076,11 @@ export default function AIComponent() {
                   type="button"
                   className="absolute p-1 top-0 right-0 cursor-pointer text-white bg-red-500 hover:bg-red-700 rounded-full"
                   onClick={() => {
-
-                    setSendImage("")
-                    setPreViewImag("");
-
-                  }
-                  } // Function to clear the image
+                    setSendImage("");
+                  }}
                 />
               </div>
-            )}
+            ) : null}
           </div>
 
 
