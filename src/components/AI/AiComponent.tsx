@@ -94,8 +94,6 @@ export default function AIComponent() {
 
   const [controller, setController] = useState<AbortController | null>(null);
 
-  // const abortController = new AbortController();
-
   const [activeChatIndex, setActiveChatIndex] = useState<number | null>(null);
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -105,9 +103,6 @@ export default function AIComponent() {
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const [userUUID, setUserUUID] = useState<string>("");
-
-  const [isVisible, setIsVisible] = useState(false);
-
 
 
   useEffect(() => {
@@ -367,6 +362,10 @@ export default function AIComponent() {
           });
 
         }
+        finally {
+          setLoading(false);
+        }
+    
       };
 
       if (image) {
@@ -376,40 +375,34 @@ export default function AIComponent() {
     } catch (error) {
       console.error("Error during chat generation:", error);
     }
-    finally {
-      setLoading(false);
-
-
-    }
-
+  
   };
 
 
 
-  const handleFileSingleUpload = async (file: any) => {
-
+  const handleFileSingleUpload = async (file: File) => {
     const formData = new FormData();
-
     formData.append("file", file);
 
     try {
+      setIsUploading(true); // Start loading state
+
       const response = await uploadSingleFile({ file: formData }).unwrap();
 
-      // Check the response structure to ensure `fullUrl` exists
       if (response?.data?.fullUrl) {
         return response.data.fullUrl; // Return the full URL
       }
     } catch {
-
       toast({
         title: "Error",
         description: "An error occurred while uploading the file.",
         variant: "error",
       });
-
+    } finally {
+      setIsUploading(false); // Stop loading state
     }
-
   };
+
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -418,12 +411,27 @@ export default function AIComponent() {
 
   const [sendImage, setSendImage] = useState<string>("");
 
+  const [isUploading, setIsUploading] = useState(false);
+
 
   // file upload in this 
   const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
 
     const file = event.target.files?.[0];
     if (file) {
+
+      const allowedTypes = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
+
+      if (!allowedTypes.includes(file.type)) {
+        
+        toast({
+          title: "Invalid File Type",
+          description: "Invalid file type. Please upload a JPG, JPEG, PNG, or GIF image.",
+          variant: "error",
+        }); 
+
+        return;
+      }
 
       const fullUrl = await handleFileSingleUpload(file);
 
@@ -619,6 +627,7 @@ export default function AIComponent() {
     if (prompt && fileImage) {
 
       await generateImageText(fileImage!, prompt);
+
     } else if (prompt) {
 
       await runChat(prompt);
@@ -1066,10 +1075,12 @@ export default function AIComponent() {
 
           {/* Image Preview */}
           <div className="relative">
-            {sendImage && (
-              <div className="w-20 top-4  bottom-14 left-[116px] relative">
+            {isUploading ? (
+              <div className="w-20 h-20 top-0 bottom-14 mt-5 ml-12 lg:ml-15 xl:ml-24 relative animate-pulse bg-gray-300 rounded-xl"></div>
+            ) : sendImage ? (
+              <div className="w-20 top-4 bottom-14 ml-12 lg:ml-15 xl:ml-24 relative">
                 <Image
-                  src={sendImage || ""}
+                  src={sendImage}
                   alt="Preview"
                   width={50}
                   height={50}
@@ -1079,15 +1090,11 @@ export default function AIComponent() {
                   type="button"
                   className="absolute p-1 top-0 right-0 cursor-pointer text-white bg-red-500 hover:bg-red-700 rounded-full"
                   onClick={() => {
-
-                    setSendImage("")
-                    setPreViewImag("");
-
-                  }
-                  } // Function to clear the image
+                    setSendImage("");
+                  }}
                 />
               </div>
-            )}
+            ) : null}
           </div>
 
 
