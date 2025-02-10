@@ -646,7 +646,7 @@ const CommentSection = ({ uuid }: commentProp) => {
             onChange={(e) => setContent(e.target.value)}
             className="mt-4 p-3 h-[130px] rounded-[20px] border-0 bg-[#f5f5f5] dark:bg-card_color_dark dark:border-b-background_dark_mode"
           />
-          <div className={"flex justify-end"}>
+          <div className={"flex justify-end my-3"}>
             <Button
               onClick={() => handleCreateComment(uuid)}
               className="right-4 mt-2 bg-primary_color px-3 text-text_color_light dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
@@ -689,12 +689,12 @@ const CommentSection = ({ uuid }: commentProp) => {
               </div>
               <p className="">{comment.content}</p>
               <div className="flex items-center justify-between w-full">
-                <div className="flex items-center">
+                <div className="flex items-center my-3">
                   <FaHandsClapping
                     onClick={() => handleLikeComment(comment?.uuid)}
                     className="cursor-pointer text-text_color_desc_light dark:text-text_color_desc_dark"
                   />
-                  <span className="ml-1 text-gray-500">
+                  <span className="ml-2 text-gray-500">
                     {comment.countLikes}
                   </span>
                   {comment?.replies?.length > 0 && (
@@ -704,7 +704,7 @@ const CommentSection = ({ uuid }: commentProp) => {
                         onClick={() => toggleReplies(comment.uuid)}
                       />
                       <button
-                        className="ml-1 cursor-pointer text-[14px]"
+                        className="ml-2 cursor-pointer text-[14px]"
                         onClick={() => toggleReplies(comment.uuid)}
                       >
                         {showReplies[comment.uuid]
@@ -756,7 +756,7 @@ const CommentSection = ({ uuid }: commentProp) => {
               </div>
 
               {showReplyInput[comment.uuid] && (
-                <div className="mt-2">
+                <div className="my-3">
                   <Textarea
                     placeholder="Write your reply here..."
                     value={replyContent[comment.uuid] || ""}
@@ -768,7 +768,7 @@ const CommentSection = ({ uuid }: commentProp) => {
                     }
                     className="mt-2 px-3 rounded-[20px] border-0 bg-[#f5f5f5] dark:bg-card_color_dark dark:border-b-background_dark_mode"
                   />
-                  <div className="flex justify-end">
+                  <div className="flex justify-end my-3">
                     <Button
                       onClick={() => handleReplySubmit(comment.uuid)}
                       className="mt-2 bg-primary_color px-3 text-text_color_light dark:text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
@@ -873,9 +873,9 @@ const CommentSection = ({ uuid }: commentProp) => {
 
                       <div>
                         {showNesTedReplyInput[reply.uuid] && (
-                          <div className="mt-2">
+                          <div className="my-3">
                             <Textarea
-                              placeholder="Write your reply here1..."
+                              placeholder="Write your reply here..."
                               value={replyNestedContent[comment.uuid] || ""}
                               onChange={(e) =>
                                 setReplyNestedContent((prevState) => ({
@@ -885,7 +885,7 @@ const CommentSection = ({ uuid }: commentProp) => {
                               }
                               className="mt-2 px-3 rounded-[20px] border-0 bg-[#f5f5f5] dark:bg-card_color_dark dark:border-b-background_dark_mode"
                             />
-                            <div className="flex justify-end">
+                            <div className="flex justify-end my-3">
                               <Button
                                 onClick={() => handleReplySubmit(comment.uuid)}
                                 className="mt-2 bg-primary_color px-3 text-text_color_light rounded-tl-[20px] rounded-br-[20px] w-[110px] h-[36px] text-text_body_16"
