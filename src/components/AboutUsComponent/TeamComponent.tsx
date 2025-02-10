@@ -7,6 +7,7 @@ import Link from "next/link";
 import { AboutUs, SocialMedia } from "@/types/AboutUs";
 import Aos from "aos";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function TeamComponent() {
   const { theme } = useTheme();
@@ -80,7 +81,9 @@ export default function TeamComponent() {
                     transition={{ duration: 0.5 }}
                     whileHover={{ scale: 1.05 }}
                   >
-                    <img
+                    <Image
+                      width={300}
+                      height={300}
                       src={team.image}
                       alt={`${team.name}'s profile`}
                       className="w-60 h-64 mx-auto object-cover"

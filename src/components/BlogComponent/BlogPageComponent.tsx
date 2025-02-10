@@ -34,23 +34,23 @@ export default function BlogPageComponent() {
         <Link
           onClick={() => setIsloading(true)}
           href={"/blog/create"}
-          className="px-3 py-2 bg-primary_color hover:bg-primary_color/70 text-text_color_light flex rounded-[17px] items-center justify-center text-sm sm:text-base"
+          className={`${isLoading ? "w-11 h-11 p-3 rounded-full" : "px-3 py-2 rounded-[17px]"
+            } flex items-center justify-center bg-primary_color hover:bg-primary_color/70 text-text_color_light  text-sm sm:text-base transition-all duration-200`}
         >
-          <span className="sm:block">
-            {isLoading ? (
-              <div className="spinner-border animate-spin inline-block w-5 h-5 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent"></div>
-            ) : (
-              <span className="flex items-center">
-                <span className="hidden sm:block md:flex ">
-                  Create Blog <span className="ml-2 mt-1"><FaPlus /></span>
-                </span>
-                <span className="block sm:hidden">
-                  <FaPlus />
-                </span>
+          {isLoading ? (
+            <div className="spinner-border animate-spin inline-flex w-5 h-5 border-2 rounded-full border-t-2 border-text_color_light border-t-transparent leading-none"></div>
+          ) : (
+            <span className="flex items-center">
+              <span className="hidden sm:block md:flex">
+                Create Blog <span className="ml-2 mt-1"><FaPlus /></span>
               </span>
-            )}
-          </span>
+              <span className="block sm:hidden">
+                <FaPlus />
+              </span>
+            </span>
+          )}
         </Link>
+
       </div>
 
       {/* Common Topics as Navbar */}
@@ -59,11 +59,10 @@ export default function BlogPageComponent() {
           <button
             key={common?.uuid}
             className={`bg-card dark:bg-card_color_dark px-3 py-2 rounded-3xl cursor-pointer hover:bg-primary_color text-sm sm:text-base text-center justify-center
-            ${
-                        topic === common?.name
-                          ? "bg-primary_color dark:bg-primary_color dark:text-text_color_light"
-                          : "bg-card  dark:bg-card_color_dark hover:bg-primary_color"
-                      }`}
+            ${topic === common?.name
+                ? "bg-primary_color dark:bg-primary_color dark:text-text_color_light"
+                : "bg-card  dark:bg-card_color_dark hover:bg-primary_color"
+              }`}
             onClick={() => handleTopicClick(common?.name)}
           >
             {common?.name}
@@ -95,10 +94,9 @@ export default function BlogPageComponent() {
                   <button
                     key={common?.uuid}
                     className={`px-3 py-2 rounded-3xl cursor-pointer text-sm sm:text-base text-center justify-center 
-                      ${
-                        topic === common?.name
-                          ? "bg-primary_color dark:bg-primary_color dark:text-text_color_light"
-                          : "bg-card dark:bg-card_color_dark hover:bg-primary_color"
+                      ${topic === common?.name
+                        ? "bg-primary_color dark:bg-primary_color dark:text-text_color_light"
+                        : "bg-card dark:bg-card_color_dark hover:bg-primary_color"
                       }`}
                     onClick={() => handleTopicClick(common?.name)}
                   >

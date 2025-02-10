@@ -22,6 +22,7 @@ import {
 } from "@/redux/service/auth";
 import { useToast } from "../hooks/use-toast";
 import { MdCheckCircle } from "react-icons/md";
+import { set } from "date-fns";
 
 const validationSchemaOpt = Yup.object({
   otp1: Yup.string().required("OTP 1 is required "),
@@ -138,12 +139,14 @@ export default function FormForgetPassowrd() {
           description: "Failed to send OTP. Please try again!",
           variant: "error",
         });
+        setIsLoading(false);
       }
     } catch {
       toast({
         description: "Failed to send OTP. Please try again!",
         variant: "error",
       });
+      setIsLoading(false);
     }
   };
 

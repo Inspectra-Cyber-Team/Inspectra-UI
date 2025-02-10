@@ -206,6 +206,7 @@ For detailed usage and API documentation, visit [Inspectra Documentation](https:
 10. [FAQs](https://inspectra.istad.co/faq)
 11. [Blog History](https://inspectra.istad.co/bloghistory)
 12. [Scan History](https://inspectra.istad.co/scanhistory)
+13. [Ai Chat](https://inspectra.istad.co/ai)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

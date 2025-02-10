@@ -7,6 +7,7 @@ import { mentorData } from "@/data/mentor";
 import Link from "next/link";
 import { AboutUs, SocialMedia } from "@/types/AboutUs";
 import Aos from "aos";
+import Image from "next/image";
 
 export default function MentorComponent() {
   const { theme } = useTheme();
@@ -19,7 +20,7 @@ export default function MentorComponent() {
       <section className="relative">
         <div
           className="absolute top-0 -z-20 hidden md:block w-full"
-          
+
         >
           {theme === "dark" ? (
             <img
@@ -72,11 +73,13 @@ export default function MentorComponent() {
                   </div>
 
                   {/* Mentor Image */}
-                  <div className="my-3">
-                    <img
+                  <div className="w-60 h-60 mx-auto relative my-3">
+                    <Image
                       src={mentor.image}
                       alt={`${mentor.name}'s profile`}
-                      className="w-60 h-60 mx-auto object-contain"
+                      fill
+                      unoptimized
+                      className="object-contain"
                     />
                   </div>
 
